@@ -1,17 +1,16 @@
 from flask import Flask, render_template, flash, request, url_for, redirect
-import json
 import analysis as an
 app = Flask(__name__)
 
 
 
-@app.route('/onload')
-def onload():
-	a = an.get_customers()
-	name = a['first_name'][0]
-	last = a['last_name'][0]
-	full_name = name + " " + last
-	return full_name
+# @app.route('/onload')
+# def onload():
+# 	a = an.get_customers()
+# 	name = a['first_name'][0]
+# 	last = a['last_name'][0]
+# 	full_name = name + " " + last
+# 	return full_name
 
 
 @app.route('/')
