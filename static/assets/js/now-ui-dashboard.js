@@ -79,6 +79,9 @@ $(document).ready(function() {
       offText: data_off_label
     });
   });
+
+
+
 });
 
 $(document).on('click', '.navbar-toggle', function() {
