@@ -10,7 +10,6 @@ import requests
 import pyodbc
 import json
 import colors
-import matplotlib.pyplot as plt
 from pprint import pprint
 from decimal import Decimal
 from urllib.error import HTTPError
