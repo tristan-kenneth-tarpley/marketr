@@ -1,5 +1,5 @@
 #import analysis as an
-import pandas as pd
+#import pandas as pd
 from flask import Flask, render_template, flash, request, url_for, redirect
 
 
