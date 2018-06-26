@@ -2,7 +2,7 @@
 from flask import Flask, render_template, flash, request, url_for, redirect
 import numpy as np
 #import pandas as pd
-# import requests
+import requests
 # import pyodbc
 # import json
 # import colors
