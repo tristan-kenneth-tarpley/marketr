@@ -1,5 +1,4 @@
 Flask==0.12.1
-conda==4.3.16
 gunicorn==19.8.1
 numpy==1.14.3
 pandas==0.23.0
