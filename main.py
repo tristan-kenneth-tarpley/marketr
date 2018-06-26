@@ -1,6 +1,6 @@
 #import analysis as an
 from flask import Flask, render_template, flash, request, url_for, redirect
-from python364x86 import numpy as np
+from ..python364x86 import numpy as np
 
 
 
