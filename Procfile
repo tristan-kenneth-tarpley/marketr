@@ -1,1 +1,1 @@
-web: gunicorn deploy:marketr
+web: gunicorn marketr:app
