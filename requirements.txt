@@ -2,6 +2,6 @@ Flask==0.12.1
 conda==4.3.16
 gunicorn==19.8.1
 numpy==1.14.3
-pandas==1.11.0
-requests==2.19.1
+pandas==0.23.0
+requests==2.18.4
 pyodbc==4.0.23
