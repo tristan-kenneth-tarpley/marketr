@@ -26,7 +26,7 @@ app = Flask(__name__)
 def index():
 	return app.send_static_file('index.html')
 
-	
+
 @app.route('/onload')
 def onload():
 	a = an.get_customers()
