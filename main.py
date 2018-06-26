@@ -7,6 +7,8 @@ import pyodbc
 import json
 import colors
 
+import analysis as an
+
 from urllib.error import HTTPError
 from time import time, sleep
 from watson_developer_cloud import ToneAnalyzerV3
@@ -18,13 +20,13 @@ app = Flask(__name__)
 
 
 
-# @app.route('/onload')
-# def onload():
-# 	a = an.get_customers()
-# 	name = a['first_name'][0]
-# 	last = a['last_name'][0]
-# 	full_name = name + " " + last
-# 	return full_name
+@app.route('/onload')
+def onload():
+	a = an.get_customers()
+	name = a['first_name'][0]
+	last = a['last_name'][0]
+	full_name = name + " " + last
+	return full_name
 
 
 @app.route('/')
