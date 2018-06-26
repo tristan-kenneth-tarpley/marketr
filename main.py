@@ -4,13 +4,13 @@ import numpy as np
 import pandas as pd
 import requests
 import pyodbc
-# import json
-# import colors
+import json
+import colors
 
-# from urllib.error import HTTPError
-# from time import time, sleep
-# from watson_developer_cloud import ToneAnalyzerV3
-# from itertools import product
+from urllib.error import HTTPError
+from time import time, sleep
+from watson_developer_cloud import ToneAnalyzerV3
+from itertools import product
 
 
 
