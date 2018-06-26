@@ -1,1 +1,1 @@
-web: gunicorn marketr:app
+web: gunicorn main:app
