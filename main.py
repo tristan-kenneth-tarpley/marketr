@@ -20,6 +20,13 @@ app = Flask(__name__)
 
 
 
+
+
+@app.route('/')
+def index():
+	return app.send_static_file('index.html')
+
+	
 @app.route('/onload')
 def onload():
 	a = an.get_customers()
@@ -27,11 +34,6 @@ def onload():
 	last = a['last_name'][0]
 	full_name = name + " " + last
 	return full_name
-
-
-@app.route('/')
-def index():
-	return app.send_static_file('index.html')
 
 
 # @app.route('/dashboard')
