@@ -10,8 +10,6 @@ import requests
 import pyodbc
 import json
 import colors
-from pprint import pprint
-from decimal import Decimal
 from urllib.error import HTTPError
 from time import time, sleep
 from watson_developer_cloud import ToneAnalyzerV3
