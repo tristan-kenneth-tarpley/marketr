@@ -33,7 +33,21 @@ def onload():
 	name = a['first_name'][0]
 	last = a['last_name'][0]
 	full_name = name + " " + last
-	return full_name
+
+	# cpas = an.get_top_cpas()
+	# one = cpas[0]
+
+	return full_name #, cpas
+
+@app.route('/data-pop')
+def onload_2():
+	cpas = an.get_top_cpas()
+	cpas = np.round(cpas, 2)
+	#cpas = cpas.astype(str)
+	cpas = cpas.tolist()
+	cpas = json.dumps(cpas)
+
+	return cpas
 
 
 # @app.route('/dashboard')
