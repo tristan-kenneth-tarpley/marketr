@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Market(r) - Campaigns
+    Market(r) - New Campaign
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -20,7 +20,7 @@
   <link href="static/assets/demo/demo.css" rel="stylesheet" />
 </head>
 
-<body class="">
+<body id="newcampaign">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -87,7 +87,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="#pablo">Campaign management</a>
+            <a class="navbar-brand" href="#pablo">Testing123</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -144,32 +144,79 @@
       </div>
       <div class="content">
         <div class="row">
-          <div class="col-md-12">
-            <div class="card ">
-              <div class="card-header ">
-                Campaigns
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="title">New campaign</h5><hr>
               </div>
-              <div class="card-body ">
-                <div id="map" class="map">
-                  <a href="/campaigns/newcampaign" class="buttons" id="new_campaign">Create new campaign</a>
+              <div class="form-select">
+                <div class='selector'>
+                  <div class="card-body">
+                    <form class="campaign_wizard_forms" id="campaign-name" name="campaign-name">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <h6>What do you want to call this campaign?</h6>
+                            <label>This should be the name of product or offer that you are promoting.</label>
+                          <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Home Address" value="e.g. 'Shoes'">
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                      <input type="submit" value="continue">
+                    </form>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card card-user">
+              <div class="image">
+                <img src="static/assets/img/bg5.jpg" alt="...">
+              </div>
+              <div class="card-body">
+                <div class="author">
+                  <a href="#">
+                    <img class="avatar border-gray" src="static/assets/img/mike.jpg" alt="...">
+                    <h5 class="title">Tristan - Your Account Manager</h5>
+                  </a>
+                  <p class="description">
+                    Some things to remember:
+                  </p>
+                </div>
+                <p class="description text-center">
+                  <ol>
+                    <li>Lorem Ipsum</li>
+                    <li>Dolor sit amet</li>
+                    <li>consectetur adipisicing elit</li>
+                  </ol>
+                </p>
+              </div>
+              <hr>
+              <div class="button-container">
+                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+                  <i class="fab fa-facebook-f"></i>
+                </button>
+                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+                  <i class="fab fa-twitter"></i>
+                </button>
+                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+                  <i class="fab fa-google-plus-g"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <footer class="footer">
-        <div class="container-fluid">
-        </div>
-      </footer>
     </div>
   </div>
   <!--   Core JS Files   -->
   <script src="static/assets/js/core/jquery.min.js"></script>
   <script src="static/assets/js/core/popper.min.js"></script>
   <script src="static/assets/js/core/bootstrap.min.js"></script>
-  <script src="static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!-- Chart JS -->
+  <script src="static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>  <!-- Chart JS -->
   <script src="static/assets/js/plugins/chartjs.min.js"></script>
   <!--  Notifications Plugin    -->
   <script src="static/assets/js/plugins/bootstrap-notify.js"></script>
