@@ -1,31 +1,71 @@
+# import os
 #import analysis as an
 from flask import Flask, render_template, flash, request, url_for, redirect
 import numpy as np
 import pandas as pd
-import requests
-#import pyodbc
-import json
-import colors
-import os
+from flask_sqlalchemy import SQLAlchemy
+# from sqlalchemy.sql import text
+# from sqlalchemy import create_engine
+import urllib
+# import requests
+import pyodbc
+# import json
+# import colors
 
 #import analysis as an
-from werkzeug import secure_filename
-from urllib.error import HTTPError
-from time import time, sleep
-from watson_developer_cloud import ToneAnalyzerV3
-from itertools import product
+# from werkzeug import secure_filename
+# from urllib.error import HTTPError
+# from time import time, sleep
+# from watson_developer_cloud import ToneAnalyzerV3
+# from itertools import product
+#pyodbc==4.0.23
+
+server = 'darbly.database.windows.net'
+database = 'blendo'
+username = 'tarpley'
+password = 'Password123!'
+#driver = 'ODBC Driver 13 for SQL Server'
 
 
 
 app = Flask(__name__)
 
+#driver= '{ODBC Driver 13 for SQL Server}'
+# cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password)
+# cursor = cnxn.cursor()
+connStr = 'Driver={ODBC Driver 13 for SQL Server};Server=' + server + ';Database=' + database + ';UID=' + username + ';PWD=' + password + ';'
+db = pyodbc.connect(connStr)
+cursor = db.cursor()
 
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://{}:{}@{}/{}?driver={}'.format(username,password,server,database,driver)
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
+
+
+# class Example(db.Model):
+#     __tablename__ = 'customers'
+#     id = db.Column('id', db.Integer, primary_key=True)
+#     first_name = db.Column('first_name',db.Unicode)
+#     middle_initial = db.Column('middle_initial',db.Unicode)
+#     last_name = db.Column('last_name',db.Unicode)
+#     business_type = db.Column('business_type',db.Unicode)
+#     industry = db.Column('industry',db.Unicode)
+#     region = db.Column('region',db.Unicode)
+#     business_model = db.Column('business_model',db.Unicode)
+#     revenue = db.Column('revenue',db.Integer)
+#     target_demographic = db.Column('target_demographic',db.Unicode)
+#     facebook_ad_id = db.Column('facebook_ad_id',db.Integer)
+#     business_name = db.Column('business_name',db.Unicode)
+
+# examples = Example.query.all()
+# for x in examples:
+#     print(x.first_name)
 
 
 
 @app.route('/')
 def index():
-	return app.send_static_file('index.html')
+    return render_template('index.html')
 
 
 # @app.route('/onload')
@@ -51,11 +91,9 @@ def index():
 # 	return cpas
 
 
-
 # @app.route('/dashboard')
 # def dashboard():
-# 	return app.send_static_file('dashboard.html')
-
+# 	return render_template('dashboard.html')
 
 
 # @app.route('/login/', methods=['POST', 'GET'])
@@ -74,7 +112,7 @@ def index():
 
 # 		if attempted_username == "admin" and attempted_password == "password":
 # 		    return redirect(url_for('dashboard'))
-			
+
 # 		else:
 # 		    error = "Invalid credentials. Try Again."
 
@@ -83,90 +121,81 @@ def index():
 # 	#return render_template("login.html", error = error)
 
 
-
 @app.route('/recommendations')
 def recommendations():
-	return app.send_static_file('recommendations.html')
+    return render_template('recommendations.html')
 
-@app.route('/recommendations/')	
+
+@app.route('/recommendations/')
 def red_rec():
-	return redirect("/recommendations", code=302)
-
+    return redirect("/recommendations", code=302)
 
 
 @app.route('/campaigns')
 def campaigns():
-	return app.send_static_file('campaigns.html')
+    return render_template('campaigns.html')
 
-@app.route('/campaigns/')	
+
+@app.route('/campaigns/')
 def red_campaigns():
-	return redirect("/campaigns", code=302)
-
+    return redirect("/campaigns", code=302)
 
 
 @app.route('/integrations')
 def integrations():
-	return app.send_static_file('integrations.html')
+    return render_template('integrations.html')
 
-@app.route('/integrations/')	
+
+@app.route('/integrations/')
 def red_integrations():
-	return redirect("/integrations", code=302)
-
+    return redirect("/integrations", code=302)
 
 
 @app.route('/settings')
 def settings():
-	return app.send_static_file('settings.html')
+    return render_template('settings.html')
 
-@app.route('/settings/')	
+
+@app.route('/settings/')
 def red_settings():
-	return redirect("/settings", code=302)
-
-
+    return redirect("/settings", code=302)
 
 
 @app.route('/campaigns/newcampaign')
 def create_campaign():
-	return app.send_static_file('newcampaign.html')
+    return render_template('newcampaign.html')
 
-@app.route('/campaigns/newcampaign')	
+
+@app.route('/campaigns/newcampaign')
 def red_newcampaigns():
-	return redirect("/campaigns/newcampaign", code=302)
-
-
-
+    return redirect("/campaigns/newcampaign", code=302)
 
 
 #UPLOAD_FOLDER = '../marketr/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+
 def allowed_file(filename):
-	return '.' in filename and \
-		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/create_campaign', methods=['POST'])
 def exe_campaign():
-	campaign_name = request.form['campaign_name']
+    campaign_name = request.form['campaign_name']
 
-	file = request.files['files[]']
-	if file and allowed_file(file.filename):
-		filename = secure_filename(file.filename)
-		#file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    file = request.files['files[]']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-	dog = request.form['dog']
-	beer = request.form['beer']
+    dog = request.form['dog']
+    beer = request.form['beer']
 
-	print(campaign_name + " " + filename + " " + beer)
+    print(campaign_name + " " + filename + " " + beer)
 
-	return redirect(url_for("index"))
-
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
-
-
-
-
-
-
+    app.run(debug=True)
