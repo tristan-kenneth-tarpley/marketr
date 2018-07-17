@@ -2,3 +2,4 @@ unixodbc
 unixodbc-dev
 python-pyodbc
 libsqliteodbc
+unixodbc-dev-utf16

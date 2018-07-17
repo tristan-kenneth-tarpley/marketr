@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Market(r) - Campaigns
+    Market(r) - Audit
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -20,7 +20,7 @@
   <link href="static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body class="">
+<body class="audit">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -36,40 +36,46 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li>
-            <a href="/">
-              <i class="now-ui-icons design_app"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li>
-            <a href="/recommendations">
-              <i class="now-ui-icons education_atom"></i>
-              <p>Recommendations</p>
-            </a>
-          </li>
           <li class="active">
+            <a href="/begin">
+              <i class="now-ui-icons design_app"></i>
+              <p>Profile</p>
+            </a>
+          </li>
+          <li>
+            <a href="/competitors">
+              <i class="now-ui-icons education_atom"></i>
+              <p>Company Info</p>
+            </a>
+          </li>
+          <li>
             <a href="/campaigns">
               <i class="now-ui-icons location_map-big"></i>
-              <p>Campaigns</p>
+              <p>Goals</p>
             </a>
           </li>
           <li>
             <a href="/integrations">
               <i class="now-ui-icons ui-1_bell-53"></i>
-              <p>Integrations</p>
+              <p>History</p>
             </a>
           </li>
           <li>
             <a href="/settings">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Settings</p>
+              <p>Diagnosis</p>
             </a>
           </li>
-          <li class="active-pro">
-            <a href="upgrade.html">
-              <i class="now-ui-icons arrows-1_cloud-download-93"></i>
-              <p>Upgrade to PRO</p>
+          <li>
+            <a href="/settings">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Prescription</p>
+            </a>
+          </li>
+          <li>
+            <a href="/settings">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Begin</p>
             </a>
           </li>
         </ul>
@@ -87,7 +93,6 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="#pablo">Campaign management</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -143,27 +148,108 @@
       <div class="panel-header panel-header-sm">
       </div>
       <div class="content">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card ">
-              <div class="card-header ">
-                Campaigns
-              </div>
-              <div class="card-body ">
-                <div id="map" class="map">
-                  <a href="/campaigns/newcampaign" class="buttons" id="new_campaign">Create new campaign</a>
+        <div class="append_to">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="title">Tell us about your company & goals and we'll recommend the best Market(r) solution for you</h6>
+                </div>
+                <div class="card-body all-icons">
+                  <div class="row">
+                    <div id="startup" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/rocket.png">
+                      <h6>I'm a startup!</h6>
+                      <p>(Pre-Revenue)</p>
+                    </div>
+                    <div id="smb" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/storefront.png">
+                      <h6>I'm a small business!</h6>
+                      <p>(Pre-Revenue)</p>
+                    </div>
+                    <div id="bigbiz" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/bigbiz.png">
+                      <h6>I'm a "big" business</h6>
+                      <p>($50mm+)</p>
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+                    <div id="fbads" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/fbads.png">
+                      <h6>We use Facebook ads</h6>
+                    </div>
+                    <div id="radical" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/bar.png">
+                      <h6>I need radical growth!</h6>
+                    </div>
+                    <div id="help" class="audit_problems col-lg-3 col-md-3 col-sm-4">
+                      <img class="problem_img" src="static/assets/img/help.png">
+                      <h6>I need help with my current marketing campaigns</h6>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <div class="card">
+                <div class="row">
+                  <div id="good" class="prices col-lg-4">
+                    <h5 class="price_header">Marketing Audit</h5>
+                    <p>Diagnose and prescribe options for improvement</p>
+                    <hr>
+                    <ul>
+                      <li>Marketing Audit</li>
+                      <li>More sales content</li>
+                      <li>Sales copy galore!!!</li>
+                    </ul>
+                    <div class="call_to_action_container">
+                      <a class="call_to_action">Free forever<br><span style="font-size:75%;">Pay only for add-ons</span></a>
+                    </div>
+                  </div>
+                  <div id="better" class="prices col-lg-4">
+                    <h5 class="price_header">Advanced Assist</h5>
+                    <p>Lorem ipsum dolor sit amet</p>
+                    <hr>
+                    <ul>
+                      <li>Lorem Ipsum</li>
+                      <li>Lorem Ipsum</li>
+                      <li>Sales copy galore!!!</li>
+                    </ul>
+                    <div class="call_to_action_container">
+                      <a class="call_to_action">Your life savings!<br><span style="font-size:75%;">Pay only for add-ons</span></a>
+                    </div>
+                  </div>
+                  <div id="best" class="prices col-lg-4">
+                    <h5 class="price_header">Fractional Marketing Department</h5>
+                    <p>Lorem ipsum dolor sit amet</p>
+                    <hr>
+                    <ul>
+                      <li>Lorem ipsum</li>
+                      <li>Lorem ipsum</li>
+                      <li>Sales copy galore!!!</li>
+                    </ul>
+                    <div class="call_to_action_container">
+                      <a class="call_to_action">Your mom's life savings!<br><span style="font-size:75%;">Pay only for add-ons</span></a>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="onward">                
+                <a class="skip" href="/skip">Skip this step</a>
+                <a class="continue" href="/create">Continue</a>
+              </div>
+
             </div>
           </div>
-        </div>
+        </div> <!--end row-->
       </div>
-      <footer class="footer">
-        <div class="container-fluid">
-        </div>
-      </footer>
     </div>
-  </div>
+
+
+
   <!--   Core JS Files   -->
   <script src="static/assets/js/core/jquery.min.js"></script>
   <script src="static/assets/js/core/popper.min.js"></script>
@@ -175,9 +261,8 @@
   <script src="static/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
-  <script src='static/frontend.js'></script>
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src="static/assets/demo/demo.js"></script>
+  <script src='static/frontend.js'></script>
 </body>
 
 </html>

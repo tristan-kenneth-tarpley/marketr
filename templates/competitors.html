@@ -7,22 +7,22 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Market(r) - Campaigns
+    Market(r) - Create Account
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
   <!-- CSS Files -->
-  <link href="static/assets/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="static/assets/css/now-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
+  <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/static/assets/css/now-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="static/assets/css/demo.css" rel="stylesheet" />
+  <link href="/static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body class="">
+<body class="competitors">
   <div class="wrapper ">
-    <div class="sidebar" data-color="orange">
+<div class="sidebar" data-color="orange">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
@@ -37,39 +37,45 @@
       <div class="sidebar-wrapper">
         <ul class="nav">
           <li>
-            <a href="/">
+            <a href="/begin">
               <i class="now-ui-icons design_app"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li>
-            <a href="/recommendations">
-              <i class="now-ui-icons education_atom"></i>
-              <p>Recommendations</p>
+              <p>Profile</p>
             </a>
           </li>
           <li class="active">
+            <a href="/competitors">
+              <i class="now-ui-icons education_atom"></i>
+              <p>Company Info</p>
+            </a>
+          </li>
+          <li>
             <a href="/campaigns">
               <i class="now-ui-icons location_map-big"></i>
-              <p>Campaigns</p>
+              <p>Goals</p>
             </a>
           </li>
           <li>
             <a href="/integrations">
               <i class="now-ui-icons ui-1_bell-53"></i>
-              <p>Integrations</p>
+              <p>History</p>
             </a>
           </li>
           <li>
             <a href="/settings">
               <i class="now-ui-icons users_single-02"></i>
-              <p>Settings</p>
+              <p>Diagnosis</p>
             </a>
           </li>
-          <li class="active-pro">
-            <a href="upgrade.html">
-              <i class="now-ui-icons arrows-1_cloud-download-93"></i>
-              <p>Upgrade to PRO</p>
+          <li>
+            <a href="/settings">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Prescription</p>
+            </a>
+          </li>
+          <li>
+            <a href="/settings">
+              <i class="now-ui-icons users_single-02"></i>
+              <p>Begin</p>
             </a>
           </li>
         </ul>
@@ -87,7 +93,6 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="#pablo">Campaign management</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -145,39 +150,76 @@
       <div class="content">
         <div class="row">
           <div class="col-md-12">
-            <div class="card ">
-              <div class="card-header ">
-                Campaigns
+            <div class="card">
+              <div class="card-header">
+                <p>Help Market(r) get to know your marketing space better...</p>
+                <h5 class="title blue">Let's understand your environment.</h5>
+                <p>This will increase the strength of Market(r)'s machine learning engines' analysis.</p>
               </div>
-              <div class="card-body ">
-                <div id="map" class="map">
-                  <a href="/campaigns/newcampaign" class="buttons" id="new_campaign">Create new campaign</a>
-                </div>
+              <div class="card-body">
+                <form>
+
+
+                  <label for="inputPassword4">Industry</label>
+                  <select class="create_form form-control">
+                    <option value="volvo">Industry</option>
+                    <option value="saab">Industry</option>
+                    <option value="mercedes">Industry</option>
+                    <option value="audi">Industry</option>
+                  </select>
+
+<br><br>
+                  <div class="form-row">
+                    <p>And provide us with your top 2 competitors - this will ensure Market(R) really understands where you're competing.</p>
+                    <p>Don't have any solid competitors? How about adding companies that would be targeting your same audience?</p>
+
+                    <div class="form-group col-md-6">
+                      <label for="inputEmail4">Competitor #1</label>
+                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor #1">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="inputEmail4">Competitor #1's website</label>
+                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor1.com">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="inputEmail4">Competitor #2</label>
+                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor #2">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="inputEmail4">Competitor #2's website</label>
+                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor2.com">
+                    </div>
+                  </div>
+
+                  <div class="onward">                
+                    <a class="skip" href="/skip">Skip this step</a>
+                    <a class="continue" href="/create">Continue</a>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
-      <footer class="footer">
-        <div class="container-fluid">
-        </div>
-      </footer>
     </div>
   </div>
   <!--   Core JS Files   -->
-  <script src="static/assets/js/core/jquery.min.js"></script>
-  <script src="static/assets/js/core/popper.min.js"></script>
-  <script src="static/assets/js/core/bootstrap.min.js"></script>
-  <script src="static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!-- Chart JS -->
-  <script src="static/assets/js/plugins/chartjs.min.js"></script>
+  <script src="/static/assets/js/core/jquery.min.js"></script>
+  <script src="/static/assets/js/core/popper.min.js"></script>
+  <script src="/static/assets/js/core/bootstrap.min.js"></script>
+  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>  <!-- Chart JS -->
+  <script src="/static/assets/js/plugins/chartjs.min.js"></script>
   <!--  Notifications Plugin    -->
-  <script src="static/assets/js/plugins/bootstrap-notify.js"></script>
+  <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
-  <script src='static/frontend.js'></script>
+  <script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src="static/assets/demo/demo.js"></script>
+  <script src="/static/assets/demo/demo.js"></script>
 </body>
 
 </html>

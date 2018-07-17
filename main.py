@@ -9,10 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 import urllib
 # import requests
 import pyodbc
-# import json
+import json
 # import colors
 
-#import analysis as an
+import analysis as an
 # from werkzeug import secure_filename
 # from urllib.error import HTTPError
 # from time import time, sleep
@@ -20,22 +20,20 @@ import pyodbc
 # from itertools import product
 #pyodbc==4.0.23
 
-server = 'darbly.database.windows.net'
-database = 'blendo'
-username = 'tarpley'
-password = 'Password123!'
-#driver = 'ODBC Driver 13 for SQL Server'
-
 
 
 app = Flask(__name__)
 
-#driver= '{ODBC Driver 13 for SQL Server}'
-# cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password)
-# cursor = cnxn.cursor()
-connStr = 'Driver={ODBC Driver 13 for SQL Server};Server=' + server + ';Database=' + database + ';UID=' + username + ';PWD=' + password + ';'
-db = pyodbc.connect(connStr)
-cursor = db.cursor()
+
+# server = 'darbly.database.windows.net'
+# database = 'blendo'
+# username = 'tarpley'
+# password = 'Password123!'
+# driver= '{ODBC Driver 13 for SQL Server}'
+
+# connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password
+# db = pyodbc.connect(connStr)
+# cursor = db.cursor()
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://{}:{}@{}/{}?driver={}'.format(username,password,server,database,driver)
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -62,33 +60,58 @@ cursor = db.cursor()
 #     print(x.first_name)
 
 
+@app.route('/begin')
+def begin():
+    return render_template('audit.html')
+
+@app.route('/begin/create')
+def create_account():
+    return render_template('create_account.html')
+
+@app.route('/begin/create/competitors')
+def competitors():
+    return render_template('competitors.html')
+
+@app.route('/begin/create/competitors/type')
+def type():
+    return render_template('type.html')
+
+
+
+
+@app.route('/begin/create/competitors/type/nice')
+def nice():
+    return render_template('nice.html')
+
+    
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# @app.route('/onload')
-# def onload():
-# 	a = an.get_customers()
-# 	name = a['first_name'][0]
-# 	last = a['last_name'][0]
-# 	full_name = name + " " + last
+@app.route('/onload')
+def onload():
+	a = an.get_customers()
+	name = a['first_name'][0]
+	last = a['last_name'][0]
+	full_name = name + " " + last
 
-# 	# cpas = an.get_top_cpas()
-# 	# one = cpas[0]
+	# cpas = an.get_top_cpas()
+	# one = cpas[0]
 
-# 	return full_name #, cpas
+	return full_name #, cpas
 
-# @app.route('/data-pop')
-# def onload_2():
-# 	cpas = an.get_top_cpas()
-# 	cpas = np.round(cpas, 2)
-# 	#cpas = cpas.astype(str)
-# 	cpas = cpas.tolist()
-# 	cpas = json.dumps(cpas)
+@app.route('/data-pop')
+def onload_2():
+	cpas = an.get_top_cpas()
+	cpas = np.round(cpas, 2)
+	#cpas = cpas.astype(str)
+	cpas = cpas.tolist()
+	cpas = json.dumps(cpas)
 
-# 	return cpas
+	return cpas
 
 
 # @app.route('/dashboard')
@@ -125,10 +148,20 @@ def index():
 def recommendations():
     return render_template('recommendations.html')
 
-
 @app.route('/recommendations/')
 def red_rec():
     return redirect("/recommendations", code=302)
+@app.route('/getrecs')
+def get_rec():
+    print('hi from the client')
+    a = an.petri_dish()
+    petri = a.head(5)
+    petjson = petri.to_json(orient='split')
+
+    return petjson
+
+
+
 
 
 @app.route('/campaigns')

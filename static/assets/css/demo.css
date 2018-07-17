@@ -2688,13 +2688,13 @@ Created using IcoMoon - icomoon.io
       color: #18ce0f; }
   .sidebar[data-color="orange"]:after,
   .off-canvas-sidebar[data-color="orange"]:after {
-    background: #ca7d66; }
+    background: rgb(0,0,0); }
   .sidebar[data-color="orange"] .nav li.active > a,
   .off-canvas-sidebar[data-color="orange"] .nav li.active > a {
-    color: #ca7d66; }
+    color: rgb(0,0,0); }
     .sidebar[data-color="orange"] .nav li.active > a i,
     .off-canvas-sidebar[data-color="orange"] .nav li.active > a i {
-      color: #ca7d66; }
+      color: rgb(0,0,0); }
   .sidebar[data-color="red"]:after,
   .off-canvas-sidebar[data-color="red"]:after {
     background: #FF3636; }
@@ -2762,7 +2762,7 @@ Created using IcoMoon - icomoon.io
   background: #141E30;
   /* fallback for old browsers */
   background: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788));
-  background: linear-gradient(to right, #0c2646 0%, #204065 60%, #2a5788 100%);
+  background: linear-gradient(to right, #a2e1ed 0%, #62cde0 60%, #28b4cd 100%);
   position: relative;
   overflow: hidden; }
   .panel-header .header .title {
@@ -3576,3 +3576,128 @@ Created using IcoMoon - icomoon.io
     width: 90%; } }
 
 /*# sourceMappingURL=demo.css.map */
+
+
+
+
+
+
+/* MY STUFF*/
+.audit .card {
+  padding: 3%;
+}
+.audit .card:nth-of-type(1) {
+  border-bottom: 5px solid #ffd8ad;
+}
+
+.type .audit_problems {
+  padding: 2% 4%;
+}
+.type .card {
+  padding: 3%;
+}
+
+.type .card:nth-of-type(1) {
+  border-bottom: 5px solid #ffd8ad;
+}
+
+.audit_problems {
+  text-align:center;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  color: rgba(0,0,0,.7);
+  margin: 1% auto;
+  padding: 1% 3% 0;
+  border: 4px solid transparent;
+  transition-duration: .3s;
+  cursor: pointer;
+}
+.audit_problems:hover {
+  border: 4px solid #62cde0;
+}
+.audit_problems_selected {
+  border: 4px solid #62cde0;
+}
+
+.problem_img {
+  margin: 0 auto 5%;
+  width: 50%;
+}
+.prices {
+  margin: 0 auto;
+  padding-top: 3%;
+  padding-bottom: 3%;
+  transition-duration: .4s;
+  border-radius: 3px;
+}
+.prices_active {
+  border: 4px solid #62cde0;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+
+}
+.price_header {
+  color: #62cde0;
+  font-weight: bold;
+}
+.call_to_action_container {
+  border-radius: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background-color: #62cde0;
+  color: white;
+  transition-duration: .3s;
+  width: 100%;
+  text-align: center;
+  padding-top: 2%;
+  padding-bottom: 2%;
+}
+.call_to_action_container:hover {
+  opacity: .7;
+}
+.not_selected {
+  border: 4px solid rgba(38,80,88,.5);
+  opacity: .5;
+}
+.onward {
+  margin-top: 2%;
+  width: 100%;
+  text-align: right;
+  margin-bottom: 5%;
+}
+.continue {
+  color: white;
+  background-color: #62cde0;
+  padding: 1% 2%;
+  transition-duration: .3s;
+  border: 3px solid #62cde0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-radius: 5px;
+  margin-left: 2%;
+}
+.continue:hover {
+  opacity: .7;
+  color: white !important;
+  text-decoration: none !important;
+}
+
+
+.blue {
+  color: #62cde0 !important;
+}
+
+
+
+.competitors .card {
+  padding: 6%;
+}
+/*.create_account .onward {
+  text-align: left;
+}*/
+.checkmark_container {
+  width: 15%;
+  margin: 3% auto;
+}
+.checkmark_container img {
+  width: 100%;
+
+}
+
+

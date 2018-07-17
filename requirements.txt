@@ -4,4 +4,4 @@ numpy==1.14.3
 pandas==0.23.0
 sqlalchemy==1.2.1
 flask-sqlalchemy==2.3.2
-pyodbc==3.0.7
+pyodbc==4.0.23
