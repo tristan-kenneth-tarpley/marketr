@@ -22,10 +22,10 @@ from itertools import product
 server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
-password = 'Fiverrtemp!'
+password = 'Napster15!'
 driver= '{ODBC Driver 13 for SQL Server}'
 
-connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password
+connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
 db = pyodbc.connect(connStr)
 cursor = db.cursor()
 
