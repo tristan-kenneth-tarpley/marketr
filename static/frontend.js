@@ -3,11 +3,12 @@ $(document).ready(function() {
 	console.log('document is loaded')
 
 	$.get('/onload', function(data, cpas){
-		var text = data
-		var cpa = cpas
-		header = text + "'s dashboard"
-		$('.dash-select').text(header)
-		console.log(cpa)
+		// var text = data
+		// var cpa = cpas
+		// header = text + "'s dashboard"
+		// $('.dash-select').text(header)
+		// console.log(cpa)
+		console.log('hello')
 	})
 	$.get('/data-pop', function(data){
 
