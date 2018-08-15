@@ -22,7 +22,7 @@ from itertools import product
 server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
-password = 'Napster15!'
+password = 'Fiverrtemp!'
 driver= '{ODBC Driver 13 for SQL Server}'
 
 connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
