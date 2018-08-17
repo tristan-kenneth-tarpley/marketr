@@ -79,7 +79,7 @@ def new():
 
 @app.route('/create_new_account')
 def create_new_account():
-    session['logged_in'] = True 
+    #session['logged_in'] = True 
     # POST_USERNAME = str(request.form['username'])
     # POST_PASSWORD = str(request.form['password'])
     # POST_FIRST_NAME = str(request.form['first_name'])
