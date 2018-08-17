@@ -1,72 +1,24 @@
-# import os
-#import analysis as an
-from flask import Flask, render_template, flash, request, url_for, redirect
+from flask import Flask, render_template, flash, request, url_for, flash, redirect, session, abort
 import numpy as np
 import pandas as pd
-from flask_sqlalchemy import SQLAlchemy
-# from sqlalchemy.sql import text
-# from sqlalchemy import create_engine
 import urllib
-# import requests
+import os
 import pyodbc
 import json
-# import colors
 
 import analysis as an
-# from werkzeug import secure_filename
-# from urllib.error import HTTPError
-# from time import time, sleep
-# from watson_developer_cloud import ToneAnalyzerV3
-# from itertools import product
-#pyodbc==4.0.23
-
 
 
 app = Flask(__name__)
-
-
-# server = 'darbly.database.windows.net'
-# database = 'blendo'
-# username = 'tarpley'
-# password = 'Password123!'
-# driver= '{ODBC Driver 13 for SQL Server}'
-
-# connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password
-# db = pyodbc.connect(connStr)
-# cursor = db.cursor()
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://{}:{}@{}/{}?driver={}'.format(username,password,server,database,driver)
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
-
-
-# class Example(db.Model):
-#     __tablename__ = 'customers'
-#     id = db.Column('id', db.Integer, primary_key=True)
-#     first_name = db.Column('first_name',db.Unicode)
-#     middle_initial = db.Column('middle_initial',db.Unicode)
-#     last_name = db.Column('last_name',db.Unicode)
-#     business_type = db.Column('business_type',db.Unicode)
-#     industry = db.Column('industry',db.Unicode)
-#     region = db.Column('region',db.Unicode)
-#     business_model = db.Column('business_model',db.Unicode)
-#     revenue = db.Column('revenue',db.Integer)
-#     target_demographic = db.Column('target_demographic',db.Unicode)
-#     facebook_ad_id = db.Column('facebook_ad_id',db.Integer)
-#     business_name = db.Column('business_name',db.Unicode)
-
-# examples = Example.query.all()
-# for x in examples:
-#     print(x.first_name)
 
 
 @app.route('/begin')
 def begin():
     return render_template('audit.html')
 
-@app.route('/begin/create')
-def create_account():
-    return render_template('create_account.html')
+# @app.route('/begin/create')
+# def create_account():
+#     return render_template('create_account.html')
 
 @app.route('/begin/create/competitors')
 def competitors():
@@ -88,7 +40,88 @@ def nice():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('index.html')
+
+
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+ 
+    POST_USERNAME = str(request.form['username'])
+    POST_PASSWORD = str(request.form['password'])
+ 
+    result = an.sql_to_df("SELECT * from dbo.customers WHERE email = '" + POST_USERNAME + "' AND password = '" + POST_PASSWORD + "'")
+    try:    
+        if result['id'][0] != None:
+            session['logged_in'] = True
+            return index()
+    except IndexError:
+        flash('wrong password!')
+        return index()
+
+
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return index()
+
+
+@app.route('/new')
+def new():
+    if not session.get('logged_in'):
+        return render_template('create.html')
+    else:
+        return render_template('index.html')
+
+
+@app.route('/create_new_account')
+def create_new_account():
+    session['logged_in'] = True 
+    # POST_USERNAME = str(request.form['username'])
+    # POST_PASSWORD = str(request.form['password'])
+    # POST_FIRST_NAME = str(request.form['first_name'])
+    # POST_MIDDLE_NAME = str(request.form['middle_name'])
+    # POST_LAST_NAME = str(request.form['last_name'])
+    # POST_BUSINESS_TYPE = str(request.form['business_type'])
+    # POST_INDUSTRY = str(request.form['industry'])
+    # POST_REGION = str(request.form['region'])
+    # POST_BUSINESS_MODEL = str(request.form['business_model'])
+    # POST_BUSINESS_NAME = str(request.form['business_name'])
+
+    # query = """INSERT INTO dbo.customers (
+    #                             email,
+    #                             password, 
+    #                             first_name,
+    #                             middle_name,
+    #                             last_name,
+    #                             business_type,
+    #                             industry,
+    #                             region,
+    #                             business_model,
+    #                             business_name)
+    #         VALUES ('""" + str(POST_USERNAME) + """',
+    #                 '""" + str(POST_PASSWORD) + """',
+    #                 '""" + str(POST_FIRST_NAME) + """',
+    #                 '""" + str(POST_MIDDLE_NAME) + """',
+    #                 '""" + str(POST_LAST_NAME) + """',
+    #                 '""" + str(POST_BUSINESS_TYPE) + """',
+    #                 '""" + str(POST_INDUSTRY) + """',
+    #                 '""" + str(POST_REGION) + """',
+    #                 '""" + str(POST_BUSINESS_MODEL) + """',
+    #                 '""" + str(POST_BUSINESS_NAME) + """'); commit;"""
+
+    # cursor = an.cursor
+
+    # cursor.execute(query)
+
+    return index()
+
+
+
+
 
 
 @app.route('/onload')
@@ -114,34 +147,7 @@ def onload_2():
 	return cpas
 
 
-# @app.route('/dashboard')
-# def dashboard():
-# 	return render_template('dashboard.html')
 
-
-# @app.route('/login/', methods=['POST', 'GET'])
-# def login_page():
-# 	error = ''
-
-# 	if request.method == "POST":
-
-# 		attempted_username = request.form['username']
-# 		attempted_password = request.form['password']
-
-# 		x = an.test()
-
-# 		#flash(attempted_username)
-# 		#flash(attempted_password)
-
-# 		if attempted_username == "admin" and attempted_password == "password":
-# 		    return redirect(url_for('dashboard'))
-
-# 		else:
-# 		    error = "Invalid credentials. Try Again."
-
-
-# 	return redirect(url_for('dashboard'))
-# 	#return render_template("login.html", error = error)
 
 
 @app.route('/recommendations')
@@ -231,4 +237,5 @@ def exe_campaign():
 
 
 if __name__ == '__main__':
+    app.secret_key = os.urandom(12)
     app.run(debug=True)
