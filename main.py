@@ -238,4 +238,10 @@ def exe_campaign():
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.run(debug=True)
+
+
+
+
+
