@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8" />
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Market(r) - Create Account
+    Market(r) - Audit
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -20,23 +20,20 @@
   <link href="/static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body class="create_account">
+<body class="audit">
   <div class="wrapper ">
-<div class="sidebar" data-color="orange">
+    <div class="sidebar" data-color="orange">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
       <div class="logo">
-        <a href="/" class="simple-text logo-mini">
-          (r)
-        </a>
         <a href="https://marketr.life" class="simple-text logo-normal">
-          Market(r)
+          <img src="/static/assets/img/marketrwhite.png">
         </a>
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="active">
+          <li>
             <a href="/begin">
               <i class="now-ui-icons design_app"></i>
               <p>Profile</p>
@@ -48,7 +45,7 @@
               <p>Company Info</p>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="/campaigns">
               <i class="now-ui-icons location_map-big"></i>
               <p>Goals</p>
@@ -148,123 +145,100 @@
       <div class="panel-header panel-header-sm">
       </div>
       <div class="content">
-        <div class="row">
-          <div class="col-md-8">
-            <div class="card">
-              <div class="card-header">
-                <p>Let's get to know each other a bit better!</p>
-                <h5 class="title blue">Let's set up an account to save your progress</h5>
-                <p>This will allow us to setup a profile for you and save your pgress in case you need to return later.</p>
-                <p>We will NEVER share your information to third parties without your explicit permission.  We hate companies that do that as much as the next person.</p>
-              </div>
-              <div class="card-body">
-                <form>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Company name</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="ACME Corp">
+        <div class="append_to">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="sub_menu">
+                  <div class="step step_active">
+                    <p class="step_name sub_active">Goals</p>
+                  </div>
+                </div><br><br>
+                <div class="card-body yellow_border">
+                  <div class="card-header">
+                    <div class="row">
+                      <h6>Before we can prescribe, we need to understand your goals...</h6><br>
+                      <h2 class="blue_header">What does success look like for you?</h2>
+                      <p>This can certainly change, so don't be afraid to come back and adjust your goals.  It WILL impact Marketr's prescriptions.  Remember, marketing is a balance so we'll help you continuously improve.</p>
+                      <p>Select one... (we get it - you want all three, but this is marketing, not magic.  Let's improve one, then refocus on another to improve incrementally)</p>
                     </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPassword4">Company stage</label>
-                      <select class="create_form form-control">
-                        <option value="volvo">Pre-revenue startup</option>
-                        <option value="saab">Post-revenue start up</option>
-                        <option value="mercedes">Blah</option>
-                        <option value="audi">Blah</option>
-                      </select>
+                    <div class="row" style="width: 60%;">
+                      <div class="hover_box col-lg-3 col-md-3">
+                        <h6>Revenue</h6>
+                        <p>Increase your income</p>
+                      </div>
+                      <div class="hover_box col-lg-3 col-md-3">
+                        <h6>User growth</h6>
+                        <p>Increase number of customers/users</p>
+                      </div>
+                      <div class="hover_box col-lg-3 col-md-3">
+                        <h6>CAC Reduction</h6>
+                        <p>Decrease your cost of acquiring customers</p>
+                      </div>
                     </div>
+
+                    <p><em>How would you like that to change?</em></p>
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <p>From (current average per month)</p>
+                        <textarea class="form-control"><type></textarea>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <p>To (target average per month)</p>
+                        <textarea class="form-control"><type></textarea>
+                      </div><br>
+                    </div>
+                    <div class="row row_cancel">
+                      <p>And over what time period?</p>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <input class="form-control" placeholder="123456" type="number" name="time">
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <select class="form-control">
+                          <option>Days</option>
+                          <option>Months</option>
+                          <option>Years</option>
+                          <option>Decades (you probably shouldn't pick this one)</option>
+                          <option>Centuries (you DEFINITELY shouldn't pick this one)</option>
+                        </select>
+                      </div>
+                    </div>
+
+
                   </div>
 
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Headquarters City</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="New York City">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPassword4">State</label>
-                      <input type="text" class="create_form form-control" id="inputPassword4" placeholder="New York">
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Your name</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Kobe Bryant">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPassword4">Position/Title</label>
-                      <input type="text" class="create_form form-control" id="inputPassword4" placeholder="CEO of Everything">
-                    </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Email</label>
-                      <input type="email" class="create_form form-control" id="inputEmail4" placeholder="test@test.com">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputPassword4">Password</label>
-                      <input type="password" class="create_form form-control" id="inputPassword4" placeholder="Password">
-                    </div>
-                  </div>
-                  <div class="onward">                
-                    <a class="skip" href="/skip">Skip this step</a>
-                    <a class="continue" href="/create">Continue</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card card-user">
-              <div class="image">
-                <!-- <img src="../assets/img/bg5.jpg" alt="..."> -->
-              </div>
-              <div class="card-body">
-                <div class="author">
-                  <a href="#">
-                    <!-- <img class="avatar border-gray" src="../assets/img/mike.jpg" alt="..."> -->
-                    <h5 class="title">Did you know...</h5>
-                  </a>
-                  <p class="description">
-                    24% of the world's oreos are eaten each year by Tristan Tarpley?
-                  </p>
                 </div>
-                <p class="description text-center">
-                  That's right.
-                </p>
               </div>
-              <hr>
-              <div class="button-container">
-                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
-                  <i class="fab fa-facebook-f"></i>
-                </button>
-                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
-                  <i class="fab fa-twitter"></i>
-                </button>
-                <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
-                  <i class="fab fa-google-plus-g"></i>
-                </button>
               </div>
+
+              <div class="onward">            
+                <a class="continue" href="/goals">Next</a>
+              </div>
+
             </div>
           </div>
-
-
-        </div>
+        </div> <!--end row-->
       </div>
     </div>
-  </div>
+
+
+
   <!--   Core JS Files   -->
   <script src="/static/assets/js/core/jquery.min.js"></script>
   <script src="/static/assets/js/core/popper.min.js"></script>
   <script src="/static/assets/js/core/bootstrap.min.js"></script>
-  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>  <!-- Chart JS -->
+  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!-- Chart JS -->
   <script src="/static/assets/js/plugins/chartjs.min.js"></script>
   <!--  Notifications Plugin    -->
   <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src="/static/assets/demo/demo.js"></script>
+  <script src='/static/frontend.js'></script>
+  <script src="/static/animations.js"></script>
 </body>
 
 </html>

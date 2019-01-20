@@ -3,11 +3,11 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Market(r) - Create Account
+    Market(r) - Audit
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -20,18 +20,15 @@
   <link href="/static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body class="competitors">
+<body class="audit">
   <div class="wrapper ">
-<div class="sidebar" data-color="orange">
+    <div class="sidebar" data-color="orange">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
       <div class="logo">
-        <a href="/" class="simple-text logo-mini">
-          (r)
-        </a>
         <a href="https://marketr.life" class="simple-text logo-normal">
-          Market(r)
+          <img src="/static/assets/img/marketrwhite.png">
         </a>
       </div>
       <div class="sidebar-wrapper">
@@ -148,78 +145,152 @@
       <div class="panel-header panel-header-sm">
       </div>
       <div class="content">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <p>Help Market(r) get to know your marketing space better...</p>
-                <h5 class="title blue">Let's understand your environment.</h5>
-                <p>This will increase the strength of Market(r)'s machine learning engines' analysis.</p>
+
+
+        <div class="append_to">
+            <div class="col-md-12">
+              <div class="card">
+
+                
+                <div class="sub_menu">
+                  <div class="step">
+                    <p class="step_name">Competitors</p>
+                  </div>
+                  <div class="step step_active">
+                    <p class="step_name sub_active">Company</p>
+                  </div>
+                  <div class="step">
+                    <p class="step_name">Audience</p>
+                  </div>
+                </div><br><br>
+
+                <div class="card-header">
+                  <div class="row row_cancel">
+                    <h6 class="title">Help Market(r) get to know your marketing space better!!!!...</h6>
+                    <h2 class="blue_header">Let's understand your environment</h2>
+                    <p>This will increase the strength of Market(r)'s machine learning engines' (and supporting Humans') analysis.</p>
+                  </div>
+                  <div class="row yellow_border">
+                    <div class="col-lg-12 col-md-12">
+                      <label for="industry">Industry</label>
+                      <select name="industry" class="create_form form-control" id="industry">
+                        <option>
+                          Test1
+                        </option>
+                        <option>
+                          Test2
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                <div class="card-body  all-icons">
+                  <div class="row">
+                    <p>Provide us with your top 2 competitors - this will ensure Market(r) really understands where your competition lies.</p>
+                    <p>Don't have any solid competitors?  Add some companies that would be targeting your same target audience.</p>
+                  </div>
+                  <div class="row">
+                    <div class="col=lg-6 col-md-6">  
+                      <label for="competitor_1">Competitor #1 name</label><br>
+                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
+                    </div>
+                    <div class="col=lg-6 col-md-6">  
+                      <label for="competitor_1">Competitor #1 website</label><br>
+                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
+                    </div>
+                  </div>
+
+
+                  <h6>What type of competitor are they to you?</h6><br>
+                  <div class="row">
+                    <div id="startup" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Direct</h6>
+                      <p>Similar product(s) and target market(s)</p>
+                    </div>
+                    <div id="smb" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Indirect</h6>
+                      <p>Different products but similar industry and target market(s)</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Replacement</h6>
+                      <p>Products/services that are in a different industry but could be a subsitute</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Potential</h6>
+                      <p>Competitor that is currently NOT distributing in your market</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Future</h6>
+                      <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="card-body  all-icons">
+                  <div class="row">
+                    <div class="col=lg-6 col-md-6">  
+                      <label for="competitor_1">Competitor #2 name</label><br>
+                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
+                    </div>
+                    <div class="col=lg-6 col-md-6">  
+                      <label for="competitor_1">Competitor #2 website</label><br>
+                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
+                    </div>
+                  </div>
+
+
+                  <h6>What type of competitor are they to you?</h6><br>
+                  <div class="row">
+                    <div id="startup" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Direct</h6>
+                      <p>Similar product(s) and target market(s)</p>
+                    </div>
+                    <div id="smb" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Indirect</h6>
+                      <p>Different products but similar industry and target market(s)</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Replacement</h6>
+                      <p>Products/services that are in a different industry but could be a subsitute</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Potential</h6>
+                      <p>Competitor that is currently NOT distributing in your market</p>
+                    </div>
+                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
+                      <h6>Future</h6>
+                      <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
+                    </div>
+                  </div>
+
+                </div>
               </div>
-              <div class="card-body">
-                <form>
 
-
-                  <label for="inputPassword4">Industry</label>
-                  <select class="create_form form-control">
-                    <option value="volvo">Industry</option>
-                    <option value="saab">Industry</option>
-                    <option value="mercedes">Industry</option>
-                    <option value="audi">Industry</option>
-                  </select>
-
-<br><br>
-                  <div class="form-row">
-                    <p>And provide us with your top 2 competitors - this will ensure Market(R) really understands where you're competing.</p>
-                    <p>Don't have any solid competitors? How about adding companies that would be targeting your same audience?</p>
-
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Competitor #1</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor #1">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Competitor #1's website</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor1.com">
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Competitor #2</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor #2">
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="inputEmail4">Competitor #2's website</label>
-                      <input type="text" class="create_form form-control" id="inputEmail4" placeholder="Competitor2.com">
-                    </div>
-                  </div>
-
-                  <div class="onward">                
-                    <a class="skip" href="/skip">Skip this step</a>
-                    <a class="continue" href="/create">Continue</a>
-                  </div>
-                </form>
+              <div class="onward">                
+                <a class="continue" href="/competitors/company/audience">Continue</a>
               </div>
+
             </div>
           </div>
 
-
-        </div>
       </div>
     </div>
-  </div>
+
+
+
   <!--   Core JS Files   -->
   <script src="/static/assets/js/core/jquery.min.js"></script>
   <script src="/static/assets/js/core/popper.min.js"></script>
   <script src="/static/assets/js/core/bootstrap.min.js"></script>
-  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>  <!-- Chart JS -->
+  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!-- Chart JS -->
   <script src="/static/assets/js/plugins/chartjs.min.js"></script>
   <!--  Notifications Plugin    -->
   <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src="/static/assets/demo/demo.js"></script>
+  <script src='/static/frontend.js'></script>
+  <script src="/static/animations.js"></script>
 </body>
 
 </html>

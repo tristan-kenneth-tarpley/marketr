@@ -16,7 +16,7 @@ from watson_developer_cloud import ToneAnalyzerV3
 from itertools import product
 
 
-# In[3]:
+# In[2]:
 
 
 server = 'tarpley.database.windows.net'
@@ -30,7 +30,7 @@ db = pyodbc.connect(connStr)
 cursor = db.cursor()
 
 
-# In[4]:
+# In[3]:
 
 
 def sql_to_df(x):
@@ -45,7 +45,21 @@ def debug(strSQL):
     print(strSQL)
 
 
+# In[4]:
+
+
+result = sql_to_df("SELECT * from dbo.customers WHERE email = 'test@test.com' AND password = 'test'")
+if result['id'][0] != None:
+    print(True)
+
+
 # In[5]:
+
+
+result.head()
+
+
+# In[6]:
 
 
 vision_subscription_key = '8359f1b134914ab1a1137c5a1d9d547c'

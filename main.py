@@ -12,30 +12,81 @@ import analysis as an
 app = Flask(__name__)
 
 
+#########################
+#########################
+#########################
+#####INTAKE ROUTES#######
+#########################
+#########################
+#########################
+
 @app.route('/begin')
 def begin():
-    return render_template('audit.html')
+    return render_template('intake/init_setup.html')
 
-# @app.route('/begin/create')
-# def create_account():
-#     return render_template('create_account.html')
+@app.route('/begin/')
+def red_begin():
+    return redirect("/begin", code=302)
 
-@app.route('/begin/create/competitors')
+@app.route('/competitors', methods=['POST'])
 def competitors():
-    return render_template('competitors.html')
+    POST_first_name = str(request.form['first_name'])
+    POST_last_name = str(request.form['last_name'])
+    POST_company_name = str(request.form['company_name'])
+    POST_revenue = str(request.form['revenue'])
+    POST_city = str(request.form['city'])
+    POST_state = str(request.form['state'])
 
-@app.route('/begin/create/competitors/type')
-def type():
-    return render_template('type.html')
+    print(POST_first_name + " " + POST_last_name + " " + POST_company_name + " " + POST_revenue + " " + POST_city + " " + POST_state)
+
+    return render_template('intake/company.html')
+
+@app.route('/competitors/')
+def red_competitors():
+    return redirect("/competitors", code=302)
+
+@app.route('/competitors/company')
+def company():
+    return render_template('intake/competitors.html')
+
+@app.route('/competitors/company/')
+def red_company():
+    return redirect('/competitors/company', code=302)
+
+@app.route('/competitors/company/audience')
+def audience():
+    return render_template('intake/audience.html')
+
+@app.route('/competitors/company/audience/')
+def red_audience():
+    return redirect('/competitors/company/audience', code=302)
 
 
-
-
-@app.route('/begin/create/competitors/type/nice')
+@app.route('/nice')
 def nice():
-    return render_template('nice.html')
+    return render_template('intake/nice.html')
 
-    
+@app.route('/nice/')
+def red_nice():
+    return redirect('/nice', code=302)
+
+
+
+
+
+
+@app.route('/goals')
+def goals():
+    return render_template('intake/2/goals.html')
+
+@app.route('/goals/')
+def red_goals():
+    return redirect('/goals', code=302)
+
+
+
+
+#########################
 
 
 @app.route('/')
@@ -56,7 +107,9 @@ def do_admin_login():
     try:    
         if result['id'][0] != None:
             session['logged_in'] = True
+            session.permanent = True
             return index()
+
     except IndexError:
         flash('wrong password!')
         return index()
@@ -77,45 +130,22 @@ def new():
         return render_template('index.html')
 
 
-@app.route('/create_new_account')
-def create_new_account():
+@app.route('/create_user')
+def create_user():
     session['logged_in'] = True 
-    # POST_USERNAME = str(request.form['username'])
-    # POST_PASSWORD = str(request.form['password'])
-    # POST_FIRST_NAME = str(request.form['first_name'])
-    # POST_MIDDLE_NAME = str(request.form['middle_name'])
-    # POST_LAST_NAME = str(request.form['last_name'])
-    # POST_BUSINESS_TYPE = str(request.form['business_type'])
-    # POST_INDUSTRY = str(request.form['industry'])
-    # POST_REGION = str(request.form['region'])
-    # POST_BUSINESS_MODEL = str(request.form['business_model'])
-    # POST_BUSINESS_NAME = str(request.form['business_name'])
+    POST_USERNAME = str(request.form['username'])
+    POST_PASSWORD = str(request.form['password'])
 
-    # query = """INSERT INTO dbo.customers (
-    #                             email,
-    #                             password, 
-    #                             first_name,
-    #                             middle_name,
-    #                             last_name,
-    #                             business_type,
-    #                             industry,
-    #                             region,
-    #                             business_model,
-    #                             business_name)
-    #         VALUES ('""" + str(POST_USERNAME) + """',
-    #                 '""" + str(POST_PASSWORD) + """',
-    #                 '""" + str(POST_FIRST_NAME) + """',
-    #                 '""" + str(POST_MIDDLE_NAME) + """',
-    #                 '""" + str(POST_LAST_NAME) + """',
-    #                 '""" + str(POST_BUSINESS_TYPE) + """',
-    #                 '""" + str(POST_INDUSTRY) + """',
-    #                 '""" + str(POST_REGION) + """',
-    #                 '""" + str(POST_BUSINESS_MODEL) + """',
-    #                 '""" + str(POST_BUSINESS_NAME) + """'); commit;"""
 
-    # cursor = an.cursor
+    query = """INSERT INTO dbo.customers (
+                                email,
+                                password)
+            VALUES ('""" + str(POST_USERNAME) + """',
+                    '""" + str(POST_PASSWORD) + """'; commit;"""
 
-    # cursor.execute(query)
+    cursor = an.cursor
+
+    cursor.execute(query)
 
     return index()
 
