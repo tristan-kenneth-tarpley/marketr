@@ -150,118 +150,116 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="sub_menu">
-                  <div class="step step_active">
-                    <p class="step_name sub_active">Competitors</p>
-                  </div>
                   <div class="step">
-                    <p class="step_name">Company</p>
+                    <p class="step_name">Competitors</p>
+                  </div>
+                  <div class="step step_active">
+                    <p class="step_name sub_active">Company</p>
                   </div>
                   <div class="step">
                     <p class="step_name">Audience</p>
                   </div>
+                  <div class="step">
+                    <p class="step_name">Product</p>
+                  </div>
+                  <div class="step">
+                    <p class="step_name">Sales Cycle</p>
+                  </div>
                 </div><br><br>
-                <div class="card-header">
-                  <div class="row yellow_border">
-                    <h6 class="title">Help Market(r) get to know your marketing space better...</h6>
-                    <h2 class="blue_header">Let's understand your environment</h2>
-                    <p>This will increase the strength of Market(r)'s machine learning engines' (and supporting Humans') analysis.</p>
-                    <br>
-                    <label for="industry">Industry</label>
-                    <select name="industry" class="create_form form-control" id="industry">
-                      <option>
-                        Test1
-                      </option>
-                      <option>
-                        Test2
-                      </option>
-                    </select>
+                <form method="POST" id="setup" action="{{ url_for('audience') }}">
+                  <div class="card-header">
+                    <div class="row yellow_border">
+                      <h6 class="title">Now, let's talk business...</h6>
+                      <h2 class="blue_header">Let's feed in data on your business profile.</h2>
+                      <p>And we can start easy.  Who are you and who are you selling to?</p>
+                      <br>
+                    </div>
+
+                    <p><em>Select all that apply</em></p>
+                    <div class="row row_cancel">
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <br><h6>B2B</h6><br>
+                        <input name="b2b" class="hidden hidden_input" type="text">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <br><h6>B2C</h6><br>
+                        <input name="b2c" class="hidden hidden_input" type="text">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <br><h6>C2C</h6><br>
+                        <input name="c2c" class="hidden hidden_input" type="text">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <br><h6>OTHER</h6><br>
+                        <input name="other" class="hidden hidden_input" type="text">
+                      </div>
+                    </div>
+                  </div><hr>
+                  <div class="card-body  all-icons">
+                    <p><em>What is your primary business model? Not sure or it's kinda complicated?* (see below)</em></p>
+                    <div class="row row_cancel">
+                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                        <h6>Saas/Digital Product</h6>
+                        <p>Software, web-based tools or products</p>
+                      </div>
+                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                        <h6>Tangible Product</h6>
+                        <p>Physical item that you can touch and feel</p>
+                      </div>
+                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                        <h6>Services</h6>
+                        <p>Professional services & manual labor</p>
+                      </div>
+                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                        <h6>Affiliate</h6>
+                        <p>Paid by third parties for lead referrals</p>
+                      </div>
+                      <input type="text" class="hidden hidden_input" name="biz_model">
+                    </div><hr>
+
+
+                    
+                    <p><em>What channels provide sources of revenue today and what % comes from each?  Not sure or it's kinda complicated?* (see below)</em></p>
+                    <div class="row row_cancel">
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <h6>Storefront</h6>
+                        <p>Physical stoer, kiosk, truck, etc.</p>
+                        <input type="text" class="hidden hidden_input" name="storefront">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <h6>Direct</h6>
+                        <p>Mailers, email, door-to-door, telemarketing, etc.</p>
+                        <input type="text" class="hidden hidden_input" name="direct">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <h6>Online</h6>
+                        <p>eCommerce, SaaS, blog, online ads, blog, etc.</p>
+                        <input type="text" class="hidden hidden_input" name="online">
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <h6>Tradeshows</h6>
+                        <input type="text" class="hidden hidden_input" name="tradeshows">
+                        
+                      </div>
+                      <div class="hover_box hb_many col-lg-2 col-md-2 col-sm-4">
+                        <h6>Other</h6>
+                        <input type="text" class="hidden hidden_input" name="other">
+                      </div>
+                    </div><hr>
+
+                    <p><em>*Not sure or have some nuanced sales channels or business model? Describe here and we'll handle the rest...</em></p>
+                    <div class="row inset">
+                      <textarea name="freeform" class="form-control"><describe your primary method of making money></textarea>
+                    </div>
+
+
                   </div>
                 </div>
-                <div class="card-body  all-icons">
-                  <div class="row">
-                    <p>Provide us with your top 2 competitors - this will ensure Market(r) really understands where your competition lies.</p>
-                    <p>Don't have any solid competitors?  Add some companies that would be targeting your same target audience.</p>
-                  </div>
-                  <div class="row">
-                    <div class="col=lg-6 col-md-6">  
-                      <label for="competitor_1">Competitor #1 name</label><br>
-                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
-                    </div>
-                    <div class="col=lg-6 col-md-6">  
-                      <label for="competitor_1">Competitor #1 website</label><br>
-                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
-                    </div>
-                  </div>
 
-
-                  <h6>What type of competitor are they to you?</h6><br>
-                  <div class="row">
-                    <div id="startup" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                      <h6>Direct</h6>
-                      <p>Similar product(s) and target market(s)</p>
-                    </div>
-                    <div id="smb" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Indirect</h6>
-                      <p>Different products but similar industry and target market(s)</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Replacement</h6>
-                      <p>Products/services that are in a different industry but could be a subsitute</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Potential</h6>
-                      <p>Competitor that is currently NOT distributing in your market</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Future</h6>
-                      <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
-                    </div>
-                  </div>
-
+                <div class="onward">                
+                  <input type="submit" class="continue">
                 </div>
-                <div class="card-body  all-icons">
-                  <div class="row">
-                    <div class="col=lg-6 col-md-6">  
-                      <label for="competitor_1">Competitor #2 name</label><br>
-                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
-                    </div>
-                    <div class="col=lg-6 col-md-6">  
-                      <label for="competitor_1">Competitor #2 website</label><br>
-                      <input type="text" name="competitor_1" class="form-control" id="competitor_1">
-                    </div>
-                  </div>
-
-
-                  <h6>What type of competitor are they to you?</h6><br>
-                  <div class="row">
-                    <div id="startup" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                      <h6>Direct</h6>
-                      <p>Similar product(s) and target market(s)</p>
-                    </div>
-                    <div id="smb" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Indirect</h6>
-                      <p>Different products but similar industry and target market(s)</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Replacement</h6>
-                      <p>Products/services that are in a different industry but could be a subsitute</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Potential</h6>
-                      <p>Competitor that is currently NOT distributing in your market</p>
-                    </div>
-                    <div id="bigbiz" class="hover_box col-lg-3 col-md-2 col-sm-4">
-                      <h6>Future</h6>
-                      <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              <div class="onward">                
-                <a class="continue" href="/competitors/company">Continue</a>
-              </div>
+              </form>
 
             </div>
           </div>

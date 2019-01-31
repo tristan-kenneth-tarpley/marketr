@@ -175,13 +175,17 @@
 
 
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="company_name">Company Name</label>
                       <input type="text" class="create_form form-control" name="company_name" id="company_name" placeholder="ACME CORP.">
                     </div>                    
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-4">
                       <label for="revenue">Average/expected annual revenues</label>
                       <input type="number" class="create_form form-control" name="revenue" id="revenue" placeholder="1,000,000">
+                    </div>                    
+                    <div class="form-group col-md-4">
+                      <label for="employees">Total # of Employees (incl. contractors)</label>
+                      <input type="number" class="create_form form-control" name="employees" id="employees" placeholder="500">
                     </div>
                   </div>
 
@@ -279,6 +283,7 @@
                       <h6>Decline / Recession</h6>
                       <p>Revenues on the definite decline</p>
                     </div>
+                    <input class="hidden_input hidden" name="one" id="one">
                   </div>
                 </div>
               </div>

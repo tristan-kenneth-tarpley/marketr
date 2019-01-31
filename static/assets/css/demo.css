@@ -3682,6 +3682,7 @@ Created using IcoMoon - icomoon.io
   margin-bottom: 5%;
 }
 .continue {
+  cursor: pointer;
   color: white;
   background-color: #62cde0;
   padding: 1% 2%;
@@ -3775,6 +3776,26 @@ Created using IcoMoon - icomoon.io
   border-bottom: 3px solid blue;
 }
 
+.hidden {
+  display: none;
+}
+
+
+.input_table {
+  width: 100%;
+  text-align: center;
+}
+.input_table th {
+}
+.input_table tr {
+  width: 95%;
+  border-bottom: 1px solid rgba(0,0,0,.2);
+}
+.input_table input {
+  border: none;
+  padding: 5% 0;
+  text-align: center;
+}
 
 
 

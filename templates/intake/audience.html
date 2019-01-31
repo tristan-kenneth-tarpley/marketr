@@ -159,181 +159,224 @@
                   <div class="step step_active">
                     <p class="step_name sub_active">Audience</p>
                   </div>
+                  <div class="step">
+                    <p class="step_name">Product</p>
+                  </div>
+                  <div class="step">
+                    <p class="step_name">Sales Cycle</p>
+                  </div>
                 </div><br><br>
 
                 <div class="card-body yellow_border">
-                  <div class="card-header">
-                    <div class="row">
-                      <h6>Finally, who are we talking to?..</h6><br>
-                      <h2 class="blue_header">Tell us about your ideal customer</h2>
-                      <p>We realize you may have a fantastic product that pplies to a lot of primary <em>and</em> secondary customers, but let's focus on who you believe will be the primary revenue generator for your company.</p>
-                      <br>
-                    </div>
+                  <form method="POST" id="setup" action="{{ url_for('product') }}">
+                    <div class="card-header">
+                      <div class="row">
+                        <h6>Finally, who are we talking to?..</h6><br>
+                        <h2 class="blue_header">Tell us about your ideal customer</h2>
+                        <p>We realize you may have a fantastic product that pplies to a lot of primary <em>and</em> secondary customers, but let's focus on who you believe will be the primary revenue generator for your company.</p>
+                        <br>
+                      </div>
 
-                    <p><em>Gender (select one)</em></p>
-                    <div class="row" style="width: 60%;">
-                      <div class="hover_box col-lg-3 col-md-3">
-                        <img src="/static/assets/img/female.svg">
+                      <p><em>Gender (select one)</em></p>
+                      <div class="row" style="width: 60%;">
+                        <div class="hover_box col-lg-3 col-md-3">
+                          <img src="/static/assets/img/female.svg">
+                          <h6 class="hidden">female</h6>
+                        </div>
+                        <div class="hover_box col-lg-3 col-md-3">
+                          <img src="/static/assets/img/male.svg">
+                          <h6 class="hidden">male</h6>
+                        </div>
+                        <div class="hover_box col-lg-3 col-md-3">
+                          <img src="/static/assets/img/both.svg">
+                          <h6 class="hidden">both</h6>
+                        </div>
+                        <input type="text" class="hidden_input hidden" name="gender">
                       </div>
-                      <div class="hover_box col-lg-3 col-md-3">
-                        <img src="/static/assets/img/male.svg">
-                      </div>
-                      <div class="hover_box col-lg-3 col-md-3">
-                        <img src="/static/assets/img/both.svg">
-                      </div>
-                    </div>
 
-                    <p><em>Target Age Groups (select all that apply)</em></p>
-                    <div class="row row_cancel">
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>0-11</p>
+                      <p><em>Target Age Groups (select all that apply)</em></p>
+                      <div class="row row_cancel">
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>0-11</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_1">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>12-17</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_2">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>18-24</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_3">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>25-34</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_4">
+                        </div>
                       </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>12-17</p>
+                      <div class="row">
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>35-44</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_5">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>45-54</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_6">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>55-64</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_7">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>64+</h6><br>
+                          <input type="text" class="hidden_input hidden" name="age_group_8">
+                        </div>
                       </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>18-24</p>
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>25-34</p>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>35-44</p>
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>45-54</p>
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>55-64</p>
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <p>64+</p>
-                      </div>
-                    </div>
 
-                    <div class="row">
-                      <p>Where are they primarily located?</p><br>
-                      <input type="text" class="form-control" placeholder="<type>">
+                      <div class="row">
+                        <p>Where are they primarily located?</p><br>
+                        <input type="text" name="location" class="form-control" placeholder="<type>">
+                      </div>
+
                     </div>
 
                   </div>
+                  <div class="grandparent">
+                    <div class="card-body yellow_border">
+                      <p>Why will your target audience most likely buy from you? (select one)</p>
+                      <div class="row row_cancel">
+                        <div class="multi_row hover_box col-lg-5 col-md-5">
+                          <br><h6>Something just HAPPENED to them</h6><br>
+                        </div>
+                        <div class="multi_row hover_box col-lg-5 col-md-5">
+                          <br><h6>Something they are PLANNING for</h6><br>
+                        </div>
+                      </div>
 
-                </div>
-                <div class="card-body yellow_border">
-                  <p>Why will your target audience most likely buy from you? (select one)</p>
-                  <div class="row row_cancel">
-                    <div class="hover_box col-lg-5 col-md-5">
-                      <p>Something just HAPPENED to them</p>
+                      <div class="row">
+                        <div class="multi_row hover_box col-lg-5 col-md-5">
+                          <br><h6>Something they NEED</h6><br>
+                        </div>
+                        <div class="multi_row hover_box col-lg-5 col-md-5">
+                          <br><h6>Something they WANT</h6><br>
+                        </div>
+                      </div>
+                      <input type="text" name="why" class="hidden_input hidden">
                     </div>
-                    <div class="hover_box col-lg-5 col-md-5">
-                      <p>Something they are PLANNING for</p>
+                  </div>
+
+                <div class="card-body yellow_border">
+                  <p>How does your target buyer feel right <span class="blue_header"><strong>BEFORE</strong></span> they buy your product/service? (select all that apply, or if none fit, then describe in the available text box in the follow-up question)</p>
+                  <div class="row row_cancel">
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Happy</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_1">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Excited</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_2">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Worried</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_3">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Hungry</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_4">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Bored</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_5">
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="hover_box col-lg-5 col-md-5">
-                      <p>Something they NEED</p>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Sad</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_6">
                     </div>
-                    <div class="hover_box col-lg-5 col-md-5">
-                      <p>Something they WANT</p>
+                    <div class="hover_box hb_many col-lg-2 col-md-3">
+                      <br><h6>Unprepared</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_7">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Angry</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_8">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Thirsty</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_9">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Insecure</h6><br>
+                      <input type="text" class="hidden_input hidden" name="before_10">
                     </div>
                   </div>
-                </div>
-
-              <div class="card-body yellow_border">
-                <p>How does your target buyer feel right <span class="blue_header"><strong>BEFORE</strong></span> they buy your product/service? (select all that apply, or if none fit, then describe in the available text box in the follow-up question)</p>
-                <div class="row row_cancel">
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Happy</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Excited</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Worried</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Hungry</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Bored</p>
+                  <div class="row inset">
+                    <h6>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</h6>
+                    <textarea name="before_freeform" class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
                   </div>
                 </div>
 
-                <div class="row">
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Sad</p>
+                <div class="card-body yellow_border">
+                  <p>How does your target buyer feel right <span class="blue_header"><strong>AFTER</strong></span> they buy your product/service? (select all that apply, or if none fit, then describe in the available text box in the follow-up question)</p>
+                  <div class="row row_cancel">
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Happy</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_1">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Excited</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_2">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Worried</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_3">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Hungry</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_4">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Bored</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_5">
+                    </div>
                   </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-3">
-                    <p>Unprepared</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Angry</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Thirsty</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Insecure</p>
-                  </div>
-                </div>
-                <div class="row inset">
-                  <p>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</p>
-                  <textarea class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
-                </div>
-              </div>
 
-              <div class="card-body yellow_border">
-                <p>How does your target buyer feel right <span class="blue_header"><strong>AFTER</strong></span> they buy your product/service? (select all that apply, or if none fit, then describe in the available text box in the follow-up question)</p>
-                <div class="row row_cancel">
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Happy</p>
+                  <div class="row">
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Sad</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_6">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-3">
+                      <br><h6>Unprepared</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_7">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Angry</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_8">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Thirsty</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_9">
+                    </div>
+                    <div class="hover_box hb_many col-lg-2 col-md-2">
+                      <br><h6>Insecure</h6><br>
+                      <input type="text" class="hidden_input hidden" name="after_10">
+                    </div>
                   </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Excited</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Worried</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Hungry</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Bored</p>
+
+                  <div class="row inset">
+                    <p>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</p>
+                    <textarea name="after_freeform" class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
                   </div>
                 </div>
-
-                <div class="row">
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Sad</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-3">
-                    <p>Unprepared</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Angry</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Thirsty</p>
-                  </div>
-                  <div class="hover_box hb_many col-lg-2 col-md-2">
-                    <p>Insecure</p>
-                  </div>
+                </div>
                 </div>
 
-                <div class="row inset">
-                  <p>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</p>
-                  <textarea class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
-                </div>
-              </div>
-              </div>
-              </div>
 
-              <div class="onward">                
-                <a class="continue" href="/nice">Next</a>
-              </div>
+                <div class="onward">                
+                  <input type="submit" class="continue">
+                </div>
 
             </div>
           </div>
