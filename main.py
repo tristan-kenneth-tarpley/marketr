@@ -256,16 +256,41 @@ def product_2():
     else:
         print("seriously...NOTHING TO SEE HERE") 
 
-    d = request.form
 
-    new_df = pd.DataFrame(list(d.items()))
-    new_df = new_df[20:]
-    
-    print(new_df.head(40))
+    if POST_sku:
 
-    for
+        req = request.form
+        d = pd.DataFrame(list(req.items()))
+        d = d[20:]
 
-    POST_product_len = request.form['product_len']
+        product_len = int(request.form['product_len'])
+
+        z = 0
+        d1 = {}
+        for x, y in d.items():
+            d1[str(z)] = y
+            z = z+1
+
+        test = list(d.iloc[:,1])
+        print(test)
+
+        q = 0
+
+        while q < product_len:
+            if q > 0 and q < product_len:
+                test = test[6:]
+            
+            query = """INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,qty_sold,est_unique_buyers) VALUES ('""" + str(session['user']) + """','""" + test[0] + """','""" + test[1] + """','""" + test[2] + """','""" + test[3] + """','""" + test[4] + """','""" + test[5] + """');commit;"""
+            print(query)
+            cursor = db.cursor()
+            cursor.execute(query)
+            cursor.close()
+            q += 1
+
+    else:
+        print("how many times do I have to tell you?..there's nothing to see here")
+
+
     
     # q = 1
     # while q < POST_product_len:
@@ -274,6 +299,16 @@ def product_2():
     #                                                                                                                                             """name="product_` + i + `"_name"""
 
     return render_template('/intake/product_2.html')
+
+@app.route('/load_product_list', methods=['GET', 'POST'])
+def load_product_list():
+    query = "SELECT p_id, name, category FROM dbo.product_list WHERE customer_id = " + str(session['user'])
+
+    results = sql_to_df(query)
+    results = results.to_json(orient='columns')
+
+
+    return results
 
 @app.route('/competitors/company/audience/product/product_2/salescycle', methods=['POST'])
 def salescycle():

@@ -48,6 +48,12 @@ $(".edit_products").click(function(e){
 		
 })
 
+function load_product_list(){
+	$.get("/load_product_list",function(results){
+		console.log(results)
+	})
+}
+
 
 
 $(document).ready(function(){
@@ -58,6 +64,22 @@ $(document).ready(function(){
 	console.log(width)
 
 	$('.step').css('width', width+"%")
+
+	$( ".radio_container" ).each(function( i ) {
+
+	  	var quantity = $(this).children('.connector').length
+	  	var connect_width = (1/quantity*100)-1
+
+	  	$(this).children('.connector').css('width', connect_width + "%")
+	  	$(this).siblings('label').css('width',connect_width + "%")
+	});
+
+	// console.log($('.connector').length)
+	// var connector = $(".connector")
+	// var connector_count = connector.length
+	// var connector_width = (1/connector_count*100)-1
+
+	// $(this).connector.css('width', connector_width+"%")
 
 })
 

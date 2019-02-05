@@ -3796,11 +3796,55 @@ Created using IcoMoon - icomoon.io
   padding: 5% 0;
   text-align: center;
 }
+/*
+.align_to_the_right h6,p {
+  text-align:right;
+}*/
+.center_it {
+  text-align: center;
+}
 
-
-
-
-
+.form-radio
+{
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none;
+     display: inline-block;
+     position: relative;
+     background-color: #62cde0;
+     color: #666;
+     top: 10px;
+     height: 30px;
+     width: 30px;
+     border: 0;
+     border-radius: 50px;
+     cursor: pointer;     
+     margin-right: 7px;
+     outline: none;
+}
+.form-radio:checked::before
+{
+     position: absolute;
+     font: 13px/1 'Open Sans', sans-serif;
+     left: 11px;
+     top: 7px;
+     content: '\02143';
+     transform: rotate(40deg);
+}
+.form-radio:hover
+{
+     opacity: .6;
+}
+.radio_container label
+{
+     font: 300 16px/1.7 'Open Sans', sans-serif;
+     color: #62cde0;
+     cursor: pointer;
+} 
+.connector {
+  display:inline-block;
+  text-align: center;
+}
 
 
 
