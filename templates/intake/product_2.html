@@ -20,7 +20,7 @@
   <link href="/static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body onload="load_product_list()" class="audit">
+<body onload="init_products()" class="audit">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -167,18 +167,27 @@
                   </div>
                 </div><br><br>
 
+                
 
-                <form method="POST" id="setup" action="{{ url_for('salescycle') }}">
+     
+
+                
 
                   <div class="card-header">
                     <div class="row ">
                       <h6 class="title">Ok, just need to understand a bit more about your products.</h6>
-                      <h2 class="blue_header">Relative understanding for [product name 1]</h2>
+                      <h2 class="blue_header">Relative understanding for <span id="product-name">[product name]</span></h2>
                       <br>
                     <p><em>For the following topics, let us know relative to other products in your industry, how does each product compare:</em></p>
                     </div>
 
 
+                  </div>
+                <div class="product_prev_container">
+                </div>
+
+                  <div class="form_container">
+                    <input type="text" id="p_id" class="hidden" name="p_id">
                   </div>
                   <div class="card-body  all-icons">
                     <hr><br><br><br>
@@ -307,44 +316,45 @@
                       </div>
                     </div>
 <hr><br><br><br>
+                    <div><div class="row">
+                        
+                        <div class="center_it col-lg-12 col-md-12 col-sm-12">
+                          <h6>Value Prop</h6>
+                          <p>Why would a customer buy this product?</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                          <br><h6>Save Time</h6><br>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                          <br><h6>Reduce Effort</h6><br>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                          <br><h6>Save Money</h6><br>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                          <br><h6>Increase Output</h6><br>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                          <br><h6>Status / Feel good</h6><br>
+                        </div>
+                        <input type="text" class="hidden_input hidden" name="value_prop">
+                    </div></div><hr><br><br><br>
                     <div class="row">
-                      <div class="center_it col-lg-12 col-md-12 col-sm-12">
-                        <h6>Value Prop</h6>
-                        <p>Why would a customer buy this product?</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-2">
-                        <br><h6>Save Time</h6><br>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-2">
-                        <br><h6>Reduce Effort</h6><br>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-2">
-                        <br><h6>Save Money</h6><br>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-2">
-                        <br><h6>Increase Output</h6><br>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-2">
-                        <br><h6>Status / Feel good</h6><br>
-                      </div>
-                      <input type="text" class="hidden hidden_input" name="value_prop">
-                    </div><hr><br><br><br>
-                    <div class="row">
-                      <div class="center_it col-lg-6 col-md-6 col-sm-12">
-                        <h6>Warranties or Gaurantee</h6>
-                        <p>Do you offer any explicit warranties or gaurantees?</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-5">
-                        <br><h6>Yep!</h6><br>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-5">
-                        <br><h6>Nope!</h6><br>
-                      </div>
-                      <input type="text" class="hidden_input hidden" name="warranties_or_guarantee">
-                      <div class="col-lg-6 col-md-6 col-sm-0"></div>
-                      <div class="col-lg-6 col-md-6 col-sm-12">
-                        <textarea class="form-control" name="warranties_or_guarantee_freeform" placeholder="describe your warranty or guarantee here"></textarea>
-                      </div>
+                        <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <h6>Warranties or Gaurantee</h6>
+                          <p>Do you offer any explicit warranties or gaurantees?</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-5">
+                          <br><h6>Yep!</h6><br>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-5">
+                          <br><h6>Nope!</h6><br>
+                        </div>
+                        <input type="text" class="hidden_input hidden" name="warranties_or_guarantee">
+                        <div class="col-lg-6 col-md-6 col-sm-0"></div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <textarea class="form-control" name="warranties_or_guarantee_freeform" placeholder="describe your warranty or guarantee here"></textarea>
+                        </div>
                     </div>
 <hr><br><br><br>
                     <div class="row">
@@ -396,26 +406,22 @@
                         </div>
                       </div>
                     </div>
-
-
-
-
-                    
+                  <button class='continue p_form_submit'>Save</button>
                   </div>
                 </div>
 
 
+              <form method="GET" class="" id="setup" action="{{ url_for('salescycle') }}">
                 <div class="onward">                
-                  <input type="submit" class="continue">
+                  <input type="submit" class="final continue">
                 </div>
+              </form>
 
             </div>
           </div>
         </div> <!--end row-->
       </div>
     </div>
-
-
 
   <!--   Core JS Files   -->
   <script src="/static/assets/js/core/jquery.min.js"></script>

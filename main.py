@@ -17,7 +17,7 @@ server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
 password = 'Fiverrtemp!'
-driver= '{ODBC Driver 13 for SQL Server}'
+driver= '{ODBC Driver 17 for SQL Server}'
 
 connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
 db = pyodbc.connect(connStr)
@@ -69,9 +69,10 @@ def create_user():
 
     cursor.execute(query)
 
-    cursor.close()
 
     result = sql_to_df("SELECT * from dbo.customer_basic WHERE email = '" + POST_USERNAME + "' AND password = '" + POST_PASSWORD + "'")
+
+    cursor.close()
 
     if result['ID'][0] != None:
         session['logged_in'] = True
@@ -206,7 +207,7 @@ def product():
 
     query = """INSERT INTO dbo.audience
                 (customer_id, gender, age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7, age_group_8, location, why, before_1, before_2, before_3, before_4, before_5, before_6, before_7, before_8, before_9, before_10, before_freeform, after_1, after_2, after_3, after_4, after_5, after_6, after_7, after_8, after_9, after_10, after_freeform)
-                VALUES ('""" + str(session['user']) + """','""" + POST_gender + """','""" + POST_age_group_1 + """','""" + POST_age_group_2 + """','""" + POST_age_group_3 + """','""" + POST_age_group_4 + """','""" + POST_age_group_5 + """','""" + POST_age_group_6 + """','""" + POST_age_group_7 + """','""" + POST_age_group_8 + """','""" + POST_location + """','""" + POST_why + """','""" + POST_before_1 + """','""" + POST_before_2 + """','""" + POST_before_3 + """','""" + POST_before_4 + """','""" + POST_before_5 + """','""" + POST_before_6 + """','""" + POST_before_7 + """','""" + POST_before_8 + """','""" + POST_before_9 + """','""" + POST_before_10 + """','""" + POST_before_freeform + """','""" + POST_after_1 + """','""" + POST_after_2 + """','""" + POST_after_3 + """','""" + POST_after_4 + """','""" + POST_after_5 + """','""" + POST_after_6 + """','""" + POST_after_7 + """','""" + POST_after_8 + """','""" + POST_after_9 + """','""" + POST_after_10 + """','""" + POST_after_freeform + """');commit;"""
+                VALUES ('""" + str(session['user']) + """','""" + POST_gender + """','""" + POST_age_group_1 + """','""" + POST_age_group_2 + """','""" + POST_age_group_3 + """','""" + POST_age_group_4 + """','""" + POST_age_group_5 + """','""" + POST_age_group_6 + """','""" + POST_age_group_7 + """','""" + POST_age_group_8 + """','""" + POST_location + """','""" + POST_why + """','""" + POST_before_1 + """','""" + POST_before_2 + """','""" + POST_before_3 + """','""" + POST_before_4 + """','""" + POST_before_5 + """','""" + POST_before_6 + """','""" + POST_before_7 + """','""" + POST_before_8 + """','""" + POST_before_9 + """','""" + POST_before_10 + """'," """ + POST_before_freeform + """ ",'""" + POST_after_1 + """','""" + POST_after_2 + """','""" + POST_after_3 + """','""" + POST_after_4 + """','""" + POST_after_5 + """','""" + POST_after_6 + """','""" + POST_after_7 + """','""" + POST_after_8 + """','""" + POST_after_9 + """','""" + POST_after_10 + """'," """ + POST_after_freeform + """ ");commit;"""
 
     if POST_gender:
         cursor = db.cursor()
@@ -239,16 +240,17 @@ def product_2():
     POST_source_3 = str(request.form['source_3'])
     POST_source_4 = str(request.form['source_4'])
     POST_source_freeform = str(request.form['source_freeform'])
-
+    POST_product_1_name = str(request.form['product_1_name'])
 
 
     query = """INSERT INTO dbo.product_gen
                 (uid,gen_description,quantity,sku,link,segment_1,segment_2,segment_3,segment_4,segment_5,segment_6,segment_7,segment_8,segment_9,segment_10,source_1,source_2,source_3,source_4,source_freeform)
-                VALUES ('""" + str(session['user']) + """','""" + POST_gen_description + """','""" + POST_quantity + """','""" + POST_sku + """','""" + POST_link + """','""" + POST_segment_1 + """','""" + POST_segment_2 + """','""" + POST_segment_3 + """','""" + POST_segment_4 + """','""" + POST_segment_5 + """','""" + POST_segment_6 + """','""" + POST_segment_7 + """','""" + POST_segment_8 + """','""" + POST_segment_9 + """','""" + POST_segment_10 + """','""" + POST_source_1 + """','""" + POST_source_2 + """','""" + POST_source_3 + """','""" + POST_source_4 + """','""" + POST_source_freeform + """');commit;"""
+                VALUES ('""" + str(session['user']) + """ " , " """ + POST_gen_description + """','""" + POST_quantity + """','""" + POST_sku + """','""" + POST_link + """','""" + POST_segment_1 + """','""" + POST_segment_2 + """','""" + POST_segment_3 + """','""" + POST_segment_4 + """','""" + POST_segment_5 + """','""" + POST_segment_6 + """','""" + POST_segment_7 + """','""" + POST_segment_8 + """','""" + POST_segment_9 + """','""" + POST_segment_10 + """','""" + POST_source_1 + """','""" + POST_source_2 + """','""" + POST_source_3 + """','""" + POST_source_4 + """'," """ + POST_source_freeform + """ ");commit;"""
        
 
 
     if POST_sku:
+        print(query)
         cursor = db.cursor()
         cursor.execute(query)
         cursor.close()
@@ -257,7 +259,8 @@ def product_2():
         print("seriously...NOTHING TO SEE HERE") 
 
 
-    if POST_sku:
+    if POST_product_1_name:
+
 
         req = request.form
         d = pd.DataFrame(list(req.items()))
@@ -272,7 +275,7 @@ def product_2():
             z = z+1
 
         test = list(d.iloc[:,1])
-        print(test)
+        #print(test)
 
         q = 0
 
@@ -305,21 +308,88 @@ def load_product_list():
     query = "SELECT p_id, name, category FROM dbo.product_list WHERE customer_id = " + str(session['user'])
 
     results = sql_to_df(query)
-    results = results.to_json(orient='columns')
+    results = results.to_json(orient='records')
 
 
     return results
 
-@app.route('/competitors/company/audience/product/product_2/salescycle', methods=['POST'])
+
+@app.route('/product_submit', methods=['POST'])
+def product_submit():
+
+    POST_complexity = request.form['complexity']
+    POST_price = request.form['price']
+    POST_product_or_service = request.form['product_or_service']
+    POST_frequency_of_use = request.form['frequency_of_use']
+    POST_frequency_of_purchase = request.form['frequency_of_purchase']
+    POST_value_prop = request.form['value_prop']
+    POST_warranties_or_guarantee = request.form['warranties_or_guarantee']
+    POST_warranties_or_guarantee_freeform = request.form['warranties_or_guarantee_freeform']
+    POST_num_skus = request.form['num_skus']
+    POST_level_of_customization = request.form['level_of_customization']
+    POST_pid = str(request.form['p_id'])
+
+    print(POST_complexity + " " + POST_price + " " + POST_product_or_service + " " + POST_frequency_of_use + " " + POST_frequency_of_purchase + " " + POST_value_prop + " " + POST_warranties_or_guarantee + " " + POST_warranties_or_guarantee_freeform + " " + POST_num_skus + " " + POST_level_of_customization + " " + POST_product_or_service)
+
+    query = """UPDATE dbo.product_list
+                    SET complexity = '""" + POST_complexity + """', price = '""" + POST_price + """', product_or_service = '""" + POST_product_or_service + """', frequency_of_use = '""" + POST_frequency_of_use + """', frequency_of_purchase = '""" + POST_frequency_of_purchase + """', value_prop = '""" + POST_value_prop + """', warranties_or_guarantee = '""" + POST_warranties_or_guarantee + """', warranty_guarantee_freeform = " """ + POST_warranties_or_guarantee_freeform + """ ", num_skus = '""" + POST_num_skus + """', level_of_customization = '""" + POST_level_of_customization + """'
+                    WHERE p_id = """ + POST_pid + """;commit;"""
+
+    print(query)
+
+    cursor = db.cursor()
+    cursor.execute(query)
+    cursor.close()
+
+    return "success"
+
+@app.route('/competitors/company/audience/product/product_2/salescycle', methods=['GET'])
 def salescycle():
     return render_template('/intake/salescycle.html')
 
-@app.route('/company_info', methods=['POST'])
-def company_info():
-    return nice()
 
-@app.route('/nice')
+
+@app.route('/nice', methods=['POST'])
 def nice():
+    d = request.form
+    d = d.to_dict()
+    for key, value in d.items():
+        if value != "":
+            if key[:9] == "awareness":
+                query = "INSERT INTO dbo.awareness (customer_id, tactic) VALUES (" + str(session['user']) + ",'" + value + "');commit"
+                cursor = db.cursor()
+                cursor.execute(query)
+                cursor.close()
+                print(key + " " + query)
+                
+            elif key[:10] == "evaluation":
+                query = "INSERT INTO dbo.evaluation (customer_id, tactic) VALUES (" + str(session['user']) + ",'" + value + "');commit"
+                cursor = db.cursor()
+                cursor.execute(query)
+                cursor.close()
+                print(key + " " + query)
+                
+            elif key[:10] == "conversion":
+                query = "INSERT INTO dbo.conversion (customer_id, tactic) VALUES (" + str(session['user']) + ",'" + value + "');commit"
+                cursor = db.cursor()
+                cursor.execute(query)
+                cursor.close()
+                print(key + " " + query)
+                
+            elif key[:9] == "retention":
+                query = "INSERT INTO dbo.retention (customer_id, tactic) VALUES (" + str(session['user']) + ",'" + value + "');commit"
+                cursor = db.cursor()
+                cursor.execute(query)
+                cursor.close()
+                print(key + " " + query)
+                
+            elif key[:8] == "referral":
+                query = "INSERT INTO dbo.referral (customer_id, tactic) VALUES (" + str(session['user']) + ",'" + value + "');commit"
+                cursor = db.cursor()
+                cursor.execute(query)
+                cursor.close()
+                print(key + " " + query)
+
     return render_template('intake/nice.html')
 
 @app.route('/nice/')
@@ -400,6 +470,7 @@ def do_admin_login():
             uid = result['ID'][0]
             session['user'] = int(uid)
             session.permanent = True
+            session.remember=True
             return begin()
 
     except IndexError:

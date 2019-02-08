@@ -3846,6 +3846,105 @@ Created using IcoMoon - icomoon.io
   text-align: center;
 }
 
+.product_container {
+  padding: 2%;
+  line-height: 0;
+  margin: 2% auto;
+  display: inline-block;
+  color: white;
+  background-color: #62cde0;
+  transition-duration: .7s;
+  border-left: 10px solid white;
+}
+.product_container h3 {
+  color: gray;
+}
+.product_container:hover{
+  opacity: .7;
+}
+.product_container_active {
+  background-color: #121212;
+  color: white;
+}
+
+.product_container_active h3 {
+  color: #62cde0;
+}
+
+
+.stage_container input {
+  width: 90%;
+  background-color: transparent;
+  border-bottom: 1px solid #D3D3D3;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  margin: 1% auto;
+}
+.stage_container input:active {
+  border-bottom: 1px solid black;
+}
+.cycle_container {
+
+}
+.left_stage, .right_stage {
+  background-color: rgba(255, 236, 215, .7);
+  display: inline-block;
+  float: left;
+  width: 50%;
+  text-align: center;
+  padding: 1%;
+  
+}
+.left_stage {
+  box-shadow: -1px 1px 3px rgba(0,0,0,0.12), -1px 1px 2px rgba(0,0,0,0.24);
+  border-right: 2px solid #d3d3d3;
+}
+
+.right_stage {
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.12), 1px 1px 2px rgba(0,0,0,0.24);
+}
+
+.suggestions_container {
+  display: inline-block;
+}
+.suggestions_container li {
+  font-size: 80%;
+}
+.left_suggest, .right_suggest {
+  float: left;
+}
+.left_suggest {
+  width: 45%;
+}
+.right_suggest {
+  width: 45%;
+}
+.hide {
+  visibility: hidden;
+}
+.x {
+  color: #d3d3d3;
+  font-weight: bold;
+  transition-duration: .7s;
+  cursor: pointer;
+}
+.x:hover {
+  color: #121212;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
