@@ -172,146 +172,153 @@
                 <form method="POST" id="setup" action="{{ url_for('product_2') }}">
 
                   <div class="card-header">
-                    <div class="row row_cancel">
+                    <div class="row yellow_border">
                       <h6 class="title">Meat & Potatoes time.</h6>
                       <h2 class="blue_header">Tell us about your product.</h2>
-                      <p>Help us understand </p>
+                      <p>Help us understand the tangible product you are trading for someone's hard-earned cash.  </p>
                       <br>
                     </div>
 
-                    <p><em>General product description.  Tell us about your products generally speaking.  Why do customers buy it/them?</em></p>
-                    <div class="row">
-                      <textarea name="gen_description" class="form-control"><describe your product and why clients need or want it></textarea>
-                    </div>
-                  </div><hr>
-                  <div class="card-body  all-icons">
-                    
-
-                    <div class="row row_cancel">
-                      <div class="col-lg-6 col-md-6 col-sm-12">
-                        <p>How many products do you currently sell?</p>
-                        <input type="text" class="form-control" name="quantity" placeholder="1">
-                      </div>
-                      <div class="col-lg-6 col-md-6 col-sm-12">
-                        <p>What's the total number of SKUs?</p>
-                        <input type="text" class="form-control" name="sku" placeholder="4">
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6 col-sm-12"><br>
-                        <p>Link to your product page</p>
-                        <input type="text" name="link" class="form-control" placeholder="www.awesomeproducts.com">
-                      </div>
-                    </div>
-                    <p><em>How do you currently segment your products? (select all that apply)</em></p>
-                    <div class="row row_cancel">
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Industry</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_1">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Functionality</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_2">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Customer Needs</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_3">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Customer Preferences</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_4">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Performance</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_5">
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Convenience</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_6">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Quality</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_7">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Premiumization</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_8">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Demographics</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_9">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2 col-md-2">
-                        <br><h6>Other</h6><br>
-                        <input type="text" class="hidden hidden_input" name="segment_10">
-                      </div>
-                    </div>
-
-                    <p><em>How are these products made/sourced?* (select all that apply)</em></p>
-                    <div class="row">
-                      <div class="hover_box hb_many col-lg-2">
-                        <h6>Self</h6>
-                        <p>I personally make them</p>
-                        <input type="text" class="hidden hidden_input" name="source_1">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2">
-                        <h6>Paid help</h6>
-                        <p>I directly hire people to help make them</p>
-                        <input type="text" class="hidden hidden_input" name="source_2">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2">
-                        <h6>Third Party > Reseller (finished good)</h6>
-                        <p>I work with a supplier that produces the item(s)</p>
-                        <input type="text" class="hidden hidden_input" name="source_3">
-                      </div>
-                      <div class="hover_box hb_many col-lg-2">
-                        <h6>Third Party > Manufactured</h6>
-                        <p>I work with multiple suppliers</p>
-                        <input type="text" class="hidden hidden_input" name="source_4">
-                      </div>
-                    </div>
-
-                    <div class="row yellow_border">
-                      <textarea name="source_freeform" class="form-control"><describe your method of producing your product offerings for sale></textarea>
-                    </div>
-
-                    <h2 class="blue_header">Product Details</h2>
-                    <p><em>Please complete the following information for each product you currently sell:</em></p>
-                    <div class="row">
-                      <table class="input_table">
-                        <tr>
-                          <th>Product name</th>
-                          <th>Category</th>
-                          <th>COGS</th>
-                          <th>Sale Price</th>
-                          <th><strong>Qty sold last 12 months</strong></th>
-                          <th>Estimated unique buyers</th>
-                        </tr>
-                        <tr>
-                          <td><input type="text" name="product_1_name" placeholder="product name 1"></td>
-                          <td><input type="text" name="p1_category" placeholder="details"></td>
-                          <td><input type="text" name="p1_cogs" placeholder="$0.00"></td>
-                          <td><input type="text" name="p1_sales_price" placeholder="$0.00"></td>
-                          <td><input type="text" name="p1_qty_sold" placeholder="0"></td>
-                          <td><input type="text" name="p1_est_unique_buyers" placeholder="0"></td>
-                        </tr>
-                        <input type="number" name="product_len" value="1" class="product_len hidden">
-                      </table>
-                      
-                    </div>
-                    <a id="add_product" class="continue add_product edit_products" continue">+ Add product</a><a id="remove_product" class="continue remove_product edit_products" continue">- Remove product</a>
-
 
                   </div>
+
+
+                  <div class="reveal_container">
+                    <a class="reveal_button continue">Let's do this</a>
+                  </div>
+
+                  <div class="reveal">  
+                    <div class="card-body  all-icons">
+                      
+                      <p><em>General product description.  Tell us about your products generally speaking.  Why do customers buy it/them?</em></p>
+                      <div class="row">
+                        <textarea name="gen_description" placeholder="<describe your product and why clients need or want it>" class="form-control"></textarea>
+                      </div>
+                      <div class="row row_cancel">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>How many products do you currently sell?</p>
+                          <input type="text" class="form-control" name="quantity" placeholder="1">
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <p>What's the total number of SKUs?</p>
+                          <input type="text" class="form-control" name="sku" placeholder="4">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12"><br>
+                          <p>Link to your product page</p>
+                          <input type="text" name="link" class="form-control" placeholder="www.awesomeproducts.com">
+                        </div>
+                      </div>
+                      <p><em>How do you currently segment your products? (select all that apply)</em></p>
+                      <div class="row row_cancel">
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Industry</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_1">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Functionality</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_2">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Customer Needs</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_3">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Customer Preferences</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_4">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Performance</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_5">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Convenience</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_6">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Quality</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_7">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Premiumization</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_8">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Demographics</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_9">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2 col-md-2">
+                          <br><h6>Other</h6><br>
+                          <input type="text" class="hidden hidden_input" name="segment_10">
+                        </div>
+                      </div>
+
+                      <p><em>How are these products made/sourced?* (select all that apply)</em></p>
+                      <div class="row">
+                        <div class="hover_box hb_many col-lg-2">
+                          <h6>Self</h6>
+                          <p>I personally make them</p>
+                          <input type="text" class="hidden hidden_input" name="source_1">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2">
+                          <h6>Paid help</h6>
+                          <p>I directly hire people to help make them</p>
+                          <input type="text" class="hidden hidden_input" name="source_2">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2">
+                          <h6>Third Party > Reseller (finished good)</h6>
+                          <p>I work with a supplier that produces the item(s)</p>
+                          <input type="text" class="hidden hidden_input" name="source_3">
+                        </div>
+                        <div class="hover_box hb_many col-lg-2">
+                          <h6>Third Party > Manufactured</h6>
+                          <p>I work with multiple suppliers</p>
+                          <input type="text" class="hidden hidden_input" name="source_4">
+                        </div>
+                      </div>
+
+                      <div class="row yellow_border">
+                        <textarea name="source_freeform" placeholder="<describe your method of producing your product offerings for sale>" class="form-control"></textarea>
+                      </div>
+
+                      <h2 class="blue_header">Product Details</h2>
+                      <p><em>Please complete the following information for each product you currently sell:</em></p>
+                      <div class="row">
+                        <table class="input_table">
+                          <tr>
+                            <th>Product name</th>
+                            <th>Category</th>
+                            <th>COGS</th>
+                            <th>Sale Price</th>
+                            <th><strong>Qty sold last 12 months</strong></th>
+                            <th>Estimated unique buyers</th>
+                          </tr>
+                          <tr>
+                            <td><input type="text" name="product_1_name" placeholder="product name 1"></td>
+                            <td><input type="text" name="p1_category" placeholder="details"></td>
+                            <td><input type="text" name="p1_cogs" placeholder="$0.00"></td>
+                            <td><input type="text" name="p1_sales_price" placeholder="$0.00"></td>
+                            <td><input type="text" name="p1_qty_sold" placeholder="0"></td>
+                            <td><input type="text" name="p1_est_unique_buyers" placeholder="0"></td>
+                          </tr>
+                          <input type="number" name="product_len" value="1" class="product_len hidden">
+                        </table>
+                        
+                      </div>
+                      <a id="add_product" class="continue add_product edit_products" continue">+ Add product</a><a id="remove_product" class="continue remove_product edit_products" continue">- Remove product</a>
+
+
+                    </div>
+
+
+                  <div class="onward">                
+                    <input type="submit" class="continue">
+                  </div>
                 </div>
-
-
-                <div class="onward">                
-                  <input type="submit" class="continue">
-                </div>
-
+              </form>
             </div>
           </div>
         </div> <!--end row-->

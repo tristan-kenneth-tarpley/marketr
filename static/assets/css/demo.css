@@ -3624,6 +3624,11 @@ Created using IcoMoon - icomoon.io
   height: 120px;
   width: 120px;
 }
+.hover_box h6 {
+  font-size: 95%;
+  hyphens: auto;
+ 
+}
 .logo {
   text-align:center;
 }
@@ -3814,20 +3819,22 @@ Created using IcoMoon - icomoon.io
      background-color: #62cde0;
      color: #666;
      top: 10px;
-     height: 30px;
-     width: 30px;
+     height: 60px;
+     width: 60px;
      border: 0;
-     border-radius: 50px;
+     border-radius: 30px;
      cursor: pointer;     
      margin-right: 7px;
      outline: none;
+     transition-duration: .7s;
 }
 .form-radio:checked::before
 {
+      transition-duration: .7s;
      position: absolute;
-     font: 13px/1 'Open Sans', sans-serif;
-     left: 11px;
-     top: 7px;
+     font: 50px/1 'Open Sans', sans-serif;
+     left: 14px;
+     top: 0px;
      content: '\02143';
      transform: rotate(40deg);
 }
@@ -3837,8 +3844,9 @@ Created using IcoMoon - icomoon.io
 }
 .radio_container label
 {
-     font: 300 16px/1.7 'Open Sans', sans-serif;
-     color: #62cde0;
+     font: 300 16px/1.7;
+     color: black;
+     font-weight: bold;
      cursor: pointer;
 } 
 .connector {
@@ -3846,30 +3854,40 @@ Created using IcoMoon - icomoon.io
   text-align: center;
 }
 
-.product_container {
-  padding: 2%;
-  line-height: 0;
-  margin: 2% auto;
-  display: inline-block;
-  color: white;
-  background-color: #62cde0;
-  transition-duration: .7s;
-  border-left: 10px solid white;
+.product_prev_container {
+  width: 70%;
+  margin-left: 7%;
 }
+.product_container:nth-of-type(1) {
+-webkit-clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 0 50%, 0% 0%);
+clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 0 50%, 0% 0%);
+
+}
+.product_container {
+  padding: 4% 2% 2% 4%;
+  line-height: 0;
+  display: inline-block;
+  color: black;
+  background-color: #929292;
+  margin-top: 2%;
+  font-size: 1vw;
+  transition-duration: .7s;
+  border-right: 1px solid white;
+  margin-left: -6%;
+-webkit-clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
+clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
+}
+
+
 .product_container h3 {
   color: gray;
 }
-.product_container:hover{
-  opacity: .7;
-}
 .product_container_active {
-  background-color: #121212;
-  color: white;
+  background-color: white;
+  color: #62cde0;
+  font-weight: bold;
 }
 
-.product_container_active h3 {
-  color: #62cde0;
-}
 
 
 .stage_container input {
@@ -3935,16 +3953,25 @@ Created using IcoMoon - icomoon.io
 
 
 
-
-
-
-
-
-
-
-
-
-
+.reveal {
+  display: none;
+}
+.reveal_button {
+  cursor: pointer;
+  color: white !important;
+  font-size: 110%;
+  padding: 2% 4%;
+  border-radius: 100px;
+}
+.reveal_container {
+  width: 100%;
+  text-align: center;
+}
+.p_form_container {
+  width: 100%;
+  text-align: center;
+  font-size: 120%;
+}
 
 
 

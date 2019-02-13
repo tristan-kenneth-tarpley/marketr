@@ -69,10 +69,10 @@ def create_user():
 
     cursor.execute(query)
 
+    cursor.close()
 
     result = sql_to_df("SELECT * from dbo.customer_basic WHERE email = '" + POST_USERNAME + "' AND password = '" + POST_PASSWORD + "'")
 
-    cursor.close()
 
     if result['ID'][0] != None:
         session['logged_in'] = True
@@ -82,7 +82,12 @@ def create_user():
         return begin()
 
 
+@app.route('/availability', methods=['GET'])
+def availability():
+    result = sql_to_df('select email from dbo.customer_basic')
+    result = result.to_json(orient='records')
 
+    return result
 
 
 @app.route('/competitors', methods=['POST'])
@@ -150,22 +155,28 @@ def audience():
     POST_other = str(request.form['other'])
     POST_biz_model = str(request.form['biz_model'])
     POST_storefront = str(request.form['storefront'])
+    POST_storefront_perc = str(request.form['storefront_percent'])
     POST_direct = str(request.form['direct'])
+    POST_direct_perc = str(request.form['direct_percent'])
     POST_online = str(request.form['online'])
+    POST_online_perc = str(request.form['online_percent'])
     POST_tradeshows = str(request.form['tradeshows'])
+    POST_tradeshows_perc = str(request.form['tradeshows_percent'])
     POST_other = str(request.form['other'])
+    POST_other_perc = str(request.form['other_percent'])
     POST_freeform = str(request.form['freeform'])
+    POST_freeform = POST_freeform.replace("'", "")
+    POST_freeform = POST_freeform.replace('"', "")
+
 
     query = """INSERT INTO dbo.company_info
-                (customer_id, selling_to, selling_to_2, selling_to_3, selling_to_4, biz_model, rev_channel_1, rev_channel_2, rev_channel_3, rev_channel_4, rev_channel_5, rev_channel_freeform)
-                VALUES ('""" + str(session['user']) + """','""" + POST_b2b + """','""" + POST_b2c + """','""" + POST_c2c + """','""" + POST_other + """','""" + POST_biz_model + """','""" + POST_storefront + """','""" + POST_direct + """','""" + POST_online + """','""" + POST_tradeshows + """','""" + POST_other + """','""" + POST_freeform + """');commit;"""
+                (customer_id, selling_to, selling_to_2, selling_to_3, selling_to_4, biz_model, rev_channel_1, rev_channel_2, rev_channel_3, rev_channel_4, rev_channel_5, rev_channel_freeform, storefront_perc, direct_perc, online_perc, tradeshows_perc, other_perc)
+                VALUES ('""" + str(session['user']) + """','""" + POST_b2b + """','""" + POST_b2c + """','""" + POST_c2c + """','""" + POST_other + """','""" + POST_biz_model + """','""" + POST_storefront + """','""" + POST_direct + """','""" + POST_online + """','""" + POST_tradeshows + """','""" + POST_other + """','""" + POST_freeform + """','""" + POST_storefront_perc + """','""" +  POST_direct_perc + """','""" +  POST_online_perc + """','""" +  POST_tradeshows_perc + """','""" +  POST_other_perc + """');commit;"""
     print(query)
-    if POST_b2b:
-        cursor = db.cursor()
-        cursor.execute(query)
-        cursor.close()
-    else:
-        print('nothing to see here')
+    cursor = db.cursor()
+    cursor.execute(query)
+    cursor.close()
+    print('nothing to see here')
 
     return render_template('intake/audience.html')
 
@@ -193,6 +204,8 @@ def product():
     POST_before_9 = str(request.form['before_9'])
     POST_before_10 = str(request.form['before_10'])
     POST_before_freeform = str(request.form['before_freeform'])
+    POST_before_freeform = POST_before_freeform.replace("'", "")
+    POST_before_freeform = POST_before_freeform.replace('"', "")
     POST_after_1 = str(request.form['after_1'])
     POST_after_2 = str(request.form['after_2'])
     POST_after_3 = str(request.form['after_3'])
@@ -204,10 +217,12 @@ def product():
     POST_after_9 = str(request.form['after_9'])
     POST_after_10 = str(request.form['after_10'])
     POST_after_freeform = str(request.form['after_freeform'])
+    POST_after_freeform = POST_after_freeform.replace('"', "")
+    POST_after_freeform = POST_after_freeform.replace("'", "")
 
     query = """INSERT INTO dbo.audience
                 (customer_id, gender, age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7, age_group_8, location, why, before_1, before_2, before_3, before_4, before_5, before_6, before_7, before_8, before_9, before_10, before_freeform, after_1, after_2, after_3, after_4, after_5, after_6, after_7, after_8, after_9, after_10, after_freeform)
-                VALUES ('""" + str(session['user']) + """','""" + POST_gender + """','""" + POST_age_group_1 + """','""" + POST_age_group_2 + """','""" + POST_age_group_3 + """','""" + POST_age_group_4 + """','""" + POST_age_group_5 + """','""" + POST_age_group_6 + """','""" + POST_age_group_7 + """','""" + POST_age_group_8 + """','""" + POST_location + """','""" + POST_why + """','""" + POST_before_1 + """','""" + POST_before_2 + """','""" + POST_before_3 + """','""" + POST_before_4 + """','""" + POST_before_5 + """','""" + POST_before_6 + """','""" + POST_before_7 + """','""" + POST_before_8 + """','""" + POST_before_9 + """','""" + POST_before_10 + """'," """ + POST_before_freeform + """ ",'""" + POST_after_1 + """','""" + POST_after_2 + """','""" + POST_after_3 + """','""" + POST_after_4 + """','""" + POST_after_5 + """','""" + POST_after_6 + """','""" + POST_after_7 + """','""" + POST_after_8 + """','""" + POST_after_9 + """','""" + POST_after_10 + """'," """ + POST_after_freeform + """ ");commit;"""
+                VALUES ('""" + str(session['user']) + """','""" + POST_gender + """','""" + POST_age_group_1 + """','""" + POST_age_group_2 + """','""" + POST_age_group_3 + """','""" + POST_age_group_4 + """','""" + POST_age_group_5 + """','""" + POST_age_group_6 + """','""" + POST_age_group_7 + """','""" + POST_age_group_8 + """','""" + POST_location + """','""" + POST_why + """','""" + POST_before_1 + """','""" + POST_before_2 + """','""" + POST_before_3 + """','""" + POST_before_4 + """','""" + POST_before_5 + """','""" + POST_before_6 + """','""" + POST_before_7 + """','""" + POST_before_8 + """','""" + POST_before_9 + """','""" + POST_before_10 + """','""" + POST_before_freeform + """','""" + POST_after_1 + """','""" + POST_after_2 + """','""" + POST_after_3 + """','""" + POST_after_4 + """','""" + POST_after_5 + """','""" + POST_after_6 + """','""" + POST_after_7 + """','""" + POST_after_8 + """','""" + POST_after_9 + """','""" + POST_after_10 + """','""" + POST_after_freeform + """');commit;"""
 
     if POST_gender:
         cursor = db.cursor()
@@ -222,6 +237,8 @@ def product():
 @app.route('/competitors/company/audience/product/product_2', methods=['POST'])
 def product_2():
     POST_gen_description = str(request.form['gen_description'])
+    POST_gen_description = POST_gen_description.replace("'", "")
+    POST_gen_description = POST_gen_description.replace('"', "")
     POST_quantity = str(request.form['quantity'])
     POST_sku = str(request.form['sku'])
     POST_link = str(request.form['link'])
@@ -240,12 +257,14 @@ def product_2():
     POST_source_3 = str(request.form['source_3'])
     POST_source_4 = str(request.form['source_4'])
     POST_source_freeform = str(request.form['source_freeform'])
+    POST_source_freeform = POST_source_freeform.replace("'", "")
+    POST_source_freeform = POST_source_freeform.replace('"', "")
     POST_product_1_name = str(request.form['product_1_name'])
 
 
     query = """INSERT INTO dbo.product_gen
                 (uid,gen_description,quantity,sku,link,segment_1,segment_2,segment_3,segment_4,segment_5,segment_6,segment_7,segment_8,segment_9,segment_10,source_1,source_2,source_3,source_4,source_freeform)
-                VALUES ('""" + str(session['user']) + """ " , " """ + POST_gen_description + """','""" + POST_quantity + """','""" + POST_sku + """','""" + POST_link + """','""" + POST_segment_1 + """','""" + POST_segment_2 + """','""" + POST_segment_3 + """','""" + POST_segment_4 + """','""" + POST_segment_5 + """','""" + POST_segment_6 + """','""" + POST_segment_7 + """','""" + POST_segment_8 + """','""" + POST_segment_9 + """','""" + POST_segment_10 + """','""" + POST_source_1 + """','""" + POST_source_2 + """','""" + POST_source_3 + """','""" + POST_source_4 + """'," """ + POST_source_freeform + """ ");commit;"""
+                VALUES ('""" + str(session['user']) + """' , '""" + POST_gen_description + """','""" + POST_quantity + """','""" + POST_sku + """','""" + POST_link + """','""" + POST_segment_1 + """','""" + POST_segment_2 + """','""" + POST_segment_3 + """','""" + POST_segment_4 + """','""" + POST_segment_5 + """','""" + POST_segment_6 + """','""" + POST_segment_7 + """','""" + POST_segment_8 + """','""" + POST_segment_9 + """','""" + POST_segment_10 + """','""" + POST_source_1 + """','""" + POST_source_2 + """','""" + POST_source_3 + """','""" + POST_source_4 + """','""" + POST_source_freeform + """');commit;"""
        
 
 
@@ -325,6 +344,8 @@ def product_submit():
     POST_value_prop = request.form['value_prop']
     POST_warranties_or_guarantee = request.form['warranties_or_guarantee']
     POST_warranties_or_guarantee_freeform = request.form['warranties_or_guarantee_freeform']
+    POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace("'", "")
+    POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace('"', "")
     POST_num_skus = request.form['num_skus']
     POST_level_of_customization = request.form['level_of_customization']
     POST_pid = str(request.form['p_id'])
@@ -332,7 +353,7 @@ def product_submit():
     print(POST_complexity + " " + POST_price + " " + POST_product_or_service + " " + POST_frequency_of_use + " " + POST_frequency_of_purchase + " " + POST_value_prop + " " + POST_warranties_or_guarantee + " " + POST_warranties_or_guarantee_freeform + " " + POST_num_skus + " " + POST_level_of_customization + " " + POST_product_or_service)
 
     query = """UPDATE dbo.product_list
-                    SET complexity = '""" + POST_complexity + """', price = '""" + POST_price + """', product_or_service = '""" + POST_product_or_service + """', frequency_of_use = '""" + POST_frequency_of_use + """', frequency_of_purchase = '""" + POST_frequency_of_purchase + """', value_prop = '""" + POST_value_prop + """', warranties_or_guarantee = '""" + POST_warranties_or_guarantee + """', warranty_guarantee_freeform = " """ + POST_warranties_or_guarantee_freeform + """ ", num_skus = '""" + POST_num_skus + """', level_of_customization = '""" + POST_level_of_customization + """'
+                    SET complexity = '""" + POST_complexity + """', price = '""" + POST_price + """', product_or_service = '""" + POST_product_or_service + """', frequency_of_use = '""" + POST_frequency_of_use + """', frequency_of_purchase = '""" + POST_frequency_of_purchase + """', value_prop = '""" + POST_value_prop + """', warranties_or_guarantee = '""" + POST_warranties_or_guarantee + """', warranty_guarantee_freeform = '""" + POST_warranties_or_guarantee_freeform + """', num_skus = '""" + POST_num_skus + """', level_of_customization = '""" + POST_level_of_customization + """'
                     WHERE p_id = """ + POST_pid + """;commit;"""
 
     print(query)
@@ -464,6 +485,7 @@ def do_admin_login():
     POST_PASSWORD = str(request.form['password'])
  
     result = an.sql_to_df("SELECT * from dbo.customer_basic WHERE email = '" + POST_USERNAME + "' AND password = '" + POST_PASSWORD + "'")
+    
     try:    
         if result['ID'][0] != None:
             session['logged_in'] = True
@@ -474,7 +496,7 @@ def do_admin_login():
             return begin()
 
     except IndexError:
-        flash('wrong password!')
+        flash('incorrect email or password')
         return index()
 
 

@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login</title>
+	<title>Create Account</title>
 </head>
-<body>
-<form action="{{ url_for('create_user') }}" method="POST">
+<body onload="init_create_account()">
+<form action="{{ url_for('create_user') }}" class="create_user_form" method="POST">
 	<div class="login">
 		<div class="login-screen">
 			<div class="app-title">
@@ -13,17 +13,19 @@
 			</div>
  
 			<div class="create-form">
+				<span style="visibility: hidden;" class="availability">asdf</span>
 				<div class="control-group">
-					<input type="text" class="login-field" value="" placeholder="email" name="username">
+					<input type="text" id="email" class="login-field" value="" placeholder="email@email.com" name="username">
 					<label class="login-field-icon fui-user" for="blah-name"></label>
 				</div>
+					<span class="format"> </span>
  
 				<div class="control-group">
 					<input type="password" class="login-field" value="" placeholder="password" name="password">
 					<label class="login-field-icon fui-lock" for="blah-pass"></label>
 				</div>
  
-                <input type="submit" value="Create account" class="btn btn-primary btn-large btn-block" >
+                <input type="submit" value="Create account" class="create_button btn btn-primary btn-large btn-block" >
 			    <br>
 			</div>
 			<div class="create">
@@ -114,6 +116,7 @@ box-shadow: none;
 
 </style>
 
-
+  <script src="/static/assets/js/core/jquery.min.js"></script>
+  <script src="/static/animations.js"></script>
 </body>
 </html>

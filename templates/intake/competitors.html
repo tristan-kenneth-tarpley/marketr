@@ -20,7 +20,7 @@
   <link href="/static/assets/css/demo.css" rel="stylesheet" />
 </head>
 
-<body class="audit">
+<body onload="init_competitors()" class="audit">
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -172,113 +172,117 @@
                   <div class="card-header">
 
 
-                    <div class="row row_cancel">
+                    <div class="row yellow_border row_cancel">
                       <h6 class="title">Help Market(r) get to know your marketing space better...</h6>
                       <h2 class="blue_header">Let's understand your environment</h2>
                       <p>This will increase the strength of Market(r)'s machine learning engines' (and supporting Humans') analysis.</p>
                       <br>
                     </div>
-                    <div class="row yellow_border"
-                      <label for="industry">Industry</label>
-                      <select name="industry" class="create_form form-control" id="industry">
-                        <option>
-                          Test1
-                        </option>
-                        <option>
-                          Test2
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="card-body  all-icons">
-                    <div class="row">
-                      <p>Provide us with your top 2 competitors - this will ensure Market(r) really understands where your competition lies.</p>
-                      <p>Don't have any solid competitors?  Add some companies that would be targeting your same target audience.</p>
-                    </div>
-                    <div class="row">
-                      <div class="col=lg-6 col-md-6">  
-                        <label for="competitor_1">Competitor #1 name</label><br>
-                        <input type="text" name="competitor_1_name" class="form-control" id="competitor_1">
-                      </div>
-                      <div class="col=lg-6 col-md-6">  
-                        <label for="competitor_1">Competitor #1 website</label><br>
-                        <input type="text" name="competitor_1_site" class="form-control" id="competitor_1">
-                      </div>
-                    </div>
 
-
-                    <h6>What type of competitor are they to you?</h6><br>
-                    <div class="row">
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Direct</h6>
-                        <p>Similar product(s) and target market(s)</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Indirect</h6>
-                        <p>Different products but similar industry and target market(s)</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Replacement</h6>
-                        <p>Products/services that are in a different industry but could be a subsitute</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Potential</h6>
-                        <p>Competitor that is currently NOT distributing in your market</p>
-                      </div>
-                      <div class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Future</h6>
-                        <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
-                      </div>
-                      <input type="text" id="1" name="comp_1_type" class="hidden hidden_input">
-                    </div>
 
                   </div>
-                  <div class="card-body  all-icons">
-                    <div class="row">
-                      <div class="col=lg-6 col-md-6">  
-                        <label for="competitor_1">Competitor #2 name</label><br>
-                        <input type="text" name="competitor_2_name" class="form-control" id="competitor_1">
+
+                  <div class="reveal_container">
+                    <a class="reveal_button continue">Let's do this</a>
+                  </div>
+
+                  <div class="reveal">  
+                    <div class="card-body  all-icons">
+                      <div class="row">
+                        <label for="industry">Industry</label>
+                        <select name="industry" class="create_form form-control" id="industry">
+                        </select>
                       </div>
-                      <div class="col=lg-6 col-md-6">  
-                        <label for="competitor_1">Competitor #2 website</label><br>
-                        <input type="text" name="competitor_2_site" class="form-control" id="competitor_1">
+                      <div class="row">
+                        <p>Provide us with your top 2 competitors - this will ensure Market(r) really understands where your competition lies.</p>
+                        <p>Don't have any solid competitors?  Add some companies that would be targeting your same target audience.</p>
                       </div>
+                      <div class="row">
+                        <div class="col=lg-6 col-md-6">  
+                          <label for="competitor_1">Competitor #1 name</label><br>
+                          <input type="text" name="competitor_1_name" class="form-control" id="competitor_1">
+                        </div>
+                        <div class="col=lg-6 col-md-6">  
+                          <label for="competitor_1">Competitor #1 website</label><br>
+                          <input type="text" name="competitor_1_site" class="form-control" id="competitor_1">
+                        </div>
+                      </div>
+
+
+                      <h6>What type of competitor are they to you?</h6><br>
+                      <div class="row">
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Direct</h6>
+                          <p>Similar product(s) and target market(s)</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Indirect</h6>
+                          <p>Different products but similar industry and target market(s)</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Replacement</h6>
+                          <p>Products/services that are in a different industry but could be a subsitute</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Potential</h6>
+                          <p>Competitor that is currently NOT distributing in your market</p>
+                        </div>
+                        <div class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Future</h6>
+                          <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
+                        </div>
+                        <input type="text" id="1" name="comp_1_type" class="hidden hidden_input">
+                      </div>
+
+                    </div>
+                    <div class="card-body  all-icons">
+                      <div class="row">
+                        <div class="col=lg-6 col-md-6">  
+                          <label for="competitor_1">Competitor #2 name</label><br>
+                          <input type="text" name="competitor_2_name" class="form-control" id="competitor_1">
+                        </div>
+                        <div class="col=lg-6 col-md-6">  
+                          <label for="competitor_1">Competitor #2 website</label><br>
+                          <input type="text" name="competitor_2_site" class="form-control" id="competitor_1">
+                        </div>
+                      </div>
+
+
+
+                      <h6>What type of competitor are they to you?</h6><br>
+                      <div class="row">
+                        <div id="startup" class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Direct</h6>
+                          <p>Similar product(s) and target market(s)</p>
+                        </div>
+                        <div id="smb" class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Indirect</h6>
+                          <p>Different products but similar industry and target market(s)</p>
+                        </div>
+                        <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Replacement</h6>
+                          <p>Products/services that are in a different industry but could be a subsitute</p>
+                        </div>
+                        <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Potential</h6>
+                          <p>Competitor that is currently NOT distributing in your market</p>
+                        </div>
+                        <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
+                          <h6>Future</h6>
+                          <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
+                        </div>
+                        <input type="text" name="comp_2_type" id="2" class="hidden hidden_input">
+                      </div>
+
                     </div>
 
-
-
-                    <h6>What type of competitor are they to you?</h6><br>
-                    <div class="row">
-                      <div id="startup" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Direct</h6>
-                        <p>Similar product(s) and target market(s)</p>
-                      </div>
-                      <div id="smb" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Indirect</h6>
-                        <p>Different products but similar industry and target market(s)</p>
-                      </div>
-                      <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Replacement</h6>
-                        <p>Products/services that are in a different industry but could be a subsitute</p>
-                      </div>
-                      <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Potential</h6>
-                        <p>Competitor that is currently NOT distributing in your market</p>
-                      </div>
-                      <div id="bigbiz" class="hover_box col-lg-2 col-md-2 col-sm-4">
-                        <h6>Future</h6>
-                        <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
-                      </div>
-                      <input type="text" name="comp_2_type" id="2" class="hidden hidden_input">
-                    </div>
+                  <div class="onward">                
+                    <input type="submit" class="continue">
+                  </div>
 
                   </div>
-                </div>
 
-                <div class="onward">                
-                  <input type="submit" class="continue">
-                </div>
-              </form>
+                </form>
 
             </div>
           </div>

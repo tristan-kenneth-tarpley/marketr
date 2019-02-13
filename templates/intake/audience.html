@@ -167,15 +167,23 @@
                   </div>
                 </div><br><br>
 
-                <div class="card-body yellow_border">
+                <div class="card-body">
                   <form method="POST" id="setup" action="{{ url_for('product') }}">
                     <div class="card-header">
-                      <div class="row">
+                      <div class="row row_cancel yellow_border">
                         <h6>Finally, who are we talking to?..</h6><br>
                         <h2 class="blue_header">Tell us about your ideal customer</h2>
                         <p>We realize you may have a fantastic product that applies to a lot of primary <em>and</em> secondary customers, but let's focus on who you believe will be the primary revenue generator for your company.</p>
                         <br>
                       </div>
+                    </div>
+
+                  <div class="reveal_container">
+                    <a class="reveal_button continue">Let's do this</a>
+                  </div>
+
+                  <div class="reveal">  
+
 
                       <p><em>Gender (select one)</em></p>
                       <div class="row" style="width: 60%;">
@@ -237,9 +245,9 @@
                         <input type="text" name="location" class="form-control" placeholder="<type>">
                       </div>
 
-                    </div>
+                    
 
-                  </div>
+                  
                   <div class="grandparent">
                     <div class="card-body yellow_border">
                       <p>Why will your target audience most likely buy from you? (select one)</p>
@@ -313,7 +321,7 @@
                   </div>
                   <div class="row inset">
                     <h6>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</h6>
-                    <textarea name="before_freeform" class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
+                    <textarea name="before_freeform" placeholder="<describe the pre-purchase backstory of why they buy>" class="form-control"></textarea>
                   </div>
                 </div>
 
@@ -329,57 +337,57 @@
                       <input type="text" class="hidden_input hidden" name="after_2">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Worried</h6><br>
+                      <br><h6>Satisfied</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_3">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Hungry</h6><br>
+                      <br><h6>Confident</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_4">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Bored</h6><br>
+                      <br><h6>Safe</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_5">
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Sad</h6><br>
+                      <br><h6>Entertained</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_6">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-3">
-                      <br><h6>Unprepared</h6><br>
+                      <br><h6>Content</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_7">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Angry</h6><br>
+                      <br><h6>Eager</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_8">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Thirsty</h6><br>
+                      <br><h6>Prepared</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_9">
                     </div>
                     <div class="hover_box hb_many col-lg-2 col-md-2">
-                      <br><h6>Insecure</h6><br>
+                      <br><h6>Empowered</h6><br>
                       <input type="text" class="hidden_input hidden" name="after_10">
                     </div>
                   </div>
 
                   <div class="row inset">
-                    <p>Tell us more about that.  Describe in terms of a common user story why they are buying your product (emphasize what they're feeling)...</p>
-                    <textarea name="after_freeform" class="form-control"><describe the post-purchase resulting actions and feelings></textarea>
+                    <p>Tell us more about that.  Describe in terms of a common user story of what they do and how they feel after purchasing/using your product/service. (emphasize what they're feeling)...</p>
+                    <textarea name="after_freeform" placeholder="<describe the post-purchase resulting actions and feelings>" class="form-control"></textarea>
                   </div>
                 </div>
-                </div>
-                </div>
+                
+                
 
 
                 <div class="onward">                
                   <input type="submit" class="continue">
                 </div>
-
-            </div>
-          </div>
+              </div>
+            </form>
+        
         </div> <!--end row-->
       </div>
     </div>
