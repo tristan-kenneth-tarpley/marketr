@@ -501,6 +501,16 @@ def do_admin_login():
 
 
 
+
+
+
+
+
+
+
+
+
+
 @app.route("/logout")
 def logout():
     session['logged_in'] = False
@@ -511,6 +521,96 @@ def logout():
 
 
 
+
+#############################################################################
+############################################################################
+###########################admin views#####################################
+##########################################################################
+#########################################################################
+########################################################################
+
+
+@app.route('/admin')
+def admin():
+    if not session.get('logged_in'):
+        return render_template('admin_view/login.html')
+    else:
+        return render_template('admin_view/admin_index.html')
+
+
+@app.route('/admin_login', methods=['POST'])
+def admin_login():
+    POST_USERNAME = str(request.form['username'])
+    POST_PASSWORD = str(request.form['password'])
+
+    result = an.sql_to_df("SELECT * from dbo.admins WHERE email = '" + POST_USERNAME + "' AND password = '" + POST_PASSWORD + "'")    
+
+    try:    
+        if result['ID'][0] != None:
+            session['logged_in'] = True
+            uid = result['ID'][0]
+            session['admin'] = int(uid)
+            session.permanent = True
+            session.remember = True
+            return admin()
+
+    except IndexError:
+        flash('incorrect email or password')
+        return admin()
+
+
+
+@app.route('/load_admin')
+def load_admin():
+    results = sql_to_df('SELECT customer_basic.email, admins.first_name FROM customer_basic, admins WHERE admins.ID = ' + str(session['admin']))
+
+    results = results.to_json(orient='records')
+
+    return results
+
+
+@app.route('/admin_availability', methods=['GET'])
+def admin_availability():
+    result = sql_to_df('select email from dbo.admins')
+    result = result.to_json(orient='records')
+
+    return result
+
+
+@app.route('/new_admin')
+def new_admin():
+    return render_template('admin_view/new.html')
+
+
+@app.route('/add_admin', methods=['POST'])
+def add_admin():
+    POST_first_name = str(request.form['first_name'])
+    POST_last_name = str(request.form['last_name'])
+    POST_USERNAME = str(request.form['email'])
+    POST_PASSWORD = str(request.form['password'])
+
+    print(POST_USERNAME + " " + POST_PASSWORD)
+
+    cursor = db.cursor()
+
+    query = """INSERT INTO dbo.admins (
+                                    first_name,
+                                    last_name,
+                                    email,
+                                    password)
+                VALUES ('""" + POST_first_name + """',
+                        '""" + POST_last_name + """',
+                        '""" + POST_USERNAME + """',
+                        '""" + POST_PASSWORD + """'); commit;"""
+
+    cursor.execute(query)
+
+    cursor.close()
+
+    result = sql_to_df('SELECT * FROM dbo.admins')
+
+    if result['ID'][0] != None:
+        return admin()
 
 
 

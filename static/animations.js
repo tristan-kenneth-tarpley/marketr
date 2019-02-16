@@ -1,3 +1,46 @@
+function init_admin(){
+
+
+	  $.get('/admin_availability',function(data){
+	  	data = JSON.parse(data)
+	  	for(var i = 0; i<data.length; i++){
+
+	  		if(data[i]['email'] == $('#email').val()){
+
+	  			$('.availability').text('Email is taken.  Please try another.')
+	  			$('.availability').css('visibility', 'visible')
+				$('.create_button').attr('disabled','disabled');
+	  			return false
+
+	  		} else {
+
+	  			$('.availability').text('username is available!')
+	  			$('.availability').css('visibility', 'visible')
+
+				$('.create_button').prop('disabled', false);
+
+	  		}
+
+	  	}
+	  })
+
+
+
+	$.get('/load_admin', function(data){
+		var data = JSON.parse(data)
+		console.log(data)
+
+		$('#first_name').text(data[0]['first_name'])
+
+		for (var i = 0; i<data.length; i++){
+			$('.card-body').append('<div><p>' + data[i]['email'] + '</p></div>')
+		}
+	})
+}
+
+
+
+
 function init_create_account(){
 
 	$('.create_button').prop('disabled', true);
