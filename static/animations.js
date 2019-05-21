@@ -24,19 +24,30 @@ function init_admin(){
 	  	}
 	  })
 
+	  $('.headers').click(function(){
+	  	$(this).find("span").addClass('blue')
+	  	$('.headers').not(this).find("span").removeClass('blue')
+	  })
 
 
-	$.get('/load_admin', function(data){
-		var data = JSON.parse(data)
-		console.log(data)
 
-		$('#first_name').text(data[0]['first_name'])
 
-		for (var i = 0; i<data.length; i++){
-			$('.card-body').append('<div><p>' + data[i]['email'] + '</p></div>')
-		}
-	})
+	// $.get('/load_admin', function(data){
+	// 	var data = JSON.parse(data)
+	// 	console.log(data)
+
+	// 	$('#first_name').text(data[0]['first_name'])
+
+	// 	for (var i = 0; i<data.length; i++){
+	// 		if (data[i]['company_name'] !== null){
+	// 			var name_no_space = data[i]['company_name'].replace(/\s/g, '')
+	// 			$('.admin_table tbody').append("<tr><td><a href='/admin/" + data[i]['id'] + "'>" + data[i]['company_name'] + "</a></td><td>asdf</td><td>asdf</td><td>asdf</td></tr>")
+	// 		}
+	// 	}
+	// })
 }
+
+
 
 
 
@@ -130,11 +141,6 @@ function init_products(){
 				$('.product_prev_container').append("<div class='col-lg-3 col-md-3 col-sm-3 product_container'><p>" + results[i]['name'] + "</p></div>")
 
 			}
-			// for (var a=0;a<results.length;a++){
-			// 	if (a%4 !== 0) {
-			// 		$('.product_container:nth-of-type(' + a + ')').css('margin-left', '-6%')
-			// 	}
-			// }
 
 			$('.product_container:nth-of-type(1)').addClass('product_container_active')
 			$('#product-name').text(results[0]['name'])
@@ -152,6 +158,10 @@ function init_products(){
 	var it = 0 
 
 	$('.p_form_submit').click(function(){
+		$('textarea').val("")
+		$('.hover_box').removeClass('hover_box_selected')
+		$('input:checked').prop('checked', false)
+
 
 		var results = localStorage.getItem('results');
 		results = JSON.parse(results)
@@ -168,7 +178,14 @@ function init_products(){
 		var level_of_customization = $('input[name=level_of_customization]:checked').val()
 
 		var length = results.length
-		if (it <= length-1){
+		console.log(length)
+
+		it++
+
+		if (it < length){
+			console.log(it)
+
+			$('#product-name').text(results[it]['name'])
 			var p_value = $("#p_id").val()
 
 			$.post("/product_submit", { complexity: complexity, price: price, product_or_service: product_or_service, frequency_of_use: frequency_of_use, frequency_of_purchase: frequency_of_purchase, value_prop: value_prop, warranties_or_guarantee: warranties_or_guarantee, warranties_or_guarantee_freeform: warranties_or_guarantee_freeform, num_skus: num_skus, level_of_customization: level_of_customization, p_id: p_value } )
@@ -181,7 +198,6 @@ function init_products(){
 			var p_id = results[it]['p_id']
 			$('#p_id').val(p_id)
 			console.log(p_id)
-			it++
 		} else {
 			$('.card-body').addClass("hidden")
 			$('#setup').removeClass('hidden')
@@ -368,6 +384,69 @@ function init_sales_cycle(){
 
 	});
 
+
+}
+
+function init_platforms(){
+	$.get('/load_history',function(data){
+
+		var results = JSON.parse(data)
+		// localStorage.setItem('results', JSON.stringify(results));
+
+		console.log(results)
+
+		for (var i = 0; i<results['data'][0].length; i++){
+			if(results['data'][0][i] == "yes"){
+				console.log(results['columns'][i] + ": " + results['data'][0][i])
+				$('.platforms_container').append("<div class='platform_row'><div class='col-lg-2'><h6>" + results['columns'][i] + "</h6><input style='display:none' type='text' value='" + results['columns'][i] + "' name='platform_" + i + "'></div><div class='col-lg-4 col-md-4'><h6>Still using?</h6><div class='hover_box col-lg-5 col-md-5'><br><h6>yes</h6><br></div>&nbsp;<div class='hover_box col-lg-5 col-md-5'><br><h6>no</h6><br></div><input class='hidden_input hidden' type='text' name='still_using_" + i + "'></div><div class='col-lg-6 col-md-6'><h6>How are the results?</h6><img src='/static/assets/img/frown.png' class='col-lg-3'><img src='/static/assets/img/neutral.png' class='col-lg-3'><img src='/static/assets/img/smile.png' class='col-lg-3'><img src='/static/assets/img/grin.png' class='col-lg-3'><input type='text' style='display:none;' class='img_input' name='results_" + i + "'></div></div><hr>")
+			}
+		}
+
+		
+		$('.platform_row img').click(function(){
+			$(this).addClass('platform_row_img_active')
+			$(this).siblings().removeClass('platform_row_img_active')
+
+			$(this).parent().find('.img_input').val($(this).index())
+		})
+
+		$('.hover_box').click(function(){
+
+			if($(this).hasClass('hb_many')){
+				$(this).toggleClass('hover_box_selected')
+			} else {
+				$(this).toggleClass('hover_box_selected')
+				$(this).siblings().removeClass('hover_box_selected')
+				$(this).parent().siblings().children().removeClass('hover_box_selected')
+			}
+
+			var test = $(this).find("h6")
+			var text = test[0]['textContent']
+
+			if ($(this).hasClass('hb_many')){
+				var nearest_input = $(this).find('.hidden_input');
+			} else if ($(this).hasClass('multi_row')){
+				var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
+				console.log(nearest_input)
+			} else {
+				var nearest_input = $(this).parent().find('.hidden_input');
+			}
+
+			if ($(this).hasClass('hover_box_selected')){	
+				nearest_input.val(text)
+			} else {
+				nearest_input.val("")
+			}
+
+
+		})
+
+	})
+
+
+
+	// var results = localStorage.getItem('results');
+	// results = JSON.parse(results)
 
 }
 	
@@ -643,7 +722,6 @@ $(document).ready(function(){
 
 	$('.hover_box').click(function(){
 
-
 		if($(this).hasClass('hb_many')){
 			$(this).toggleClass('hover_box_selected')
 		} else {
@@ -672,6 +750,13 @@ $(document).ready(function(){
 
 
 	})
+
+	init_competitors()
+	init_admin()
+	init_create_account()
+	init_products()
+	init_sales_cycle()
+	init_platforms()
 
 
 })

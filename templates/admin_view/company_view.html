@@ -1,0 +1,385 @@
+{% extends "layout.html" %}
+
+{% block title %}
+{% if profile['ID'][0] %}
+  <title>
+    Admin - {{ profile['company_name'][0] }} Profile
+  </title>
+{% else %}
+  <title>
+    Admin - Company View
+  </title>
+{% endif %}
+{% endblock %}
+
+
+
+{% block content %}
+<div class="main-panel">
+  {% include "/sidebar/admin/sidebar-admin.html" %}
+  {% include "/topbar/topbar-admin.html" %}
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="append_to">
+
+          <div class="card" style="padding: 5%;">
+            <div class="card-header yellow_border">
+              <a href="/admin">All companies</a>
+              {% if profile['ID'][0] %}
+                <div class="yellow_border">
+                  <h4>{{ profile['company_name'][0] }}</h4>
+                  <h6 class="">Market(r) Profile</h6>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="card-body">
+              <h5>Profile</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if profile['ID'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Company</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['company_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Primary Contact</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['first_name'][0] + " " + profile['last_name'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Email</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['email'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Avg annual revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>${{ profile['revenue'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Total employees</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['employees'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>City/state</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['city'][0] + ", " + profile['state'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+
+              </div>
+
+              <h5>Competitors</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if competitors['customer_id'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 1</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_1_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 1 Website</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_1_website'][0] }}</p><br>
+                         </div><br>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 2 Name</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_2_name'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 2 Website</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_2_website'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 1 Type</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_1_type'][0] }}</p><br>
+                        </div><br>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Competitor 2 Type</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ competitors['comp_2_type'][0] }}</p><br>
+                        </div>
+                      </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5>Company Info</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if company_info['customer_id'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Business Stage</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['stage'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Business Type</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ company_info['selling_to'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Business Model</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ company_info['biz_model'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Sources of revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ company_info['rev_channel_1'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Notes</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ company_info['rev_channel_freeform'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Industry</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ company_info['industry'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5>Audience</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if profile['ID'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Company</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['company_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Primary Contact</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['first_name'][0] + " " + profile['last_name'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Email</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['email'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Avg annual revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>${{ profile['revenue'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Total employees</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['employees'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>City/state</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['city'][0] + ", " + profile['state'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5>Goals</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if profile['ID'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Company</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['company_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Primary Contact</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['first_name'][0] + " " + profile['last_name'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Email</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['email'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Avg annual revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>${{ profile['revenue'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Total employees</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['employees'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>City/state</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['city'][0] + ", " + profile['state'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5>Historical Platforms</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if profile['ID'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Company</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['company_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Primary Contact</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['first_name'][0] + " " + profile['last_name'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Email</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['email'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Avg annual revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>${{ profile['revenue'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Total employees</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['employees'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>City/state</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['city'][0] + ", " + profile['state'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              <h5>Product</h5>
+              <div class="row">
+                <div class="admin_column">
+                   {% if profile['ID'][0] %}
+                     <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Company</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['company_name'][0] }}</p><br>
+                        </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Primary Contact</h6>
+                          </div>
+                          <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['first_name'][0] + " " + profile['last_name'][0] }}</p><br>
+                         </div>
+                         <div class="col-lg-5 row col-md-5 row">
+                           <h6>Email</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['email'][0] }}</p><br>
+                        </div>
+                      </div>
+                      <div class="col-lg-5 col-md-5">
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Avg annual revenue</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>${{ profile['revenue'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>Total employees</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['employees'][0] }}</p><br>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <h6>City/state</h6>
+                        </div>
+                        <div class="col-lg-5 row col-md-5 row">
+                           <p>{{ profile['city'][0] + ", " + profile['state'][0] }}</p><br>
+                        </div>
+                     </div> 
+                  {% endif %}
+                </div>
+              </div>
+
+              </div>
+              
+              
+
+          </div>
+
+        </div> <!--end row-->
+      </div>
+    </div>
+{% endblock %}

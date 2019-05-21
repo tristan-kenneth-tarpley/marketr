@@ -1,183 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <title>
-    Market(r) - Admin View
-  </title>
-  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-  <!-- CSS Files -->
-  <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="/static/assets/css/now-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="/static/assets/css/demo.css" rel="stylesheet" />
-</head>
+{% block title %}
+<title>
+  Market(r) - Admin
+</title>
+{% endblock %}
 
-<body onload="init_admin()" class="audit">
-  <div class="wrapper ">
-    <div class="sidebar" data-color="orange">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
-    -->
-      <div class="logo">
-        <a href="https://marketr.life" class="simple-text logo-normal">
-          <img src="/static/assets/img/marketrwhite.png">
-        </a>
-      </div>
-      <div class="sidebar-wrapper">
-        <ul class="nav">
-          <li>
-            <a href="/begin">
-              <i class="now-ui-icons design_app"></i>
-              <p>Profile</p>
-            </a>
-          </li>
-          <li class="active">
-            <a href="/competitors">
-              <i class="now-ui-icons education_atom"></i>
-              <p>Company Info</p>
-            </a>
-          </li>
-          <li>
-            <a href="/campaigns">
-              <i class="now-ui-icons location_map-big"></i>
-              <p>Goals</p>
-            </a>
-          </li>
-          <li>
-            <a href="/integrations">
-              <i class="now-ui-icons ui-1_bell-53"></i>
-              <p>History</p>
-            </a>
-          </li>
-          <li>
-            <a href="/settings">
-              <i class="now-ui-icons users_single-02"></i>
-              <p>Diagnosis</p>
-            </a>
-          </li>
-          <li>
-            <a href="/settings">
-              <i class="now-ui-icons users_single-02"></i>
-              <p>Prescription</p>
-            </a>
-          </li>
-          <li>
-            <a href="/settings">
-              <i class="now-ui-icons users_single-02"></i>
-              <p>Begin</p>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="main-panel">
-      <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
-        <div class="container-fluid">
-          <div class="navbar-wrapper">
-            <div class="navbar-toggle">
-              <button type="button" class="navbar-toggler">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-              </button>
-            </div>
-          </div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-          </button>
-          <div class="collapse navbar-collapse justify-content-end" id="navigation">
-            <form>
-              <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="Search...">
-                <div class="input-group-append">
-                  <div class="input-group-text">
-                    <i class="now-ui-icons ui-1_zoom-bold"></i>
-                  </div>
+
+
+{% block content %}
+<div class="main-panel">
+  {% include "/sidebar/admin/sidebar-admin.html" %}
+  {% include "/topbar/topbar-admin.html" %}
+  <div class="panel-header panel-header-sm">
+  </div>
+  <div class="content">
+    <div class="append_to">
+
+      <div class="card" style="padding: 5%;">
+
+        <div class="card-header">
+          {% if results['first_name'][0] %}
+          <h2 class="blue_header">Admin view for {{ results['first_name'][0] }}</h2>
+          {% endif %}
+
+        </div>
+
+
+
+        <div class="card-body">
+
+          <form id="searcher" style="width: 40%;">
+            <div class="input-group no-border">
+              <input type="text" onkeyup="search()" name="company_name" id="company_name" class="form-control" placeholder="Search...">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <i class="now-ui-icons ui-1_zoom-bold"></i>
                 </div>
               </div>
-            </form>
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons media-2_sound-wave"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Stats</span>
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="now-ui-icons location_world"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Some Actions</span>
-                  </p>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="/new_admin">Add new admin</a>
-                  <a class="dropdown-item" href="/logout">Logout</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </div>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons users_single-02"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Account</span>
-                  </p>
-                </a>
-              </li>
-            </ul>
-          </div>
+              <!--    <input value="FIND" id="search" name="company_name" type="submit" class="continue" style="font-weight: bold;padding: 2% 5%;border-radius: 5px 100px 100px 5px;"> -->
+            </div>
+          </form>
+          <table id="display" style="width:100%;" class="admin_table">
+            <tr class="orange">
+              <th class="headers" style="cursor:pointer;" onclick="sortTable(0)">Company name <span class="blue arrows">&darr;</span> </th>
+              <th class="headers" style="cursor:pointer;" onclick="sortTable(1)">% profile complete <span class="arrows">&darr;</span> </th>
+              <th class="headers" style="cursor:pointer;" onclick="sortTable(2)">Account Created <span class="arrows">&darr;</span>  </th>
+              <th class="headers" style="cursor:pointer;" onclick="sortTable(3)">Last Modified <span class="arrows">&darr;</span>  </th>
+            </tr>
+            {% if results['id'][0] %}
+            {% for i, row in results.iterrows() %}
+            <tr>
+              <td><a href="/admin/{{ row[0] }}">{{ row[1] }}</a></td>
+              <td>{{ row[3] }}%</td>
+              <td>{{ row[2] }}</td>
+              <td>{{ row[4] }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+          </table>
         </div>
-      </nav>
-      <!-- End Navbar -->
-      <div class="panel-header panel-header-sm">
+
       </div>
-      <div class="content">
-        <div class="append_to">
 
-          <div class="card">
-            <div class="card-header">
-              <h2 class="blue_header">Hey there, <span id="first_name"></span></h2>
-            </div>
+    </div> <!--end row-->
+  </div>
 
-            <div class="card-body">
-
-            </div>
-
-          </div>
-
-        </div> <!--end row-->
-      </div>
-    </div>
+</div>
 
 
 
-  <!--   Core JS Files   -->
-  <script src="/static/assets/js/core/jquery.min.js"></script>
-  <script src="/static/assets/js/core/popper.min.js"></script>
-  <script src="/static/assets/js/core/bootstrap.min.js"></script>
-  <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <!-- Chart JS -->
-  <script src="/static/assets/js/plugins/chartjs.min.js"></script>
-  <!--  Notifications Plugin    -->
-  <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
-  <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript"></script>
-  <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
-  <script src='/static/frontend.js'></script>
-  <script src="/static/animations.js"></script>
-</body>
 
-</html>
+<script>
+    function search(){
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("company_name");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("display");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      } 
+    }
+  }
+  function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("display");
+        switching = true;
+    // Set the sorting direction to ascending:
+    dir = "asc"; 
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+    // Start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /* Loop through all table rows (except the
+    first, which contains table headers): */
+    for (i = 1; i < (rows.length - 1); i++) {
+    // Start by saying there should be no switching:
+    shouldSwitch = false;
+    /* Get the two elements you want to compare,
+    one from current row and one from the next: */
+    x = rows[i].getElementsByTagName("TD")[n];
+    y = rows[i + 1].getElementsByTagName("TD")[n];
+    /* Check if the two rows should switch place,
+    based on the direction, asc or desc: */
+    if (dir == "asc") {
+      if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+    // If so, mark as a switch and break the loop:
+    shouldSwitch = true;
+    break;
+    }
+    } else if (dir == "desc") {
+      if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+    // If so, mark as a switch and break the loop:
+    shouldSwitch = true;
+    break;
+    }
+    }
+    }
+    if (shouldSwitch) {
+    /* If a switch has been marked, make the switch
+    and mark that a switch has been done: */
+    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+    switching = true;
+    // Each time a switch is done, increase this count by 1:
+    switchcount ++; 
+    } else {
+    /* If no switching has been done AND the direction is "asc",
+    set the direction to "desc" and run the while loop again. */
+    if (switchcount == 0 && dir == "asc") {
+      dir = "desc";
+      switching = true;
+    }
+    }
+    }
+    }
+</script>
+
+{% endblock %}
+

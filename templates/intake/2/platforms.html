@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>
+  Market(r) - Platforms
+</title>
+{% endblock %}
+
+
+
+{% block content %}
+  {% include "/sidebar/sidebar-intake-4.html" %}
+  {% include "/topbar/topbar-customer.html" %}
+      <div class="panel-header panel-header-sm">
+      </div>
+      <div class="content">
+        <div class="append_to">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card" style="padding: 5%;">
+                <div class="sub_menu">
+                  <div class="step">
+                    <a href="/history" class="step_name">History</a>
+                  </div>
+                  <div class="step step_active">
+                    <a href="/history/platforms" class="step_name sub_active">Platforms</a>
+                  </div>
+                  <div class="step">
+                    <a href="/history/platforms/past" class="step_name">Past</a>
+                  </div>
+                </div><br><br>
+                <div class="card-body">
+                  <form action=" {{ url_for( 'past' ) }}" method="post">
+                    <div class="card-header">
+                      <div class="row yellow_border">
+                        <h2 class="blue_header">Nice!  And what was your experience like?</h2>
+                        <p>Tell us more about the paid marketing platforms you're currently using or have used in the past.</p>
+                      </div>
+                    </div>
+
+                    <div class="reveal_container">
+                      <a class="reveal_button continue">Let's do this</a>
+                    </div>
+
+
+                    <div class="reveal">
+                      <div class="platforms_container">
+                      </div> 
+
+                      <br>
+                      <div class="col-lg-6">   
+                        <p>Average total monthly spend across all digital platforms</p>
+                         <div class="slidecontainer">
+                            <select class="form-control" name="spend">
+                              <option value="<$1,000"><$1,000</option>
+                              <option value="$1,000-$4,999">$1,000-$4,999</option>
+                              <option value="$5,000-9,999">$5,000-9,999</option>
+                              <option value="$10,000+">$10,000+</option>
+                            </select>
+                          </div>
+
+                          <script>
+
+                          function numberWithCommas(x) {
+                              return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                          }
+                          var slider = document.getElementById("myRange");
+                          var output = document.getElementById("demo");
+                          output.innerHTML = numberWithCommas(slider.value);
+
+                          slider.oninput = function() {
+                            output.innerHTML = numberWithCommas(this.value);
+                          }
+                          </script>
+                      </div>
+
+                      <div class="onward">            
+                        <input type="submit" class="continue">
+                      </div>
+
+
+                    </div>
+                  </form>
+                </div>
+              </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div> <!--end row-->
+      </div>
+    </div>
+
+{% endblock %}
