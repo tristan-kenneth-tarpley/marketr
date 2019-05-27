@@ -1,4 +1,4 @@
-from main import app
+from app import app
 import time
 import datetime
 import zipcodes
@@ -15,3 +15,55 @@ def last_modified(user):
     cursor = db.cursor()
     cursor.execute(query)
     cursor.close()
+
+
+def clean_for_display(df):
+
+	def rename(old, new):
+		df.rename(columns = {old: new}, inplace=True)
+
+	def cycle_through():
+	    for key, value in df.iteritems():
+	        if key == "ID":
+	            rename("ID", "Customer ID")
+
+	        elif key == "perc_complete":
+	            rename("perc_complete", "% of onboarding completed")
+
+	        elif key == "zip":
+	        	rename("zip", "Zip Code")
+
+	        elif key.find("_") > 0: # if an underscore is found
+	            newkey = key.replace("_"," ") # convert underscores to space's
+	            df.rename(columns = {key: newkey}, inplace=True)
+
+	    return df
+
+	return cycle_through()
+
+
+
+def load_past_inputs(page):
+	print('hi')
+
+
+	# load values
+	# check if complete
+	# pass values to javascript and cycle through elements while populating || adding class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

@@ -9,7 +9,9 @@
 
 
 {% block content %}
-  {% include "/sidebar/sidebar-intake-3.html" %}
+  {% with goals="active" %}
+    {% include "/sidebar/sidebar-intake.html" %}
+  {% endwith %}
   {% include "/topbar/topbar-customer.html" %}
       <div class="panel-header panel-header-sm">
       </div>

@@ -4059,7 +4059,7 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 .admin_column div {
   display: inline-block;
   text-align:right;
-  
+  padding: 2%;
   vertical-align: middle;
 }
 .admin_column p, h6 {
@@ -4090,4 +4090,6 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 .admin_table tr:nth-child(even):hover {
   background: #e5e5e5;
 }
-
+.searcher {
+  width: 50%;
+}

@@ -9,7 +9,10 @@
 
 
 {% block content %}
-  {% include "/sidebar/sidebar-intake-2.html" %}
+
+  {% with company="active" %}
+    {% include "/sidebar/sidebar-intake.html" %}
+  {% endwith %}
   {% include "/topbar/topbar-customer.html" %}
       <!-- End Navbar -->
       <div class="panel-header panel-header-sm">

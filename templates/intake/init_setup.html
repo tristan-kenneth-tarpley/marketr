@@ -9,15 +9,17 @@
 
 
 {% block content %}
-{% include "/sidebar/sidebar-intake-1.html" %}
-{% include "/topbar/topbar-customer.html" %}
+  {% with begin="active" %}
+    {% include "/sidebar/sidebar-intake.html" %}
+  {% endwith %}
+  {% include "/topbar/topbar-customer.html" %}
 
 <div class="panel-header panel-header-sm">
 </div>
 <div class="content">
   <div class="row row_cancel">
     <div class="col-md-12">
-      <div class="card yellow_border">
+      <div class="card yellow_border" style="padding: 5%;">
         <div class="card-header">
           <p>Let's get to know each other a bit better!</p>
           <h5 class="title blue">Let's set up an account to save your progress</h5>

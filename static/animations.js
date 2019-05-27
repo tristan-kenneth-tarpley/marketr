@@ -681,6 +681,17 @@ function init_competitors(){
 }
 
 
+function init_company_view(){
+
+	var pathname = window.location.pathname;
+
+	$('.dyn_link').each(function(){
+		var id = $(this).attr('id')
+		var url = pathname + "?page=" + id
+		$(this).attr('href', url)
+	})
+
+}
 
 
 $(document).ready(function(){
@@ -757,6 +768,7 @@ $(document).ready(function(){
 	init_products()
 	init_sales_cycle()
 	init_platforms()
+	init_company_view()
 
 
 })
