@@ -71,11 +71,11 @@
                       <div class="row">
                         <div class="col=lg-6 col-md-6">  
                           <label for="competitor_1">Competitor #1 name</label><br>
-                          <input type="text" name="competitor_1_name" class="form-control" id="competitor_1">
+                          <input type="text" name="comp_1_name" class="form-control" id="competitor_1">
                         </div>
                         <div class="col=lg-6 col-md-6">  
                           <label for="competitor_1">Competitor #1 website</label><br>
-                          <input type="text" name="competitor_1_site" class="form-control" id="competitor_1">
+                          <input type="text" name="comp_1_website" class="form-control" id="competitor_1">
                         </div>
                       </div>
 
@@ -102,7 +102,7 @@
                           <h6>Future</h6>
                           <p>Business capabilities that <strong><em>could</em></strong> allow them to compete in your category/market</p>
                         </div>
-                        <input type="text" id="1" name="comp_1_type" class="hidden hidden_input">
+                        <input type="text" id="1" name="comp_1_type" class="hidden_input hidden">
                       </div>
 
                     </div>
@@ -110,11 +110,11 @@
                       <div class="row">
                         <div class="col=lg-6 col-md-6">  
                           <label for="competitor_1">Competitor #2 name</label><br>
-                          <input type="text" name="competitor_2_name" class="form-control" id="competitor_1">
+                          <input type="text" name="comp_2_name" class="form-control" id="competitor_1">
                         </div>
                         <div class="col=lg-6 col-md-6">  
                           <label for="competitor_1">Competitor #2 website</label><br>
-                          <input type="text" name="competitor_2_site" class="form-control" id="competitor_1">
+                          <input type="text" name="comp_2_website" class="form-control" id="competitor_1">
                         </div>
                       </div>
 
@@ -164,3 +164,18 @@
 
 
 {% endblock %}
+
+{% block js %}
+<script>
+  $(document).ready(function(){
+    init_competitors()
+  })
+</script>
+{% endblock %}
+
+
+
+
+
+
+

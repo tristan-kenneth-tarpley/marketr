@@ -3587,10 +3587,6 @@ Created using IcoMoon - icomoon.io
   padding: 3%;
 }
 
-.type .hover_box {
-  padding: 2% 4%;
-}
-
 .type .card {
   padding: 3%;
 }
@@ -3598,18 +3594,29 @@ Created using IcoMoon - icomoon.io
 .type .card:nth-of-type(1) {
   border-bottom: 5px solid #ffd8ad;
 }
-
 .hover_box {
-  text-align:center;
+  display : flex;
+  border-radius: 5px;
+  border: 4px solid transparent;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   color: rgba(0,0,0,.7);
-  margin: 1% auto;
-  width: 75%;
-  padding: 1% 3% 0;
-  border: 4px solid transparent;
-  transition-duration: .3s;
   cursor: pointer;
-  vertical-align: middle;
+  display: inline-block;
+  margin: 1% auto;
+  padding: 3% 1%;
+  text-align:center;
+  transition-duration: .3s;
+  width: 75%;
+  height: inherit;
+}
+.hover_box h6 {
+  margin: 0 auto;
+  position: relative;
+  font-size: 80% !important;
+  white-space: pre-wrap;
+}
+.hover_box p {
+  font-size: 1vw !important;
 }
 .hover_box:not(.hover_box_selected):hover {
   border: 4px solid #cdeff5;
@@ -3695,12 +3702,13 @@ Created using IcoMoon - icomoon.io
   cursor: pointer;
   color: white;
   background-color: #62cde0;
-  padding: 1% 2%;
+  padding: 1% 3%;
   transition-duration: .3s;
   border: 3px solid #62cde0;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   border-radius: 5px;
   margin-left: 2%;
+  border-radius: 100px;
 }
 .continue:hover {
   opacity: .7;
@@ -3757,11 +3765,11 @@ Created using IcoMoon - icomoon.io
 
 .sub_menu {
   width: 100%;
-  margin: 0% auto 2%;
+  margin: 0% auto 7%;
 }
 
-.sub_menu a {
-  text-align:center !important;
+.step a {
+  text-align: center !important;
   text-transform: uppercase;
 }
 .sub_active {
@@ -3780,6 +3788,7 @@ Created using IcoMoon - icomoon.io
   float:left;
   padding-top: 1%;
   margin-left: 1%;
+  text-align:center;
 }
 
 
@@ -3802,7 +3811,7 @@ Created using IcoMoon - icomoon.io
 .input_table th {
 }
 .input_table tr {
-  width: 95%;
+  width: 80%;
   border-bottom: 1px solid rgba(0,0,0,.2);
 }
 .input_table input {
@@ -3810,10 +3819,6 @@ Created using IcoMoon - icomoon.io
   padding: 5% 0;
   text-align: center;
 }
-/*
-.align_to_the_right h6,p {
-  text-align:right;
-}*/
 .center_it {
   text-align: center;
 }

@@ -9,7 +9,7 @@
 
 
 {% block content %}
-  {% with begin="active" %}
+  {% with company="active" %}
     {% include "/sidebar/sidebar-intake.html" %}
   {% endwith %}
   {% include "/topbar/topbar-customer.html" %}
@@ -40,7 +40,7 @@
                 </div><br><br>
                 <div class="card-header">
                   <form method="POST" id="setup" action="{{ url_for('nice') }}">
-                    <div class="row">
+                    <div class="row yellow_border row_cancel">
                       <h6 class="title">Finally, let's map out the...</h6>
                       <h2 class="blue_header">Customer Journey Through the Sales Cycle</h2>
                       <p>Below are the 5 stages of the common buying process.  Awareness, Evaluation, Conversion, Retention, and Referral.  These are universal steps whether we're talking about a food truck, an online shoe-store, or a service-based consulting business.</p>
@@ -80,7 +80,7 @@
                          
                       </div>
                       <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6>
+                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
                         <div class="left_suggest">
                           <ul>
                             <li>Website</li>
@@ -134,7 +134,7 @@
                          
                       </div>
                       <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6>
+                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
                         <div class="left_suggest">
                           <ul>
                             <li>Competitive comparison</li>
@@ -175,7 +175,7 @@
                          
                       </div>
                       <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6>
+                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
                         <div class="left_suggest">
                           <ul>
                             <li>Free Trial</li>
@@ -216,7 +216,7 @@
                          
                       </div>
                       <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6>
+                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
                         <div class="left_suggest">
                           <ul>
                             <li>Packaging</li>
@@ -261,7 +261,7 @@
                          
                       </div>
                       <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6>
+                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
                         <div class="left_suggest">
                           <li>Packaging</li>
                           <li>Social sharing incentive</li>
@@ -286,4 +286,12 @@
       </div>
     </div>
 
+{% endblock %}
+
+{% block js %}
+<script>
+  $(document).ready(function(){
+    init_sales_cycle()
+  })
+</script>
 {% endblock %}
