@@ -29,22 +29,6 @@ function init_admin(){
 	  	$('.headers').not(this).find("span").removeClass('blue')
 	  })
 
-
-
-
-	// $.get('/load_admin', function(data){
-	// 	var data = JSON.parse(data)
-	// 	console.log(data)
-
-	// 	$('#first_name').text(data[0]['first_name'])
-
-	// 	for (var i = 0; i<data.length; i++){
-	// 		if (data[i]['company_name'] !== null){
-	// 			var name_no_space = data[i]['company_name'].replace(/\s/g, '')
-	// 			$('.admin_table tbody').append("<tr><td><a href='/admin/" + data[i]['id'] + "'>" + data[i]['company_name'] + "</a></td><td>asdf</td><td>asdf</td><td>asdf</td></tr>")
-	// 		}
-	// 	}
-	// })
 }
 
 
@@ -694,7 +678,125 @@ function init_company_view(){
 }
 
 
+
+
+
+
+
+
+
+
 $(document).ready(function(){
+
+	$("br").remove()
+
+
+
+	var url_path = window.location.pathname;
+
+	$.get('/load_past_inputs', {page: url_path}, function(data){
+
+		var data = JSON.parse(data)
+		//console.log(data)
+
+		//sales cycle page
+		//console.log(data)
+		//console.log(Object.keys(data).length)
+
+		function load_sales_cycle(){
+
+			var awareness = data.filter(function(item){
+			    return item.stage == "awareness";         
+			});
+			var evaluation = data.filter(function(item){
+			    return item.stage == "evaluation";         
+			});
+			var conversion = data.filter(function(item){
+			    return item.stage == "conversion";         
+			});
+			var retention = data.filter(function(item){
+			    return item.stage == "retention";         
+			});
+			var referral = data.filter(function(item){
+			    return item.stage == "referral";         
+			});
+
+			var stages = [awareness, evaluation, conversion, retention, referral]
+
+			function get_length(step){
+				var length = step.length
+				return length
+				//$("." + value).children().find('input').val()  //css('border', '3px solid yellow')
+			}
+
+
+
+			for (var i=0;i<stages.length;i++){
+				var length = get_length(stages[i])
+				for (var x=0;x<stages[i].length;x++){
+					var toShow = $(".stage_container." + stages[i][x]['stage'] + " input").slice(0, length)
+					toShow.removeClass('hide')
+					if (toShow.val() !== stages[i][x]['tactic']){
+						
+						toShow.eq(x).val(stages[i][x]['tactic'])
+
+					}
+				}
+			}
+				
+		}
+
+		load_sales_cycle()
+
+
+
+		//if not sales cycle
+		if (data.length > 0){
+			Object.keys(data[0]).forEach(function(key) {
+
+				var value = data[0][key]
+
+
+				$('select[name=' + key + ']').val(value)
+				$('input[name=' +  key + ']').val(data[0][key])
+				$('textarea[name=' + key + ']').val(data[0][key])
+
+				$('.hover_box').each(function(){
+					var hb_many = $(this).hasClass('hb_many')
+					var closest_val = $(this).closest('.hidden_input').val()
+					var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
+
+					var many_check = hb_many && closest_val !== ""
+					var single_check = single && $(this).siblings('.hidden_input').val() !== ""
+
+					var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
+					var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
+
+					var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
+
+
+					if (many_check){
+						if ($(this).children('.hidden_input').val() !== ""){
+							$(this).addClass('hover_box_selected')
+						}
+					} else if (single_check){
+						var single_select =  $(this).siblings('.hidden_input').val()
+						var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
+						add_select.addClass("hover_box_selected")
+						
+					} else if (multi_row_check) {
+
+						$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
+					
+					}
+				})
+			})
+		}
+	})
+
+
+
+
 
 
 	$('.reveal_button').click(function(){
@@ -702,14 +804,6 @@ $(document).ready(function(){
 		$(this).addClass("hidden")
 	})
 
-	// $('form').submit(function(){
-	// 	if ($('input:empty').length !== 1){
-			
-	// 		$('input:empty').css('border','1px solid red')
-
-	// 		return false
-	// 	}
-	// })
 
 
 	var submenu_count = $('.step').length
@@ -762,13 +856,6 @@ $(document).ready(function(){
 
 	})
 
-	init_competitors()
-	init_admin()
-	init_create_account()
-	init_products()
-	init_sales_cycle()
-	init_platforms()
-	init_company_view()
 
 
 })

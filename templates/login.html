@@ -14,14 +14,6 @@
 
 			<div class="login-form">
 
-				{% with messages = get_flashed_messages() %}
-					{% if messages %}
-						{% for message in messages %}
-							<p style="color:red;">{{ message }}</p>
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
-
 				<div class="control-group">
 					<input type="text" class="login-field" value="" placeholder="email" name="username">
 					<label class="login-field-icon fui-user" for="login-name"></label>
@@ -31,6 +23,10 @@
 					<input type="password" class="login-field" value="" placeholder="password" name="password">
 					<label class="login-field-icon fui-lock" for="login-pass"></label>
 				</div>
+
+				{% if error %}
+				<p style="color:red;">{{ error }}</p>
+				{% endif %}
  
                 <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block" >
 			    <br>

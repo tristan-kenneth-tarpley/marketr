@@ -158,25 +158,27 @@
                       <h2 class="blue_header">Product Details</h2>
                       <p><em>Please complete the following information for each product you currently sell:</em></p>
                       <div class="row">
-                        <table class="input_table">
-                          <tr>
-                            <th>Product name</th>
-                            <th>Category</th>
-                            <th>COGS</th>
-                            <th>Sale Price</th>
-                            <th><strong>Qty sold last 12 months</strong></th>
-                            <th>Estimated unique buyers</th>
-                          </tr>
-                          <tr>
-                            <td><input type="text" name="product_1_name" placeholder="product name 1"></td>
-                            <td><input type="text" name="p1_category" placeholder="details"></td>
-                            <td><input type="text" name="p1_cogs" placeholder="$0.00"></td>
-                            <td><input type="text" name="p1_sales_price" placeholder="$0.00"></td>
-                            <td><input type="text" name="p1_qty_sold" placeholder="0"></td>
-                            <td><input type="text" name="p1_est_unique_buyers" placeholder="0"></td>
-                          </tr>
-                          <input type="number" name="product_len" value="1" class="product_len hidden">
-                        </table>
+                        <div style="overflow-x: auto;">
+                          <table class="input_table">
+                            <tr>
+                              <th>Product name</th>
+                              <th>Category</th>
+                              <th>COGS</th>
+                              <th>Sale Price</th>
+                              <th><strong>Qty sold last 12 months</strong></th>
+                              <th>Estimated unique buyers</th>
+                            </tr>
+                            <tr>
+                              <td><input type="text" name="product_1_name" placeholder="product name 1"></td>
+                              <td><input type="text" name="p1_category" placeholder="details"></td>
+                              <td><input type="text" name="p1_cogs" placeholder="$0.00"></td>
+                              <td><input type="text" name="p1_sales_price" placeholder="$0.00"></td>
+                              <td><input type="text" name="p1_qty_sold" placeholder="0"></td>
+                              <td><input type="text" name="p1_est_unique_buyers" placeholder="0"></td>
+                            </tr>
+                            <input type="number" name="product_len" value="1" class="product_len hidden">
+                          </table>
+                        </div>
                         
                       </div>
                       <a id="add_product" class="continue add_product edit_products">+ Add product</a><a id="remove_product" class="continue remove_product edit_products">- Remove product</a>

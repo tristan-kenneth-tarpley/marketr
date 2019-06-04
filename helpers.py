@@ -43,17 +43,18 @@ def clean_for_display(df):
 
 
 
-def load_past_inputs(page):
-	print('hi')
+def is_started(table):
+    query = f"SELECT * FROM dbo.{table} WHERE customer_id = 90"
+    cursor = db.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
 
-
-	# load values
-	# check if complete
-	# pass values to javascript and cycle through elements while populating || adding class
-
-
-
-
+    cursor.close()
+    
+    if len(result) > 0:
+        return True
+    else:
+        return False
 
 
 

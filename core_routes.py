@@ -34,9 +34,9 @@ def customer_login():
 
             first_query = sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
             steps = {'competitors': 'competitors',
-                     'company_info': 'company',
+                     'company': 'company',
                      'audience': 'audience',
-                     'product_gen': 'product',
+                     'product': 'product',
                      'product_list': 'product_2',
                      'awareness': 'salescycle',
                      'goals': 'goals',
@@ -46,7 +46,7 @@ def customer_login():
                      'the end': 'index'}
 
             if first_query['first_name'][0] == None:
-                return begin()
+                return redirect(url_for('begin'))
 
             else:
                 def call_it(name):
@@ -69,10 +69,14 @@ def customer_login():
                     else:
                         i+=1
                         return redirect(url_for(call_it(step)))
+        else:
+            error = "Invalid credentials. Try again."
+            return render_template("login.html", error = error)  
 
-    except IndexError:
-        flash('incorrect email or password')
-        return logout()
+    except Exception as e:
+        error = "Invalid credentials. Try again."
+        return render_template("login.html", error = error)  
+        
 
 
 
@@ -170,6 +174,7 @@ def company_view(customer_id):
 
         basics_df = an.sql_to_df("""SELECT * FROM dbo.customer_basic WHERE ID = """ + customer_id)
         company_name = basics_df['company_name'][0]
+        customer_id = basics_df['ID'][0]
 
 
         if page == "profile":
@@ -181,7 +186,7 @@ def company_view(customer_id):
         
         load_company = clean_for_display(load_company)
 
-        return render_template('admin_view/company_view.html', company=company_name, page=page, data=load_company)
+        return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data=load_company)
 
 
 
@@ -266,20 +271,6 @@ def add_admin():
     return admin()
 
 
-photos = UploadSet('photos', IMAGES)
-filepath = 'uploads/img'
-
-app.config['UPLOADED_PHOTOS_DEST'] = filepath
-configure_uploads(app, photos)
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST' and 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        path = filepath + "/" + filename
-
-        return path
-    return render_template('upload.html')
 
 
 

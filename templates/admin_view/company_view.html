@@ -22,6 +22,7 @@
               <a href="/admin">All companies</a>
               <div class="yellow_border">
                 <h4>{{ company }}</h4>
+                <h5>Customer ID: <span class="blue">{{ customer_id }}</span></h5>
                 <h6 class="">Market(r) Profile</h6>
               </div>
 
@@ -33,11 +34,14 @@
               <div class="admin_column">
                 {% for key, value in data.items() %}
                   {% if key != "is profile" %}
+
                     {% if key != 'password' %}
-                      <div class="col-lg-3 admin_row">
-                        <h6 class="orange">{{ key }}</h6><br>
-                        <p>{{ value[0] }}</p>
-                      </div>
+                      {% if key != 'Customer ID' %}
+                        <div class="col-lg-3 admin_row">
+                          <h6 class="orange">{{ key }}</h6><br>
+                          <p>{{ value[0] }}</p>
+                        </div>
+                      {% endif %}
                     {% endif %}
 
                   {% endif %}
@@ -50,4 +54,12 @@
         </div> <!--end row-->
       </div>
     </div>
+{% endblock %}
+
+{% block js %}
+<script>
+  $(document).ready(function(){
+    init_company_view()
+  })
+</script>
 {% endblock %}
