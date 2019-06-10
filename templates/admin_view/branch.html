@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>
+  Market(r) - Branch
+</title>
+{% endblock %}
+
+{% block css %}
+<link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+  {% include "/sidebar/admin/sidebar-admin.html" %}
+  {% include "/topbar/topbar-admin.html" %}
+	<div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="append_to">
+
+			<div class="card" style="padding: 5%;">
+				{% if branches %}
+					<h3>Current branches</h3>
+						<table style="width: 100%;" id="past_branches">
+							<thead>
+								<th>Trigger</th>
+								<th>Type</th>
+								<th>Page</th>
+								<th>Index</th>
+							</thead>
+							<tbody>
+					{% for a, b, c, d in branches %}
+								<tr>
+									<td>{{d}}</td>
+									<td>{{c}}</td>
+									<td>{{b}}__</td>
+									<td>{{a}}</td>
+								</tr>
+					{% endfor %}
+							</tbody>
+						</table>
+				{% endif %}
+	<br><hr><br>
+				<h3>Create new branch</h3>
+				<form method="POST" action="{{ url_for('branch') }}">
+					<label>Branch Trigger</label>
+					<select id="trigger" name="branch_trigger" class="form-control">
+						<option value="biz_model">Business model</option>
+						<option value="num_products">Number of products</option>
+						<option value="selling_to">Selling to</option>
+					</select>
+
+					<label>Trigger value</label>
+					<select id="trigger_val" class="form-control" name="branch_trigger_val">
+					</select>
+
+					<label>Branch action</label>
+					<select id="action" class="form-control" name="branch_action">
+					</select>
+
+					<label>affected page</label>
+					<select class="form-control" name="affected_page">
+						<option>competitors</option>
+						<option>company</option>
+						<option>audience</option>
+						<option>product</option>
+						<option value="product_2">product details</option>
+						<option>sales cycle</option>
+						<option>goals</option>
+						<option>history</option>
+						<option>platforms</option>
+						<option>past</option>
+						<option>creative</option>
+					</select>
+
+					<label>Index (# branch on that page)</label>
+					<input type="number" class="form-control" name="ind">
+					<div class="hidden mask">
+						<label>Mask value</label>
+						<input type="text" class="form-control" name="mask_val">
+
+						<label>Default mask value</label>
+						<input type="text" class="form-control" name="default_mask">
+					</div>
+
+					<div class="hide_branch">
+						<label>Hide value (1 for true, 0 for false)</label>
+						<input type="number" class="form-control" name="hide_val">
+					</div>
+<br>
+					<input type="submit">
+	
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" defer></script>
+<script>
+	$(document).ready(function(){
+    	$('#past_branches').DataTable();
+	})
+	var biz_models = ['Affiliate', 'SaaS', 'Digital Product', 'Tangible Product', 'Professional Services', 'Manual Services', 'Media Provider']
+	var selling_to = ['B2B', 'B2C', 'C2C', 'Other']
+	var num_products = [true, false]
+	var branch_action = ['hide', 'mask']
+	function populate_select(target, array) {
+		for (var t=0;t<array.length;t++){
+			$(target).append("<option class='appended'>" + array[t] + "</option>")
+		}
+	}
+	var trigger_val = $("#trigger_val")
+	populate_select(trigger_val, biz_models)
+	$('#trigger').change(function(){
+		$('.appended').remove()
+
+		if($('#trigger').val() == "biz_model"){
+			populate_select(trigger_val, biz_models)
+		} else if ($('#trigger').val() == "selling_to"){
+			populate_select(trigger_val, selling_to)
+		} else if ($('#trigger').val() == "num_products") {
+			populate_select(trigger_val, num_products)
+		}
+	})
+
+	var action = $('#action')
+	populate_select(action, branch_action)
+	$(action).change(function(){
+		if (action.val() == "mask") {
+			$('.mask').removeClass('hidden')
+			$('.hide_branch').addClass('hidden')
+		} else if (action.val() == 'hide') {
+			$('.mask').addClass('hidden')
+			$('.hide_branch').removeClass('hidden')
+		}
+	})
+
+</script>
+{% endblock %}
+
+
+
+
+

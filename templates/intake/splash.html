@@ -9,29 +9,41 @@
 
 
 {% block content %}
-  {% include "/sidebar/sidebar-intake.html" %}
-  {% include "/topbar/topbar-customer.html" %}
+  {% if next_step != 'begin' %}
+    {% include "/sidebar/sidebar-intake.html" %}
+    {% include "/topbar/topbar-customer.html" %}
+  {% endif %}
 
       <!-- End Navbar -->
+      {% if next_step != 'begin' %}
       <div class="panel-header panel-header-sm">
       </div>
+      {% else %}
+      <div></div>
+      {% endif %}
+      
       <div class="content">
         <div class="append_to">
           <div class="row">
             <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
+              {% if next_step != 'begin' %}
+              <div class="card" style="padding: 5%;">
+              {% else %}
+              <div>
+              {% endif %}
+                <div>
                   <div class="checkmark_container">
                     <img src="/static/assets/img/confirmation.png">
                   </div>
-                  <div style="width: 40%;margin: 3% auto;">  
-                    <h5 class="blue">Nice Work!</h5>
-                    {{ text }}
-                    <p>Thanks for giving Marketr a better understanding of your company and marketing environment.  This will definitely strengthen the results and analysis for <span class="company_name">company name</span>.</p>
-
-                    <p>Next, we'll figure out your goals for what we're working to accomplish.</p><br>
-                    <div class="onward" style="text-align: center;">                
-                      <a class="continue" href="/{{ next_step }}">Next, please!</a>
+                  <div style="width: 70%;margin: 3% auto;">  
+                    <h5 class="blue">{{ heading }}</h5>
+                    <p>{{ paragraph }}</p>
+                    <div class="onward" style="font-size: 120%;text-align: center;margin-top: 20%;">  
+                      {% if redirect %}              
+                        <a style="padding: 2% 5%;" class="continue" href="{{ url_for(next_step, redirect=True, next_step=next_step) }}">CONTINUE</a>
+                      {% else %}
+                        <a style="padding: 2% 5%;" class="continue" href="{{ url_for(next_step, splash=True) }}">CONTINUE</a>
+                      {% endif %}
                     </div>
                   </div>
                 </div>

@@ -14,6 +14,7 @@
 		  <!-- CSS Just for demo purpose, don't include it in your project -->
 		  <link href="/static/assets/css/demo.css" rel="stylesheet">
   		  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  		  <link rel="stylesheet" href="/static/assets/js/autocomplete/easy-autocomplete.min.css">
 		  {% block css %}{% endblock %}
 		  <style type="text/css">/* Chart.js */
 		@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
@@ -28,6 +29,8 @@
 		
 		<script src="/static/assets/js/core/jquery.min.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+		<script src="/static/animations.js"></script>
+		<script src="/static/assets/js/autocomplete/jquery.easy-autocomplete.min.js"></script>
 		<script src="/static/assets/js/core/popper.min.js" defer></script>
 		<script src="/static/assets/js/core/bootstrap.min.js" defer></script>
 		<script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js" defer></script>
@@ -35,7 +38,6 @@
 		<script src="/static/assets/js/plugins/bootstrap-notify.js" defer></script>
 		<script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript" defer></script>
 		<script src="/static/assets/demo/demo.js" defer></script>
-		<script src="/static/animations.js" defer></script>
 		{% block js %}{% endblock %}
 		
 	</body>

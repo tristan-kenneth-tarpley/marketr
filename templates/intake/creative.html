@@ -5,7 +5,11 @@
   Market(r) - Upload Assets
 </title>
 {% endblock %}
-
+{% block css %}
+<!-- <link href="/static/assets/css/css/component.css" rel="stylesheet" />
+<link href="/static/assets/css/css/demo.css" rel="stylesheet" />
+<link href="/static/assets/css/css/normalize.css" rel="stylesheet" /> -->
+{% endblock %}
 
 
 {% block content %}
@@ -21,15 +25,100 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card" style="padding: 5%;">
-			<form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
-			    <input type=file name=photo>
-			    <input type="submit">
-			</form>
-		  </div>
-		</div>
-	  </div>
-	 </div>
-   </div>
+            <div class="sub_menu">
+                <div class="step step_active">
+                  <p class="step_name sub_active">Creative</p>
+                </div>
+              </div>
+            <div class="yellow_border card-body">
+              <h6 class="title">Last step!</h6>
+              <h2 class="title blue">Upload your marketing assets</h2>
+              <p>Upload as many assets as you'd like. This will help us better understand what you have done in the past and use it for future analysis.</p>{{test}}
+            </div>
+
+            <form method=POST enctype=multipart/form-data action="{{ url_for('creative') }}">
+              <div class="photo_container">
+
+                  <div class="box col-lg-12 col-md-12">
+                    <input type="file" name="photo" id="file-3" class="inputfile inputfile-3" data-multiple-caption="{count} files selected" multiple />
+                    <label for="file-3" class="file_label"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span id="filename">Upload images&hellip;</span></label>
+                    <input id="images_upload" type="submit" class="hide continue" value="SUBMIT">
+                  </div>
+<!--                   <div class="box col-lg-6 col-md-6">
+                    <input type="file" name="video" id="file-3" class="inputfile inputfile-3" data-multiple-caption="{count} files selected" multiple />
+                    <label for="file-3" class="file_label"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Upload videos&hellip;</span></label>
+                    <input type="submit" class="continue" value="Upload videos">
+                  </div> -->
+
+                <img src="https://100dayscss.com/codepen/syncing.svg" class="hide syncing">
+                <img src="https://100dayscss.com/codepen/checkmark.svg" class="hide done">
+              </div>
+            </form>
+            <div class="uploaded_files">
+              {% if images %}
+              <h5>Uploaded files</h5><hr>
+                {% for image in images %}
+                <div class="col-lg-12 col-md-12 files_row">
+                  <ul>
+                      <div class="asset-container">
+                        <li class="col-lg-8 col-md-8"><img src="{{image[0]}}"></li>
+                        <li class="col-lg-2 col-md-2">
+                          <p class="delete_asset x">X</p>
+                        </li>
+                      </div>
+
+                      <div class="delete_conf hidden col-lg-12 col-md-12">
+                        <p style="font-size:120%;">Are you sure you want to delete this asset?</p><br>
+                        <li style="font-size: 100%;" class="delete_asset confirmed">Yes</li>
+                        <li style="font-size: 100%;" class="delete_asset unconfirmed">No</li>
+                      </div>
+                  </ul>
+                </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
+{% block js %}
+<script type="text/javascript">
+'use strict';
 
+;( function( $, window, document, undefined )
+{
+  $( '.inputfile' ).each( function()
+  {
+    var $input   = $( this ),
+      $label   = $input.next( 'label' ),
+      labelVal = $label.html();
+
+    $input.on( 'change', function( e )
+    {
+      var fileName = '';
+
+      if( this.files && this.files.length > 1 )
+        fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+      else if( e.target.value )
+        fileName = e.target.value.split( '\\' ).pop();
+
+      if( fileName ){
+        $label.find( 'span' ).html( fileName );
+        $("#images_upload").removeClass("hide")
+
+      }
+      else
+        $label.html( labelVal );
+    });
+
+    // Firefox bug fix
+    $input
+    .on( 'focus', function(){ $input.addClass( 'has-focus' ); })
+    .on( 'blur', function(){ $input.removeClass( 'has-focus' ); });
+  });
+})( jQuery, window, document );
+</script>
+{% endblock %}
