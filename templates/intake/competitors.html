@@ -36,7 +36,7 @@
                   <div class="step">
                     <a href="/competitors/company/audience/product/product_2/salescycle" class="step_name">Sales Cycle</a>
                   </div>
-                </div><br><br>
+                </div>
 
 
                 <form method="POST" id="setup" action="{{ url_for('company') }}">
@@ -47,7 +47,6 @@
                       <h6 class="title">Help Market(r) get to know your marketing space better...</h6>
                       <h2 class="blue_header">Let's understand your environment</h2>
                       <p>This will increase the strength of Market(r)'s machine learning engines' (and supporting Humans') analysis.</p>
-                      <br>
                     </div>
 
 
@@ -59,10 +58,9 @@
 
                   <div class="reveal">  
                     <div class="card-body  all-icons">
-                      <div class="row">
-                        <label for="industry">Industry</label>
-                        <select name="industry" class="create_form form-control" id="industry">
-                        </select>
+                      <div style="margin-bottom:5%;">
+                        <label for="industry">Industry</label><br>
+                        <input style="width:50%;" name="industry" class="create_form form-control" id="industry" placeholder="Accountants">
                       </div>
                       <div class="row">
                         <p>Provide us with your top 2 competitors - this will ensure Market(r) really understands where your competition lies.</p>
@@ -70,17 +68,18 @@
                       </div>
                       <div class="row">
                         <div class="col=lg-6 col-md-6">  
-                          <label for="competitor_1">Competitor #1 name</label><br>
-                          <input type="text" name="comp_1_name" class="form-control" id="competitor_1">
+                          <label for="competitor_1">Competitor #1 name</label>
+                          <input type="text" name="comp_1_name" placeholder="Competitor #1 Name" class="form-control" id="competitor_1">
                         </div>
                         <div class="col=lg-6 col-md-6">  
-                          <label for="competitor_1">Competitor #1 website</label><br>
-                          <input type="text" name="comp_1_website" class="form-control" id="competitor_1">
+                          <label for="competitor_1">Website for this competitor</label>
+                          <input type="text" name="comp_1_website" placeholder="www.competitor1.com" class="website form-control" id="competitor_1">
+                          <span class="isValid"></span>
                         </div>
                       </div>
 
 
-                      <h6>What type of competitor are they to you?</h6><br>
+                      <h6>What type of competitor are they to you?</h6>
                       <div class="row">
                         <div class="hover_box col-lg-2 col-md-2 col-sm-4">
                           <h6>Direct</h6>
@@ -109,18 +108,19 @@
                     <div class="card-body  all-icons">
                       <div class="row">
                         <div class="col=lg-6 col-md-6">  
-                          <label for="competitor_1">Competitor #2 name</label><br>
-                          <input type="text" name="comp_2_name" class="form-control" id="competitor_1">
+                          <label for="competitor_1">Competitor #2 name</label>
+                          <input type="text" name="comp_2_name" placeholder="Competitor #2 Name" class="form-control" id="competitor_1">
                         </div>
                         <div class="col=lg-6 col-md-6">  
-                          <label for="competitor_1">Competitor #2 website</label><br>
-                          <input type="text" name="comp_2_website" class="form-control" id="competitor_1">
+                          <label for="competitor_1">Website for this competitor</label>
+                          <input type="text" name="comp_2_website" placeholder="www.competitor2.com" class="website form-control" id="competitor_1">
+                          <span class="isValid"></span>
                         </div>
                       </div>
 
 
 
-                      <h6>What type of competitor are they to you?</h6><br>
+                      <h6>What type of competitor are they to you?</h6>
                       <div class="row">
                         <div id="startup" class="hover_box col-lg-2 col-md-2 col-sm-4">
                           <h6>Direct</h6>

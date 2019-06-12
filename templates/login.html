@@ -13,6 +13,9 @@
 
 
 			<div class="login-form">
+				{% if conf %}
+					<p>Your email is confirmed! Login again to begin.</p>
+				{% endif %}
 
 				<div class="control-group">
 					<input type="text" class="login-field" value="" placeholder="email" name="username">

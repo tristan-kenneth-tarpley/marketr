@@ -98,13 +98,32 @@ $(".edit_products").click(function(e){
 
 	if ($(this).hasClass("add_product")){
 		i++
-		$('.input_table').append("<tr class='table_row'><td><input type='text' name='product_" + i + "_name' placeholder='product name " + i + "'></td><td><input type='text' name='p" + i + "_category' placeholder='details'></td><td><input type='text' name='p" + i + "_cogs' placeholder='$0.00'></td><td><input type='text' name='p" + i + "_sales_price' placeholder='$0.00'></td><td><input type='text' name='p" + i + "_qty_sold' placeholder='0'></td><td><input type='text' name='p" + i + "_est_unique_buyers' placeholder='0'></td><tr>")
+		var data = $('.data-row').last().clone()
+		var item_1_name = "product_" + i + "_name"
+		data.find('#item-1').attr("name", item_1_name)
+		var placeholder = "name " + i
+		data.find('#item-1').attr('placeholder', placeholder)
+		var item_2_name = "p" + i + "_category"
+		data.find('#item-2').attr("name", item_2_name)
+		var item_3_name = "p" + i + "_cogs"
+		data.find('#item-3').attr("name", item_3_name)
+		var item_4_name = "p" + i + "_sales_price"
+		data.find('#item-4').attr("name", item_4_name)
+		var item_5_name = "p" + i + "_qty_sold"
+		data.find('#item-5').attr("name", item_5_name)
+		var item_6_name = "p" + i + "_est_unique_buyers"
+		data.find('#item-6').attr("name", item_6_name)
+		var item_7_name = "price_model_" + i
+		data.find('#item-7').attr("name", item_7_name)
+
+		$('.input_table').append(data)
+
 	} else if ($(this).hasClass('remove_product')){
 		if (i > 1){
+			var last = $('.data-row').last()
+			last.remove()
 			i--
 		}
-		var last = $('.table_row').last()
-		last.remove()
 	}
 	$('.product_len').val(i)
 		
@@ -116,14 +135,10 @@ function init_products(){
 	function load_product_list(){
 		$.get("/load_product_list",function(results){
 			var results = JSON.parse(results)
-			console.log(results)
 
 			for (var i=0;i<results.length;i++){
 				var current_name = results[i]['name']
-
-
-				$('.product_prev_container').append("<div class='col-lg-3 col-md-3 col-sm-3 product_container'><p>" + results[i]['name'] + "</p></div>")
-
+				$('.product_prev_container').append(`<div class='col-lg-3 col-md-3 col-sm-3 product_container'><p>${results[i]['name']}</p></div>`)
 			}
 
 			$('.product_container:nth-of-type(1)').addClass('product_container_active')
@@ -136,10 +151,21 @@ function init_products(){
 		})
 	}
 
+	new Cleave('.cogs', {
+	    numeral: true,
+	    prefix: '$'
+	});
+	new Cleave('.price', {
+	    numeral: true,
+	    prefix: '$'
+	});
+
 
 	load_product_list()
 
+
 	var it = 0 
+
 
 	$('.p_form_submit').click(function(){
 		$('textarea').val("")
@@ -162,12 +188,9 @@ function init_products(){
 		var level_of_customization = $('input[name=level_of_customization]:checked').val()
 
 		var length = results.length
-		console.log(length)
-
 		it++
 
 		if (it < length){
-			console.log(it)
 
 			$('#product-name').text(results[it]['name'])
 			var p_value = $("#p_id").val()
@@ -181,10 +204,8 @@ function init_products(){
 
 			var p_id = results[it]['p_id']
 			$('#p_id').val(p_id)
-			console.log(p_id)
 		} else {
 			$('.card-body').addClass("hidden")
-			$('#setup').removeClass('hidden')
 		}
 
 		if(it == length) {
@@ -192,20 +213,59 @@ function init_products(){
 			$('.final').removeClass('hidden')
 			$('.product_prev_container').addClass("hidden")
 			$('.hide_on_end').addClass('hidden')
+			$(".change_on_submit").html(splash_content)
 		}
-
-
-	  $("html, body").animate({ scrollTop: 0 }, "slow");
+	   $("html, body").animate({ scrollTop: 0 }, "slow");
 	})
 }
 
 
+function load_sales_cycle(data, callback){
 
-function init_sales_cycle(){
+	var awareness = data.filter(function(item){
+	    return item.stage == "awareness";         
+	});
+	var evaluation = data.filter(function(item){
+	    return item.stage == "evaluation";         
+	});
+	var conversion = data.filter(function(item){
+	    return item.stage == "conversion";         
+	});
+	var retention = data.filter(function(item){
+	    return item.stage == "retention";         
+	});
+	var referral = data.filter(function(item){
+	    return item.stage == "referral";         
+	});
+
+	var stages = [awareness, evaluation, conversion, retention, referral]
+
+	function get_length(step){
+		var length = step.length
+		return length
+	}
 	$('.stage_container input').not('.first').addClass('hide')
 
-	$('.stage_container input').keydown(function(event){
+	for (var i=0;i<stages.length;i++){
+		var length = get_length(stages[i])
+		for (var x=0;x<stages[i].length;x++){
+			var toShow = $(".stage_container." + stages[i][x]['stage'] + " input").slice(0, length)
+			toShow.removeClass('hide')
+			if (toShow.val() !== stages[i][x]['tactic']){
+				toShow.eq(x).val(stages[i][x]['tactic'])
+			}
+		}
+	}
+	callback()		
+}
 
+
+function init_sales_cycle(){
+	$('.left_stage').addClass("stages")
+	$('.right_stage').addClass('stages')
+	
+
+	$('.stage_container input').keydown(function(event){
 
 	    var keycode = (event.keyCode ? event.keyCode : event.which);
 
@@ -213,68 +273,42 @@ function init_sales_cycle(){
 	        event.preventDefault()
 
 		    if($(document.activeElement).is(':last-child')){
-
 	    		if($(document.activeElement).val() == ''){
-
 		    		alert('You have to enter a value');
-
 		    	} else {
 		    		if($(document.activeElement).hasClass('last')){
-			    		
-						$('<span class="x">X</span>').insertAfter(document.activeElement)
 						$(document.activeElement).blur()
-
 			    	} else if ($(document.activeElement).parent().siblings().find('input:first-child').hasClass('hide')) {
-
-						$('<span class="x">X</span>').insertAfter(document.activeElement)
 		    			$(document.activeElement).parent().siblings().find('input:first-child').removeClass('hide')
 		    			$(document.activeElement).parent().siblings().find('input:first-child').focus()
-
 			    	}
-
 		    	}
-
 		    } else {
 		    	
 		    	if($(document.activeElement).val() == ''){
 		    		alert('You have to enter a value');
-		    	} else if ($(document.activeElement).next().hasClass('hide')) {
-
-		    		$(document.activeElement).next().removeClass('hide')
-
-		    		if (!$(document.activeElement).hasClass('first')){
-
-						$('<span class="x">X</span>').insertAfter(document.activeElement)
-
-		    		} else {
-		    			$('<span class="x hide">X</span>').insertAfter(document.activeElement)
-		    		}
-		    		$(document.activeElement).nextAll().eq(1).focus()
-					
-
+		    	} else if ($(document.activeElement).nextAll("input").eq(0).hasClass('hide')) {
+		    		$(document.activeElement).nextAll("input").eq(0).removeClass('hide')
+		    		$(document.activeElement).nextAll('.x').eq(0).removeClass("hide")
+		    		$(document.activeElement).nextAll().eq(0).focus()
 		    	}
 
 		    }
 		} else if (keycode == '8' || keycode == '46'){
 			
-			if ($(document.activeElement).val() == '' && !$(document.activeElement).hasClass("first") && ($(document.activeElement).next().hasClass('hide') || $(document.activeElement).is(':last-child')) && !$(document.activeElement).is(':first-child')){
-
+			if ($(document.activeElement).val() == '' && !$(document.activeElement).hasClass("first") && !$(document.activeElement).is(':first-child')){
 				event.preventDefault()
 				$(document.activeElement).addClass('hide')
-				$(document.activeElement).prevAll().eq(1).focus()
-				$(document.activeElement).next().remove()
-
+				$(document.activeElement).prevAll().eq(0).focus()
+				$(document.activeElement).next().val("")
 			}
 
 		}
 
 
 		$('.x').click(function() {
-			
-	
 			$(this).prev().val('')
-
-
+			$(this).prev().addClass('invisible')
 		})
 
 
@@ -321,7 +355,7 @@ function init_sales_cycle(){
 
 
 	    var conversion_tags = [
-			'Free Trial',
+			'Free trial',
 			'Pricing page',
 			'Live demo',
 			'Consultation',
@@ -375,14 +409,10 @@ function init_platforms(){
 	$.get('/load_history',function(data){
 
 		var results = JSON.parse(data)
-		// localStorage.setItem('results', JSON.stringify(results));
-
-		console.log(results)
 
 		for (var i = 0; i<results['data'][0].length; i++){
 			if(results['data'][0][i] == "yes"){
-				console.log(results['columns'][i] + ": " + results['data'][0][i])
-				$('.platforms_container').append("<div class='platform_row'><div class='col-lg-2'><h6>" + results['columns'][i] + "</h6><input style='display:none' type='text' value='" + results['columns'][i] + "' name='platform_" + i + "'></div><div class='col-lg-4 col-md-4'><h6>Still using?</h6><div class='hover_box col-lg-5 col-md-5'><br><h6>yes</h6><br></div>&nbsp;<div class='hover_box col-lg-5 col-md-5'><br><h6>no</h6><br></div><input class='hidden_input hidden' type='text' name='still_using_" + i + "'></div><div class='col-lg-6 col-md-6'><h6>How are the results?</h6><img src='/static/assets/img/frown.png' class='col-lg-3'><img src='/static/assets/img/neutral.png' class='col-lg-3'><img src='/static/assets/img/smile.png' class='col-lg-3'><img src='/static/assets/img/grin.png' class='col-lg-3'><input type='text' style='display:none;' class='img_input' name='results_" + i + "'></div></div><hr>")
+				$('.platforms_container').append("<div class='platform_row'><div class='col-lg-2'><h6>" + results['columns'][i] + "</h6><input style='display:none' type='text' value='" + results['columns'][i] + "' name='platform_" + i + "'></div><div class='col-lg-4 col-md-4'><h6>Still using?</h6><br><div class='hover_box col-lg-5 col-md-5'><h6>yes</h6></div>&nbsp;<div class='hover_box col-lg-5 col-md-5'><h6>no</h6></div><input class='hidden_input hidden' type='text' name='still_using_" + i + "'></div><div class='col-lg-6 col-md-6'><h6>How are the results?</h6><br><img src='/static/assets/img/frown.png' class='col-lg-3'><img src='/static/assets/img/neutral.png' class='col-lg-3'><img src='/static/assets/img/smile.png' class='col-lg-3'><img src='/static/assets/img/grin.png' class='col-lg-3'><input type='text' style='display:none;' class='img_input' name='results_" + i + "'></div></div><hr>")
 			}
 		}
 
@@ -411,7 +441,6 @@ function init_platforms(){
 				var nearest_input = $(this).find('.hidden_input');
 			} else if ($(this).hasClass('multi_row')){
 				var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
-				console.log(nearest_input)
 			} else {
 				var nearest_input = $(this).parent().find('.hidden_input');
 			}
@@ -426,12 +455,6 @@ function init_platforms(){
 		})
 
 	})
-
-
-
-	// var results = localStorage.getItem('results');
-	// results = JSON.parse(results)
-
 }
 	
 
@@ -440,228 +463,22 @@ function init_platforms(){
 function init_competitors(){
 
 
-	var industries = [
-		"Select Industry",
-		"Accountants",
-		"Advertising/Public Relations",
-		"Aerospace, Defense Contractors",
-		"Agribusiness",
-		"Agricultural Services & Products",
-		"Agriculture",
-		"Air Transport",
-		"Air Transport Unions",
-		"Airlines",
-		"Alcoholic Beverages",
-		"Alternative Energy Production & Services",
-		"Architectural Services",
-		"Attorneys/Law Firms",
-		"Auto Dealers",
-		"Auto Dealers, Japanese",
-		"Auto Manufacturers",
-		"Automotive",
-		"Banking, Mortgage",
-		"Banks, Commercial",
-		"Banks, Savings & Loans",
-		"Bars & Restaurants",
-		"Beer, Wine & Liquor",
-		"Books, Magazines & Newspapers",
-		"Broadcasters, Radio/TV",
-		"Builders/General Contractors",
-		"Builders/Residential",
-		"Building Materials & Equipment",
-		"Building Trade Unions ",
-		"Business Associations",
-		"Business Services",
-		"Cable & Satellite TV Production & Distribution",
-		"Candidate Committees ",
-		"Candidate Committees, Democratic",
-		"Candidate Committees, Republican",
-		"Car Dealers",
-		"Car Dealers, Imports",
-		"Car Manufacturers",
-		"Casinos / Gambling",
-		"Cattle Ranchers/Livestock",
-		"Chemical & Related Manufacturing",
-		"Chiropractors",
-		"Civil Servants/Public Officials",
-		"Clergy & Religious Organizations ",
-		"Clothing Manufacturing",
-		"Coal Mining",
-		"Colleges, Universities & Schools",
-		"Commercial Banks",
-		"Commercial TV & Radio Stations",
-		"Communications/Electronics",
-		"Computer Software",
-		"Conservative/Republican",
-		"Construction",
-		"Construction Services",
-		"Construction Unions",
-		"Credit Unions",
-		"Crop Production & Basic Processing",
-		"Cruise Lines",
-		"Cruise Ships & Lines",
-		"Dairy",
-		"Defense",
-		"Defense Aerospace",
-		"Defense Electronics",
-		"Defense/Foreign Policy Advocates",
-		"Democratic Candidate Committees ",
-		"Democratic Leadership PACs",
-		"Democratic/Liberal ",
-		"Dentists",
-		"Doctors & Other Health Professionals",
-		"Drug Manufacturers",
-		"Education ",
-		"Electric Utilities",
-		"Electronics Manufacturing & Equipment",
-		"Electronics, Defense Contractors",
-		"Energy & Natural Resources",
-		"Entertainment Industry",
-		"Environment ",
-		"Farm Bureaus",
-		"Farming",
-		"Finance / Credit Companies",
-		"Finance, Insurance & Real Estate",
-		"Food & Beverage",
-		"Food Processing & Sales",
-		"Food Products Manufacturing",
-		"Food Stores",
-		"For-profit Education",
-		"For-profit Prisons",
-		"Foreign & Defense Policy ",
-		"Forestry & Forest Products",
-		"Foundations, Philanthropists & Non-Profits",
-		"Funeral Services",
-		"Gambling & Casinos",
-		"Gambling, Indian Casinos",
-		"Garbage Collection/Waste Management",
-		"Gas & Oil",
-		"Gay & Lesbian Rights & Issues",
-		"General Contractors",
-		"Government Employee Unions",
-		"Government Employees",
-		"Gun Control ",
-		"Gun Rights ",
-		"Health",
-		"Health Professionals",
-		"Health Services/HMOs",
-		"Hedge Funds",
-		"HMOs & Health Care Services",
-		"Home Builders",
-		"Hospitals & Nursing Homes",
-		"Hotels, Motels & Tourism",
-		"Human Rights ",
-		"Ideological/Single-Issue",
-		"Indian Gaming",
-		"Industrial Unions ",
-		"Insurance",
-		"Internet",
-		"Israel Policy",
-		"Labor",
-		"Lawyers & Lobbyists",
-		"Lawyers / Law Firms",
-		"Leadership PACs ",
-		"Liberal/Democratic",
-		"Liquor, Wine & Beer",
-		"Livestock",
-		"Lobbyists",
-		"Lodging / Tourism",
-		"Logging, Timber & Paper Mills",
-		"Manufacturing, Misc",
-		"Marine Transport",
-		"Meat processing & products",
-		"Medical Supplies",
-		"Mining",
-		"Misc Business",
-		"Misc Finance",
-		"Misc Manufacturing & Distributing ",
-		"Misc Unions ",
-		"Miscellaneous Defense",
-		"Miscellaneous Services",
-		"Mortgage Bankers & Brokers",
-		"Motion Picture Production & Distribution",
-		"Music Production",
-		"Natural Gas Pipelines",
-		"Newspaper, Magazine & Book Publishing",
-		"Non-profits, Foundations & Philanthropists",
-		"Nurses",
-		"Nursing Homes/Hospitals",
-		"Nutritional & Dietary Supplements",
-		"Oil & Gas",
-		"Other",
-		"Payday Lenders",
-		"Pharmaceutical Manufacturing",
-		"Pharmaceuticals / Health Products",
-		"Phone Companies",
-		"Physicians & Other Health Professionals",
-		"Postal Unions",
-		"Poultry & Eggs",
-		"Power Utilities",
-		"Printing & Publishing",
-		"Private Equity & Investment Firms",
-		"Pro-Israel ",
-		"Professional Sports, Sports Arenas & Related Equipment & Services",
-		"Progressive/Democratic",
-		"Public Employees",
-		"Public Sector Unions ",
-		"Publishing & Printing",
-		"Radio/TV Stations",
-		"Railroads",
-		"Real Estate",
-		"Record Companies/Singers",
-		"Recorded Music & Music Production",
-		"Recreation / Live Entertainment",
-		"Religious Organizations/Clergy",
-		"Republican Candidate Committees ",
-		"Republican Leadership PACs",
-		"Republican/Conservative ",
-		"Residential Construction",
-		"Restaurants & Drinking Establishments",
-		"Retail Sales",
-		"Retired ",
-		"Savings & Loans",
-		"Schools/Education",
-		"Sea Transport",
-		"Securities & Investment",
-		"Special Trade Contractors",
-		"Sports, Professional",
-		"Steel Production ",
-		"Stock Brokers/Investment Industry",
-		"Student Loan Companies",
-		"Sugar Cane & Sugar Beets",
-		"Teachers Unions",
-		"Teachers/Education",
-		"Telecom Services & Equipment",
-		"Telephone Utilities",
-		"Textiles ",
-		"Timber, Logging & Paper Mills",
-		"Tobacco",
-		"Transportation",
-		"Transportation Unions ",
-		"Trash Collection/Waste Management",
-		"Trucking",
-		"TV / Movies / Music",
-		"TV Production",
-		"Unions",
-		"Unions, Airline",
-		"Unions, Building Trades",
-		"Unions, Industrial",
-		"Unions, Misc",
-		"Unions, Public Sector",
-		"Unions, Teacher",
-		"Unions, Transportation",
-		"Universities, Colleges & Schools",
-		"Vegetables & Fruits",
-		"Venture Capital",
-		"Waste Management",
-		"Wine, Beer & Liquor",
-		"Women's Issues"
-	]
+    var options = {
 
-	for (var t=0;t<industries.length;t++){
-		$('#industry').append("<option>" + industries[t] + "</option>")
-	}
+	  url: "/industries",
 
+	  getValue: "industries",
+
+	  list: {	
+	    match: {
+	      enabled: true
+	    }
+	  },
+
+	  theme: "square"
+	};
+
+	$("#industry").easyAutocomplete(options);
 }
 
 
@@ -681,160 +498,43 @@ function init_company_view(){
 
 
 
+function hover_box(){
 
-
-
-
-
-$(document).ready(function(){
-
-	$("br").remove()
-
-
-
-	var url_path = window.location.pathname;
-
-	$.get('/load_past_inputs', {page: url_path}, function(data){
-
-		var data = JSON.parse(data)
-		//console.log(data)
-
-		//sales cycle page
-		//console.log(data)
-		//console.log(Object.keys(data).length)
-
-		function load_sales_cycle(){
-
-			var awareness = data.filter(function(item){
-			    return item.stage == "awareness";         
-			});
-			var evaluation = data.filter(function(item){
-			    return item.stage == "evaluation";         
-			});
-			var conversion = data.filter(function(item){
-			    return item.stage == "conversion";         
-			});
-			var retention = data.filter(function(item){
-			    return item.stage == "retention";         
-			});
-			var referral = data.filter(function(item){
-			    return item.stage == "referral";         
-			});
-
-			var stages = [awareness, evaluation, conversion, retention, referral]
-
-			function get_length(step){
-				var length = step.length
-				return length
-				//$("." + value).children().find('input').val()  //css('border', '3px solid yellow')
-			}
-
-
-
-			for (var i=0;i<stages.length;i++){
-				var length = get_length(stages[i])
-				for (var x=0;x<stages[i].length;x++){
-					var toShow = $(".stage_container." + stages[i][x]['stage'] + " input").slice(0, length)
-					toShow.removeClass('hide')
-					if (toShow.val() !== stages[i][x]['tactic']){
-						
-						toShow.eq(x).val(stages[i][x]['tactic'])
-
-					}
-				}
-			}
-				
+	$(".in_box").click(function(event){
+		event.stopPropagation()
+		if (!$(this).parent().hasClass('hover_box_selected')) {
+			$(this).parent().addClass('hover_box_selected')
 		}
-
-		load_sales_cycle()
-
-
-
-		//if not sales cycle
-		if (data.length > 0){
-			Object.keys(data[0]).forEach(function(key) {
-
-				var value = data[0][key]
-
-
-				$('select[name=' + key + ']').val(value)
-				$('input[name=' +  key + ']').val(data[0][key])
-				$('textarea[name=' + key + ']').val(data[0][key])
-
-				$('.hover_box').each(function(){
-					var hb_many = $(this).hasClass('hb_many')
-					var closest_val = $(this).closest('.hidden_input').val()
-					var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
-
-					var many_check = hb_many && closest_val !== ""
-					var single_check = single && $(this).siblings('.hidden_input').val() !== ""
-
-					var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
-					var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
-
-					var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
-
-
-					if (many_check){
-						if ($(this).children('.hidden_input').val() !== ""){
-							$(this).addClass('hover_box_selected')
-						}
-					} else if (single_check){
-						var single_select =  $(this).siblings('.hidden_input').val()
-						var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
-						add_select.addClass("hover_box_selected")
-						
-					} else if (multi_row_check) {
-
-						$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
-					
-					}
-				})
-			})
-		}
+		input_clicked = true
+		return input_clicked
 	})
-
-
-
-
-
-
-	$('.reveal_button').click(function(){
-		$('.reveal').fadeIn('slow')
-		$(this).addClass("hidden")
-	})
-
-
-
-	var submenu_count = $('.step').length
-	
-	var width = (1/submenu_count*100)-1
-
-	$('.step').css('width', width+"%")
-
-	$( ".radio_container" ).each(function( i ) {
-
-	  	var quantity = $(this).children('.connector').length
-	  	var connect_width = (1/quantity*100)-1
-
-	  	$(this).children('.connector').css('width', connect_width + "%")
-	  	$(this).siblings('label').css('width',connect_width + "%")
-	});
-
-
-
-
 
 	$('.hover_box').click(function(){
+		var input_clicked = false
 
+		var in_box = $(this).find("input")
+
+		//toggle selected
 		if($(this).hasClass('hb_many')){
-			$(this).toggleClass('hover_box_selected')
+			if(!in_box.hasClass('in_box')){
+				$(this).toggleClass('hover_box_selected')
+			} else {				
+				$(this).toggleClass('hover_box_selected')
+				if ($(this).hasClass('hover_box_selected')){
+					$(this).find(".in_box").focus()
+				} else {	
+					$(this).find(".in_box").val("")
+				}
+
+			}
 		} else {
 			$(this).toggleClass('hover_box_selected')
 			$(this).siblings().removeClass('hover_box_selected')
 			$(this).parent().siblings().children().removeClass('hover_box_selected')
 		}
 
+
+		//populate database val
 		var test = $(this).find("h6")
 		var text = test[0]['textContent']
 
@@ -842,7 +542,6 @@ $(document).ready(function(){
 			var nearest_input = $(this).find('.hidden_input');
 		} else if ($(this).hasClass('multi_row')){
 			var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
-			console.log(nearest_input)
 		} else {
 			var nearest_input = $(this).parent().find('.hidden_input');
 		}
@@ -852,33 +551,262 @@ $(document).ready(function(){
 		} else {
 			nearest_input.val("")
 		}
+	})
+}
 
 
+function load_company(){
+	var perc_format = $('.perc_format')
+	var in_box = $('.in_box')
+
+	$(in_box).each(function(){
+		var this_hb = $(this).parent()
+		if ($(this).val() == ""){
+			this_hb.removeClass('hover_box_selected')
+		}
+	})
+}
+
+
+function load_audience(){
+	let param = new URLSearchParams(window.location.search)
+	let persona_id = param.get('persona_id')
+
+	var options = {
+
+	  url: "/cities",
+
+	  getValue: "city",
+
+	  list: {	
+	    match: {
+	      enabled: true
+	    }
+	  },
+
+	  theme: "square"
+	};
+
+	$("#location").easyAutocomplete(options);
+
+	if (persona_id == null){
+		$('.persona_intro').text("Think of a GREAT customer. Use them as a model for this first persona.")
+
+		$('.lastly').click(function(){
+			$('.lastlyFade').fadeIn()
+		})
+
+	} else {
+		$(".persona_intro").text("Awesome! Now, think of another excellent customer that's different from the other(s) you've added.")
+	}
+
+	$('.product_container:nth-of-type(1)').addClass('product_container_active')
+
+
+}
+
+function load_past_inputs(){
+	var url_path = window.location.pathname;
+	var product_2_path = "/competitors/company/audience/product/product_2"
+
+	let init_params = new URLSearchParams(window.location.search)
+
+	var args = {}
+
+	if (init_params.has('persona_id')){
+		args = {page: url_path,
+				persona_id: init_params.get('persona_id')}
+	} else {
+		args = {page: url_path}
+	}
+
+
+	$(".onward .continue").attr('value', 'SAVE AND CONTINUE')
+
+	if (url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
+
+		$.get('/load_past_inputs', args, function(data){
+			if (data !== 'nah, not this time' && data !== 'nah') {
+
+				var data = JSON.parse(data)
+				//if audience
+
+
+				if (url_path == "/creative") {
+					console.log(data)
+				}
+
+
+				load_sales_cycle(data, init_sales_cycle)
+
+				//if not sales cycle
+				if (data.length > 0){
+					Object.keys(data[0]).forEach(function(key) {
+
+						var value = data[0][key]
+						let param = new URLSearchParams(window.location.search)
+						//Does sent exist?
+						
+
+						if (param.has('persona_id')){
+							let persona_id = param.get('persona_id')
+							var audience_filter = data.filter(function(item){
+							    return item.audience_id == persona_id;         
+							});
+							$("#" + persona_id).parent().addClass("product_container_active")
+							$(".dyn_link").not("#" + persona_id).parent().removeClass('product_container_active')
+							data = audience_filter
+
+						}
+
+						$('select[name=' + key + ']').val(value)
+						$('input[name=' +  key + ']').val(data[0][key])
+						$('textarea[name=' + key + ']').val(data[0][key])
+
+						$('.hover_box').each(function(){
+							var hb_many = $(this).hasClass('hb_many')
+							var closest_val = $(this).closest('.hidden_input').val()
+							var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
+
+							var many_check = hb_many && closest_val !== ""
+							var single_check = single && $(this).siblings('.hidden_input').val() !== ""
+
+							var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
+							var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
+
+							var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
+
+
+							if (many_check){
+								if ($(this).children('.hidden_input').val() !== ""){
+									$(this).addClass('hover_box_selected')
+								}
+							} else if (single_check){
+								var single_select =  $(this).siblings('.hidden_input').val()
+								var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
+								add_select.addClass("hover_box_selected")
+								
+							} else if (multi_row_check) {
+
+								$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
+							
+							}
+						})
+					})
+				}
+				load_company()
+			}
+		})
+	}
+}
+
+
+
+
+function init_sub_menu(){
+
+	var submenu_count = $('.step').length
+	
+	var width = (1/submenu_count*100)-1
+
+	$('.step').css('width', width+"%")
+}
+
+
+
+function init_radio(){
+	$( ".radio_container" ).each(function( i ) {
+
+	  	var quantity = $(this).children('.connector').length
+	  	var connect_width = (1/quantity*100)-1
+
+	  	$(this).children('.connector').css('width', connect_width + "%")
+	  	$(this).siblings('label').css('width',connect_width + "%")
+	});
+}
+
+function init_creative(){
+	$('.delete_asset.x').click(function(){
+		$(this).parent().parent().addClass('hidden')
+		$(this).parent().parent().siblings().removeClass("hidden")
 	})
 
+	$('.confirmed').click(function(){
+		var path = $(this).parent().siblings().find('img').attr('src')
+		args = {file_path: path}
+		$(this).parentsUntil('.files_row').remove()
+		$.get('/delete_asset', args, function(data){
+		})
+	})
+	$('.delete_asset.unconfirmed').click(function(){
+		$(this).parent().siblings().removeClass('hidden')
+		$(this).parent().addClass('hidden')
+	})
+}
 
+function isURL(str) {
+  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?'+ // port
+  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
 
+$(document).ready(function(){
+
+	load_past_inputs()
+	init_sub_menu()
+
+	$('.reveal_button').click(function(){
+		$('.reveal').fadeIn('slow')
+		$(this).addClass("hidden")
+	})
+
+	var url_path = window.location.pathname;
+	if (url_path == "/competitors/company/audience"){
+		load_audience()
+	} else if (url_path == "/competitors/company/audience/product/product_2"){
+		init_radio()
+	}
+		hover_box()
+		init_creative()
+
+	$(".website").blur(function(){
+		var x = isURL($(this).val())
+		if (x == false){
+			$(this).siblings('.isValid').text("Invalid website")
+		} else {
+			$(this).siblings('.isValid').text(' ')
+		}
+		
+	})
+
+	var perc = []
+	$(".percent").keyup(function(){
+		$('.perc').empty()
+
+		var sum = 0;
+		$(".percent").each(function(){
+		    sum += +$(this).val();
+		});
+
+		$(".perc").text(sum);
+
+		if (parseInt($('.perc').text()) == 100) {
+			$('.container.counter').addClass('green')
+			$('.container.counter').removeClass('red')
+		} else if (parseInt($('.perc').text()) > 100) {
+			$('.container.counter').addClass('red')
+			$('.container.counter').removeClass('green')
+		} else {
+			$('.container.counter').removeClass('red')
+			$('.container.counter').removeClass('green')
+		}
+	})
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
