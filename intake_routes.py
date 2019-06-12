@@ -3,6 +3,7 @@ from core_routes import *
 from helpers import *
 from classes import *
 from flask import jsonify
+from bleach import clean
 import json
 
 
@@ -40,8 +41,9 @@ def stages():
 
 def get_first_audience(user):
     try:
-        query = f"SELECT persona_name, audience_id FROM dbo.audience WHERE customer_id = {session['user']}"
-        names_and_ids, cursor = execute(query, True)
+        tup = (session['user'],)
+        query = "SELECT persona_name, audience_id FROM dbo.audience WHERE customer_id = ?"
+        names_and_ids, cursor = execute(query, True, tup)
         names_and_ids = cursor.fetchall()
         first_id = names_and_ids[0][1]
         session['first_id'] = first_id
@@ -57,9 +59,11 @@ def get_first_audience(user):
 def splash():
     prev_step = request.args.get('prev_step')
     next_step = request.args.get('next_step')
+    next_step = clean(next_step)
     redirect = request.args.get('redirect')
-    query = f"SELECT heading, paragraph FROM dbo.splash WHERE after_page = '{next_step}'"
-    data, cursor = execute(query, True)
+    tup = (next_step,)
+    query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
+    data, cursor = execute(query, True, tup)
     heading, paragraph = cursor.fetchone()
     heading = heading.replace("`", "'")
     paragraph = paragraph.replace("`", "'")
@@ -77,32 +81,32 @@ def splash():
 @login_required
 def competitors():
     if request.form:
-
-        POST_first_name = str(request.form['first_name'])
-        POST_last_name = str(request.form['last_name'])
-        POST_company_name = str(request.form['company_name'])
-        POST_revenue = str(request.form['revenue'])
-        POST_zip = str(request.form['zip'])
-        POST_stage = str(request.form['stage'])
-        POST_employees = str(request.form['employees'])
+        POST_website = clean(request.form['website'])
+        POST_first_name = clean(request.form['first_name'])
+        POST_last_name = clean(request.form['last_name'])
+        POST_company_name = clean(request.form['company_name'])
+        POST_revenue = clean(request.form['revenue'])
+        POST_zip = clean(request.form['zip'])
+        POST_stage = clean(request.form['stage'])
+        POST_employees = clean(request.form['employees'])
 
         try:
             zips = zipcodes.matching(POST_zip)
             POST_city = zips[0]['city']
             POST_state = zips[0]['state']
-        except TypeError:
+        except:
             POST_city = "not defined"
             POST_state = "not defined"
             POST_zip = "00000"
 
+        tup = (POST_first_name, POST_last_name, POST_company_name, POST_revenue, POST_city, POST_state, POST_stage, POST_employees, POST_zip, POST_website, session['user'])
 
-
-        query = f"""UPDATE dbo.customer_basic 
-                    SET first_name = '{POST_first_name}', last_name = '{POST_last_name}', company_name = '{POST_company_name}', revenue = '{POST_revenue}', city = '{POST_city}', state = '{POST_state}', stage = '{POST_stage}', employees = '{POST_employees}', zip = {str(POST_zip)} 
-                    WHERE dbo.customer_basic.ID = '{session['user']}'; commit;"""
+        query = """UPDATE dbo.customer_basic 
+                    SET first_name = ?, last_name = ?, company_name = ?, revenue = ?, city = ?, state = ?, stage = ?, employees = ?, zip = ?, website = ?
+                    WHERE dbo.customer_basic.ID = ?; commit;"""
 
         if POST_first_name:
-            execute(query, False)
+            execute(query, False, tup)
 
             last_modified(str(session['user']))
 
@@ -120,26 +124,28 @@ def competitors():
 @login_required
 def company():
     if request.form:
-        POST_industry = str(request.form['industry'])
-        POST_comp_1_name = str(request.form['comp_1_name'])
-        POST_comp_1_website = str(request.form['comp_1_website'])
-        POST_comp_1_type = str(request.form['comp_1_type'])
-        POST_comp_2_name = str(request.form['comp_2_name'])
-        POST_comp_2_website = str(request.form['comp_2_website'])
-        POST_comp_2_type = str(request.form['comp_2_type'])
+        POST_industry = clean(request.form['industry'])
+        POST_comp_1_name = clean(request.form['comp_1_name'])
+        POST_comp_1_website = clean(request.form['comp_1_website'])
+        POST_comp_1_type = clean(request.form['comp_1_type'])
+        POST_comp_2_name = clean(request.form['comp_2_name'])
+        POST_comp_2_website = clean(request.form['comp_2_website'])
+        POST_comp_2_type = clean(request.form['comp_2_type'])
 
         if is_started('competitors', session['user']):
-            query = f"""UPDATE dbo.competitors
-                        SET customer_id = '{str(session['user'])}', industry = '{POST_industry}', comp_1_name = '{POST_comp_1_name}', comp_1_website = '{POST_comp_1_website}', comp_1_type = '{POST_comp_1_type}', comp_2_name = '{POST_comp_2_name}', comp_2_website = '{POST_comp_2_website}', comp_2_type = '{POST_comp_2_type}'
-                        WHERE customer_id = '{str(session['user'])}';commit;"""
-        else:                
+            tup = (session['user'], POST_industry, POST_comp_1_name, POST_comp_1_website, POST_comp_1_type, POST_comp_2_name, POST_comp_2_website, POST_comp_2_type, session['user'])
+            query = """UPDATE dbo.competitors
+                        SET customer_id = ?, industry = ?, comp_1_name = ?, comp_1_website = ?, comp_1_type = ?, comp_2_name = ?, comp_2_website = ?, comp_2_type = ?
+                        WHERE customer_id = ?;commit;"""
+        else:           
+            tup = (session['user'], POST_industry, POST_comp_1_name, POST_comp_1_website, POST_comp_1_type, POST_comp_2_name, POST_comp_2_website, POST_comp_2_type)     
             query = """INSERT INTO dbo.competitors 
                     (customer_id, industry, comp_1_name, comp_1_website, comp_1_type, comp_2_name, comp_2_website, comp_2_type)
-                    VALUES ('""" + str(session['user']) + """','""" + POST_industry + """','""" + POST_comp_1_name + """','""" + POST_comp_1_website + """','""" + POST_comp_1_type + """','""" + POST_comp_2_name + """','""" + POST_comp_2_website + """','""" + POST_comp_2_type + """');commit;""" 
+                    VALUES (?,?,?,?,?,?,?,?);commit;""" 
         
 
         if POST_comp_1_name:
-            execute(query, False)
+            execute(query, False, tup)
             last_modified(str(session['user']))
 
 
@@ -157,29 +163,31 @@ def company():
 @login_required
 def audience():
     if request.form:
-        POST_selling_to = str(request.form['selling_to'])
-        POST_biz_model = str(request.form['biz_model'])
-        POST_storefront_perc = str(request.form['storefront_perc'])
-        POST_direct_perc = str(request.form['direct_perc'])
-        POST_online_perc = str(request.form['online_perc'])
-        POST_tradeshows_perc = str(request.form['tradeshows_perc'])
-        POST_other_perc = str(request.form['other_perc'])
-        POST_freeform = str(request.form['rev_channel_freeform'])
+        POST_selling_to = clean(request.form['selling_to'])
+        POST_biz_model = clean(request.form['biz_model'])
+        POST_storefront_perc = clean(request.form['storefront_perc'])
+        POST_direct_perc = clean(request.form['direct_perc'])
+        POST_online_perc = clean(request.form['online_perc'])
+        POST_tradeshows_perc = clean(request.form['tradeshows_perc'])
+        POST_other_perc = clean(request.form['other_perc'])
+        POST_freeform = clean(request.form['rev_channel_freeform'])
         POST_freeform = POST_freeform.replace("'", "")
         POST_freeform = POST_freeform.replace('"', "")
 
 
 
         if is_started('company', session['user']):
-            query = f"""UPDATE dbo.company
-                        SET customer_id = '{str(session['user'])}', selling_to = '{POST_selling_to}', biz_model = '{POST_biz_model}', rev_channel_freeform = '{POST_freeform}', storefront_perc = '{POST_storefront_perc}', direct_perc = '{POST_direct_perc}', online_perc = '{POST_online_perc}', tradeshows_perc = '{POST_tradeshows_perc}', other_perc = '{POST_other_perc}'
-                        WHERE customer_id = '{str(session['user'])}';commit;"""
-        else:                
-            query = f"""INSERT INTO dbo.company
+            tup = (session['user'], POST_selling_to, POST_biz_model, POST_freeform, POST_storefront_perc, POST_direct_perc, POST_online_perc, POST_tradeshows_perc, POST_other_perc, session['user'])
+            query = """UPDATE dbo.company
+                        SET customer_id = ?, selling_to = ?, biz_model = ?, rev_channel_freeform = ?, storefront_perc = ?, direct_perc = ?, online_perc = ?, tradeshows_perc = ?, other_perc = ?
+                        WHERE customer_id = ?;commit;"""
+        else:             
+            tup = (session['user'], POST_selling_to, POST_biz_model, POST_freeform, POST_storefront_perc, POST_direct_perc, POST_online_perc, POST_tradeshows_perc, POST_other_perc)
+            query = """INSERT INTO dbo.company
                     (customer_id, selling_to, biz_model, rev_channel_freeform, storefront_perc, direct_perc, online_perc, tradeshows_perc, other_perc)
-                    VALUES ('""" + str(session['user']) + """','""" + POST_selling_to + """','""" + POST_biz_model + """', '""" + POST_freeform + """','""" + POST_storefront_perc + """','""" +  POST_direct_perc + """','""" +  POST_online_perc + """','""" +  POST_tradeshows_perc + """','""" +  POST_other_perc + """');commit;"""
+                    VALUES (?,?,?,?,?,?,?,?,?);commit;"""
 
-        execute(query, False)
+        execute(query, False, tup)
         last_modified(str(session['user']))
 
 
@@ -189,12 +197,15 @@ def audience():
         if names_and_ids == False:
                 # come back
             init_audience(session['user']) 
-            first_persona, cursor = execute(f"SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = {session['user']}", True)
+            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
+            tup = (session['user'],)
+            first_persona, cursor = execute(query, True, tup)
             first_persona = cursor.fetchone()
-            print(first_persona)
             cursor.close()
         else:
-            first_persona, cursor = execute(f"SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = {session['user']}", True)
+            tup = (session['user'],)
+            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
+            first_persona, cursor = execute(query, True, tup)
             first_persona = cursor.fetchone()
             first_persona = first_persona[0]
             cursor.close()
@@ -218,87 +229,93 @@ def audience():
 def product():
     if request.form:
 
-        POST_gender = str(request.form['gender'])
-        POST_age_group_1 = str(request.form['age_group_1'])
-        POST_age_group_2 = str(request.form['age_group_2'])
-        POST_age_group_3 = str(request.form['age_group_3'])
-        POST_age_group_4 = str(request.form['age_group_4'])
-        POST_age_group_5 = str(request.form['age_group_5'])
-        POST_age_group_6 = str(request.form['age_group_6'])
-        POST_age_group_7 = str(request.form['age_group_7'])
-        POST_age_group_8 = str(request.form['age_group_8'])
-        POST_location = str(request.form['location'])
-        POST_why = str(request.form['why'])
-        POST_before_1 = str(request.form['before_1'])
-        POST_before_2 = str(request.form['before_2'])
-        POST_before_3 = str(request.form['before_3'])
-        POST_before_4 = str(request.form['before_4'])
-        POST_before_5 = str(request.form['before_5'])
-        POST_before_6 = str(request.form['before_6'])
-        POST_before_7 = str(request.form['before_7'])
-        POST_before_8 = str(request.form['before_8'])
-        POST_before_9 = str(request.form['before_9'])
-        POST_before_10 = str(request.form['before_10'])
-        POST_before_freeform = str(request.form['before_freeform'])
+        POST_gender = clean(request.form['gender'])
+        POST_age_group_1 = clean(request.form['age_group_1'])
+        POST_age_group_2 = clean(request.form['age_group_2'])
+        POST_age_group_3 = clean(request.form['age_group_3'])
+        POST_age_group_4 = clean(request.form['age_group_4'])
+        POST_age_group_5 = clean(request.form['age_group_5'])
+        POST_age_group_6 = clean(request.form['age_group_6'])
+        POST_age_group_7 = clean(request.form['age_group_7'])
+        POST_age_group_8 = clean(request.form['age_group_8'])
+        POST_location = clean(request.form['location'])
+        POST_why = clean(request.form['why'])
+        POST_before_1 = clean(request.form['before_1'])
+        POST_before_2 = clean(request.form['before_2'])
+        POST_before_3 = clean(request.form['before_3'])
+        POST_before_4 = clean(request.form['before_4'])
+        POST_before_5 = clean(request.form['before_5'])
+        POST_before_6 = clean(request.form['before_6'])
+        POST_before_7 = clean(request.form['before_7'])
+        POST_before_8 = clean(request.form['before_8'])
+        POST_before_9 = clean(request.form['before_9'])
+        POST_before_10 = clean(request.form['before_10'])
+        POST_before_freeform = clean(request.form['before_freeform'])
         POST_before_freeform = POST_before_freeform.replace("'", "")
         POST_before_freeform = POST_before_freeform.replace('"', "")
-        POST_after_1 = str(request.form['after_1'])
-        POST_after_2 = str(request.form['after_2'])
-        POST_after_3 = str(request.form['after_3'])
-        POST_after_4 = str(request.form['after_4'])
-        POST_after_5 = str(request.form['after_5'])
-        POST_after_6 = str(request.form['after_6'])
-        POST_after_7 = str(request.form['after_7'])
-        POST_after_8 = str(request.form['after_8'])
-        POST_after_9 = str(request.form['after_9'])
-        POST_after_10 = str(request.form['after_10'])
-        POST_after_freeform = str(request.form['after_freeform'])
+        POST_after_1 = clean(request.form['after_1'])
+        POST_after_2 = clean(request.form['after_2'])
+        POST_after_3 = clean(request.form['after_3'])
+        POST_after_4 = clean(request.form['after_4'])
+        POST_after_5 = clean(request.form['after_5'])
+        POST_after_6 = clean(request.form['after_6'])
+        POST_after_7 = clean(request.form['after_7'])
+        POST_after_8 = clean(request.form['after_8'])
+        POST_after_9 = clean(request.form['after_9'])
+        POST_after_10 = clean(request.form['after_10'])
+        POST_after_freeform = clean(request.form['after_freeform'])
         POST_after_freeform = POST_after_freeform.replace('"', "")
         POST_after_freeform = POST_after_freeform.replace("'", "")
-        POST_formality = str(request.form['formality'])
-        POST_buying_for = str(request.form['buying_for'])
-        POST_tech_savvy = str(request.form['tech_savvy'])
-        POST_decision_making = str(request.form['decision_making'])
+        POST_formality = clean(request.form['formality'])
+        POST_buying_for = clean(request.form['buying_for'])
+        POST_tech_savvy = clean(request.form['tech_savvy'])
+        POST_decision_making = clean(request.form['decision_making'])
         POST_decision_making = POST_decision_making.replace("'", "")
-        POST_details = str(request.form['details'])
-        POST_motive = str(request.form['motive'])
-        POST_persona_name = str(request.form['persona_name'])
+        POST_details = clean(request.form['details'])
+        POST_motive = clean(request.form['motive'])
+        POST_persona_name = clean(request.form['persona_name'])
 
         session['hide'] = False
 
         if request.form['submit_button'] == '+ ADD ANOTHER PERSONA':
             init_audience(session['user'])
-            query = f"SELECT TOP 2 audience_id FROM dbo.audience WHERE customer_id = {session['user']} ORDER BY audience_id desc"
-            data, cursor = execute(query, True)
+            first_tup = (session['user'],)
+            query = "SELECT TOP 2 audience_id FROM dbo.audience WHERE customer_id = ? ORDER BY audience_id desc"
+            data, cursor = execute(query, True, first_tup)
             data = cursor.fetchall()
             next_audience_id = data[0][0]
             current_audience_id = data[1][0]
             session['current_audience_id'] = current_audience_id
             cursor.close()
+            tup = (POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, session['user'], POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], current_audience_id)
+            update_query = """UPDATE dbo.audience
+                        SET formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, customer_id = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
+                        WHERE customer_id = ? AND audience_id = ?; commit;"""
 
-            query = f"""UPDATE dbo.audience
-                        SET formality = '{POST_formality}', buying_for = '{POST_buying_for}', tech_savvy = '{POST_tech_savvy}', decision_making = '{POST_decision_making}', details = '{POST_details}', motive = '{POST_motive}', customer_id = '{session['user']}', gender = '{POST_gender}', age_group_1 = '{POST_age_group_1}', age_group_2 = '{POST_age_group_2}', age_group_3 = '{POST_age_group_3}', age_group_4 = '{POST_age_group_4}', age_group_5 = '{POST_age_group_5}', age_group_6 = '{POST_age_group_6}', age_group_7 = '{POST_age_group_7}', age_group_8 = '{POST_age_group_8}', location = '{POST_location}', why = '{POST_why}', before_1 = '{POST_before_1}', before_2 = '{POST_before_2}', before_3 = '{POST_before_3}', before_4 = '{POST_before_4}', before_5 = '{POST_before_5}', before_6 = '{POST_before_6}', before_7 = '{POST_before_7}', before_8 = '{POST_before_8}', before_9 = '{POST_before_9}', before_10 = '{POST_before_10}', before_freeform = '{POST_before_freeform}', after_1 = '{POST_after_1}', after_2 = '{POST_after_2}', after_3 = '{POST_after_3}', after_4 = '{POST_after_4}', after_5 = '{POST_after_5}', after_6 = '{POST_after_6}', after_7 = '{POST_after_7}', after_8 = '{POST_after_8}', after_9 = '{POST_after_9}', after_10 = '{POST_after_10}', after_freeform = '{POST_after_freeform}', persona_name = '{POST_persona_name}'
-                        WHERE customer_id = '{session['user']}' AND audience_id = {current_audience_id}; commit;"""
+            print(update_query, tup)
  
             session['hide'] = True
 
-            execute(query, False)
+            execute(update_query, False, tup)
 
             return redirect(url_for('audience', redirect=True, hide=session['hide'], persona_id = next_audience_id))
 
         else:
-            query = f"""UPDATE dbo.audience
-                        SET customer_id =  '{str(session['user'])}', formality = '{POST_formality}', buying_for = '{POST_buying_for}', tech_savvy = '{POST_tech_savvy}', decision_making = '{POST_decision_making}', details = '{POST_details}', motive = '{POST_motive}', gender = '{POST_gender}', age_group_1 = '{POST_age_group_1}', age_group_2 = '{POST_age_group_2}', age_group_3 = '{POST_age_group_3}', age_group_4 = '{POST_age_group_4}', age_group_5 = '{POST_age_group_5}', age_group_6 = '{POST_age_group_6}', age_group_7 = '{POST_age_group_7}', age_group_8 = '{POST_age_group_8}', location = '{POST_location}', why = '{POST_why}', before_1 = '{POST_before_1}', before_2 = '{POST_before_2}', before_3 = '{POST_before_3}', before_4 = '{POST_before_4}', before_5 = '{POST_before_5}', before_6 = '{POST_before_6}', before_7 = '{POST_before_7}', before_8 = '{POST_before_8}', before_9 = '{POST_before_9}', before_10 = '{POST_before_10}', before_freeform = '{POST_before_freeform}', after_1 = '{POST_after_1}', after_2 = '{POST_after_2}', after_3 = '{POST_after_3}', after_4 = '{POST_after_4}', after_5 = '{POST_after_5}', after_6 = '{POST_after_6}', after_7 = '{POST_after_7}', after_8 = '{POST_after_8}', after_9 = '{POST_after_9}', after_10 = '{POST_after_10}', after_freeform = '{POST_after_freeform}', persona_name = '{POST_persona_name}'
-                        WHERE customer_id = '{str(session['user'])}' AND audience_id = {session['current_audience_id']};commit;"""
+            tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], session['current_audience_id'])
+            query = """UPDATE dbo.audience
+                        SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
+                        WHERE customer_id = ? AND audience_id = ?; commit;"""
 
         if POST_gender:
-            execute(query, False)
+            execute(query, False, tup)
             last_modified(str(session['user']))
 
 
     if 'redirect' in request.args:
         me = User(session['user'])
         page = 'product'
+        me.set_biz_model()
+        print(me.biz_model)
         hide_1 = me.hide(page, 1, 'biz_model')
         hide_2 = me.hide(page, 2, 'biz_model')
         mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
@@ -322,44 +339,46 @@ def product():
 @login_required
 def product_2():
     if request.form:
-        POST_gen_description = str(request.form['gen_description'])
+        POST_gen_description = clean(request.form['gen_description'])
         POST_gen_description = POST_gen_description.replace("'", "")
         POST_gen_description = POST_gen_description.replace('"', "")
-        POST_quantity = str(request.form['quantity'])
-        POST_link = str(request.form['link'])
-        POST_segment_1 = str(request.form['segment_1'])
-        POST_segment_2 = str(request.form['segment_2'])
-        POST_segment_3 = str(request.form['segment_3'])
-        POST_segment_4 = str(request.form['segment_4'])
-        POST_segment_5 = str(request.form['segment_5'])
-        POST_segment_6 = str(request.form['segment_6'])
-        POST_segment_7 = str(request.form['segment_7'])
-        POST_segment_8 = str(request.form['segment_8'])
-        POST_segment_9 = str(request.form['segment_9'])
-        POST_segment_10 = str(request.form['segment_10'])
-        POST_source_1 = str(request.form['source_1'])
-        POST_source_2 = str(request.form['source_2'])
-        POST_source_3 = str(request.form['source_3'])
-        POST_source_4 = str(request.form['source_4'])
-        POST_source_freeform = str(request.form['source_freeform'])
+        POST_quantity = clean(request.form['quantity'])
+        POST_link = clean(request.form['link'])
+        POST_segment_1 = clean(request.form['segment_1'])
+        POST_segment_2 = clean(request.form['segment_2'])
+        POST_segment_3 = clean(request.form['segment_3'])
+        POST_segment_4 = clean(request.form['segment_4'])
+        POST_segment_5 = clean(request.form['segment_5'])
+        POST_segment_6 = clean(request.form['segment_6'])
+        POST_segment_7 = clean(request.form['segment_7'])
+        POST_segment_8 = clean(request.form['segment_8'])
+        POST_segment_9 = clean(request.form['segment_9'])
+        POST_segment_10 = clean(request.form['segment_10'])
+        POST_source_1 = clean(request.form['source_1'])
+        POST_source_2 = clean(request.form['source_2'])
+        POST_source_3 = clean(request.form['source_3'])
+        POST_source_4 = clean(request.form['source_4'])
+        POST_source_freeform = clean(request.form['source_freeform'])
         POST_source_freeform = POST_source_freeform.replace("'", "")
         POST_source_freeform = POST_source_freeform.replace('"', "")
-        POST_product_1_name = str(request.form['product_1_name'])
+        POST_product_1_name = clean(request.form['product_1_name'])
 
 
         if is_started('product', session['user']):
-            query = f"""UPDATE dbo.product
-                        SET gen_description = '{POST_gen_description}',quantity = '{POST_quantity}', link = '{POST_link}',segment_1 = '{POST_segment_1}',segment_2 = '{POST_segment_2}',segment_3 = '{POST_segment_3}',segment_4 = '{POST_segment_4}',segment_5 = '{POST_segment_5}',segment_6 = '{POST_segment_6}',segment_7 = '{POST_segment_7}',segment_8 = '{POST_segment_8}',segment_9 = '{POST_segment_9}',segment_10 = '{POST_segment_10}',source_1 = '{POST_source_1}',source_2 = '{POST_source_2}',source_3 = '{POST_source_3}',source_4 = '{POST_source_4}',source_freeform = '{POST_source_freeform}'
-                        WHERE customer_id = {session['user']}"""
+            tup = (POST_gen_description,POST_quantity,POST_link,POST_segment_1,POST_segment_2,POST_segment_3,POST_segment_4,POST_segment_5,POST_segment_6,POST_segment_7,POST_segment_8,POST_segment_9,POST_segment_10,POST_source_1,POST_source_2,POST_source_3,POST_source_4,POST_source_freeform,session['user'])
+            query = """UPDATE dbo.product
+                        SET gen_description = ?,quantity = ?, link = ?,segment_1 = ?,segment_2 = ?,segment_3 = ?,segment_4 = ?,segment_5 = ?,segment_6 = ?,segment_7 = ?,segment_8 = ?,segment_9 = ?,segment_10 = ?,source_1 = ?,source_2 = ?,source_3 = ?,source_4 = ?,source_freeform = ?
+                        WHERE customer_id = ?"""
         else:
+            tup = (session['user'], POST_gen_description, POST_quantity, POST_link, POST_segment_1, POST_segment_2, POST_segment_3, POST_segment_4, POST_segment_5, POST_segment_6, POST_segment_7, POST_segment_8, POST_segment_9, POST_segment_10, POST_source_1, POST_source_2, POST_source_3, POST_source_4, POST_source_freeform)
             query = """INSERT INTO dbo.product
                     (customer_id,gen_description,quantity,link,segment_1,segment_2,segment_3,segment_4,segment_5,segment_6,segment_7,segment_8,segment_9,segment_10,source_1,source_2,source_3,source_4,source_freeform)
-                    VALUES ('""" + str(session['user']) + """' , '""" + POST_gen_description + """','""" + POST_quantity + """','""" + POST_link + """','""" + POST_segment_1 + """','""" + POST_segment_2 + """','""" + POST_segment_3 + """','""" + POST_segment_4 + """','""" + POST_segment_5 + """','""" + POST_segment_6 + """','""" + POST_segment_7 + """','""" + POST_segment_8 + """','""" + POST_segment_9 + """','""" + POST_segment_10 + """','""" + POST_source_1 + """','""" + POST_source_2 + """','""" + POST_source_3 + """','""" + POST_source_4 + """','""" + POST_source_freeform + """');commit;"""
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);commit;"""
            
 
 
         if POST_link:
-            execute(query, False)
+            execute(query, False, tup)
             last_modified(str(session['user']))
 
 
@@ -386,10 +405,11 @@ def product_2():
                 if secondCounter > 0 and secondCounter < product_len:
                     productData = productData[7:]
                 print("Product info: " + productData[0] + " " + productData[1] + " " + productData[2] + " " + productData[3] + " " + productData[5] + " " + productData[6])
-                query = f"""IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = '{productData[0]}' AND customer_id = {session['user']})
-                            INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES ('{session['user']}','{str(productData[0])}','{str(productData[1])}','{str(productData[2])}','{str(productData[3])}','{str(productData[4])}','{str(productData[5])}','{str(productData[6])}');commit;"""
+                tup = (productData[0], session['user'], session['user'], productData[0], productData[1], productData[2], productData[3], productData[4], productData[5], productData[6])
+                query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
+                            INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
 
-                execute(query, False)
+                execute(query, False, tup)
                 secondCounter += 1
 
             last_modified(str(session['user']))
@@ -432,17 +452,18 @@ def product_submit():
         POST_frequency_of_purchase = request.form['frequency_of_purchase']
         POST_value_prop = request.form['value_prop']
         POST_warranties_or_guarantee = request.form['warranties_or_guarantee']
-        POST_warranties_or_guarantee_freeform = request.form['warranties_or_guarantee_freeform']
+        POST_warranties_or_guarantee_freeform = clean(request.form['warranties_or_guarantee_freeform'])
         POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace("'", "")
         POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace('"', "")
         POST_num_skus = request.form['num_skus']
         POST_level_of_customization = request.form['level_of_customization']
         POST_pid = str(request.form['p_id'])
+        tup = (POST_complexity, POST_price, POST_product_or_service, POST_frequency_of_use, POST_frequency_of_purchase, POST_value_prop, POST_warranties_or_guarantee, POST_warranties_or_guarantee_freeform, POST_num_skus, POST_level_of_customization, POST_pid)
         query = """UPDATE dbo.product_list
-                    SET complexity = '""" + POST_complexity + """', price = '""" + POST_price + """', product_or_service = '""" + POST_product_or_service + """', frequency_of_use = '""" + POST_frequency_of_use + """', frequency_of_purchase = '""" + POST_frequency_of_purchase + """', value_prop = '""" + POST_value_prop + """', warranties_or_guarantee = '""" + POST_warranties_or_guarantee + """', warranty_guarantee_freeform = '""" + POST_warranties_or_guarantee_freeform + """', num_skus = '""" + POST_num_skus + """', level_of_customization = '""" + POST_level_of_customization + """'
-                    WHERE p_id = """ + POST_pid + """;commit;"""
+                    SET complexity = ?, price = ?, product_or_service = ?, frequency_of_use = ?, frequency_of_purchase = ?, value_prop = ?, warranties_or_guarantee = ?, warranty_guarantee_freeform = ?, num_skus = ?, level_of_customization = ?
+                    WHERE p_id = ?;commit;"""
 
-        execute(query, False)
+        execute(query, False, tup)
     last_modified(str(session['user']))
 
     return "success"
@@ -476,11 +497,11 @@ def nice():
                 
             elif key[:8] == "referral":
                 stage = "referral"
+            tup = (session['user'], value, session['user'], value)
+            query = f"""IF NOT EXISTS (SELECT tactic from dbo.{stage} WHERE customer_id = ? AND tactic = ?)
+            INSERT INTO dbo.{stage}(customer_id, tactic) values (?, ?);commit;"""
 
-            query = f"""IF NOT EXISTS (SELECT tactic from dbo.{stage} WHERE customer_id = {session['user']} AND tactic = '{value}')
-            INSERT INTO dbo.{stage}(customer_id, tactic) values ({session['user']}, '{value}');commit;"""
-
-            execute(query, False)
+            execute(query, False, tup)
 
     return redirect(url_for('splash', next_step='goals'))
 
@@ -505,19 +526,21 @@ def goals():
 @login_required
 def history():
     if request.form:
-        POST_goal = str(request.form['goal'])
-        POST_current_avg = str(request.form['current_avg'])
-        POST_target_avg = str(request.form['target_avg'])
-        POST_timeframe = str(request.form['timeframe'])
+        POST_goal = clean(request.form['goal'])
+        POST_current_avg = clean(request.form['current_avg'])
+        POST_target_avg = clean(request.form['target_avg'])
+        POST_timeframe = clean(request.form['timeframe'])
 
         if is_started('goals', session['user']):
-            query = f"""UPDATE dbo.goals
-                        SET customer_id = '{str(session['user'])}', goal = '{POST_goal}', current_avg = '{POST_current_avg}', target_avg = '{POST_target_avg}', timeframe = '{POST_timeframe}'
-                        WHERE customer_id = '{str(session['user'])}';commit;"""
-        else:                
-            query = "INSERT INTO dbo.goals (customer_id, goal,current_avg,target_avg,timeframe) VALUES (" + str(session['user']) + ",'" + POST_goal + "', '" + POST_current_avg + "', '" + POST_target_avg + "', '" + POST_timeframe + "');commit;"
+            tup = (session['user'],POST_goal, POST_current_avg, POST_target_avg, POST_timeframe, session['user'])
+            query = """UPDATE dbo.goals
+                        SET customer_id = ?, goal = ?, current_avg = ?, target_avg = ?, timeframe = ?
+                        WHERE customer_id = ?;commit;"""
+        else:              
+            tup = (session['user'], POST_goal, POST_current_avg, POST_target_avg, POST_timeframe)
+            query = "INSERT INTO dbo.goals (customer_id, goal,current_avg,target_avg,timeframe) VALUES (?,?,?,?,?);commit;"
 
-        execute(query, False)
+        execute(query, False, tup)
         last_modified(str(session['user']))
     return render_template('intake/2/history.html')
 
@@ -528,26 +551,28 @@ def history():
 @login_required
 def platforms():
     if request.form:
-        POST_facebook = str(request.form['facebook'])
-        POST_google = str(request.form['google'])
-        POST_bing = str(request.form['bing'])
-        POST_twitter = str(request.form['twitter'])
-        POST_instagram = str(request.form['instagram'])
-        POST_yelp = str(request.form['yelp'])
-        POST_linkedin = str(request.form['linkedin'])
-        POST_amazon = str(request.form['amazon'])
-        POST_snapchat = str(request.form['snapchat'])
-        POST_youtube = str(request.form['youtube'])
-        POST_none = str(request.form['none'])
+        POST_facebook = clean(request.form['facebook'])
+        POST_google = clean(request.form['google'])
+        POST_bing = clean(request.form['bing'])
+        POST_twitter = clean(request.form['twitter'])
+        POST_instagram = clean(request.form['instagram'])
+        POST_yelp = clean(request.form['yelp'])
+        POST_linkedin = clean(request.form['linkedin'])
+        POST_amazon = clean(request.form['amazon'])
+        POST_snapchat = clean(request.form['snapchat'])
+        POST_youtube = clean(request.form['youtube'])
+        POST_none = clean(request.form['none'])
 
         if is_started('history', session['user']):
-            query = f""" UPDATE dbo.goals
-                        SET customer_id = {session['user']}, facebook = '{POST_facebook}', google = '{POST_google}', bing = '{POST_bing}', twitter = '{POST_twitter}', instagram = '{POST_instagram}', yelp = '{POST_yelp}', linkedin = '{POST_linkedin}', amazon = '{POST_amazon}', snapchat = '{POST_snapchat}', youtube = '{POST_youtube}', none = '{POST_none}'
+            tup = (session['user'], POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, POST_none)
+            query = """ UPDATE dbo.goals
+                        SET customer_id = ?, facebook = ?, google = ?, bing = ?, twitter = ?, instagram = ?, yelp = ?, linkedin = ?, amazon = ?, snapchat = ?, youtube = ?, none = ?
                         ;commit;"""
         else:
-            query = "INSERT INTO dbo.history (facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube, customer_id, none) VALUES ('" + POST_facebook + "', '" + POST_google + "', '" + POST_bing + "', '" + POST_twitter + "', '" + POST_instagram + "', '" + POST_yelp + "', '" + POST_linkedin + "', '" + POST_amazon + "', '" + POST_snapchat + "', '" + POST_youtube + "', " + str(session['user']) + ", '" + POST_none + "');commit;"
+            tup = (POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, session['user'], POST_none)
+            query = "INSERT INTO dbo.history (facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube, customer_id, none) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);commit;"
         
-        execute(query, False)
+        execute(query, False, tup)
         last_modified(str(session['user']))
 
     return render_template('intake/2/platforms.html')
@@ -571,8 +596,9 @@ def past():
         d = pd.DataFrame(list(req.items()))
         q = 0
 
-        query = "UPDATE dbo.history SET digital_spend = '" + str(d.iloc[-1,1]) + "' WHERE customer_id = " + str(session['user']) + ";commit;"
-        execute(query, False)
+        tup = (d.iloc[-1,1], session['user'])
+        query = "UPDATE dbo.history SET digital_spend = ? WHERE customer_id = ?;commit;"
+        execute(query, False, tup)
         last_modified(str(session['user']))
 
         s = 0
@@ -580,9 +606,9 @@ def past():
         while q < (len(request.form) - 1):
             if q%3 == 0:
                 this = d.iloc[s:f,:]
-
-                query = "INSERT INTO dbo.platforms (customer_id,platform_name,currently_using,results) VALUES (" + str(session['user']) + ", '" + this.iloc[0,1] + "', '" + this.iloc[1,1] + "', " + str(this.iloc[2,1]) + ");commit;"
-                execute(query, False)
+                tup = (session['user'], this.iloc[0,1], this.iloc[1,1], this.iloc[2,1])
+                query = "INSERT INTO dbo.platforms (customer_id,platform_name,currently_using,results) VALUES (?,?,?,?);commit;"
+                execute(query, False, tup)
 
 
 
@@ -595,11 +621,11 @@ def past():
 @app.route('/history/platforms/past/done', methods=['GET', 'POST'])
 @login_required
 def history_freeform():
-    POST_history_freeform = str(request.form['history_freeform'])
+    POST_history_freeform = clean(request.form['history_freeform'])
+    tup = (POST_history_freeform, session['user'])
+    query = "UPDATE dbo.history SET history_freeform = ? WHERE customer_id = ?;commit"
 
-    query = "UPDATE dbo.history SET history_freeform = '" + POST_history_freeform + "' WHERE customer_id = " + str(session['user']) + ";commit"
-
-    execute(query, False)
+    execute(query, False, tup)
     last_modified(str(session['user']))
 
     return redirect(url_for('creative'))
@@ -615,8 +641,9 @@ configure_uploads(app, photos)
 @app.route('/creative', methods=['GET', 'POST'])
 @login_required
 def creative():
-    next_query = f"SELECT file_path FROM dbo.assets WHERE customer_id = {session['user']}"
-    data, cursor = execute(next_query, True)
+    user_tup = (session['user'],)
+    next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
+    data, cursor = execute(next_query, True, user_tup)
     data = cursor.fetchall()
     cursor.close()
     if len(data) > 0:
@@ -627,17 +654,17 @@ def creative():
     if request.method == 'POST' and 'photo' in request.files:
         filename = photos.save(request.files['photo'])
         path = filepath + "/" + filename
-
-        query = f"""IF NOT EXISTS (SELECT asset_name from dbo.assets WHERE customer_id = {session['user']} and asset_name = '{filename}')
+        tup = (session['user'], filename, session['user'], filename, "photo", path)
+        query = """IF NOT EXISTS (SELECT asset_name from dbo.assets WHERE customer_id = ? and asset_name = ?)
                         INSERT INTO dbo.assets(customer_id,
                                     asset_name,
                                     asset_type, 
                                     file_path)
-                        VALUES ({session['user']}, '{filename}', 'photo', '{path}');commit;"""
-        execute(query, False)
+                        VALUES (?, ?, ?, ?);commit;"""
+        execute(query, False, tup)
 
-        next_query = f"SELECT file_path FROM dbo.assets WHERE customer_id = {session['user']}"
-        data, cursor = execute(next_query, True)
+        next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
+        data, cursor = execute(next_query, True, user_tup)
         data = cursor.fetchall()
 
         return render_template('intake/creative.html', images=data)

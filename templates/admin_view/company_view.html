@@ -43,10 +43,10 @@
                   <!-- audience, multiple items -->
                     <!-- checking if there are multiple personas -->
                     {% if audiences != False %} 
+                      <div class="container">
                       <!-- iterating through indexes for personas -->
                       {% for key in audiences.keys() %}
                         <!-- display index -->
-
                         <div class="col-lg-5 col-md-5 admin_row" style="text-align:left;margin-left:5%;">
                           <h5><span class="orange">{{ key + 1 }}:</span> {{data['persona_name'][key]}}</h5>
                           <h6 class="blue">Audience ID: {{ data['audience_id'][key] }}</h6><br><hr>
@@ -73,6 +73,7 @@
                     {% else %}
                       <h3>Customer has not started {{ page }} page</h3>
                     {% endif %}
+                  </div>
 
                   {% elif page == 'salescycle' %}
                     <div class="col-lg-3 col-md-3">

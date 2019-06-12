@@ -22,21 +22,31 @@ class User:
 		self.set_selling_to()
 		self.set_num_products()
 		cursor = db.cursor()
-		if trigger == 'selling_to':
-			data = cursor.execute(f"SELECT hide_val FROM dbo.branches WHERE branch_action = 'hide' AND branch_trigger='{trigger}' AND branch_trigger_val = '{self.selling_to}' AND affected_page='{page}' AND ind={index}")
-		elif trigger == 'biz_model':
-			data = cursor.execute(f"SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger='{trigger}' AND branch_trigger_val = '{self.biz_model}' AND affected_page='{page}' AND ind={index}")
+		if trigger == 'biz_model':
+			query ="SELECT hide_val FROM dbo.branches WHERE branch_action = 'hide' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?"
+			test_query = query.replace("?", "%s")
+			print(test_query % (trigger, self.biz_model, page, index))
+			data = cursor.execute(query, (trigger, self.biz_model, page, index))
+			print(self.biz_model)
+		elif trigger == 'selling_to':
+			query ="SELECT hide_val FROM dbo.branches WHERE branch_action = 'hide' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?"
+			test_query = query.replace("?", "%s")
+			print(test_query % (trigger, self.selling_to, page, index))
+			data = cursor.execute(query, (trigger, self.selling_to, page, index))
+            
+
 		data = cursor.fetchone()
 		try:
-			data = data[0]
-			cursor.close()
-			if data == 1:
+			if data[0] == 1:
+				cursor.close()
 				return True
 			else:
 				cursor.close()
 				return False
 		except TypeError:
-			return False
+				print(data)
+				return False
+
 
 	def mask(self, page, index, trigger):
 		self.set_biz_model()
@@ -44,9 +54,9 @@ class User:
 		self.set_num_products()
 		cursor = db.cursor()
 		if trigger == 'selling_to':
-			data = cursor.execute(f"SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger='{trigger}' AND branch_trigger_val = '{self.selling_to}' AND affected_page='{page}' AND ind={index}")
+			data = cursor.execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", (trigger, self.selling_to, page, index))
 		elif trigger == 'biz_model':
-			data = cursor.execute(f"SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger='{trigger}' AND branch_trigger_val = '{self.biz_model}' AND affected_page='{page}' AND ind={index}")
+			data = cursor.execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", (trigger, self.biz_model, page, index))
 		data = cursor.fetchone()
 		try:
 			mask = data[0]
@@ -58,12 +68,11 @@ class User:
 			else:
 				return default, False
 		except TypeError:
-			new_data = cursor.execute(f"SELECT default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger='{trigger}' AND affected_page='{page}' AND ind={index}")
+			new_data = cursor.execute("SELECT default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND affected_page=? AND ind=?", (trigger, page, index))
 			new_data = cursor.fetchone()
 			new_data = new_data[0]
 			cursor.close()
 			return new_data, False
-
 
 
 

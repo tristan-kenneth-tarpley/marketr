@@ -4450,9 +4450,25 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 .admin_row img {
   width: 50%;
 }
+.isValid {
+  color: red;
+}
 
-
-
+.container.counter {
+  border: 3px solid #62cde0;
+  padding: 1% 2%;
+  margin: 2% auto;
+  color: #62cde0;
+  width: 20%;
+}
+.container.counter.green {
+  border: 3px solid #50c878 !important;
+  color: #50c878;
+}
+.container.counter.red {
+  border: 3px solid red !important;
+  color: red;
+}
 
 
 

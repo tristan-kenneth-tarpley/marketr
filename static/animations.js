@@ -151,6 +151,15 @@ function init_products(){
 		})
 	}
 
+	new Cleave('.cogs', {
+	    numeral: true,
+	    prefix: '$'
+	});
+	new Cleave('.price', {
+	    numeral: true,
+	    prefix: '$'
+	});
+
 
 	load_product_list()
 
@@ -470,8 +479,6 @@ function init_competitors(){
 	};
 
 	$("#industry").easyAutocomplete(options);
-
-
 }
 
 
@@ -616,7 +623,7 @@ function load_past_inputs(){
 
 	$(".onward .continue").attr('value', 'SAVE AND CONTINUE')
 
-	if (url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
+	if (url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
 
 		$.get('/load_past_inputs', args, function(data){
 			if (data !== 'nah, not this time' && data !== 'nah') {
@@ -737,7 +744,16 @@ function init_creative(){
 	})
 }
 
-
+function isURL(str) {
+  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?'+ // port
+  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
 
 $(document).ready(function(){
 
@@ -749,10 +765,47 @@ $(document).ready(function(){
 		$(this).addClass("hidden")
 	})
 
-	load_audience()
-	init_radio()
-	hover_box()
-	init_creative()
+	var url_path = window.location.pathname;
+	if (url_path == "/competitors/company/audience"){
+		load_audience()
+	} else if (url_path == "/competitors/company/audience/product/product_2"){
+		init_radio()
+	}
+		hover_box()
+		init_creative()
+
+	$(".website").blur(function(){
+		var x = isURL($(this).val())
+		if (x == false){
+			$(this).siblings('.isValid').text("Invalid website")
+		} else {
+			$(this).siblings('.isValid').text(' ')
+		}
+		
+	})
+
+	var perc = []
+	$(".percent").keyup(function(){
+		$('.perc').empty()
+
+		var sum = 0;
+		$(".percent").each(function(){
+		    sum += +$(this).val();
+		});
+
+		$(".perc").text(sum);
+
+		if (parseInt($('.perc').text()) == 100) {
+			$('.container.counter').addClass('green')
+			$('.container.counter').removeClass('red')
+		} else if (parseInt($('.perc').text()) > 100) {
+			$('.container.counter').addClass('red')
+			$('.container.counter').removeClass('green')
+		} else {
+			$('.container.counter').removeClass('red')
+			$('.container.counter').removeClass('green')
+		}
+	})
 })
 
 

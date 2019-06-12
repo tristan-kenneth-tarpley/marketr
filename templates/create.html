@@ -24,6 +24,10 @@
 					<input type="password" class="login-field" value="" placeholder="password" name="password">
 					<label class="login-field-icon fui-lock" for="blah-pass"></label>
 				</div>
+				{{ error }}
+				{% if error %}
+				<p>{{error}}!!!</p>
+				{% endif %}
  
                 <input type="submit" value="Create account" class="create_button btn btn-primary btn-large btn-block" >
 			    <br>

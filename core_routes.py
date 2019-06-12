@@ -2,13 +2,36 @@ from app import *
 from helpers import *
 from classes import User
 import hashlib
+from bleach import clean
 from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', first=4, second=0,third=4), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('error.html', first=5, second=0,third=0), 500
+
+
+
+
+
 app.config.from_pyfile('config.cfg')
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+
+@app.route('/bleach', methods=['GET'])
+def bleach():
+    x = clean("'asdf'4<=2")
+    print(x)
+    return x
+    
 
 @app.route('/')
 def index():
@@ -21,8 +44,9 @@ def index():
 def confirm_email(token):
     email = s.loads(token, salt='email-confirm', max_age=3600)
 
-    query = f"UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = '{email}';commit;"
-    execute(query, False)
+    tup = (email,)
+    query = "UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = ?;commit;"
+    execute(query, False, tup)
     # return query
     return render_template("login.html", conf=True)
 
@@ -33,42 +57,42 @@ def create_user():
     POST_PASSWORD = str(request.form['password'])
     password = sha256_crypt.encrypt(str(POST_PASSWORD))
 
-    token = s.dumps(POST_USERNAME, salt="email-confirm")
-    msg = Message('Confirm Email', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
-    link = url_for('confirm_email', token=token, _external=True)
-
-    msg.body = f"Your link is: {link}"
-
-    mail.send(msg)
-
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
-    query = f"""IF NOT EXISTS (select email, password from dbo.customer_basic WHERE email = '{POST_USERNAME}')
-                INSERT INTO dbo.customer_basic (
-                                    email,
-                                    password,
-                                    account_created,
-                                    last_modified,
-                                    email_confirmed)
-                VALUES ('{POST_USERNAME}',
-                        '{password}',
-                        '{str(st)}',
-                        '{str(st)}',
-                        0); commit;"""
+    first_tup = (POST_USERNAME,)
+    first_query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
+    data, cursor = execute(first_query, True, first_tup)
+    data = cursor.fetchone()
+    if data == None:
 
-    execute(query, False)
+        token = s.dumps(POST_USERNAME, salt="email-confirm")
+        msg = Message('Confirm Email', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
+        link = url_for('confirm_email', token=token, _external=True)
 
-    # query = f"""SELECT ID FROM dbo.customer_basic WHERE email = '{POST_USERNAME}'"""
-    # data, cursor = execute(query, True)
-    # data = cursor.fetchone()[0]
-    # cursor.close()
-    
-    # session['logged_in'] = True
-    # session.permanent = True
-    # uid = data
-    # session['user'] = int(uid)
-    return redirect(url_for("splash", next_step="begin"))
+        msg.body = f"Your link is: {link}"
+
+        mail.send(msg)
+
+        tup = (POST_USERNAME, password, str(st), str(st))
+        query = """INSERT INTO dbo.customer_basic (
+                                        email,
+                                        password,
+                                        account_created,
+                                        last_modified,
+                                        email_confirmed)
+                    VALUES (?,
+                            ?,
+                            ?,
+                            ?,
+                            0); commit;"""
+
+        execute(query, False, tup)
+        return redirect(url_for("splash", next_step="begin"))
+    else:
+        error = "Account already exists with email. Please try again."
+        print(error)
+        return render_template('create.html', error=error)
 
         
 @app.route('/login_page', methods=['GET'])
@@ -92,12 +116,13 @@ def login_required(f):
 
 @app.route('/login', methods=['POST'])
 def customer_login():
-    POST_USERNAME = str(request.form['username'])
-    POST_PASSWORD = str(request.form['password'])
+    POST_USERNAME = clean(request.form['username'])
+    POST_PASSWORD = clean(request.form['password'])
     
-    try:    
-        query = "SELECT email, password, ID, email_confirmed FROM dbo.customer_basic WHERE email = '" + str(POST_USERNAME) + "'"
-        data, cursor = execute(query, True)
+    try:   
+        tup = (POST_USERNAME,)
+        query = "SELECT email, password, ID, email_confirmed FROM dbo.customer_basic WHERE email = ?"
+        data, cursor = execute(query, True, tup)
         data = cursor.fetchall()
         cursor.close()
         pw = data[0][1]
@@ -125,8 +150,9 @@ def customer_login():
                     else:
                         return redirect(url_for(step))
             else:
-                query = f"SELECT heading, paragraph FROM dbo.splash WHERE after_page = 'begin'"
-                data, cursor = execute(query, True)
+                tup = ("begin",)
+                query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
+                data, cursor = execute(query, True, tup)
                 heading, paragraph = cursor.fetchone()
                 heading = heading.replace("`", "'")
                 paragraph = paragraph.replace("`", "'")
@@ -136,8 +162,8 @@ def customer_login():
             error = "Invalid credentials. Try again."
             return render_template("login.html", error = error)  
 
-    except Exception as e:
-    # except AssertionError:
+    # except Exception as e:
+    except AssertionError:
         error = "Invalid credentials. Try again!"
         return render_template("login.html", error = error)  
         
@@ -213,16 +239,18 @@ def branch():
 
         cursor = db.cursor()
         if branch_action == "hide":
-            query = f"""INSERT INTO dbo.branches
+            tup = (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
+            query = """INSERT INTO dbo.branches
                         (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
-                        VALUES ('{branch_trigger}', '{branch_action}', '{affected_page}', '{hide_val}', '{ind}', '{branch_trigger_val}');commit;"""
-            execute(query, False)
+                        VALUES (?,?,?,?,?,?);commit;"""
+            execute(query, False, tup)
 
         elif branch_action == "mask":
-            query = f"""INSERT INTO dbo.branches
+            tup = (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
+            query = """INSERT INTO dbo.branches
                         (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
-                        VALUES ('{branch_trigger}', '{branch_action}', '{affected_page}', '{mask_val}', '{default_mask}', '{ind}', '{branch_trigger_val}');commit;"""
-            execute(query, False)
+                        VALUES (?,?,?,?,?,?,?);commit;"""
+            execute(query, False, tup)
         else:
             return False
 
@@ -285,14 +313,14 @@ def company_view(customer_id):
 @admin_required
 def add_note(customer_id):
     if request.method == 'POST':
-        POST_note = request.form['note']
+        POST_note = clean(request.form['note'])
         # ' = `
         # " = ~
         POST_note = POST_note.replace("'","`")
         POST_note = POST_note.replace('"',"~")
-
-        query = f"INSERT INTO dbo.notes (customer_id, author, author_last, content) VALUES({customer_id}, '{session['admin_first']}', '{session['admin_last']}', '{POST_note}');commit;"
-        execute(query, False)
+        tup = (customer_id, session['admin_first'], session['admin_last'], POST_note)
+        query = "INSERT INTO dbo.notes (customer_id, author, author_last, content) VALUES(?,?,?,?);commit;"
+        execute(query, False, tup)
 
     return redirect(url_for('company_view', customer_id=customer_id, page="notes"))
 
@@ -301,13 +329,14 @@ def add_note(customer_id):
 def admin_login():
 
  
-    POST_USERNAME = str(request.form['username'])
-    POST_PASSWORD = str(request.form['password'])
+    POST_USERNAME = clean(request.form['username'])
+    POST_PASSWORD = clean(request.form['password'])
  
     
     # try:    
-    query = "SELECT email, password, ID, first_name, last_name FROM dbo.admins WHERE email = '" + str(POST_USERNAME) + "'"
-    data, cursor = execute(query, True)
+    tup = (POST_USERNAME,)
+    query = "SELECT email, password, ID, first_name, last_name FROM dbo.admins WHERE email = ?"
+    data, cursor = execute(query, True, tup)
     data = cursor.fetchall()
     pw = data[0][1]
     uid = data[0][2]
@@ -361,25 +390,25 @@ def new_admin():
 @app.route('/add_admin', methods=['POST'])
 @admin_required
 def add_admin():
-    POST_first_name = str(request.form['first_name'])
-    POST_last_name = str(request.form['last_name'])
-    POST_USERNAME = str(request.form['email'])
-    POST_PASSWORD = str(request.form['password'])
+    POST_first_name = clean(request.form['first_name'])
+    POST_last_name = clean(request.form['last_name'])
+    POST_USERNAME = clean(request.form['email'])
+    POST_PASSWORD = clean(request.form['password'])
     password = sha256_crypt.encrypt(str(POST_PASSWORD))
 
     cursor = db.cursor()
-
+    tup = (POST_first_name, POST_last_name, POST_USERNAME, password)
     query = """INSERT INTO dbo.admins (
                                     first_name,
                                     last_name,
                                     email,
                                     password)
-                VALUES ('""" + POST_first_name + """',
-                        '""" + POST_last_name + """',
-                        '""" + POST_USERNAME + """',
-                        '""" + password + """'); commit;"""
+                VALUES (?,
+                        ?,
+                        ?,
+                        ?); commit;"""
 
-    execute(query, False)
+    execute(query, False, tup)
 
     return redirect(url_for('admin'))
 
@@ -395,8 +424,9 @@ def add_admin():
 def delete_asset():
     if request.method == 'GET':
         file_path = request.args.get('file_path')
-        query = f"DELETE FROM dbo.assets WHERE file_path = '{file_path}' AND customer_id = {session['user']};commit;"
-        execute(query, False)
+        tup = (file_path, session['user'])
+        query = "DELETE FROM dbo.assets WHERE file_path = ? AND customer_id = ?;commit;"
+        execute(query, False, tup)
         if os.path.exists(file_path):
             # name = server_path.rsplit('/', 1)[-1]
             print(file_path)

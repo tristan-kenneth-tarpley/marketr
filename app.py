@@ -18,5 +18,5 @@ import analysis as an
 
 if __name__ == '__main__':
 	app.config.from_pyfile('config.cfg')
-	app.config.update(SECRET_KEY=os.urandom(12))
+	# app.config.update(SECRET_KEY=os.urandom(12))
 	app.run(debug=True)

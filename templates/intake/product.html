@@ -71,7 +71,8 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                           <p>Link to your top-level product page</p>
-                          <input type="text" name="link" class="form-control" placeholder="www.awesomeproducts.com/products">
+                          <input type="text" name="link" class="form-control website" placeholder="www.awesomeproducts.com/products">
+                          <span class="isValid"></span>
                         </div>
                       </div>
                       <p><em>How do you currently segment your products/services? (select all that apply)</em></p>
@@ -169,7 +170,8 @@
                                 {% endif %}
 
                                 <!-- price model -->
-                                <th class="{{ ' ' if hide_9 else 'hidden' }}">Primary price model</th>
+
+                                <th class="">Primary price model</th>
                                 <!-- qty sold -->
                                 <th><strong>{{ mask_4 }}</strong></th>
                                 <!-- est unique buyers -->
@@ -179,9 +181,9 @@
                             <tr class="data-row">
                               <td><input type="text" id="item-1" name="product_1_name" placeholder="name 1"></td>
                               <td><input type="text" id="item-2" name="p1_category" placeholder="details"></td>
-                              <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}"><input type="number" id="item-3" name="p1_cogs" placeholder="$0.00"></td>
-                              <td><input type="number" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
-                              <td class="{{ ' ' if hide_9 else 'hidden' }}">
+                              <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}"><input class="cogs" id="item-3" name="p1_cogs" placeholder="$0.00"></td>
+                              <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                              <td class="">
                                 <select class="form-control" id="item-7" name="price_model_1">
                                   <option></option>
                                   <option>monthly recurring</option>

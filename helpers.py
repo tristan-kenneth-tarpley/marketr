@@ -5,9 +5,13 @@ import zipcodes
 from db import db, sql_to_df, execute
 import pandas as pd
 
+def validate_login(username, password):
+    print('hi')
+
 def get_trigger_val(val, table, user):
-    query = f"SELECT {val} FROM dbo.{table} WHERE customer_id = {user}"
-    data, cursor = execute(query, True)
+    tup = (user,)
+    query = f"SELECT {val} FROM dbo.{table} WHERE customer_id = ?"
+    data, cursor = execute(query, True, tup)
     data = cursor.fetchone()
     data = data[0]
     cursor.close()
@@ -19,10 +23,11 @@ def get_biz_model(user):
     return x
 
 def get_num_products(user):
-    query = f"""SELECT COUNT(p_id)
+    tup  = (user,)
+    query = """SELECT COUNT(p_id)
                 FROM dbo.product_list
-                WHERE customer_id = {user}"""
-    data, cursor = execute(query, True)
+                WHERE customer_id = ?"""
+    data, cursor = execute(query, True, tup)
     data = cursor.fetchone()
     data = data[0]
     cursor.close()
@@ -39,12 +44,12 @@ def get_selling_to(user):
 def last_modified(user):
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-
+    tup = (st, user)
     query = """UPDATE dbo.customer_basic
-                SET last_modified = '""" + st + """'
-                WHERE dbo.customer_basic.id = '""" + user + """';commit;"""
+                SET last_modified = ?
+                WHERE dbo.customer_basic.id = ?;commit;"""
 
-    execute(query, False)
+    execute(query, False, tup)
 
 
 def clean_for_display(df):
@@ -89,8 +94,9 @@ def clean_for_display(df):
 
 
 def is_started(table, user):
-    query = f"SELECT * FROM dbo.{table} WHERE customer_id = {user}"
-    data, cursor = execute(query, True)
+    tup = (user,)
+    query = f"SELECT * FROM dbo.{table} WHERE customer_id = ?"
+    data, cursor = execute(query, True, tup)
     data = cursor.fetchall()
     cursor.close()
     
@@ -127,8 +133,9 @@ def load_last_page(user):
             i+=1
             if def_query.empty == True:
                 perc_complete = str(i*10)
-                query = """UPDATE dbo.customer_basic SET perc_complete = '""" + str(perc_complete) + """' WHERE id = """ + str(user) + """;commit;"""
-                execute(query, False)
+                tup = (perc_complete, user)
+                query = """UPDATE dbo.customer_basic SET perc_complete = ? WHERE id = ?;commit;"""
+                execute(query, False, tup)
                 if step == "product":
                     return call_it(step)
                 else:
@@ -189,11 +196,12 @@ def past_inputs(page, user, persona_id):
 
 
 def init_audience(user):
+    tup = (user,)
     first_query = f"""INSERT INTO dbo.audience
           (customer_id)
-          VALUES({user});commit;"""
+          VALUES(?);commit;"""
 
-    execute(first_query, False)
+    execute(first_query, False, tup)
 
 
 def clean_audience(user):
