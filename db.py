@@ -5,7 +5,10 @@ server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
 password = 'Fiverrtemp!'
-driver= '{ODBC Driver 17 for SQL Server}'
+driver= '{ODBC Driver 13 for SQL Server}'
+#drivers = [item for item in pyodbc.drivers()]
+#driver = drivers[-1]
+
 
 connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
 db = pyodbc.connect(connStr)
