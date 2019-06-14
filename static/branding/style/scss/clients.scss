@@ -1,0 +1,70 @@
+/* Brnad minus
+-------------------*/
+.brand-minus {
+    background: $px-white;
+    padding: 20px;
+    margin-top: -60px;
+    position: relative;
+    border-radius: 5px;
+}
+
+/* Our Client 1
+-------------------*/
+.owl-item .brand-item {
+	img {
+		width: auto;
+		margin: 0 auto;
+	}
+}
+
+.our-client-border {
+	border: 1px solid #ddd;
+	text-align: center;
+	padding: 50px 20px;
+	background: $px-white;
+}
+
+/* Client Grid
+-------------------*/
+.clients-grid {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	li {
+		list-style: none;
+		.our-client {
+			position: relative;
+			padding: 15px;
+			img {
+				opacity: 0.9;
+				@include transition(ease-in-out all 0.25s);
+			}
+			&:before,
+			&:after {
+				position:absolute;
+				content: "";
+			}
+			&:after {
+				content:"";
+			    width: 100%;
+			    height: 0;
+			    top: auto;
+			    left: 0;
+			    bottom: -1px;
+			    border-bottom: 1px solid rgba(0,0,0,0.1);
+			}
+			&:before {
+				content:"";
+			    height: 100%;
+			    top: 0;
+			    left: -1px;
+			    border-left: 1px solid rgba(0,0,0,0.1);
+			}
+			&:hover {
+				img {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}

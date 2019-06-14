@@ -1,0 +1,125 @@
+/* ----------------------
+*	Section title
+---------------------------*/
+.section-title {
+	.st-help-text {
+	    color: $px-theme;
+	    text-transform: uppercase;
+	    line-height: normal;
+	    font-size: 16px;
+	    margin: 0 0 15px;
+	}
+	.icon {
+		width: 70px;
+		height: 70px;
+		line-height: 70px;
+		font-size: 25px;
+		border-radius: 50%;
+		color: $px-yellow;
+		background: lighten($px-yellow, 35%);
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 0 30px;
+	}
+	h2 {
+		font-size: 40px;
+        margin: 0 0 20px;
+	    padding: 0 0 20px;
+	    position: relative;
+	    font-weight: 700;
+	    color: $px-dark;
+	    @include down-lg {
+	    	font-size: 42px;
+	    }
+	    &:after {
+		    content: "";
+		    position: absolute;
+		    bottom: 0;
+		    left: 0;
+		    width: 50px;
+		    background: $px-theme;
+		    height: 3px;
+		    margin: auto;
+	    }
+	    &.white-color {
+	    	color: $px-white;
+	    	&:after {
+	    		background:$px-white;
+	    	}
+	    }
+		span {
+			color: $px-theme;
+			font-weight: 600;
+		}
+		@include down-md {
+			font-size: 38px;
+		}
+		@include down-sm {
+			font-size: 28px;
+		}
+	}
+	p {
+		margin: 15px 0 0;
+		font-size: 18px;
+		line-height: 32px;
+		@include down-sm {
+		    font-size: 16px;
+			line-height: 26px;
+		}
+	}
+	&.text-center {
+		h2 {
+			&:after {
+				right:0;
+			}
+		}
+	}
+}
+
+/* ----------------------
+*	Sub Title
+---------------------------*/
+.sub-title {
+	overflow: hidden;
+	text-align: center;
+	span {
+        font-size: 12px;
+		line-height: 20px;
+	    position: relative;
+		display: inline-block;
+		text-transform: uppercase;
+		font-weight: 600;
+		&:before,
+		&:after {
+		    content: "";
+		    position: absolute;
+		    top: 50%;
+		    height: 1px;
+		    width: 99%;
+		    display: block;
+		    border-bottom: 1px solid;
+		    opacity: .15;
+		}
+		&:after {
+			right: 100%;
+		    margin-right: 25px;
+		}
+		&:before {
+		    left: 100%;
+		    margin-left: 25px;
+		}
+	}
+}
+
+/* ----------------------
+*	Sub Title
+---------------------------*/
+.small-title {
+	h3 {
+	    font-size: 23px;
+	    margin: 0 0 25px;
+	    padding: 0 0 15px;
+	    border-bottom: 1px solid #ddd;
+	    font-weight: 500;
+	}
+}

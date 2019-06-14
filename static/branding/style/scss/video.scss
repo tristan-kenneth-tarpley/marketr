@@ -1,0 +1,13 @@
+.video-box {
+	position: relative;
+	border-radius: 5px;
+	overflow: hidden;
+	.video-btn {
+		top: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+		position: absolute;
+		bottom: 0;
+	}
+}

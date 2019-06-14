@@ -1,0 +1,118 @@
+/*------------------
+* Contact Us
+-------------------*/
+.form-transparent {
+	.form-control {
+	    background: #fff;
+	    border: none;
+	    box-shadow: none;
+	    border-radius: 0;
+	    height: 50px;
+	    padding: 8px 20px;
+	    font-size: 15px;
+	}
+	textarea {
+		&.form-control {
+			height: 150px;
+			padding: 20px;
+		}
+	}
+}
+
+/*------------------
+* General Form
+-------------------*/
+.form-normal {
+	padding: 25px;
+	background: #ffffff;
+	height: 100%;
+	h5 {
+		font-size: 18px;
+		margin: 0 0 20px;
+		font-weight: 700;
+		text-transform: capitalize;
+		color: $px-dark;
+	}
+	.form-control {
+		height: 45px;
+		border-radius: 0;
+		border: 1px solid #ddd;
+		box-shadow: none !important;
+		font-size: 14px;
+		&:focus {
+	  		border: 1px solid $px-theme;
+		}
+	}
+	textarea.form-control {
+		height: 160px;
+	}
+}
+
+.form-sm {
+	box-shadow: 0px 3px 10px 0px rgba(38, 59, 94, 0.1);
+    padding: 20px;
+    height: 100%;
+    &.light {
+    	background: $px-white;	
+    }
+	h5 {
+	    font-size: 16px;
+	    margin: 0 0 15px;
+	    font-weight: 500;
+	    text-transform: capitalize;
+		color: $px-dark;
+	}
+	.form-control {
+		height: 35px;
+		border-radius: 0;
+		border: 1px solid #ddd;
+		box-shadow: none !important; 
+		font-size: 14px;
+		&:focus {
+			border:1px solid $px-dark;
+		}
+	}
+	textarea.form-control {
+		height: 90px;
+	}
+}
+
+.contact-info {
+	padding: 60px 20px;
+	@include down-sm {
+		padding: 30px 20px;
+	}
+	&.white {
+		background: $px-white;
+	}
+	&.dark {
+		border: 10px solid $px-white;
+		h5 {
+			color: $px-white
+		}
+		p {
+			color: rgba(255,255,255,.58);
+		}
+		a {
+			color: rgba(255,255,255,.58);
+		}
+	}
+	h5 {
+	    font-size: 16px;
+	    font-weight: 500;
+	    margin: 0 0 10px;
+	}
+	p {
+		margin: 0 0 5px;
+		font-size: 13px;
+		&:last-child {
+			margin: 0;
+		}
+	}
+	.address {
+		margin: 0 0 50px;
+	}
+	a {
+		font-size: 13px;
+	}
+}

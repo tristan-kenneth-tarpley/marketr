@@ -1,0 +1,442 @@
+/*------------------
+* Feature Box
+--------------------*/
+.feature-box {
+    text-align: center;
+    padding: 18% 10%;
+    overflow: hidden;
+    z-index: 1;
+    @include transition(all ease-out 0.55s);
+    * {
+    	@include transition(all ease-out 0.55s);
+    }
+    &:after {
+	    content: "";
+	    position: absolute;
+	    top: -13px;
+	    left: 30%;
+	    width: 37px;
+	    background: $px-white;
+	    border-radius: 40px;
+	    height: 170px;
+	    transform: rotate(41deg);
+	    z-index: -1;
+	    opacity: 0.08;
+	    box-shadow: 66px -30px 0px 0 $px-white;
+    }
+    .icon {
+	    width: 80px;
+	    height: 80px;
+	    position: relative;
+	    text-align: center;
+	    line-height: 80px;
+	    font-size: 40px;
+	    background: $px-gray;
+	    color: $px-theme;
+	    border-radius: 50%;
+	    display: inline-block;
+	    vertical-align: top;
+	    margin-bottom: 20px;
+	    .dots {
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
+	    }
+    }
+    .feature-content {
+    	h5 {
+		    color: $px-dark;
+		    font-weight: 600;
+		    font-size: 15px;
+		    margin: 0 0 10px;
+    	}
+    	p {
+    		margin: 0;
+    	}
+    }
+    &:hover {
+    	background: $px-theme;
+    	.feature-content {
+    		h5 {
+    			color: $px-white;
+    		}
+    		p {
+    			color: rgba($px-white, 0.8);
+    		}
+    	}	
+    }
+}
+
+/*------------------
+* Feature Box 01
+--------------------*/
+.feature-box-01 {
+    padding: 40px 20px;
+    background: $px-white;
+    overflow: hidden;
+    z-index: 1;
+    top: 0;
+    .icon {
+        -ms-flex: 0 0 80px;
+	    flex: 0 0 80px;
+	    max-width: 80px;
+	    height: 80px;
+	    position: relative;
+	    text-align: center;
+	    line-height: 80px;
+	    font-size: 40px;
+	    background: $px-gray;
+	    color: $px-theme;
+	    .dots {
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
+	    }
+    }
+    .feature-content {
+    	padding-left: 20px;
+    	h5 {
+		    color: $px-dark;
+		    font-weight: 600;
+		    font-size: 16px;
+		    margin: 0 0 10px;
+    	}
+    	p {
+    		margin: 0;
+    	}
+    }
+}
+
+/*------------------
+* Feature Box 02
+--------------------*/
+.feature-box-02 {
+	min-height: 100%;
+	border: 1px solid $px-white;
+	padding: 20px 50px 20px 20px;
+	position: relative;
+	h5 {
+		margin: 0;
+	    padding: 0;
+	    color: $px-white;
+	    font-weight: 600;
+	    font-size: 16px;
+	}
+	.icon {
+        position: absolute;
+	    top: 0;
+	    bottom: 0;
+	    width: 32px;
+	    height: 12px;
+	    margin: auto;
+	    right: 30px;
+	    opacity: 0;
+	    @include transition(ease all 0.55s);
+	    &:before {
+    	    width: 32px;
+		    height: 2px;
+		    background: #fff;
+		    content: "";
+		    top: 0;
+		    bottom: 0;
+		    right: 0;
+		    margin: auto;
+		    position: absolute;
+	    }
+	    &:after {
+	    	content:"";
+	    	position: absolute;
+		    top: 0;
+		    bottom: 0;
+		    width: 12px;
+		    height: 12px;
+		    border-right: 2px solid #fff;
+		    border-bottom: 2px solid #fff;
+		    margin: auto;
+		    right: 0;
+		    @include rotate(-45);
+	    }
+	}
+	&:hover {
+		.icon {
+			right: 20px;
+			opacity: 1;
+		}
+	}
+}
+
+/*------------------
+* Feature Box 03
+--------------------*/
+.feature-box-03 {
+	.icon {
+	    -ms-flex: 0 0 70px;
+	    flex: 0 0 70px;
+	    max-width: 70px;
+	    text-align: center;
+	    line-height: 70px;
+	    border: 1px solid $px-theme;
+	    font-size: 28px;
+	    border-radius: 3px;
+	    color: $px-theme;
+	    position: relative;
+	}
+	.feature-content {
+		padding-left: 20px;
+	}
+
+	h5 {
+	    margin: 0;
+	    padding: 0 0 10px;
+	    font-weight: 600;
+	    font-size: 15px;
+	    color: $px-dark;
+	}
+	p {
+		margin: 0;
+	}
+}
+
+/*------------------
+* Feature Box 04
+--------------------*/
+.feature-box-04 {
+	.icon {
+	    -ms-flex: 0 0 70px;
+	    flex: 0 0 70px;
+	    max-width: 70px;
+	    text-align: center;
+	    line-height: 70px;
+	    font-size: 35px;
+	    position: relative;
+		+ .feature-content {
+			padding-left: 20px;
+		}
+	}
+	h5 {
+	    margin: 0;
+	    padding: 0 0 10px;
+	    font-weight: 600;
+	    font-size: 15px;
+	}
+	p {
+		margin: 0;
+	}
+}
+
+/*------------------
+* Feature Box 05
+--------------------*/
+.feature-box-05 {
+	.icon {
+	    -ms-flex: 0 0 65px;
+	    flex: 0 0 65px;
+	    max-width: 65px;
+	    line-height: 40px;
+	    font-size: 35px;
+	    position: relative;
+	}
+	h5 {
+	    margin: 0;
+	    padding: 0;
+	    font-weight: 600;
+	    font-size: 15px;
+	}
+	label {
+		font-size: 12px;
+		margin: 0;
+	}
+	.feature-content {
+		margin-top: 10px;
+	}
+	p {
+		margin: 0;
+	}
+}
+
+/*------------------
+* Feature Box 06
+--------------------*/
+.feature-box-06 {
+    text-align: center;
+	padding: 60px 25px;
+	.icon {
+	    width: 80px;
+	    height: 80px;
+	    line-height: 80px;
+	    text-align: center;
+	    font-size: 35px;
+	    position: relative;
+	    z-index: 1;
+	    display: inline-block;
+	    vertical-align: top;
+	    margin-bottom: 30px;
+	    &:after {
+	    	content: "";
+		    position: absolute;
+		    margin: auto;
+		    border-radius: 50px;
+		    @include transition(ease all 0.55s);
+		    z-index: -1;
+	    }
+	    &.ef-1 {
+		    &:after {
+			    border-top: 50px solid transparent;
+			    border-left: 50px solid currentColor;
+			    top: -10px;
+			    left: -10px;
+			    border-right: 50px solid transparent;
+			    border-bottom: 50px solid transparent;
+		    }
+	    }
+	    &.ef-2 {
+		    &:after {
+			    top: -10px;
+			    left: -10px;
+			    right: -10px;
+			    bottom: -10px;
+			    border: 4px solid currentcolor;
+			    border-bottom: 4px solid transparent;
+		    }
+	    }
+	    &.ef-3 {
+		    &:after {
+			    top: -8px;
+			    left: -8px;
+			    right: -8px;
+			    bottom: -8px;
+			    border: 2px solid currentcolor;
+			    border-bottom: 2px solid transparent;
+			    border-top: 2px solid transparent;
+		    }
+	    }
+	    &.ef-4 {
+		    &:after {
+			    top: -8px;
+			    left: -8px;
+			    right: -8px;
+			    bottom: -8px;
+			    border: 2px solid currentcolor;
+			    border-left: 2px solid transparent;
+			    border-right: 2px solid transparent;
+			    border-top: 2px solid transparent;
+		    }
+	    }
+	}
+	h5 {
+	    margin: 0;
+	    padding: 0 0 10px;
+	    font-weight: 600;
+	    font-size: 16px;
+	}
+	p {
+		margin: 0;
+	}
+}
+/*------------------
+* Feature Box 06
+--------------------*/
+.feature-box-07 {
+	.img-box {
+		min-height: 250px;
+	}
+	.features-content {
+		padding: 14% 10%;
+	}
+	h5 {
+	    margin: 0;
+	    padding: 0px 0 15px;
+	    font-weight: 600;
+	    font-size: 20px;
+	}
+	.btn-bar {
+		padding-top: 15px;
+	}
+}
+
+/*------------------
+*	Side Feature
+-------------------*/
+.side-feature {
+	.sf-icon {
+    	width: 80px;
+    	height: 80px;
+    	border-radius: 5px;
+    	line-height: 80px;
+    	font-size: 30px;
+    	text-align: center;
+    	border: 1px solid currentcolor;
+    	margin-bottom: 22px;
+    	position: relative;
+    	display: inline-block;
+    	.dots {
+    		position: absolute;
+    		top: 0;
+    		left: 0;
+    		right: 0;
+    		bottom: 0;
+    	}
+    	&.gray {
+    		color: $px-theme;
+    		background: $px-gray;
+	    }
+	    &.yellow {
+    		color: $px-yellow;
+    		background: lighten($px-yellow, 40%);
+	    }
+	    &.blue {
+    		color: $px-blue;
+    		background: lighten($px-blue, 43%);
+	    }
+	    &.green {
+    		color: $px-green;
+    		background: lighten($px-green, 43%);
+	    }
+	    &.pink {
+    		color: $px-pink;
+    		background: lighten($px-pink, 40%);
+	    }
+	}
+	label {
+	    background: $px-theme2nd;
+	    padding: 6px 20px;
+	    border-radius: 5px;
+	    color: $px-white;
+	    font-size: 14px;
+	    margin: 0 0 15px;
+	}
+	p.large {
+	    line-height: 32px;
+	    font-size: 18px;
+	}
+
+	h2 {
+        margin: 0 0 20px;
+	    font-size: 32px;
+	    font-weight: 600;
+	    &.large {
+		    margin: 0 0 20px;
+			font-size: 40px;
+			@include down-lg {
+				font-size: 35px;
+			}
+			@include down-sm {
+				font-size: 26px;
+			}
+	    }
+		span {
+			color: $px-theme;
+		}
+		@include down-sm {
+			margin: 0 0 15px;
+			font-size: 24px;
+		}
+	}
+	.btn-bar {
+		padding-top: 10px;
+	}
+}

@@ -1,0 +1,21 @@
+.pie-chart {
+	.pie_chart_in {
+		position: relative;
+		display: inline-block;
+		vertical-align: top;
+	}
+	.middle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		font-weight: 600;
+		font-size: 35px;
+	}
+	h5 {
+	    margin: 0;
+	    padding: 15px 0 0;
+	    font-size: 22px;
+	}
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Forgot Password</title>
+</head>
+<body>
+{% if send %}
+<form action="{{ url_for('reset') }}" method="POST">
+	<div class="login">
+		<div class="login-screen">
+			<div class="app-title">
+				<h1>Login</h1>
+			</div>
+
+
+			<div class="login-form">
+				{% if message_sent %}
+				{{message_sent}}
+				{% endif %}
+				<div class="control-group">
+					<label class="login-field-icon fui-user" for="login-name">Enter the email you used to set up your account</label>
+					<input type="text" class="login-field" value="" placeholder="email" name="username">
+				</div>
+ 
+                <input type="submit" value="Reset password" class="btn btn-primary btn-large btn-block" >
+			    <br>
+			</div>
+			<div class="create">
+				<a href="/login_page">Return to login</a>
+			</div>
+
+			<div class="create">
+				<a href="/new">Create new account</a>
+			</div>
+
+		</div>
+	</div>
+</form>
+{% else %}
+<form action="{{ url_for('update_password', token=token) }}" method="POST">
+	<div class="login">
+		<div class="login-screen">
+			<div class="app-title">
+				<h1>Set New Password</h1>
+			</div>
+
+
+			<div class="login-form">
+				<div class="control-group">
+					<label class="login-field-icon fui-user" for="login-name">Enter your new password</label>
+					<input type="password" class="login-field" value="" placeholder="password" name="password">
+				</div>
+ 
+                <input type="submit" value="Reset password" class="btn btn-primary btn-large btn-block" >
+			    <br>
+			</div>
+			<div class="create">
+				<a href="/login_page">Return to login</a>
+			</div>
+
+			<div class="create">
+				<a href="/new">Create new account</a>
+			</div>
+
+		</div>
+	</div>
+</form>
+{% endif %}
+<style type="text/css">
+* {
+box-sizing: border-box;
+}
+ 
+*:focus {
+	outline: none;
+}
+body {
+font-family: Helvetica;
+background-color: #62cde0;
+padding: 50px;
+}
+.login {
+margin: 20px auto;
+width: 300px;
+}
+.login-screen {
+background-color: #FFF;
+padding: 20px;
+border-radius: 5px
+}
+ 
+.app-title {
+text-align: center;
+color: #777;
+}
+ 
+.login-form {
+text-align: center;
+}
+.control-group {
+margin-bottom: 10px;
+}
+ 
+input {
+text-align: center;
+background-color: #ECF0F1;
+border: 2px solid transparent;
+border-radius: 3px;
+font-size: 16px;
+font-weight: 200;
+padding: 10px 0;
+width: 250px;
+transition: border .5s;
+}
+ 
+input:focus {
+border: 2px solid #3498DB;
+box-shadow: none;
+}
+ 
+.btn {
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: #62cde0;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 25px;
+  padding: 10px 0;
+  text-decoration: none;
+  text-shadow: none;
+  border-radius: 3px;
+  box-shadow: none;
+  transition: 0.25s;
+  display: block;
+  width: 250px;
+  margin: 0 auto;
+}
+ 
+.btn:hover {
+  opacity: .7;
+}
+ 
+.login-link {
+  font-size: 12px;
+  color: #444;
+  display: block;
+	margin-top: 12px;
+}
+
+</style>
+
+
+</body>
+</html>

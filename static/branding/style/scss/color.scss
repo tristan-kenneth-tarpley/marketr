@@ -1,0 +1,139 @@
+/* ----------------------
+*	Background color
+---------------------------*/
+.theme-bg {
+	background-color: $px-theme;
+}
+
+.theme-after:after {
+	background-color: $px-theme;
+}
+
+.theme-before:before {
+	background-color: $px-theme;
+}
+
+.theme2nd-after:after {
+	background-color: $px-theme2nd;
+}
+.theme2nd-before:before {
+	background-color: $px-theme2nd;
+}
+
+.theme2nd-bg {
+	background-color: $px-theme2nd;
+}
+
+.gray-bg {
+	background-color: $px-gray;
+}
+
+.gray-bg-g {
+	background: linear-gradient(to bottom, #f7f8ff 80%, #ffffff 101%);
+}
+
+.white-bg {
+	background-color: $px-white;
+}
+
+.white-after:after {
+	background-color: $px-white;
+}
+.white-before:before {
+	background-color: $px-white;
+}
+
+.black-bg {
+	background-color: $px-black;
+}
+
+.black-bg {
+	background-color: $px-black;
+}
+
+.extra-dark-gray-bg {
+	background-color: #1c1c1c;
+}
+
+.extra-light-gray-bg {
+	background-color: #f7f7f7;
+}
+
+.bg-dark-gray-bg {
+	background-color: #757575;
+}
+
+.pink-bg {
+	background-color: $px-pink;
+}
+
+.yellow-bg {
+	background-color: $px-yellow;
+}
+
+.green-bg {
+	background-color: $px-green;
+}
+
+.blue-bg {
+	background-color: $px-blue;
+}
+
+
+/* ----------------------
+*	Property
+---------------------------*/
+.bg-cover {
+	background-size: cover;
+}
+.bg-no-repeat {
+ 	background-repeat: no-repeat;
+ }
+.bg-fixed {
+ 	background-attachment: fixed;
+}
+.bg-center {
+	background-position: center;
+}
+
+/* ----------------------
+*	Text Color
+---------------------------*/
+.theme-color {
+	color: $px-theme;
+}
+
+.theme-color-2nd {
+	color: $px-theme2nd;
+}
+
+.dark-color {
+	color: $px-dark;
+}
+
+.white-color {
+	color: $px-white;
+}
+
+.white-color-light {
+	color: rgba($px-white, 0.65);
+}
+
+.pink-color {
+	color: $px-pink;
+}
+
+.yellow-color {
+	color: $px-yellow;
+}
+
+.green-color {
+	color: $px-green;
+}
+
+.blue-color {
+	color: $px-blue;
+}
+.light-color {
+	color: #798598;
+}

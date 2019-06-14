@@ -22,7 +22,7 @@
               <div class="card" style="padding: 5%;">
                 <div class="sub_menu">
                   <div class="step step_active">
-                    <a href="/competitors" class="step_name sub_active">Competitors</a>
+                    <a href="/competitors?splash=False" class="step_name sub_active">Competitors</a>
                   </div>
                   <div class="step">
                     <a href="/competitors/company" class="step_name">Company</a>
@@ -39,7 +39,7 @@
                 </div>
 
 
-                <form method="POST" id="setup" action="{{ url_for('company') }}">
+                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('company') }}">
                   <div class="card-header">
 
 

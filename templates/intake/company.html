@@ -38,7 +38,7 @@
                     <a href="/competitors/company/audience/product/product_2/salescycle" class="step_name">Sales Cycle</a>
                   </div>
                 </div>  
-                <form method="POST" id="setup" action="{{ url_for('audience') }}">
+                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('audience') }}">
                   <div class="card-header">
                     <div class="row yellow_border">
                       <h6 class="title">Now, let's talk business...</h6>
@@ -104,6 +104,10 @@
                             <div class="hover_box multi_row col-lg-2 col-md-2 col-sm-4">
                               <h6>Media Provider</h6>
                               <p>You produce content and make money from ads/promotions (e.g. blogger, tv station, magazine)</p>
+                            </div>
+                            <div class="hover_box multi_row col-lg-2 col-md-2 col-sm-4">
+                              <h6>Commission/Rev Share</h6>
+                              <p>You only make money when your customers do (real estate agent, payment processor, etc.)</p>
                             </div>
                           </div>
                         <input type="text" class="hidden hidden_input" name="biz_model">

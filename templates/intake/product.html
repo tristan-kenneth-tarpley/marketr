@@ -40,7 +40,7 @@
                 </div>
 
 
-                <form method="POST" id="setup" action="{{ url_for('product_2') }}">
+                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('product_2') }}">
 
                   <div class="card-header">
                     <div class="row yellow_border">
@@ -67,7 +67,7 @@
                       <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
                           <p>{{mask_5}}</p>
-                          <input type="number" class="form-control" name="quantity" placeholder="1">
+                          <input type="number" class="form-control" value="1" name="quantity" placeholder="1">
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                           <p>Link to your top-level product page</p>
@@ -121,7 +121,7 @@
                         </div>
                       </div>
 
-                      <p><em>How are these products made/sourced?* (select all that apply)</em></p>  
+                      <p class="{{ 'hidden' if hide_10 else ' ' }}"><em>How are these products made/sourced?* (select all that apply)</em></p>  
                       <div class="row {{ 'hidden' if hide_10 else ' ' }}">
                         <div class="hover_box hb_many col-lg-2">
                           <h6>Self</h6>
@@ -145,7 +145,7 @@
                         </div>
                       </div>
 
-                      <div class="row yellow_border">
+                      <div class="{{ 'hidden' if hide_10 else ' ' }} row yellow_border">
                         <textarea name="source_freeform" placeholder="<describe your method of producing your product offerings for sale>" class="form-control"></textarea>
                       </div>
 
@@ -182,13 +182,19 @@
                               <td><input type="text" id="item-1" name="product_1_name" placeholder="name 1"></td>
                               <td><input type="text" id="item-2" name="p1_category" placeholder="details"></td>
                               <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}"><input class="cogs" id="item-3" name="p1_cogs" placeholder="$0.00"></td>
-                              <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                              {% if hide_1 %}
+                                <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                              {% else %}
+                                <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                              {% endif %}
+
                               <td class="">
                                 <select class="form-control" id="item-7" name="price_model_1">
                                   <option></option>
                                   <option>monthly recurring</option>
                                   <option>annual recurring</option>
                                   <option>one-time payment</option>
+                                  <option>commission/rev share</option>
                                 </select>
                               </td>
                               <td><input type="number" id="item-5" name="p1_qty_sold" placeholder="0"></td>

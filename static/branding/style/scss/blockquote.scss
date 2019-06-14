@@ -1,0 +1,93 @@
+.blockquote-left {
+	padding: 0 20px;
+	border-left: 5px solid #ddd;
+	position: relative;
+	.icon {
+		font-size: 30px;
+		color: $px-theme;
+		padding-bottom: 15px;
+	}
+	p {
+		&:last-child {
+			margin-bottom:0px;
+		}
+	}
+}
+
+.blockquote-theme {
+	padding: 20px;
+	position: relative;
+	background: $px-theme;
+	color: $px-white;
+	border-radius: 5px;
+	.icon {
+		font-size: 30px;
+		color: $px-white;
+		padding-bottom: 15px;
+	}
+	p {
+		&:last-child {
+			margin-bottom:0px;
+		}
+	}
+}
+
+.blockquote-dark {
+	padding: 20px;
+	position: relative;
+	background: $px-dark;
+	color: $px-white;
+	border-radius: 5px;
+	.icon {
+		font-size: 30px;
+		color: $px-white;
+		padding-bottom: 15px;
+	}
+	p {
+		&:last-child {
+			margin-bottom:0px;
+		}
+	}
+}
+
+.blockquote-gray {
+	padding: 20px;
+	position: relative;
+	background: #eee;
+	color: $px-dark;
+	border-radius: 5px;
+	.icon {
+		font-size: 30px;
+		color: $px-dark;
+		padding-bottom: 15px;
+	}
+	p {
+		&:last-child {
+			margin-bottom:0px;
+		}
+	}
+}
+
+.blockquote-center {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    i {
+	    font-size: 32px;
+	    margin-bottom: 20px;
+	    opacity: 0.2;
+    }
+	p {
+	    font-size: 26px;
+	    line-height: 32px;
+	    padding: 0 70px;
+	    font-weight: 600;
+	    margin: 0 0 20px;
+		color: $px-dark;
+		@include down-sm {
+			font-size: 22px;
+		    line-height: 28px;
+		    padding: 0 20px;
+		}
+	}
+}

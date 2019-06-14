@@ -26,7 +26,7 @@
                   </div>
                 </div><br><br>
                 <div class="card-body">
-                  <form action=" {{ url_for( 'history' ) }}" method="post">
+                  <form class="ignore_default" action=" {{ url_for( 'history' ) }}" method="post">
                     <div class="card-header">
                       <div class="row yellow_border">
                         <h6>Before we can prescribe, we need to understand your goals...</h6><br>
@@ -44,7 +44,7 @@
                     <div class="reveal">
                         <div>
                           <div class="row" style="width: 90%;">
-                            <div class="hover_box col-lg-2 col-md-2">
+                            <div class="goals_focus hover_box col-lg-2 col-md-2">
                               <h6>Revenue</h6>
                               <p>Increase your income</p>
                             </div>
@@ -52,23 +52,22 @@
                               <h6>User growth</h6>
                               <p>Increase number of customers/users</p>
                             </div>
-                            <div class="hover_box col-lg-2 col-md-2">
+                            <div class="goals_focus hover_box col-lg-2 col-md-2">
                               <h6>CAC Reduction</h6>
                               <p>Decrease your cost of acquiring customers</p>
                             </div>
-                            <div class="hover_box col-lg-2 col-md-2">
+                            <div class="goals_focus hover_box col-lg-2 col-md-2">
                               <h6>Leads</h6>
                               <p>Increase # of leads to your organization</p>
                             </div>
                             <input type="text" name="goal" class="hidden hidden_input">
                           </div>
                         </div>
-
                         <p><em>How would you like that to change?</em></p>
                         <div class="row">
                           <div class="col-lg-6 col-md-6 col-sm-12">
                             <p>From (current average per month)</p>
-                            <textarea name="current_avg" placeholder="<type>" class="form-control"></textarea>
+                            <textarea name="current_avg" placeholder="<type>" id="from_focus" class="form-control"></textarea>
                           </div>
                           <div class="col-lg-6 col-md-6 col-sm-12">
                             <p>To (target average per month)</p>
@@ -120,4 +119,12 @@
     </div>
 
 
+{% endblock %}
+{% block js %}
+
+<script type="text/javascript">
+  $(".goals_focus").click(function(){
+    $("#from_focus").focus()
+  })
+</script>
 {% endblock %}

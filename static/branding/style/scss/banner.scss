@@ -1,0 +1,222 @@
+/*------------------
+*	Home Banner
+-------------------*/
+.home-banner {
+	.hb-text {
+		@include down-md {
+		    padding: 140px 0 30px;
+		    width: 430px;
+		    margin: 0 auto;
+		    max-width: 100%;
+		}
+		@include down-sm {
+			padding: 120px 0 50px;
+		}
+		h3 {
+			font-size: 44px;
+			margin: 0 0 15px;
+			font-weight: 600;
+			@include down-lg {
+				font-size: 38px;
+			}
+			@include down-sm {
+				font-size: 28px;
+			}
+		}
+		p {
+			font-size: 16px;
+			margin: 0;
+			@include down-sm {
+				font-size: 15px;
+			}
+		}
+	}
+	.hb-form {
+		padding-top: 25px;
+		.form-control {
+			background: $px-white;
+			height: 55px;
+			border:none;
+			box-shadow: none;
+			border-radius: 0;
+		}
+		.m-btn {
+			padding: 0 25px;
+			height: 55px;
+			line-height: 51px;
+			border-color: $px-white;
+			&:hover {
+				background:$px-theme;
+				color: $px-white;
+			}
+		}
+		.help-text {
+			color: $px-white;
+			opacity: 0.7;
+			padding-top: 10px;
+			display: inline-block;
+			font-size: 13px;
+		}
+	}
+	@include down-sm {
+		.full-screen {
+			min-height: auto;
+		}
+	}
+}
+
+/*------------------
+*	Home Banner 01
+-------------------*/
+.home-banner-01 {
+	.hb-text {
+		@include down-md {
+		    padding: 140px 0 30px;
+		    width: 430px;
+		    margin: 0 auto;
+		    max-width: 100%;
+		}
+		@include down-sm {
+			padding: 120px 0 20px;
+		}
+		h3 {
+			font-size: 60px;
+			margin: 0 0 15px;
+			font-weight: 600;
+			@include down-lg {
+				font-size: 38px;
+			}
+			@include down-sm {
+				font-size: 28px;
+			}
+		}
+		p {
+			font-size: 16px;
+			margin: 0;
+			@include down-sm {
+				font-size: 15px;
+			}
+		}
+		.btn-bar {
+			margin-top: 25px;
+			.m-btn {
+				min-width: 150px;
+				text-align: center;
+				+ .m-btn {
+					margin-left: 5px;
+				}
+				@include down-sm {
+					min-width: inherit;
+				}
+			}
+		}
+	}
+	@include down-md {
+		.full-screen {
+			min-height: auto;
+		}
+	}
+}
+
+/*------------------
+*	Home Banner 02
+-------------------*/
+.home-banner-02 {
+	.hb-text {
+		padding: 160px 0 30px;
+		@include down-md {
+		    padding: 140px 0 30px;
+		}
+		@include down-sm {
+			padding: 120px 0 50px;
+		}
+		h3 {
+			font-size: 60px;
+		    margin: 0 0 25px;
+		    font-weight: 700;
+			@include down-lg {
+				font-size: 40px;
+			}
+			@include down-sm {
+				font-size: 30px;
+			}
+		}
+		p {
+			font-size: 16px;
+			margin: 0;
+			@include down-sm {
+				font-size: 15px;
+			}
+		}
+	}
+	.hb-form {
+		padding-top: 25px;
+		.form-control {
+			background: $px-white;
+			height: 55px;
+			border:none;
+			box-shadow: none;
+			border-radius: 0;
+		}
+		.m-btn {
+			padding: 0 25px;
+			height: 55px;
+			line-height: 51px;
+			border-color: $px-white;
+			&:hover {
+				background:$px-theme;
+				color: $px-white;
+			}
+		}
+		.help-text {
+			color: $px-white;
+			opacity: 0.7;
+			padding-top: 10px;
+			display: inline-block;
+			font-size: 13px;
+		}
+	}
+}
+
+
+/*------------------
+*	Home Banner 02
+-------------------*/
+.home-banner-03 {
+	.hb-text {
+		@include down-md {
+		    padding: 140px 0 30px;
+		}
+		@include down-sm {
+			padding: 120px 0 50px;
+		}
+		label {
+		    padding: 5px 15px;
+		    border-radius: 5px;
+		    font-weight: 600;
+		    font-size: 12px;
+		    margin: 0 0 15px;
+		}
+		h3 {
+			font-size: 50px;
+		    margin: 0 0 25px;
+		    font-weight: 700;
+			@include down-lg {
+				font-size: 38px;
+			}
+			@include down-sm {
+				font-size: 30px;
+			}
+		}
+		p {
+			font-size: 16px;
+			margin: 0;
+			@include down-sm {
+				font-size: 15px;
+			}
+		}
+		.btn-bar {
+			margin-top: 40px;
+		}
+	}
+}

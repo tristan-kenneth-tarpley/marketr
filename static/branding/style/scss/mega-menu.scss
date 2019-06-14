@@ -1,0 +1,151 @@
+/* Desktop
+--------------------*/
+@include up-md {
+	.m-dropdown {
+		.m-dropdown-toggle {
+			vertical-align: middle;
+		}
+		.m-dropdown-menu {
+		    position: absolute;
+		    top: 120%;
+		    right: 0;
+		    background: $px-white;
+		    box-shadow: 0px 26px 21px 0px rgba(0, 0, 0, 0.1);
+		    border-top: 1px solid #eee;
+		    width: 180px;
+		    margin: 0;
+		    padding: 0;
+		    list-style: none;
+		    pointer-events: none;
+		    @include transition(ease all 0.55s);
+		    opacity: 0;
+		    > li {
+		    	> a {
+		    		color: $px-dark;
+	    		    padding: 8px 15px;
+				    display: block;
+				    font-size: 14px;
+				    font-weight: 600;
+		    		border-left: 3px solid transparent;
+		    	}
+		    	&:hover {
+		    		> a {
+		    			background: rgba($px-theme,0.08);
+		    			color: $px-theme;
+		    			border-left: 3px solid $px-theme;
+		    		}
+		    	}
+		    }
+		}
+
+		&:hover {
+			.m-dropdown-menu {
+				opacity: 1;
+				top: 100%;
+				pointer-events: auto;
+			}
+		}
+	}
+
+	.m-mega-menu {
+		position: static !important;
+		.m-dropdown-mega-menu {
+			width: 100%;
+			padding: 10px 25px;
+		}
+		.mm-link {
+			margin: 0;
+			padding: 15px 0;
+			li {
+				list-style: none;
+				position: relative;
+				padding: 6px 0;
+				a {
+					color: $px-dark;
+					display: block;
+				    position: relative;
+					padding-left: 25px;
+					i {
+					    position: absolute;
+					    top: 7px;
+					    left: 0;
+					    font-size: 13px;
+					    opacity: 0.6;
+					}
+				}
+				&:hover {
+					a {
+						color: $px-theme;
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Mobile
+--------------------*/
+@include down-md {
+	.m-dropdown {
+		.m-dropdown-menu {
+		    margin: 0;
+		    padding: 0;
+		    list-style: none;
+		    display: none;
+		    background: #252525;
+		    padding: 10px 15px;
+			> li {
+				&:not(:last-child) {
+					border-bottom: 1px solid rgba(255,255,255,.1);
+				}
+				> a {
+		            display: block;
+				    padding: 10px 0;
+				    font-size: 15px;
+				    color: #9d9d9d;
+				    vertical-align: top;
+				    &.active {
+						color: $px-white;
+					}
+				}
+			}
+		}
+
+		.m-dropdown-menu {
+			.container {
+				padding: 0;
+			}
+			.mm-link {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				> li {
+				border-bottom: 1px solid rgba(255,255,255,.1);
+				> a {
+			        display: block;
+				    padding: 10px 0 10px 25px;
+				    font-size: 15px;
+				    color: #9d9d9d;
+				    vertical-align: top;
+				    position: relative;
+				    i {
+					    position: absolute;
+					    top: 15px;
+					    left: 0;
+					    font-size: 13px;
+					    opacity: 0.6;
+					}
+				    &.active {
+						color: $px-white;
+					}
+				}
+			}
+			}
+		}
+		&.open-menu-parent {
+			.m-dropdown-menu {
+				display: block;
+			}
+		}
+	}
+}

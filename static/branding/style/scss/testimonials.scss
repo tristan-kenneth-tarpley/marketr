@@ -1,0 +1,110 @@
+/*------------------
+*	Testimonials
+-------------------*/
+.testimonial-col {
+	box-shadow: 0px 3px 10px 0px rgba(38, 59, 94, 0.1);
+    margin: 10px;
+    background: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    .tc-img {
+    	background-size: cover;
+    	height: 150px;
+    	position: relative;
+    	&:after {
+    		content:"";
+    		position: absolute;
+    		top: 0;
+    		left: 0;
+    		right: 0;
+    		bottom: 0;
+    		background: $px-theme;
+    		opacity: 0.5;
+    	}
+    }
+    .tc-info {
+    	position: relative;
+    	z-index: 1;
+    	color: $px-white;
+    	h5 {
+			margin: 0;
+		    padding: 0 0 8px;
+		    font-size: 18px;
+		    font-weight: 600;
+    	}
+    	label {
+    		font-weight: normal;
+    		margin: 0;
+    	}
+    }
+    .tc-text {
+    	position: relative;
+    	padding: 30px 15px 20px;
+    	text-align: center;
+    	i {
+		    width: 40px;
+		    height: 40px;
+		    position: absolute;
+		    top: -20px;
+		    left: 0;
+		    right: 0;
+		    margin: auto;
+		    background: $px-theme2nd;
+		    line-height: 40px;
+		    border-radius: 50%;
+		    color: $px-white;
+    	}
+    	p {
+    		margin: 0;
+    		font-size: 16px;
+    	}
+    }
+}
+
+/*------------------
+*	Testimonials 01
+-------------------*/
+
+.testimonial-col-01 {
+    padding: 40px 20px 20px;
+    border: 1px solid #ddd;
+    margin: 40px 10px 20px 10px;
+    position: relative;
+    text-align: center;
+    background: $px-white;
+    .tc-info {
+    	margin: 20px 0 0;
+    	h5 {
+		    margin: 0;
+		    padding: 0 0 4px;
+		    font-size: 15px;
+		    font-weight: 600;
+		    color: $px-dark;
+    	}
+    	label {
+    		font-weight: normal;
+    		margin: 0;
+    	}
+    }
+    .tc-text {
+    	i {
+            position: absolute;
+		    left: 0;
+		    width: 70px;
+		    height: 70px;
+		    line-height: 70px;
+		    font-size: 30px;
+		    border-radius: 50%;
+		    text-align: center;
+		    right: 0;
+		    top: -40px;
+		    margin: auto;
+		    background: $px-theme2nd;
+		    color: $px-white;
+    	}
+    	p {
+    		margin: 0;
+    		font-size: 16px;
+    	}
+    }
+}

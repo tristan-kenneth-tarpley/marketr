@@ -1,0 +1,16 @@
+.newsletter-box {
+	.form-control {
+	    height: 50px;
+	    border-radius: 0;
+	    border: none;
+	}
+	.m-btn {
+	    &.m-btn-theme2nd {
+	    	&:hover {
+	    		background:$px-theme;
+	    		border-color: $px-theme;
+	    		color: $px-white;
+	    	}
+	    }
+	}
+}
