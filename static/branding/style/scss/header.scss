@@ -1,0 +1,302 @@
+/*-----------------------
+*	Search
+-------------------------*/
+.h-search-section {
+	position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background: rgba(0,0,0,0.95);
+    @include transition(ease-in-out all 0.55s);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    .h_search {
+	    position: absolute;
+	    top: 30px;
+	    right: 30px;
+	    width: 50px;
+	    height: 50px;
+	    background: $px-white;
+	    line-height: 50px;
+	    text-align: center;
+	    font-size: 20px;
+	    border-radius: 50%;
+	    cursor: pointer;
+	    border: 2px solid $px-white;
+	    &:hover {
+	    	background:$px-theme;
+	    	color: $px-white;
+	    }
+    }
+    .h-search-form {
+    	h5 {
+		    font-size: 30px;
+		    margin: 0 0 40px;
+		    color: $px-white;
+		    text-align: center;
+		    @include down-sm {
+		    	font-size: 22px;
+		    	margin: 0 0 25px;
+		    }
+    	}
+    	form {
+    		position: relative;
+    	}
+    	.input-search {
+    		width: 100%;
+		    height: 50px;
+		    padding: 5px 70px 5px 20px;
+		    background: #fff;
+		    border: none;
+		    font-size: 16px;
+    	}
+    	.searc-btn {
+		    position: absolute;
+		    top: 0;
+		    right: 0;
+		    font-size: 17px;
+		    height: 50px;
+		    width: 70px;
+		    padding: 0;
+		    line-height: 46px;
+    	}
+    }
+    &.searh-form-open {
+    	opacity: 1;
+    	visibility: visible;
+    	pointer-events: auto;
+    }
+}
+
+/*-----------------------
+*	Header
+-------------------------*/
+.header-nav {
+	.h-search {
+		color: #64697A;
+		line-height: 15px;
+		&:hover {
+			color: $px-theme;
+		}
+		.h_search {
+			cursor: pointer;
+		}
+	}
+
+	@include up-md{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 99;
+		padding: 0;
+		.navbar-brand {
+			vertical-align: middle;
+			padding: 10px 0;
+			.light-logo {
+				display: block;
+			}
+			.dark-logo {
+				display: none;
+			}
+		}
+		.navbar {
+			padding: 0;
+		}
+		.navbar-nav {
+			> li {
+				padding: 0 12px;
+				position: relative;
+				> .nav-link {
+				    color: #64697A;
+				    display: inline-block;
+				    vertical-align: middle;
+				    font-size: 15px;
+				    font-weight: 500;
+				    position: relative;
+				    padding: 25px 0;
+					&.active {
+						color: $px-theme;
+					}
+					> .m-dropdown-toggle {
+						color: #64697A;
+					}
+				}
+				&:hover {
+					> .nav-link {
+						color: $px-theme;
+					}
+					> .m-dropdown-toggle {
+						color: $px-theme;
+					}
+				}
+			}
+		}
+		.h-search {
+			padding-left: 15px;
+			border-left: 1px solid rgba(0,0,0,.15);
+		}
+		.h-social {
+			border-left: 1px solid rgba(0,0,0,.15);
+		    padding-left: 15px;
+			margin-left: 12px;
+			line-height: 15px;
+			a {
+				color: #64697A;
+				display: inline-block;	
+				margin: 0 10px;
+				&:last-child {
+					margin-right:0;
+				}
+				&:hover {
+					color: $px-theme;
+				}
+			}
+		}
+			
+		&.header-white-bg {
+			background: $px-white;
+		}
+		&.header-light:not(.fixed-header) {
+			.navbar-nav {
+				> li {
+					> a {
+						color: $px-white;
+					}
+					> .m-dropdown-toggle {
+						color: $px-white;
+					}
+				}
+			}
+			.h-search {
+			    color: $px-white;
+			    border-left: 1px solid rgba(255,255,255,.15);
+			}
+
+			.h-social {
+				border-left: 1px solid rgba(255,255,255,.15);
+				a {
+					color: $px-white;
+				}
+			}
+		}
+	}
+	
+
+	/* Fixed Menu
+	---------------*/
+	&.fixed-header {
+		@include up-md{
+			background: $px-white;
+			box-shadow: 0 1px 9px rgba(0,0,0,0.05);
+			.navbar-brand {
+				.light-logo {
+					display: none;
+				}
+				.dark-logo {
+					display: block;
+				}
+			}
+			.navbar-nav {
+				> li {
+					> a {
+						color: #64697A;
+						&.active {
+							color: $px-theme;
+						}
+					}
+				}
+			}
+		}
+		@include down-md {
+			box-shadow: 0 1px 9px rgba(0,0,0,0.05);
+		}
+	}
+
+	/* Mobile Menu 
+	---------------*/
+	@include down-md{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		background: #fff;
+		z-index: 99;
+		.navbar {
+			padding: 0 15px;
+		}
+		.navbar-brand {
+			padding-bottom: 10px;
+			padding-top: 10px;
+			.light-logo {
+				display: none;
+			}
+		}
+		.navbar-toggler {
+			width: 30px;
+			height: 30px;
+			position: relative;
+			outline: none !important;
+			vertical-align: middle;
+			margin-left: 15px;
+			span {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				margin: auto;
+				height: 3px;
+				background: $px-black;
+				box-shadow: 0px 9px $px-black, 0px -9px $px-black;
+			}
+		}
+		.h-search {
+			padding-right: 15px;
+			border-right: 1px solid rgba(0,0,0,.15);
+			vertical-align: middle;
+		}
+		.navbar-collapse {
+		    position: absolute;
+		    top: 100%;
+		    left: 0;
+		    right: 0;
+		    background: #1b1b1b;
+		}
+		.navbar-nav {
+		    max-height: 70vh;
+			overflow-y: auto;
+			> li {
+				position: relative;
+				&:not(:last-child) {
+					border-bottom: 1px solid rgba(255,255,255,.1);
+				}
+				> a {
+				    color: rgba(255, 255, 255, 0.6);
+				    display: block;
+				    vertical-align: middle;
+				    font-size: 16px;
+				    position: relative;
+				    padding: 11px 15px;
+				    line-height: normal;
+					&.active {
+						color: $px-white;
+					}
+				}
+				.m-dropdown-toggle {
+			        position: absolute;
+				    right: 0;
+				    height: 42px;
+				    width: 42px;
+				    text-align: center;
+				    line-height: 42px;
+				    top: 0;
+				    color: $px-white;
+				}
+			}
+		}
+	}
+}

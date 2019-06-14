@@ -1,0 +1,59 @@
+/* ----------------------
+*	Team Icon
+-------------------------*/
+.social-icon {
+	a {
+		margin: 0 3px;
+		width: 30px;
+		height: 30px;
+		line-height: 30px;
+		font-size: 12px;
+		display: inline-block;
+		vertical-align: top;
+		color: $px-white;
+		text-align: center;
+	}
+	&.si-theme2nd {
+		a {
+			background: $px-theme2nd;
+			&:hover {
+				background:$px-theme;
+			}
+		}
+	}
+	&.si-theme {
+		a {
+			background: $px-theme;
+			&:hover {
+				background:$px-theme2nd;
+			}
+		}
+	}
+	&.si-text {
+		a {
+			color: #929daf;
+			&:hover {
+				color:#757575;
+			}
+		}
+	}
+	&.si-inline {
+		a {
+			width: auto;
+			height: auto;
+			line-height: normal;
+			margin-right: 10px;
+			font-size: 15px;
+		}
+	}
+	&.si-round {
+		a{
+			border-radius: 50%;
+		}
+	}
+	&.si-radisu {
+		a {
+			border-radius: 3px;
+		}
+	}
+}

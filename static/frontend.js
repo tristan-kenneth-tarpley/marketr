@@ -1,639 +1,857 @@
-$(document).ready(function() {
-
-	// console.log('document is loaded')
+function init_admin(){
 
 
+	  $.get('/admin_availability',function(data){
+	  	data = JSON.parse(data)
+	  	for(var i = 0; i<data.length; i++){
 
-	// $.get('/onload', function(data, cpas){
-	// 	var text = data
-	// 	var cpa = cpas
-	// 	header = text + "'s dashboard"
-	// 	$('.dash-select').text(header)
-	// })
-	// $.get('/data-pop', function(data){
+	  		if(data[i]['email'] == $('#email').val()){
 
-	// 	var chart_1_data = []
-	// 	obj = JSON.parse(data)
+	  			$('.availability').text('Email is taken.  Please try another.')
+	  			$('.availability').css('visibility', 'visible')
+				$('.create_button').attr('disabled','disabled');
+	  			return false
 
-	// 	for (var i = 0; i < obj.length; i++){
-	// 		chart_1_data.push(obj[i])
-	// 	}
+	  		} else {
 
-	// 	console.log( chart_1_data)
+	  			$('.availability').text('username is available!')
+	  			$('.availability').css('visibility', 'visible')
 
-	// 	demo = {
-	// 	  initPickColor: function() {
-	// 	    $('.pick-class-label').click(function() {
-	// 	      var new_class = $(this).attr('new-class');
-	// 	      var old_class = $('#display-buttons').attr('data-class');
-	// 	      var display_div = $('#display-buttons');
-	// 	      if (display_div.length) {
-	// 	        var display_buttons = display_div.find('.btn');
-	// 	        display_buttons.removeClass(old_class);
-	// 	        display_buttons.addClass(new_class);
-	// 	        display_div.attr('data-class', new_class);
-	// 	      }
-	// 	    });
-	// 	  },
+				$('.create_button').prop('disabled', false);
 
-	// 	  initDocChart: function() {
-	// 	    chartColor = "#FFFFFF";
+	  		}
 
-	// 	    // General configuration for the charts with Line gradientStroke
-	// 	    gradientChartOptionsConfiguration = {
-	// 	      maintainAspectRatio: false,
-	// 	      legend: {
-	// 	        display: false
-	// 	      },
-	// 	      tooltips: {
-	// 	        bodySpacing: 4,
-	// 	        mode: "nearest",
-	// 	        intersect: 0,
-	// 	        position: "nearest",
-	// 	        xPadding: 10,
-	// 	        yPadding: 10,
-	// 	        caretPadding: 10
-	// 	      },
-	// 	      responsive: true,
-	// 	      scales: {
-	// 	        yAxes: [{
-	// 	          display: 0,
-	// 	          gridLines: 0,
-	// 	          ticks: {
-	// 	            display: false
-	// 	          },
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawTicks: false,
-	// 	            display: false,
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }],
-	// 	        xAxes: [{
-	// 	          display: 0,
-	// 	          gridLines: 0,
-	// 	          ticks: {
-	// 	            display: false
-	// 	          },
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawTicks: false,
-	// 	            display: false,
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }]
-	// 	      },
-	// 	      layout: {
-	// 	        padding: {
-	// 	          left: 0,
-	// 	          right: 0,
-	// 	          top: 15,
-	// 	          bottom: 15
-	// 	        }
-	// 	      }
-	// 	    };
+	  	}
+	  })
 
-	// 	    ctx = document.getElementById('lineChartExample').getContext("2d");
+	  $('.headers').click(function(){
+	  	$(this).find("span").addClass('blue')
+	  	$('.headers').not(this).find("span").removeClass('blue')
+	  })
 
-	// 	    gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-	// 	    gradientStroke.addColorStop(0, '#80b6f4');
-	// 	    gradientStroke.addColorStop(1, chartColor);
-
-	// 	    gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
-	// 	    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-	// 	    gradientFill.addColorStop(1, "rgba(249, 99, 59, 0.40)");
-
-	// 	    myChart = new Chart(ctx, {
-	// 	      type: 'line',
-	// 	      responsive: true,
-	// 	      data: {
-	// 	        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-	// 	        datasets: [{
-	// 	          label: "Active Users",
-	// 	          borderColor: "#f96332",
-	// 	          pointBorderColor: "#FFF",
-	// 	          pointBackgroundColor: "#f96332",
-	// 	          pointBorderWidth: 2,
-	// 	          pointHoverRadius: 4,
-	// 	          pointHoverBorderWidth: 1,
-	// 	          pointRadius: 4,
-	// 	          fill: true,
-	// 	          backgroundColor: gradientFill,
-	// 	          borderWidth: 2,
-	// 	          data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 630]
-	// 	        }]
-	// 	      },
-	// 	      options: gradientChartOptionsConfiguration
-	// 	    });
-	// 	  },
-
-	// 	  initDashboardPageCharts: function() {
-
-	// 	    chartColor = "#FFFFFF";
-
-	// 	    // General configuration for the charts with Line gradientStroke
-	// 	    gradientChartOptionsConfiguration = {
-	// 	      maintainAspectRatio: false,
-	// 	      legend: {
-	// 	        display: false
-	// 	      },
-	// 	      tooltips: {
-	// 	        bodySpacing: 4,
-	// 	        mode: "nearest",
-	// 	        intersect: 0,
-	// 	        position: "nearest",
-	// 	        xPadding: 10,
-	// 	        yPadding: 10,
-	// 	        caretPadding: 10
-	// 	      },
-	// 	      responsive: 1,
-	// 	      scales: {
-	// 	        yAxes: [{
-	// 	          display: 0,
-	// 	          gridLines: 0,
-	// 	          ticks: {
-	// 	            display: false
-	// 	          },
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawTicks: false,
-	// 	            display: false,
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }],
-	// 	        xAxes: [{
-	// 	          display: 0,
-	// 	          gridLines: 0,
-	// 	          ticks: {
-	// 	            display: false
-	// 	          },
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawTicks: false,
-	// 	            display: false,
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }]
-	// 	      },
-	// 	      layout: {
-	// 	        padding: {
-	// 	          left: 0,
-	// 	          right: 0,
-	// 	          top: 15,
-	// 	          bottom: 15
-	// 	        }
-	// 	      }
-	// 	    };
-
-	// 	    gradientChartOptionsConfigurationWithNumbersAndGrid = {
-	// 	      maintainAspectRatio: false,
-	// 	      legend: {
-	// 	        display: false
-	// 	      },
-	// 	      tooltips: {
-	// 	        bodySpacing: 4,
-	// 	        mode: "nearest",
-	// 	        intersect: 0,
-	// 	        position: "nearest",
-	// 	        xPadding: 10,
-	// 	        yPadding: 10,
-	// 	        caretPadding: 10
-	// 	      },
-	// 	      responsive: true,
-	// 	      scales: {
-	// 	        yAxes: [{
-	// 	          gridLines: 0,
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }],
-	// 	        xAxes: [{
-	// 	          display: 0,
-	// 	          gridLines: 0,
-	// 	          ticks: {
-	// 	            display: false
-	// 	          },
-	// 	          gridLines: {
-	// 	            zeroLineColor: "transparent",
-	// 	            drawTicks: false,
-	// 	            display: false,
-	// 	            drawBorder: false
-	// 	          }
-	// 	        }]
-	// 	      },
-	// 	      layout: {
-	// 	        padding: {
-	// 	          left: 0,
-	// 	          right: 0,
-	// 	          top: 15,
-	// 	          bottom: 15
-	// 	        }
-	// 	      }
-	// 	    };
-
-	// 	    var ctx = document.getElementById('bigDashboardChart').getContext("2d");
-
-	// 	    var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-	// 	    gradientStroke.addColorStop(0, '#80b6f4');
-	// 	    gradientStroke.addColorStop(1, chartColor);
-
-	// 	    var gradientFill = ctx.createLinearGradient(0, 200, 0, 50);
-	// 	    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-	// 	    gradientFill.addColorStop(1, "rgba(255, 255, 255, 0.24)");
-
-	// 	    var myChart = new Chart(ctx, {
-	// 	      type: 'line',
-	// 	      data: {
-	// 	        labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
-	// 	        datasets: [{
-	// 	          label: "Data",
-	// 	          borderColor: chartColor,
-	// 	          pointBorderColor: chartColor,
-	// 	          pointBackgroundColor: "#1e3d60",
-	// 	          pointHoverBackgroundColor: "#1e3d60",
-	// 	          pointHoverBorderColor: chartColor,
-	// 	          pointBorderWidth: 1,
-	// 	          pointHoverRadius: 7,
-	// 	          pointHoverBorderWidth: 2,
-	// 	          pointRadius: 5,
-	// 	          fill: true,
-	// 	          backgroundColor: gradientFill,
-	// 	          borderWidth: 2,
-	// 	          data: [50, 150, 100, 190, 130, 90, 150, 160, 120, 140, 190, 95]
-	// 	        }]
-	// 	      },
-	// 	      options: {
-	// 	        layout: {
-	// 	          padding: {
-	// 	            left: 20,
-	// 	            right: 20,
-	// 	            top: 0,
-	// 	            bottom: 0
-	// 	          }
-	// 	        },
-	// 	        maintainAspectRatio: false,
-	// 	        tooltips: {
-	// 	          backgroundColor: '#fff',
-	// 	          titleFontColor: '#333',
-	// 	          bodyFontColor: '#666',
-	// 	          bodySpacing: 4,
-	// 	          xPadding: 12,
-	// 	          mode: "nearest",
-	// 	          intersect: 0,
-	// 	          position: "nearest"
-	// 	        },
-	// 	        legend: {
-	// 	          position: "bottom",
-	// 	          fillStyle: "#FFF",
-	// 	          display: false
-	// 	        },
-	// 	        scales: {
-	// 	          yAxes: [{
-	// 	            ticks: {
-	// 	              fontColor: "rgba(255,255,255,0.4)",
-	// 	              fontStyle: "bold",
-	// 	              beginAtZero: true,
-	// 	              maxTicksLimit: 5,
-	// 	              padding: 10
-	// 	            },
-	// 	            gridLines: {
-	// 	              drawTicks: true,
-	// 	              drawBorder: false,
-	// 	              display: true,
-	// 	              color: "rgba(255,255,255,0.1)",
-	// 	              zeroLineColor: "transparent"
-	// 	            }
-
-	// 	          }],
-	// 	          xAxes: [{
-	// 	            gridLines: {
-	// 	              zeroLineColor: "transparent",
-	// 	              display: false,
-
-	// 	            },
-	// 	            ticks: {
-	// 	              padding: 10,
-	// 	              fontColor: "rgba(255,255,255,0.4)",
-	// 	              fontStyle: "bold"
-	// 	            }
-	// 	          }]
-	// 	        }
-	// 	      }
-	// 	    });
-
-	// 	    var cardStatsMiniLineColor = "#fff",
-	// 	      cardStatsMiniDotColor = "#fff";
-
-	// 	    ctx = document.getElementById('lineChartExample').getContext("2d");
-
-	// 	    gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-	// 	    gradientStroke.addColorStop(0, '#80b6f4');
-	// 	    gradientStroke.addColorStop(1, chartColor);
-
-	// 	    gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
-	// 	    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-	// 	    gradientFill.addColorStop(1, "rgba(249, 99, 59, 0.40)");
-
-	// 	    myChart = new Chart(ctx, {
-	// 	      type: 'line',
-	// 	      responsive: true,
-	// 	      data: {
-	// 	        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-	// 	        datasets: [{
-	// 	          label: "Active Users",
-	// 	          borderColor: "#f96332",
-	// 	          pointBorderColor: "#FFF",
-	// 	          pointBackgroundColor: "#f96332",
-	// 	          pointBorderWidth: 2,
-	// 	          pointHoverRadius: 4,
-	// 	          pointHoverBorderWidth: 1,
-	// 	          pointRadius: 4,
-	// 	          fill: true,
-	// 	          backgroundColor: gradientFill,
-	// 	          borderWidth: 2,
-	// 	          data: [542, 480, 430, 550, 530, 453, 380, 434, 568, 610, 700, 630]
-	// 	        }]
-	// 	      },
-	// 	      options: gradientChartOptionsConfiguration
-	// 	    });
-
-
-	// 	    ctx = document.getElementById('lineChartExampleWithNumbersAndGrid').getContext("2d");
-
-	// 	    gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-	// 	    gradientStroke.addColorStop(0, '#18ce0f');
-	// 	    gradientStroke.addColorStop(1, chartColor);
-
-	// 	    gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
-	// 	    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-	// 	    gradientFill.addColorStop(1, hexToRGB('#18ce0f', 0.4));
-
-	// 	    myChart = new Chart(ctx, {
-	// 	      type: 'line',
-	// 	      responsive: true,
-	// 	      data: {
-	// 	        labels: ["12pm,", "3pm", "6pm", "9pm", "12am", "3am", "6am", "9am"],
-	// 	        datasets: [{
-	// 	          label: "Email Stats",
-	// 	          borderColor: "#18ce0f",
-	// 	          pointBorderColor: "#FFF",
-	// 	          pointBackgroundColor: "#18ce0f",
-	// 	          pointBorderWidth: 2,
-	// 	          pointHoverRadius: 4,
-	// 	          pointHoverBorderWidth: 1,
-	// 	          pointRadius: 4,
-	// 	          fill: true,
-	// 	          backgroundColor: gradientFill,
-	// 	          borderWidth: 2,
-	// 	          data: [40, 500, 650, 700, 1200, 1250, 1300, 1900]
-	// 	        }]
-	// 	      },
-	// 	      options: gradientChartOptionsConfigurationWithNumbersAndGrid
-	// 	    });
-
-	// 	    var e = document.getElementById("barChartSimpleGradientsNumbers").getContext("2d");
-
-	// 	    gradientFill = ctx.createLinearGradient(0, 170, 0, 50);
-	// 	    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0)");
-	// 	    gradientFill.addColorStop(1, hexToRGB('#2CA8FF', 0.6));
-
-
-		    
-
-
-	// 	    var a = {
-	// 	      type: "bar",
-	// 	      data: {
-	// 	        labels: ["campaign 1", "campaign 2", "campaign 3", "campaign 4"],
-	// 	        datasets: [{
-	// 	          label: "Active Countries",
-	// 	          backgroundColor: gradientFill,
-	// 	          borderColor: "#2CA8FF",
-	// 	          pointBorderColor: "#FFF",
-	// 	          pointBackgroundColor: "#2CA8FF",
-	// 	          pointBorderWidth: 2,
-	// 	          pointHoverRadius: 1,
-	// 	          pointHoverBorderWidth: 1,
-	// 	          pointRadius: 0,
-	// 	          fill: true,
-	// 	          borderWidth: 1,
-	// 	          data: chart_1_data
-	// 	        }]
-	// 	      },
-	// 	      options: {
-	// 	        maintainAspectRatio: false,
-	// 	        legend: {
-	// 	          display: false
-	// 	        },
-	// 	        tooltips: {
-	// 	          bodySpacing: 4,
-	// 	          mode: "nearest",
-	// 	          intersect: 0,
-	// 	          position: "nearest",
-	// 	          xPadding: 10,
-	// 	          yPadding: 10,
-	// 	          caretPadding: 10
-	// 	        },
-	// 	        responsive: 1,
-	// 	        scales: {
-	// 	          yAxes: [{
-	// 	            gridLines: 0,
-	// 	            gridLines: {
-	// 	              zeroLineColor: "transparent",
-	// 	              drawBorder: false
-	// 	            }
-	// 	          }],
-	// 	          xAxes: [{
-	// 	            display: 0,
-	// 	            gridLines: 0,
-	// 	            ticks: {
-	// 	              display: false
-	// 	            },
-	// 	            gridLines: {
-	// 	              zeroLineColor: "transparent",
-	// 	              drawTicks: false,
-	// 	              display: false,
-	// 	              drawBorder: false
-	// 	            }
-	// 	          }]
-	// 	        },
-	// 	        layout: {
-	// 	          padding: {
-	// 	            left: 0,
-	// 	            right: 0,
-	// 	            top: 15,
-	// 	            bottom: 15
-	// 	          }
-	// 	        }
-	// 	      }
-	// 	    };
-
-	// 	    var viewsChart = new Chart(e, a);
-	// 	  },
-
-	// 	  showNotification: function(from, align) {
-	// 	    color = 'primary';
-
-	// 	    $.notify({
-	// 	      icon: "now-ui-icons ui-1_bell-53",
-	// 	      message: "Welcome to <b>Now Ui Dashboard</b> - a beautiful freebie for every web developer."
-
-	// 	    }, {
-	// 	      type: color,
-	// 	      timer: 8000,
-	// 	      placement: {
-	// 	        from: from,
-	// 	        align: align
-	// 	      }
-	// 	    });
-	// 	  }
-
-	// 	};
+}
 
 
 
 
-	
-
-	// 	demo.initDashboardPageCharts();
-
-	// }) //end /data-pop
 
 
-	// var i = 1
-	// var name = $('input[name="campaign_name"]').val()
-	// var dog = $('input[name="dog"]').val()
-	// var beer = $('input[name="beer"]').val()
+function init_create_account(){
 
-	// function iterate_through_form(){
+	$('.create_button').prop('disabled', true);
+	function delay(callback, ms) {
+		var timer = 0;
+
+		return function() {
+	    	var context = this, args = arguments;
+	    	clearTimeout(timer);
+	    	timer = setTimeout(function () {
+				callback.apply(context, args);
+	   		}, ms || 0);
+		};
+	}
+
+	$('#email').keyup(delay(function (e) {
 
 
-	// 	i++
 
-	// 	var current_div = '.selector > div:nth-child(' + i + ')'
+	  $.get('/availability',function(data){
+	  	data = JSON.parse(data)
+	  	for(var i = 0; i<data.length; i++){
 
-	// 	$(current_div).removeClass('hidden')
-	// 	$('.selector > div').not(current_div).addClass('hidden')
+	  		if(data[i]['email'] == $('#email').val()){
+
+	  			$('.availability').text('Email is taken.  Please try another.')
+	  			$('.availability').css('visibility', 'visible')
+				$('.create_button').attr('disabled','disabled');
+	  			return false
+
+	  		} else {
+
+	  			$('.availability').text('username is available!')
+	  			$('.availability').css('visibility', 'visible')
+
+				$('.create_button').prop('disabled', false);
+
+	  		}
+
+	  	}
+	  })
+
+	  var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+
+	  if (testEmail.test($('#email').val())){
+	  	$('.format').text(' ')
+	  } else {
+	  	$('.format').text('invalid email format')
+	  }
+
+	}, 1000));
 
 
-	// 	if (i > $('.selector > div').length){
-	// 		$('.continue_in_form').addClass('hidden')
-	// 		$('.back_in_form').addClass('hidden')
-	// 		$('.create_ad').removeClass('hidden')
+}
 
-	// 		$('.ad_summary').removeClass('hidden')
-	// 		console.log(name + " " + dog + " " + beer)
-	// 	}
 
-	// 	if (i > 1){
-	// 		$('.back_in_form').prop( "disabled", false );
-	// 	}
+var i = 1
+$(".edit_products").click(function(e){
 
+
+	if ($(this).hasClass("add_product")){
+		i++
+		var data = $('.data-row').last().clone()
+		var item_1_name = "product_" + i + "_name"
+		data.find('#item-1').attr("name", item_1_name)
+		var placeholder = "name " + i
+		data.find('#item-1').attr('placeholder', placeholder)
+		var item_2_name = "p" + i + "_category"
+		data.find('#item-2').attr("name", item_2_name)
+		var item_3_name = "p" + i + "_cogs"
+		data.find('#item-3').attr("name", item_3_name)
+		var item_4_name = "p" + i + "_sales_price"
+		data.find('#item-4').attr("name", item_4_name)
+		var item_5_name = "p" + i + "_qty_sold"
+		data.find('#item-5').attr("name", item_5_name)
+		var item_6_name = "p" + i + "_est_unique_buyers"
+		data.find('#item-6').attr("name", item_6_name)
+		var item_7_name = "price_model_" + i
+		data.find('#item-7').attr("name", item_7_name)
+
+		$('.input_table').append(data)
+
+	} else if ($(this).hasClass('remove_product')){
+		if (i > 1){
+			var last = $('.data-row').last()
+			last.remove()
+			i--
+		}
+	}
+	$('.product_len').val(i)
 		
-	// 	return i, name, dog, beer
-	// }
-
-	// function back_in_form(){
-
-
-	// 	i -= 1
-
-	// 	if (i == 1) {
-	// 		$('.back_in_form').addClass('hidden')
-	// 	}
-
-
-	// 	var current_div = '.selector > div:nth-child(' + i + ')'
-
-	// 	$(current_div).removeClass('hidden')
-	// 	$('.selector > div').not(current_div).addClass('hidden')
-
-
-	// 	if (i > $('.selector > div').length){
-	// 		$('.continue_in_form').addClass('hidden')
-	// 		$('.create_ad').removeClass('hidden')
-	// 		console.log(name + " " + dog + " " + beer)
-	// 	}
-
-	// 	return i
-
-
-
-	// }
-
-
-
-	// $('.continue_in_form').click(function(ev){
-	// 	ev.preventDefault()
-
-	// 	iterate_through_form()
-
-	// })
-
-	// $('.back_in_form').click(function(ev){
-	// 	ev.preventDefault()
-
-	// 	back_in_form()
-	// })
-
-	// $('.ref_rec').click(function(ev){
-	// 	$.get('/getrecs',function(data){
-	// 		obj = JSON.parse(data)
-	// 		console.log(obj.data["0"])
-	// 		console.log(obj.data["1"])
-	// 		console.log(obj.data["2"])
-	// 		console.log(obj.data["3"])
-	// 		console.log(obj.data["" + 4 + ""])
-
-	// 		for (var i=0;i<obj.data.length;i++){
-	// 			$('.recs').append("<p>" + i + ") " + obj.data["" + i + ""] + "</p><button class='implement'>implement this</button><button class='reject'>reject</button>")
-	// 		}
-	// 	})
-	// })
-
-
-
-
-
-
-
-
-
-
-
-
-}) // end document.ready
-
-
-$('#setup').submit(function(){
-	
 })
 
 
 
+function init_products(){
+	function load_product_list(){
+		$.get("/load_product_list",function(results){
+			var results = JSON.parse(results)
+
+			for (var i=0;i<results.length;i++){
+				var current_name = results[i]['name']
+				$('.product_prev_container').append(`<div class='col-lg-3 col-md-3 col-sm-3 product_container'><p>${results[i]['name']}</p></div>`)
+			}
+
+			$('.product_container:nth-of-type(1)').addClass('product_container_active')
+			$('#product-name').text(results[0]['name'])
+
+			$('#p_id').val(results[0]['p_id'])
+
+			localStorage.setItem('results', JSON.stringify(results));
+			
+		})
+	}
+
+	// new Cleave('.cogs', {
+	//     numeral: true,
+	//     prefix: '$'
+	// });
+	// new Cleave('.price', {
+	//     numeral: true,
+	//     prefix: '$'
+	// });
+
+
+	load_product_list()
+	$("#wogf").click(function(){
+		$("#warranties_or_guarantee_freeform").focus()
+	})
+	$('.form-radio').click(function(){
+		console.log($(this).val())
+	})
+//come back
+	var it = 0 
+
+	$('.p_form_submit').click(function(){
+
+		var results = localStorage.getItem('results');
+		results = JSON.parse(results)
+
+		var complexity = $('input[name=complexity]').val()
+		var price = $('input[name=price]').val()
+		var product_or_service = $('input[name=product_or_service]').val()
+		var frequency_of_use = $('input[name=frequency_of_use]').val()
+		var frequency_of_purchase = $('input[name=frequency_of_purchase]').val()
+		var value_prop = $('input[name=value_prop]').val()
+		var warranties_or_guarantee = $('input[name=warranties_or_guarantee]').val()
+		var warranties_or_guarantee_freeform = $('textarea[name=warranties_or_guarantee_freeform]').val()
+		var num_skus = $('input[name=num_skus]').val()
+		var level_of_customization = $('input[name=level_of_customization]').val()
+
+		var length = results.length
+		it++
+
+
+		if (it < length){
+
+			$('#product-name').text(results[it]['name'])
+			var p_value = $("#p_id").val()
+			var args = { complexity: complexity, price: price, product_or_service: product_or_service, frequency_of_use: frequency_of_use, frequency_of_purchase: frequency_of_purchase, value_prop: value_prop, warranties_or_guarantee: warranties_or_guarantee, warranties_or_guarantee_freeform: warranties_or_guarantee_freeform, num_skus: num_skus, level_of_customization: level_of_customization, p_id: p_value }
+			for (var key in args) {
+				if (args[key] == undefined || args[key] == ""){
+					args[key] = "n/a"
+				}
+			}
+			console.log(args)
+			$.post("/product_submit", args )
+
+			
+			$('.product_container').not('.product_container:nth-of-type(' + (it+1) + ')').removeClass('product_container_active')
+			$('.product_container:nth-of-type(' + (it+1) + ')').addClass('product_container_active')
+
+
+			var p_id = results[it]['p_id']
+			$('#p_id').val(p_id)
+		} else {
+			$('.card-body').addClass("hidden")
+		}
+
+		if(it == length) {
+			$('.p_form_submit').addClass('hidden')
+			$('.final').removeClass('hidden')
+			$('.product_prev_container').addClass("hidden")
+			$('.hide_on_end').addClass('hidden')
+			$(".change_on_submit").html(splash_content)
+		}
+
+
+	   $("html, body").animate({ scrollTop: 0 }, "slow");
+		$('textarea').val("")
+		$('.hover_box').removeClass('hover_box_selected')
+		// $('input:checked').prop('checked', false)
+	})
+}
+
+
+function load_sales_cycle(data, callback){
+
+	var awareness = data.filter(function(item){
+	    return item.stage == "awareness";         
+	});
+	var evaluation = data.filter(function(item){
+	    return item.stage == "evaluation";         
+	});
+	var conversion = data.filter(function(item){
+	    return item.stage == "conversion";         
+	});
+	var retention = data.filter(function(item){
+	    return item.stage == "retention";         
+	});
+	var referral = data.filter(function(item){
+	    return item.stage == "referral";         
+	});
+
+	var stages = [awareness, evaluation, conversion, retention, referral]
+
+	function get_length(step){
+		var length = step.length
+		return length
+	}
+	$('.stage_container input').not('.first').addClass('hide')
+
+	for (var i=0;i<stages.length;i++){
+		var length = get_length(stages[i])
+		for (var x=0;x<stages[i].length;x++){
+			var toShow = $(".stage_container." + stages[i][x]['stage'] + " input").slice(0, length)
+			toShow.removeClass('hide')
+			if (toShow.val() !== stages[i][x]['tactic']){
+				toShow.eq(x).val(stages[i][x]['tactic'])
+			}
+		}
+	}
+	callback()		
+}
+
+
+function init_sales_cycle(){
+	$('.left_stage').addClass("stages")
+	$('.right_stage').addClass('stages')
+	
+
+	$('.stage_container input').keydown(function(event){
+
+	    var keycode = (event.keyCode ? event.keyCode : event.which);
+
+	    if(keycode == '13'){
+	        event.preventDefault()
+
+		    if($(document.activeElement).is(':last-child')){
+	    		if($(document.activeElement).val() == ''){
+		    		alert('You have to enter a value');
+		    	} else {
+		    		if($(document.activeElement).hasClass('last')){
+						$(document.activeElement).blur()
+			    	} else if ($(document.activeElement).parent().siblings().find('input:first-child').hasClass('hide')) {
+		    			$(document.activeElement).parent().siblings().find('input:first-child').removeClass('hide')
+		    			$(document.activeElement).parent().siblings().find('input:first-child').focus()
+			    	}
+		    	}
+		    } else {
+		    	
+		    	if($(document.activeElement).val() == ''){
+		    		alert('You have to enter a value');
+		    	} else if ($(document.activeElement).nextAll("input").eq(0).hasClass('hide')) {
+		    		$(document.activeElement).nextAll("input").eq(0).removeClass('hide')
+		    		$(document.activeElement).nextAll('.x').eq(0).removeClass("hide")
+		    		$(document.activeElement).nextAll().eq(0).focus()
+		    	}
+
+		    }
+		} else if (keycode == '8' || keycode == '46'){
+			
+			if ($(document.activeElement).val() == '' && !$(document.activeElement).hasClass("first") && !$(document.activeElement).is(':first-child')){
+				event.preventDefault()
+				$(document.activeElement).addClass('hide')
+				$(document.activeElement).prevAll().eq(0).focus()
+				$(document.activeElement).next().val("")
+			}
+
+		}
+
+
+		$('.x').click(function() {
+			$(this).prev().val('')
+			$(this).prev().addClass('invisible')
+		})
+
+
+	    var awareness_tags = [
+			"Website",
+			"Physical storefront",
+			"Amazon",
+			"Google shopping",
+			"Etsy",
+			"Articles",
+			"eBook",
+			"TV ads",
+			"Radio ads",
+			"Podcast ads",
+			"Online ads",
+			"Shelf-space in other stores",
+			"Tradeshows",
+			"How-to-videos",
+			"Cross promotion",
+			"Referrals / word-of-mouth",
+			"Signage (incl. billboards)",
+			"Direct mailers",
+			"Email newsletter"
+	    ];
+	    $( ".awareness input" ).autocomplete({
+	      source: awareness_tags
+	    });
+
+	    var evaluation_tags = [
+			'Competitive comparison',
+			'Feature list',
+			'Data sheet',
+			'Case study',
+			'Testimonials',
+			'Webinar',
+			'Online reviews',
+			'FAQ',
+			'Samples',
+			'Demo video'
+	    ]
+	    $( ".evaluation input" ).autocomplete({
+	      source: evaluation_tags
+	    });
+
+
+	    var conversion_tags = [
+			'Free trial',
+			'Pricing page',
+			'Live demo',
+			'Consultation',
+			'Estimate / quote',
+			'Coupon',
+			'Call-to-action',
+			'Re-targeting',
+			'Sales call follow-up',
+			'"Drip" email campaign'
+	    ]
+	    $( ".conversion input" ).autocomplete({
+	      source: conversion_tags
+	    });
+
+	    var retention_tags = [
+			'Packaging',
+			'Email follow-up',
+			'Coupons',
+			'Subscription',
+			'Easy re-order',
+			'Birthday gifts',
+			'New product notices',
+			'Re-targeting online ads',
+			'Cross-promotion / nurture campaigns',
+			'Perk milestones for subscription anniversaries'
+	    ]
+	    $( ".retention input" ).autocomplete({
+	      source: retention_tags
+	    });
+
+	    var referral_tags = [
+			'Packaging',
+			'Social sharing incentive',
+			'Shareable coupons',
+			'Referral incentive',
+			'Testimonial / Reviews',
+			'User generated content'
+	    ]
+	    $( ".referral input" ).autocomplete({
+	      source: referral_tags
+	    });
+ 	
+
+
+	});
+
+
+}
+
+function init_platforms(){
+	$.get('/load_history',function(data){
+
+		var results = JSON.parse(data)
+
+		for (var i = 0; i<results['data'][0].length; i++){
+			if(results['data'][0][i] == "yes"){
+				$('.platforms_container').append("<div class='platform_row'><div class='col-lg-2'><h6>" + results['columns'][i] + "</h6><input style='display:none' type='text' value='" + results['columns'][i] + "' name='platform_" + i + "'></div><div class='col-lg-4 col-md-4'><h6>Still using?</h6><br><div class='hover_box col-lg-5 col-md-5'><h6>yes</h6></div>&nbsp;<div class='hover_box col-lg-5 col-md-5'><h6>no</h6></div><input class='hidden_input hidden' type='text' name='still_using_" + i + "'></div><div class='col-lg-6 col-md-6'><h6>How are the results?</h6><br><img src='/static/assets/img/frown.png' class='col-lg-3'><img src='/static/assets/img/neutral.png' class='col-lg-3'><img src='/static/assets/img/smile.png' class='col-lg-3'><img src='/static/assets/img/grin.png' class='col-lg-3'><input type='text' style='display:none;' class='img_input' name='results_" + i + "'></div></div><hr>")
+			}
+		}
+
+		
+		$('.platform_row img').click(function(){
+			$(this).addClass('platform_row_img_active')
+			$(this).siblings().removeClass('platform_row_img_active')
+
+			$(this).parent().find('.img_input').val($(this).index())
+		})
+
+		$('.hover_box').click(function(){
+
+			if($(this).hasClass('hb_many')){
+				$(this).toggleClass('hover_box_selected')
+			} else {
+				$(this).toggleClass('hover_box_selected')
+				$(this).siblings().removeClass('hover_box_selected')
+				$(this).parent().siblings().children().removeClass('hover_box_selected')
+			}
+
+			var test = $(this).find("h6")
+			var text = test[0]['textContent']
+
+			if ($(this).hasClass('hb_many')){
+				var nearest_input = $(this).find('.hidden_input');
+			} else if ($(this).hasClass('multi_row')){
+				var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
+			} else {
+				var nearest_input = $(this).parent().find('.hidden_input');
+			}
+
+			if ($(this).hasClass('hover_box_selected')){	
+				nearest_input.val(text)
+			} else {
+				nearest_input.val("")
+			}
+
+
+		})
+
+	})
+}
+	
+
+
+
+function init_competitors(){
+
+
+    var options = {
+
+	  url: "/industries",
+
+	  getValue: "industries",
+
+	  list: {	
+	    match: {
+	      enabled: true
+	    }
+	  },
+
+	  theme: "square"
+	};
+
+	$("#industry").easyAutocomplete(options);
+}
+
+
+function init_company_view(){
+
+	var pathname = window.location.pathname;
+
+	$('.dyn_link').each(function(){
+		var id = $(this).attr('id')
+		var url = pathname + "?page=" + id
+		$(this).attr('href', url)
+	})
+
+}
 
 
 
 
 
+function hover_box(){
+
+	$(".in_box").click(function(event){
+		event.stopPropagation()
+		if (!$(this).parent().hasClass('hover_box_selected')) {
+			$(this).parent().addClass('hover_box_selected')
+		}
+		input_clicked = true
+		return input_clicked
+	})
+
+	$('.hover_box').click(function(){
+		var input_clicked = false
+
+		var in_box = $(this).find("input")
+
+		//toggle selected
+		if($(this).hasClass('hb_many')){
+			if(!in_box.hasClass('in_box')){
+				$(this).toggleClass('hover_box_selected')
+			} else {				
+				$(this).toggleClass('hover_box_selected')
+				if ($(this).hasClass('hover_box_selected')){
+					$(this).find(".in_box").focus()
+				} else {	
+					$(this).find(".in_box").val("")
+				}
+
+			}
+		} else {
+			$(this).toggleClass('hover_box_selected')
+			$(this).siblings().removeClass('hover_box_selected')
+			$(this).parent().siblings().children().removeClass('hover_box_selected')
+		}
+
+
+		//populate database val
+		var test = $(this).find("h6")
+		var text = test[0]['textContent']
+
+		if ($(this).hasClass('hb_many')){
+			var nearest_input = $(this).find('.hidden_input');
+		} else if ($(this).hasClass('multi_row')){
+			var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
+		} else {
+			var nearest_input = $(this).parent().find('.hidden_input');
+		}
+
+		if ($(this).hasClass('hover_box_selected')){	
+			nearest_input.val(text)
+		} else {
+			nearest_input.val("")
+		}
+	})
+}
+
+
+function load_company(){
+	var perc_format = $('.perc_format')
+	var in_box = $('.in_box')
+
+	$(in_box).each(function(){
+		var this_hb = $(this).parent()
+		if ($(this).val() == ""){
+			this_hb.removeClass('hover_box_selected')
+		}
+	})
+}
+
+
+function load_audience(){
+	let param = new URLSearchParams(window.location.search)
+	let persona_id = param.get('persona_id')
+
+	var options = {
+
+	  url: "/areas",
+
+	  getValue: "area",
+
+	  list: {	
+	    match: {
+	      enabled: true
+	    }
+	  },
+
+	  theme: "square"
+	};
+
+	$("#location").easyAutocomplete(options);
+
+	if (persona_id == null){
+		$('.persona_intro').text("Think of a GREAT customer. Use them as a model for this first persona.")
+
+		$('.lastly').click(function(){
+			$('.lastlyFade').fadeIn()
+		})
+
+	} else {
+
+		$(".persona_intro").text("Awesome! Now, think of another excellent customer that's different from the other(s) you've added.")
+
+	} 
+
+	if ($('.product_container').length == 1){
+
+		$("#remove").addClass('invisible')
+
+	} else if ($('.product_container').length > 1){
+
+		$("#remove").removeClass('invisible')
+		var removeURL = "/remove/" + persona_id
+		$("#remove").attr('href', removeURL)
+
+	}
+
+	$('.product_container:nth-of-type(1)').addClass('product_container_active')
 
 
 
 
+}
+
+function load_past_inputs(){
+	var url_path = window.location.pathname;
+	var product_2_path = "/competitors/company/audience/product/product_2"
+
+	let init_params = new URLSearchParams(window.location.search)
+
+	var args = {}
+
+	if (init_params.has('persona_id')){
+		args = {page: url_path,
+				persona_id: init_params.get('persona_id')}
+	} else {
+		args = {page: url_path}
+	}
+
+
+	$(".onward .continue").attr('value', 'SAVE AND CONTINUE')
+
+	if (url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
+
+		$.get('/load_past_inputs', args, function(data){
+			if (data !== 'nah, not this time' && data !== 'nah') {
+
+				var data = JSON.parse(data)
+				//if audience
+
+
+				if (url_path == "/creative") {
+					console.log(data)
+				}
+
+
+				load_sales_cycle(data, init_sales_cycle)
+
+				//if not sales cycle
+				if (data.length > 0){
+					Object.keys(data[0]).forEach(function(key) {
+
+						var value = data[0][key]
+						let param = new URLSearchParams(window.location.search)
+						//Does sent exist?
+						
+
+						if (param.has('persona_id')){
+							let persona_id = param.get('persona_id')
+							var audience_filter = data.filter(function(item){
+							    return item.audience_id == persona_id;         
+							});
+							$("#" + persona_id).parent().addClass("product_container_active")
+							$(".dyn_link").not("#" + persona_id).parent().removeClass('product_container_active')
+							data = audience_filter
+
+						}
+
+						$('select[name=' + key + ']').val(value)
+						$('input[name=' +  key + ']').val(data[0][key])
+						$('textarea[name=' + key + ']').val(data[0][key])
+
+						$('.hover_box').each(function(){
+							var hb_many = $(this).hasClass('hb_many')
+							var closest_val = $(this).closest('.hidden_input').val()
+							var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
+
+							var many_check = hb_many && closest_val !== ""
+							var single_check = single && $(this).siblings('.hidden_input').val() !== ""
+
+							var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
+							var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
+
+							var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
+
+
+							if (many_check){
+								if ($(this).children('.hidden_input').val() !== ""){
+									$(this).addClass('hover_box_selected')
+								}
+							} else if (single_check){
+								var single_select =  $(this).siblings('.hidden_input').val()
+								var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
+								add_select.addClass("hover_box_selected")
+								
+							} else if (multi_row_check) {
+
+								$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
+							
+							}
+						})
+					})
+				}
+				load_company()
+			}
+		})
+	}
+}
 
 
 
 
+function init_sub_menu(){
+
+	var submenu_count = $('.step').length
+	
+	var width = (1/submenu_count*100)-1
+
+	$('.step').css('width', width+"%")
+}
+
+
+
+function init_radio(){
+	$( ".radio_container" ).each(function( i ) {
+
+	  	var quantity = $(this).children('.connector').length
+	  	var connect_width = (1/quantity*100)-1
+
+	  	$(this).children('.connector').css('width', connect_width + "%")
+	  	$(this).siblings('label').css('width',connect_width + "%")
+	});
+}
+
+function init_creative(){
+	$('.delete_asset.x').click(function(){
+		$(this).parent().parent().addClass('hidden')
+		$(this).parent().parent().siblings().removeClass("hidden")
+	})
+
+	$('.confirmed').click(function(){
+		var path = $(this).parent().siblings().find('img').attr('src')
+		args = {file_path: path}
+		$(this).parentsUntil('.files_row').remove()
+		$.get('/delete_asset', args, function(data){
+		})
+	})
+	$('.delete_asset.unconfirmed').click(function(){
+		$(this).parent().siblings().removeClass('hidden')
+		$(this).parent().addClass('hidden')
+	})
+}
+
+function isURL(str) {
+  var pattern = new RegExp('^((ft|htt)ps?:\\/\\/)?'+ // protocol
+  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name and extension
+  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+  '(\\:\\d+)?'+ // port
+  '(\\/[-a-z\\d%@_.~+&:]*)*'+ // path
+  '(\\?[;&a-z\\d%@_.,~+&:=-]*)?'+ // query string
+  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return pattern.test(str);
+}
+
+$(document).ready(function(){
+
+	$('.ignore_default input').keydown(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+
+	    if(keycode == '13'){
+	        event.preventDefault()
+	    }
+	})
+
+	load_past_inputs()
+	init_sub_menu()
+
+	$('.reveal_button').click(function(){
+		$('.reveal').fadeIn('slow')
+		$(this).addClass("hidden")
+	})
+
+	var url_path = window.location.pathname;
+	if (url_path == "/competitors/company/audience"){
+		load_audience()
+	} 
+		hover_box()
+		init_creative()
+
+	$(".website").blur(function(){
+		var x = isURL($(this).val())
+		if (x == false){
+			$(this).siblings('.isValid').text("Invalid website")
+		} else {
+			$(this).siblings('.isValid').text(' ')
+		}
+		
+	})
+
+	var perc = []
+	$(".percent").keyup(function(){
+		$('.perc').empty()
+
+		var sum = 0;
+		$(".percent").each(function(){
+		    sum += +$(this).val();
+		});
+
+		$(".perc").text(sum);
+
+		if (parseInt($('.perc').text()) == 100) {
+			$('.container.counter').addClass('green')
+			$('.container.counter').removeClass('red')
+		} else if (parseInt($('.perc').text()) > 100) {
+			$('.container.counter').addClass('red')
+			$('.container.counter').removeClass('green')
+		} else {
+			$('.container.counter').removeClass('red')
+			$('.container.counter').removeClass('green')
+		}
+	})
+
+	setTimeout(function() { 
+        $('.need_help').fadeIn()
+	  	$(".xx").click(function(){
+	  		$(this).parent().remove()
+	  	})
+    }, 35000);
 
 
 
 
-
-
-
-
-
+})
 
 
 

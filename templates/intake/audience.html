@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="card-body invisible">
-                    <form method="POST" id="setup" action="{{ url_for('product') }}">
+                    <form class="ignore_default" method="POST" id="setup" action="{{ url_for('product') }}">
                       <div class="card-header">
                         <div class="row row_cancel yellow_border">
                           <h6>Ok, just need to understand a bit more about your key customers...</h6>
@@ -101,8 +101,11 @@
                           </h4>
                         </div>
                         <div class="row">
+                        <div>
+                          <a id="remove" href="">Remove this persona</a><br><br>
+                        </div>
                           <label for="persona_name">Let's give this audience persona a name. Each of your audiences can have different names. Remember that this isn't supposed to be ALL of your customers&mdash;rather, a specific group of customers. You'll have a chance to add others at the end!</label>
-                          <input type="text" class="form-control" name="persona_name" placeholder="Persona #1">
+                          <input type="text" class="form-control" maxlength="30" name="persona_name" placeholder="Persona Name">
                         </div>
                         <p><em>Gender (select one)</em></p>
                         <div>
@@ -164,7 +167,7 @@
                         </div>
 
                         <div class="">
-                          <p style="">In what city are they <u>mostly</u> located?</p> 
+                          <p style="">In what city, state, US county, or country are they <u>mostly</u> located?</p> 
                           <input style="width: 75%;" type="text" id="location" name="location" class="form-control" placeholder="<type>">
                         </div>
                       </div>

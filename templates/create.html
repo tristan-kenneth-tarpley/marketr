@@ -1,133 +1,47 @@
+{% extends "login_layout.html" %}
+{% block title %}
+<title>Market(r) - Create Account</title>
+{% endblock%}
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Create Account</title>
-</head>
-<body onload="init_create_account()">
-<form action="{{ url_for('create_user') }}" class="create_user_form" method="POST">
-	<div class="login">
-		<div class="login-screen">
-			<div class="app-title">
-				<h1>Create Account</h1>
-			</div>
- 
-			<div class="create-form">
-				<span style="visibility: hidden;" class="availability">asdf</span>
-				<div class="control-group">
-					<input type="text" id="email" class="login-field" value="" placeholder="email@email.com" name="username">
-					<label class="login-field-icon fui-user" for="blah-name"></label>
-				</div>
-					<span class="format"> </span>
- 
-				<div class="control-group">
-					<input type="password" class="login-field" value="" placeholder="password" name="password">
-					<label class="login-field-icon fui-lock" for="blah-pass"></label>
-				</div>
-				{{ error }}
-				{% if error %}
-				<p>{{error}}!!!</p>
-				{% endif %}
- 
-                <input type="submit" value="Create account" class="create_button btn btn-primary btn-large btn-block" >
-			    <br>
-			</div>
-			<div class="create">
-				<a href="/">Already have an account? Login</a>
-			</div>
-		</div>
-	</div>
-</form>
-<style type="text/css">
-* {
-box-sizing: border-box;
-}
- 
-*:focus {
-	outline: none;
-}
-body {
-font-family: Helvetica;
-background-color: #62cde0;
-padding: 50px;
-}
-.login {
-margin: 20px auto;
-width: 300px;
-}
-.login-screen {
-background-color: #FFF;
-padding: 20px;
-border-radius: 5px
-}
- 
-.app-title {
-text-align: center;
-color: #777;
-}
- 
-.login-form {
-text-align: center;
-}
-.control-group {
-margin-bottom: 10px;
-}
- 
-input {
-text-align: center;
-background-color: #ECF0F1;
-border: 2px solid transparent;
-border-radius: 3px;
-font-size: 16px;
-font-weight: 200;
-padding: 10px 0;
-width: 250px;
-transition: border .5s;
-}
- 
-input:focus {
-border: 2px solid #3498DB;
-box-shadow: none;
-}
- 
-.btn {
-  border: 2px solid transparent;
-  background: #62cde0;
-  color: #ffffff;
-  font-size: 16px;
-  line-height: 25px;
-  padding: 10px 0;
-  text-decoration: none;
-  text-shadow: none;
-  border-radius: 3px;
-  box-shadow: none;
-  transition: 0.25s;
-  display: block;
-  width: 250px;
-  margin: 0 auto;
-}
- 
-.btn:hover {
-  opacity: .7;
-}
- 
-.login-link {
-  font-size: 12px;
-  color: #444;
-  display: block;
-	margin-top: 12px;
-}
 
-</style>
+{% block header %}
+<h2>Let's get started.</h2>
+<div class="authSeparator">
+<hr>
+</div>
+<p>You'll want to set aside about 20 minutes right now for us to build your marketing plan. Don't worry&mdash;your progress will be saved as you go through. You can always log back in and finish at another time.</p><br>
+<p>At the end, we'll have all of the information we need to grow your business beyond your wildest expectations.</p>
+{% endblock%}
 
-  <script src="/static/assets/js/core/jquery.min.js"></script>
-  <script src="/static/animations.js"></script>
-  <script type="text/javascript">
+{% block form %}
 
-	  $(document).ready(function(){
-	    init_create_account()
-	  })
+    <form class="new_user" id="new_user" action="{{ url_for('create_user') }}" accept-charset="UTF-8" method="post">
 
-  </script>
-</body>
-</html>
+
+
+      <fieldset>
+        <div class="fieldCont">
+          <input required="required" type="email" name="username" id="user_email">
+          <label class="over">Your e-mail address</label>
+        </div>
+
+        <div class="fieldCont last">
+          <input autocomplete="off" required="required" type="password" name="password" id="user_password">
+          <label class="over">Password</label>
+        </div>
+        <span class="format"> </span>
+
+      </fieldset>
+
+      <div class="formActions">
+        <div class="buttonCont">
+          <input id="hovers" type="submit" name="commit" value="Let's go" data-disable-with="Log in">
+        </div>
+      </div>
+    </form>
+
+{% endblock %}
+
+{% block otherLinks %}
+<a href="/login_page">Customer Login</a>
+{% endblock %}

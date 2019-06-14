@@ -31,14 +31,18 @@
               {% else %}
               <div>
               {% endif %}
-                <div>
+              {% if next_step != 'begin' %}
+              <div>
+              {% else %}
+              <div style="margin-top:10%;">
+              {% endif %}
                   <div class="checkmark_container">
-                    <img src="/static/assets/img/confirmation.png">
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="#62cde0"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
                   </div>
-                  <div style="width: 70%;margin: 3% auto;">  
+                  <div style="width: 50%;margin: 3% auto 0;">  
                     <h5 class="blue">{{ heading }}</h5>
                     <p>{{ paragraph }}</p>
-                    <div class="onward" style="font-size: 120%;text-align: center;margin-top: 20%;">  
+                    <div class="onward" style="font-size: 120%;text-align: center;margin-top: 10%;">  
                       {% if redirect %}              
                         <a style="padding: 2% 5%;" class="continue" href="{{ url_for(next_step, redirect=True, next_step=next_step) }}">CONTINUE</a>
                       {% else %}

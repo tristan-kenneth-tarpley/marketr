@@ -32,7 +32,7 @@
                   </div>
                 </div><br><br>
                 <div class="card-body">
-                  <form action=" {{ url_for( 'past' ) }}" method="post">
+                  <form class="ignore_default" action=" {{ url_for( 'past' ) }}" method="post">
                     <div class="card-header">
                       <div class="row yellow_border">
                         <h2 class="blue_header">Nice!  And what was your experience like?</h2>
@@ -56,8 +56,11 @@
                             <select class="form-control" name="spend">
                               <option value="<$1,000"><$1,000</option>
                               <option value="$1,000-$4,999">$1,000-$4,999</option>
-                              <option value="$5,000-9,999">$5,000-9,999</option>
-                              <option value="$10,000+">$10,000+</option>
+                              <option value="$5,000-9,999">$5,000-$9,999</option>
+                              <option value="$10,000-$14,999">$10,000-$14,999</option>
+                              <option value="$15,000-$24,999">$15,000-$24,999</option>
+                              <option value="$25,000-$49,999">$25,000-$49,999</option>
+                              <option value="$50,000+">$50,000+</option>
                             </select>
                           </div>
 

@@ -9,14 +9,14 @@ from functools import wraps
 
 app = Flask(__name__)
 
-from db import db, sql_to_df, execute
-from core_routes import *
-from intake_routes import *
-from helpers import *
-import analysis as an
+from data.db import db, sql_to_df, execute
+from routes.core_routes import *
+from routes.intake_routes import *
+from helpers.helpers import *
+import helpers.analysis as an
+from routes.branding_routes import *
 
 
 if __name__ == '__main__':
 	app.config.from_pyfile('config.cfg')
-	# app.config.update(SECRET_KEY=os.urandom(12))
 	app.run(debug=True)

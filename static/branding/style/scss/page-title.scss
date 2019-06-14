@@ -1,0 +1,82 @@
+/* Breadcrumbs
+--------------------------------*/
+.breadcrumb {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background: none;
+	border-radius: 0;
+	li {
+		display: inline-block;
+		vertical-align: middle;
+		font-size: 17px;
+		font-weight: 400;
+		position: relative;
+		color: $px-dark;
+		+ li {
+			padding-left: 17px;
+			margin-left: 17px;
+			&:after {
+				content:"";
+				position: absolute;
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: currentColor;
+				opacity: 0.5;
+				left: -2px;
+				top: 0;
+				bottom: 0;
+				margin: auto;
+			}
+		}
+		a {
+			color: $px-dark;
+		}
+	}
+	&.white {
+		li {
+			color: $px-white;
+			a {
+				color: $px-white;
+			}
+		}	
+	}
+}
+
+
+/* Page Title Small
+--------------------------------*/
+.page-title-sm {
+	padding: 40px 0;
+	h1 {
+	    font-size: 24px;
+		line-height: 32px;
+		margin: 0;
+	}
+}
+
+/* Page Title large
+--------------------------------*/
+.page-title-lg {
+	padding: 180px 0 80px 0;
+	@include down-md {
+		padding: 140px 0 80px 0;
+	}
+	h1 {
+	    font-size: 60px;
+		margin: 0;
+		@include down-md {
+			font-size: 40px;
+		}
+		@include down-sm {
+			font-size: 30px;
+		}
+	}
+	.breadcrumb {
+		margin-top: 20px;
+		@include down-sm {
+			margin-top: 10px;
+		}
+	}
+}

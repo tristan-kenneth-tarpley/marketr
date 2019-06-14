@@ -1,0 +1,175 @@
+/*------------------
+*	Price Table
+-------------------*/
+.price-table {
+	background: $px-white;
+    padding: 40px 20px;
+    @include transition(ease-in-out all 0.25s);
+    position: relative;
+    top: 0; 
+    .pt-head {
+    	.msg {
+		    background: $px-theme2nd;
+		    margin: 0 0 30px;
+		    padding: 7px 20px;
+		    position: relative;
+		    left: -32px;
+		    text-transform: uppercase;
+		    font-size: 12px;
+		    color: $px-white;
+    	}
+    	h5 {
+		    color: $px-dark;
+		    font-size: 42px;
+		    font-weight: 600;
+		    margin: 0 0 20px;
+		    padding: 0 0 20px;
+		    border-bottom: 1px solid #ddd;
+    	}
+    }
+    .pt-body {
+    	h4 {
+		    font-size: 18px;
+		    font-weight: 500;
+		    color: #000;
+		    margin: 0;
+		    padding: 0 0 10px;
+    	}
+    }
+    .pt-footer {
+	    margin: 15px 0 0;
+	    padding: 20px 0 0;
+	    border-top: 1px solid #ddd;
+    }
+    &:hover {
+    	box-shadow: 0px 3px 10px 0px rgba(38, 59, 94, 0.1);
+    	top: -10px;
+    }
+    &.active {
+    	box-shadow: 0px 30px 60px 0px rgba(38, 59, 94, 0.1);
+    }
+}
+
+
+/*------------------
+*	Price Table
+-------------------*/
+.price-table-01 {
+	position: relative;
+    top: 0;
+    @include transition(ease-in-out all 0.25s);
+    overflow: hidden;
+    top: 0;
+    box-shadow: 0px 3px 10px 0px rgba(38, 59, 94, 0.1);
+    background: $px-white;
+    .pt-head {
+	    padding: 30px 10px 20px 20px;
+	    position: relative;
+	    z-index: 1;
+	    i {
+    	    font-size: 60px;
+		    color: $px-white;
+		    position: absolute;
+		    top: 30px;
+		    right: 20px;
+		    opacity: 0.5;
+	    }
+	    h4 {
+    	    color: $px-white;
+			font-size: 17px;
+	    }
+	    h5 {
+    	    color: $px-white;
+		    font-size: 42px;
+		    font-weight: 600;
+		    margin: 0;
+	    }
+	    &:after {
+    	    content: "";
+		    position: absolute;
+		    top: -50px;
+		    left: -20px;
+		    right: -10px;
+		    bottom: 0;
+		    background: $px-theme;
+		    z-index: -1;
+		    transform: rotate(-7deg);
+	    }
+	    .msg {
+		    background: $px-theme2nd;
+		    margin: 0 0 30px;
+		    padding: 7px 20px;
+		    position: relative;
+		    left: -32px;
+		    text-transform: uppercase;
+		    font-size: 12px;
+		    color: $px-white;
+    	}
+    }
+    .pt-body {
+    	padding: 25px 15px 10px 15px;
+    }
+    .pt-footer {
+	    text-align: center;
+	    position: relative;
+	    z-index: 1;
+	    padding: 15px 0;
+	    margin: 15px 0 0;
+	    border-top: 1px solid #ddd;
+    }
+
+    &:hover {
+    	box-shadow: 0px 30px 60px 0px rgba(38, 59, 94, 0.1);
+    	top: -10px;
+    }
+    &.active {
+    	.pt-head {
+    		&:after {
+    			background:$px-theme2nd;
+    		}
+    	}
+    }
+}
+
+
+/*------------------
+*	Price Table
+-------------------*/
+.price-table-02 {
+    background: $px-white;
+    padding: 12% 10%;
+    .pt-head {
+        padding: 0 0 20px;
+	    position: relative;
+	    z-index: 1;
+	    border-bottom: 1px solid #ddd;
+	    margin: 0 0 20px;
+	    label {
+		    margin: 0;
+		    font-size: 12px;
+		    vertical-align: top;
+		    font-weight: 500;
+	    }
+	    h4 {
+    	    font-size: 20px;
+		    margin: 0;
+		    font-weight: 600;
+	    }
+	    h5 {
+		    font-size: 44px;
+		    font-weight: 700;
+		    margin: 0;
+		    span {
+	    	    font-size: 20px;
+				vertical-align: super;
+		    }
+	    }
+    }
+    .pt-footer {
+	    position: relative;
+	    z-index: 1;
+	    padding: 25px 0 0;
+	    border-top: 1px solid #ddd;
+	    margin: 25px 0 0;
+    }
+}

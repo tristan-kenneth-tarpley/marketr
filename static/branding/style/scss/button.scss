@@ -1,0 +1,477 @@
+.overlay-link {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border: 0;
+}
+.m-btn-dual {
+	.m-btn {
+		margin: 5px;
+	}
+}
+
+.m-btn {
+    display: inline-block;
+    border: 2px solid transparent;
+    color: inherit;
+    line-height: inherit;
+    border-radius: 0;
+    width: auto;
+    padding: 10px 25px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+	@include transition(ease-in-out all 0.55s);
+	text-align: center;
+	&.m-link {
+		padding-right: 0;
+		padding-left: 0; 
+		&.white {
+			color: $px-white;
+		}
+		&.theme {
+			color: $px-theme;
+		}
+		&.theme2nd {
+			color: $px-theme2nd;
+		}
+	}
+	i {
+		vertical-align: middle;
+	}
+	&.m-btn-shadow {
+		box-shadow: 0 21px 35px -5px rgba(0,0,0,0.30);
+	}
+	&.m-btn-round {
+		border-radius: 50px;
+	}
+
+	&.m-btn-radius {
+		border-radius: 4px;
+	}
+
+	&.m-btn-xsm {
+        font-size: 9px;
+	    padding: 1px 17px;
+	    line-height: 22px;
+	}
+
+	&.m-btn-sm {
+        font-size: 11px;
+		padding: 4px 24px;
+	}
+
+	&.m-btn-lg {
+        font-size: 13px;
+	    padding: 12px 34px;
+	    line-height: 25px;
+	}
+
+	&.m-btn-xl {
+        font-size: 15px;
+	    padding: 15px 40px;
+	    line-height: 25px;
+	}
+
+	&.m-btn-black {
+	    background: $px-black;
+	    border-color: $px-black;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+	    	background: transparent;
+    		color: $px-black;
+	    }
+	}
+
+	&.m-btn-t-black {
+        background: transparent;
+	    border-color: $px-black;
+	    color: $px-black;
+	    &:focus,
+	    &:hover {
+		    background: $px-black;
+		    border-color: $px-black;
+		    color: $px-white;
+	    }
+	}
+
+	&.m-btn-white {
+        background: $px-white;
+	    border-color: $px-white;
+	    color: $px-dark;
+	    &:focus,
+	    &:hover {
+    	    background: transparent;
+			color: $px-white;
+	    }
+	}
+
+	&.m-btn-t-white {
+        background: transparent;
+	    border-color: $px-white;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+	        background: $px-white;
+		    border-color: $px-white;
+		    color: $px-dark;
+	    }
+	}
+
+	&.m-btn-theme-light {
+		background: lighten($px-theme, 30%);
+	    border-color: lighten($px-theme, 30%);
+	    color: $px-white;
+		color: $px-theme;
+		&:hover {
+			background: $px-theme;
+			border-color: $px-theme;
+			color: $px-white;
+		}
+	}
+
+	&.m-btn-theme2nd-light {
+		background: lighten($px-theme2nd, 42%);
+	    border-color: lighten($px-theme2nd, 42%);
+	    color: $px-white;
+		color: $px-theme2nd;
+		&:hover {
+			background: $px-theme2nd;
+			border-color: $px-theme2nd;
+			color: $px-white;
+		}
+	}
+	
+	&.m-btn-theme {
+		background: $px-theme;
+	    border-color: $px-theme;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+    	    background: transparent;
+			color: $px-theme;
+	    }
+	}
+
+	&.m-btn-t-theme {
+        background: transparent;
+	    border-color: $px-theme;
+	    color: $px-theme;
+	    &:focus,
+	    &:hover {
+	        background: $px-theme;
+		    border-color: $px-theme;
+		    color: $px-white;
+	    }
+	}
+
+	&.m-btn-theme2nd {
+		background: $px-theme2nd;
+	    border-color: $px-theme2nd;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+    	    background: transparent;
+			color: $px-theme2nd;
+	    }
+	}
+
+	&.m-btn-t-theme2nd {
+        background: transparent;
+	    border-color: $px-theme2nd;
+	    color: $px-theme2nd;
+	    &:focus,
+	    &:hover {
+	        background: $px-theme2nd;
+		    border-color: $px-theme2nd;
+		    color: $px-white;
+	    }
+	}
+
+}
+
+.m-btn-icon {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 18px;
+    border: 2px solid transparent;
+    &.lg {
+    	width: 80px;
+	    height: 80px;
+	    line-height: 80px;
+	    font-size: 30px;
+    }
+
+    &.md {
+    	width: 60px;
+	    height: 60px;
+	    line-height: 60px;
+	    font-size: 22px;
+    }
+
+    &.sm {
+    	width: 40px;
+	    height: 40px;
+	    line-height: 40px;
+	    font-size: 16px;
+    }
+
+    &.theme-light {
+    	background: lighten($px-theme, 30%);
+		color: $px-theme;
+		border-color: lighten($px-theme, 30%);
+		&:focus,
+		&:hover {
+			background: $px-theme;
+			border-color:  $px-theme;
+			color: $px-white;
+		}	
+    }
+    &.theme {
+	    background: $px-theme;
+	    color: $px-white;
+	    border-color: $px-theme;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			border-color: $px-theme;
+			color: $px-theme;
+		}
+    }
+    &.theme2nd {
+    	background: $px-theme2nd;
+    	border-color: $px-theme2nd;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-theme2nd;
+		}	
+    }
+
+    &.black {
+    	background: $px-black;
+    	border-color: $px-black;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-black;
+		}	
+    }
+
+    &.white {
+    	background: $px-white;
+    	border-color: $px-white;
+	    color: $px-black;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-white;
+		}	
+    }
+
+    &.yellow {
+    	background: $px-yellow;
+    	border-color: $px-yellow;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-yellow;
+		}	
+    }
+
+    &.yellow-light {
+    	background: rgba($px-yellow, .30);
+    	border-color: $px-yellow;
+	    color: $px-yellow;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-yellow;
+		}	
+    }
+
+    &.blue {
+    	background: $px-blue;
+    	border-color: $px-blue;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-blue;
+		}	
+    }
+
+    &.blue-light {
+    	background: rgba($px-blue, .30);
+    	border-color: $px-blue;
+	    color: $px-blue;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-blue;
+		}	
+    }
+
+    &.pink {
+    	background: $px-pink;
+    	border-color: $px-pink;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-pink;
+		}	
+    }
+
+    &.pink-light {
+    	background: rgba($px-pink, .30);
+    	border-color: $px-pink;
+	    color: $px-pink;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-pink;
+		}	
+    }
+
+    &.green {
+    	background: $px-green;
+    	border-color: $px-green;
+	    color: $px-white;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-green;
+		}	
+    }
+
+    &.green-light {
+    	background: rgba($px-green, .30);
+    	border-color: $px-green;
+	    color: $px-green;
+	    &:focus,
+	    &:hover {
+			background: transparent;
+			color: $px-green;
+		}	
+    }
+}
+
+
+/*------------------
+*	More Button
+-------------------*/
+.more-btn {
+	position: relative;
+    max-width: 650px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    &:after {
+	    content: "";
+		width: 100%;
+		height: 1px;
+		position: absolute;
+		bottom: 0;
+		margin: auto;
+		top: 0;
+		left: 0;
+		right: 0;
+		background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0.02) 1%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 100%);
+		opacity: 0.2;
+    }
+    &.more-btn-bottom {
+    	margin-bottom: -24px;
+    }
+    .m-btn {
+    	position: relative;
+    	z-index: 1;
+    	&.m-btn-theme {
+    		&:hover,
+    		&:focus {
+    			background:$px-white;
+    		}
+    	}
+    }
+}
+
+.video-btn {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    @include transition(ease all 0.55s);
+    z-index: 1;
+    &:after {
+		content: "";
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+		border-radius: 50%;
+		animation: pulse-border 1500ms ease-out infinite;
+		pointer-events: none;
+		z-index: -1;
+	}
+	&.white {
+		background: $px-white;
+		&:after {
+			background: $px-white;
+		}
+		span {
+			color:$px-theme;
+		}
+	}
+	&.theme {
+		background: $px-theme;
+		&:after {
+			background: $px-theme;
+		}
+		span {
+			color:$px-white;
+		}
+	}
+
+
+	span {
+	    border-top: 15px solid transparent;
+	    border-bottom: 15px solid transparent;
+	    border-left: 20px solid currentcolor;
+	    position: absolute;
+	    top: 0;
+	    bottom: 0;
+	    left: 9px;
+	    right: 0;
+	    margin: auto;
+	    width: 0px;
+	    height: 0px;
+	}
+}
+
+@keyframes pulse-border {
+  0% {
+    @include scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    @include scale(2);
+    opacity: 0;
+  }
+}

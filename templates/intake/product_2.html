@@ -46,10 +46,11 @@
                     <p><em>For the following topics, how does each offering compare relative to your direct competitors?</em></p>
                     </div>
 
-
+                
                   </div>
 
-
+  <input type="text" class="hidden" class="cogs">
+  <input type="text" class="hidden" class="price">
                   <div class="reveal_container">
                     <a class="reveal_button continue">Let's do this</a>
                   </div>
@@ -67,107 +68,93 @@
                       <div class="card-body  all-icons">
                         <br><br>
                         <div class="row ">
-                          <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Complexity</h6>
                             <p>How complex is the problem this solves?</p>
                           </div>
-                          <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="complexity" value="Simple" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Simple<br><br></label>
-                            </div>
-                            <div class="connector">
-                              <input type="radio" name="complexity" value="Kinda complex" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Kinda<br>complex</label>
-                            </div>
-                            <div class="connector">
-                              <input type="radio" name="complexity" value="Extremely Complex" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Extremely<br>Complex</label>
-                            </div>
+                          &nbsp;<div class="connector hover_box col-lg-2 col-md-2">
+                            <h6>Simple</h6>
                           </div>
+                          &nbsp;<div class="connector hover_box col-lg-2 col-md-2">
+                            <h6>Kinda Complex</h6>
+                          </div>
+                          &nbsp;<div class="connector hover_box col-lg-2 col-md-2">
+                            <h6>Extremely Complex</h6>
+                          </div>
+                          <input type="text" name="complexity" class="hidden hidden_input">
                         </div>
+
     
                         <div class="row ">
-                          <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Price</h6>
                             <p>Relative to competitive solutions, is this cheap or premium?</p>
                           </div>
-                          <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="price" value="Free" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Free<br><br></label>
+                          <div class="col-lg-6 col-md-6 col-sm-12">
+                            &nbsp;<div class="connector hover_box col-lg-2 col-md-2">
+                              <h6>Free</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="price" value="Low cost" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Low<br>cost</label>
+                           &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Low</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="price" value="Slight Premium" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Slight<br>Premium</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Slight Premium</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="price" value="High Premium" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">High<br>Premium</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>High<br>Premium</h6>
                             </div>
+                          <input type="text" name="price" class="hidden hidden_input">
                           </div>
                         </div>
     
     
                         <div class="row ">
-                          <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Frequency of use</h6>
                             <p>How often does a purchaser actually use this item?</p>
                           </div>
                           <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_use" value="Daily" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Daily<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                             <h6>Daily</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_use" value="Weekly" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Weekly<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Weekly</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_use" value="Monthly" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Monthly<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Monthly</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_use" value="1-2x per year" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">1-2x<br>per year</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>1-2x<br>per year</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_use" value="1-2x in life" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">1-2x<br>in life</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>1-2x<br>in life</h6>
                             </div>
+                          <input type="text" name="frequency_of_use" class="hidden hidden_input">
                           </div>
                         </div>
     
                         <div class="row ">
-                          <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Frequency of Purchase</h6>
                             <p>How often does a customer buy this?</p>
                           </div>
                           <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_purchase" value="Weekly" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Weekly<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Weekly</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_purchase" value="Monthly" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Monthly<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Monthly</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_purchase" value="1-2x per year" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">1-2x<br>per year</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>1-2x<br>per year</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_purchase" value="Anually" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Anually<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Anually</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="frequency_of_purchase" value="1-2x in life" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">1-2x<br>in life</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>1-2x<br>in life</h6>
                             </div>
+                          <input type="text" name="frequency_of_purchase" class="hidden hidden_input">
                           </div>
                         </div>
     
@@ -192,6 +179,9 @@
                             <div class="hover_box col-lg-2 col-md-2 col-sm-2">
                               <h6>Status / Feel good</h6>
                             </div>
+                            <div class="hover_box col-lg-2 col-md-2 col-sm-2">
+                              <h6>Investment</h6>
+                            </div>
                             <input type="text" class="hidden_input hidden" name="value_prop">
                         </div></div><br><br>
                         <div class="row ">
@@ -199,7 +189,7 @@
                               <h6>Warranties or Gaurantee</h6>
                               <p>Do you offer any explicit warranties or gaurantees?</p>
                             </div>
-                            <div class="hover_box col-lg-2 col-md-2 col-sm-5">
+                            <div id="wogf" class="hover_box col-lg-2 col-md-2 col-sm-5">
                               <h6>Yep!</h6>
                             </div>
                             <div class="hover_box col-lg-2 col-md-2 col-sm-5">
@@ -208,7 +198,7 @@
                             <input type="text" class="hidden_input hidden" name="warranties_or_guarantee">
                             <div class="col-lg-6 col-md-6 col-sm-0"></div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                              <textarea class="form-control" name="warranties_or_guarantee_freeform" placeholder="describe your warranty or guarantee here"></textarea>
+                              <textarea class="form-control" id="warranties_or_guarantee_freeform" name="warranties_or_guarantee_freeform" placeholder="describe your warranty or guarantee here"></textarea>
                             </div>
                         </div>
     
@@ -217,48 +207,42 @@
                             <h6>Low or High Number of SKUs</h6>
                             <p>How many different product items do you currently offer?</p>
                           </div>
-                          <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="num_skus" value="<5" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one"><5</label>
+                          <div class="radio_container col-lg-5 col-md-5 col-sm-12">
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6><5</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="num_skus" value="5-20" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">5-20</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>5-20</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="num_skus" value="20-100" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">20-100</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>20-100</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="num_skus" value="100+" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">100+</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>100+</h6>
                             </div>
+                          <input type="text" name="num_skus" class="hidden hidden_input">
                           </div>
                         </div>
     
                         <div class="row {{ 'hidden' if hide_2 else ' ' }}">
-                          <div class="center_it col-lg-6 col-md-6 col-sm-12">
+                          <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Level of Customization</h6>
                             <p>Low or High?</p>
                           </div>
                           <div class="radio_container col-lg-6 col-md-6 col-sm-12">
-                            <div class="connector">
-                              <input type="radio" name="level_of_customization" value="None" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">None<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>None</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="level_of_customization" value="Some" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Some<br><br></label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Some</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="level_of_customization" value="Most are customized" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Most are<br>customized</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Most are<br>customized</h6>
                             </div>
-                            <div class="connector">
-                              <input type="radio" name="level_of_customization" value="Every Product is customized" id="radio-one" class="form-radio">
-                              <br><br><label for="radio-one">Every Product<br>is customized</label>
+                            &nbsp;<div class="hover_box col-lg-2 col-md-2">
+                              <h6>Every Product<br>is customized</h6>
                             </div>
+                          <input type="text" name="level_of_customization" class="hidden hidden_input">
                           </div>
                         </div>
                         <div class="p_form_container">
@@ -282,8 +266,10 @@
 {% endblock %}
 
 {% block js %}
+
 <script>
   $(document).ready(function(){
+    init_radio()
     init_products()
   })
 </script>

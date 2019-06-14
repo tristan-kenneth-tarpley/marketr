@@ -1,0 +1,218 @@
+/*---------------------------
+ Accordion 01
+------------------------------*/
+.accordion-01 {
+	.acco-group {
+		background: $px-white;
+		.acco-heading {
+			padding: 12px 0;
+			border-bottom: 1px solid #eee;
+			display: inline-block;
+			vertical-align: top;
+			width: 100%;
+			color: $px-dark;
+			font-weight: 600;
+			position: relative;
+		}
+		.acco-des {
+			padding: 15px 0;
+		}
+	}	
+}
+/*---------------------------
+ Accordion 02
+------------------------------*/
+.accordion-02 {
+	.acco-group {
+		border: 1px solid #eee;
+		background: $px-white;
+		+ .acco-group {
+			margin-top: -1px;
+		}
+		.acco-heading {
+			padding: 12px 45px 12px 12px;
+			display: inline-block;
+			vertical-align: top;
+			width: 100%;
+			color: $px-dark;
+			font-weight: 600;
+			position: relative;
+			&:after {
+			    content: "";
+			    width: 7px;
+			    height: 7px;
+			    border-top: 1px solid #000000;
+			    border-left: 1px solid #000000;
+			    @include transition(ease all 0.55s);
+			    @include rotate(-135);
+			    position: absolute;
+			    top: 20px;
+			    right: 20px;
+			}
+		}
+		.acco-des {
+			border-top: 1px solid #eee;
+			padding: 20px;
+		}
+		&.acco-active {
+			.acco-heading {
+				&:after {
+					top:25px;
+					@include rotate(45);
+				}
+			}
+		}
+	}	
+}
+
+/*---------------------------
+ Accordion 03
+------------------------------*/
+.accordion-03 {
+	.acco-group {
+		background: $px-white;
+		margin-bottom: 10px;
+		border-radius: 5px;
+		box-shadow: 0px 3px 10px 0px rgba(38, 59, 94, 0.1); 
+		.acco-heading {
+			padding: 12px 45px 12px 25px;
+			display: inline-block;
+			vertical-align: top;
+			width: 100%;
+			color: $px-dark;
+			font-weight: 600;
+			position: relative;
+			span {
+				color: $px-theme;
+				font-size: 18px;
+				font-weight: 600;
+				margin-right: 8px;
+				vertical-align: middle;
+			}
+			&:after {
+			    content: "";
+			    width: 7px;
+			    height: 7px;
+			    border-top: 1px solid #000000;
+			    border-left: 1px solid #000000;
+			    @include transition(ease all 0.55s);
+			    @include rotate(-135);
+			    position: absolute;
+			    top: 20px;
+			    right: 20px;
+			}
+		}
+		.acco-des {
+			border-top: 1px solid #eee;
+			padding: 20px;
+		}
+		&.acco-active {
+			.acco-heading {
+				&:after {
+					top:25px;
+					@include rotate(45);
+				}
+			}
+		}
+	}	
+}
+
+/*---------------------------
+ Accordion 04
+------------------------------*/
+.accordion-04 {
+	.acco-group {
+		margin-bottom: 10px;
+		border: 1px solid rgba($px-white, 0.20);
+		.acco-heading {
+			padding: 12px 45px 12px 25px;
+			display: inline-block;
+			vertical-align: top;
+			width: 100%;
+			color: $px-white;
+			font-weight: 600;
+			position: relative;
+			span {
+				color: $px-theme;
+				font-size: 18px;
+				font-weight: 600;
+				margin-right: 8px;
+			}
+			&:after {
+			    content: "";
+			    width: 7px;
+			    height: 7px;
+			    border-top: 1px solid $px-white;
+			    border-left: 1px solid $px-white;
+			    @include transition(ease all 0.55s);
+			    @include rotate(-135);
+			    position: absolute;
+			    top: 20px;
+			    right: 20px;
+			}
+		}
+		.acco-des {
+			border-top: 1px solid rgba($px-white, 0.20);
+			padding: 20px;
+			color: rgba($px-white, .80);
+		}
+		&.acco-active {
+			.acco-heading {
+				&:after {
+					top:25px;
+					@include rotate(45);
+				}
+			}
+		}
+	}	
+}
+
+
+/*---------------------------
+ Accordion 05
+------------------------------*/
+.accordion-05 {
+	box-shadow: 0px 15px 38px rgba(0, 0, 0, 0.1); 
+	.acco-group {
+		background: $px-white;
+		&:not(:last-child) {
+			border-bottom: 1px solid #eee;
+		}
+		.acco-heading {
+			padding: 20px 45px 20px 25px;
+			display: inline-block;
+			vertical-align: top;
+			width: 100%;
+			color: $px-dark;
+			font-weight: 600;
+			position: relative;
+			font-size: 16px;
+			&:after {
+			    content: "";
+			    width: 10px;
+			    height: 10px;
+			    border-top: 2px solid #000000;
+			    border-left: 2px solid #000000;
+			    @include transition(ease all 0.55s);
+			    @include rotate(-135);
+			    position: absolute;
+			    top: 28px;
+			    right: 25px;
+			}
+		}
+		.acco-des {
+			border-left: 5px solid $px-theme;
+			border-top: 1px solid #eee;
+			padding: 20px;
+		}
+		&.acco-active {
+			.acco-heading {
+				color: $px-theme;
+				&:after {
+					top:32px;
+					@include rotate(45);
+				}
+			}
+		}
+	}	
+}
