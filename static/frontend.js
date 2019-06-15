@@ -651,7 +651,7 @@ function load_past_inputs(){
 
 	$(".onward .continue").attr('value', 'SAVE AND CONTINUE')
 
-	if (url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
+	if (url_path !== "/home" && url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
 
 		$.get('/load_past_inputs', args, function(data){
 			if (data !== 'nah, not this time' && data !== 'nah') {
@@ -783,6 +783,13 @@ function isURL(str) {
   return pattern.test(str);
 }
 
+function meters(){
+	var val = $(".meters#text").val()
+	// val = parseInt(val)
+	console.log(val)
+	$(".meters:before").css('width', val)
+}
+
 $(document).ready(function(){
 
 	$('.ignore_default input').keydown(function(event){
@@ -848,7 +855,7 @@ $(document).ready(function(){
 	  	})
     }, 35000);
 
-
+	meters()
 
 
 })

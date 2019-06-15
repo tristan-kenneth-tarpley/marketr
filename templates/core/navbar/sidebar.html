@@ -1,0 +1,23 @@
+
+{% block sidebar %}
+<div class="sidebar" data-color="orange">
+<!--
+Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
+-->
+	<div class="logo">
+	  <a href="https://marketr.life" class="simple-text logo-normal">
+	    <img src="/static/assets/img/marketrwhite.png">
+	  </a>
+	</div>
+	<div class="sidebar-wrapper">
+	  <ul class="nav">
+	    <li class="{{ plan }}">
+	      <a href="/home?page=plan">
+	        <i class="now-ui-icons design_app"></i>
+	        <p>Marketing Plan</p>
+	      </a>
+	    </li>
+	  </ul>
+	</div>
+</div>
+{% endblock %}

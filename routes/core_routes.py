@@ -135,11 +135,8 @@ def create_user():
         
 @app.route('/login_page', methods=['GET'])
 def login_page():
-    if not session.get('logged_in'):
-        return render_template('login.html')
+    return render_template('login.html')
 
-    else:
-        return redirect(url_for('index'))
 
 def login_required(f):
     @wraps(f)
@@ -185,6 +182,8 @@ def customer_login():
                     step = load_last_page(session['user'])
                     if step == "product":
                         return redirect(url_for("product", redirect=True))
+                    elif step == "home":
+                        return redirect(url_for('home'))
                     else:
                         return redirect(url_for(step))
             else:
@@ -475,6 +474,151 @@ def delete_asset():
             print(file_path)
             print(name)
         return redirect(url_for('creative'))
+
+
+
+
+
+@app.route('/home', methods=['GET', 'POST'])
+@login_required
+def home():
+    # customer_basic
+    cust_tup = (session['user'],)
+    customer_query = "SELECT company_name, city, state, stage, employees, revenue, first_name, last_name, email, last_modified FROM dbo.customer_basic WHERE id = ?"
+
+    data, cursor = execute(customer_query, True, cust_tup)
+    data = data.fetchall()
+
+    company_name = data[0][0]
+    city = data[0][1]
+    state = data[0][2]
+    stage = data[0][3]
+    employees = data[0][4]
+    revenue = data[0][5]
+    primary_first = data[0][6]
+    primary_last = data[0][7]
+    email = data[0][8]
+    last_modified = str(data[0][9])
+    last_modified = ''.join(last_modified.split())[:-15].upper()
+
+    cursor.close()
+
+    # company    
+    comp_query = "SELECT selling_to, biz_model, storefront_perc, direct_perc, online_perc, tradeshows_perc, other_perc, rev_channel_freeform from dbo.company where customer_id = ?"
+    
+    data, cursor = execute(comp_query, True, cust_tup)
+    data =  data.fetchall()
+
+    selling_to = data[0][0]
+    biz_model = data[0][1]
+    storefront_perc = data[0][2]
+    direct_perc = data[0][3]
+    online_perc = data[0][4]
+    tradeshows_perc = data[0][5]
+    other_perc = data[0][6]
+    rev_channel_freeform = data[0][7]
+
+    cursor.close()
+
+    # goal
+
+    goal_query = "SELECT goal, current_avg, target_avg, timeframe from dbo.goals where customer_id = ?"
+    
+    data, cursor = execute(goal_query, True, cust_tup)
+    data = data.fetchall()
+
+    goal = data[0][0]
+    goal = goal.lower()
+    current_avg = data[0][1]
+    target_avg = data[0][2]
+    timeframe = data[0][3]
+
+    cursor.close()
+
+    # competitors
+
+    compet_query = "SELECT industry, comp_1_name, comp_1_website, comp_1_type, comp_2_name, comp_2_website, comp_2_type from dbo.competitors where customer_id = ?"
+    
+    data, cursor = execute(compet_query, True, cust_tup)
+    data = data.fetchall()
+
+    industry = data[0][0]
+    comp_1_name = data[0][1]
+    comp_1_website = data[0][2]
+    comp_1_type = data[0][3]
+    comp_2_name = data[0][4]
+    comp_2_website = data[0][5]
+    comp_2_type = data[0][6]
+
+    cursor.close()
+
+    # audience
+    audience_query = f"SELECT * from dbo.audience where customer_id = {session['user']}"
+    
+    audience = sql_to_df(audience_query)
+    ages_before_after = clean_audience(session['user'])
+
+    # products
+    prod_query = "SELECT quantity, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7, segment_8, segment_9, segment_10, source_1, source_2, source_3, source_4, source_freeform from dbo.product where customer_id = ?"
+
+    data, cursor = execute(prod_query, True, cust_tup)
+    data = data.fetchall()
+
+    quantity = data[0][0]
+    segment_1 = data[0][1]
+    segment_2 = data[0][2]
+    segment_3 = data[0][3]
+    segment_4 = data[0][4]
+    segment_5 = data[0][5]
+    segment_6 = data[0][6]
+    segment_7 = data[0][7]
+    segment_8 = data[0][8]
+    segment_9 = data[0][9]
+    segment_10 = data[0][10]
+    source_1 = data[0][11]
+    source_2 = data[0][12]
+    source_3 = data[0][13]
+    source_4 = data[0][14]
+    source_freeform = data[0][15]
+
+    segments = [segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7, segment_8, segment_9, segment_10]
+    for segment in segments:
+        if segment == " ":
+            segments.remove(segment)
+    sources = [source_1, source_2, source_3, source_4]
+    cursor.close()
+
+    # product_list
+    plist_query = f"SELECT * from dbo.product_list where customer_id = {session['user']}"
+
+    product_list = sql_to_df(plist_query)
+
+    # history
+    history_query = "SELECT digital_spend, history_freeform from dbo.history where customer_id = ?"
+    
+    data, cursor = execute(history_query, True, cust_tup)
+    data = data.fetchall()
+
+    digital_spend = data[0][0]
+    history_freeform = data[0][1]
+
+    cursor.close()
+
+    # platforms
+    platforms_query = f"SELECT * FROM dbo.platforms where customer_id = {session['user']}"
+    platforms = sql_to_df(platforms_query)
+
+    return render_template('core/home.html',platforms=platforms,sources=sources, segments=segments, ages_before_after=ages_before_after, last_modified=last_modified, company_name=company_name,city=city,state=state,stage=stage,employees=employees,revenue=revenue,primary_first=primary_first,primary_last=primary_last,email=email,selling_to=selling_to,biz_model=biz_model,storefront_perc=storefront_perc,direct_perc=direct_perc,online_perc=online_perc,tradeshows_perc=tradeshows_perc,other_perc=other_perc,rev_channel_freeform=rev_channel_freeform,goal=goal,current_avg=current_avg,target_avg=target_avg,timeframe=timeframe,industry=industry,comp_1_name=comp_1_name,comp_1_website=comp_1_website,comp_1_type=comp_1_type,comp_2_name=comp_2_name,comp_2_website=comp_2_website,comp_2_type=comp_2_type,audience=audience,quantity=quantity,segment_1=segment_1,segment_2=segment_2,segment_3=segment_3,segment_4=segment_4,segment_5=segment_5,segment_6=segment_6,segment_7=segment_7,segment_8=segment_8,segment_9=segment_9,segment_10=segment_10,source_1=source_1,source_2=source_2,source_3=source_3,source_4=source_4,source_freeform=source_freeform,product_list=product_list,digital_spend=digital_spend,history_freeform=history_freeform)
+
+
+
+
+
+
+
+
+
+
 
 
 

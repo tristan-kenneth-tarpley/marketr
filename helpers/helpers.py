@@ -118,9 +118,8 @@ def load_last_page(user):
              'goals': 'goals',
              'history': 'history',
              'platforms': 'platforms',
-             'past': 'past',
-             'assets': 'creative',
-             'the end': 'index'}
+             'history_2': 'past',
+             'the end': 'home'}
     
     def call_it(name):
         return steps[name]
@@ -129,7 +128,10 @@ def load_last_page(user):
 
     for step in steps:
         if step != 'the end':
-            def_query = sql_to_df(f"SELECT customer_id FROM {step} WHERE customer_id = {str(user)}")
+            if step == "history_2":
+                def_query = sql_to_df(f"SELECT history_freeform FROM dbo.history WHERE customer_id = {str(user)}")
+            else:    
+                def_query = sql_to_df(f"SELECT customer_id FROM {step} WHERE customer_id = {str(user)}")
             i+=1
             if def_query.empty == True:
                 perc_complete = str(i*10)
@@ -139,7 +141,10 @@ def load_last_page(user):
                 if step == "product":
                     return call_it(step)
                 else:
+                    print(step)
                     return call_it(step)
+            else:
+                return 'home'
 
 
 

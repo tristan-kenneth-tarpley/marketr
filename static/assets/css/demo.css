@@ -432,6 +432,8 @@ Copyright (c) 2015 Daniel Eden
       text-decoration: none;
       box-shadow: none; }
 
+
+
 .btn-success {
   background-color: #18ce0f;
   color: #FFFFFF; }
@@ -1402,7 +1404,8 @@ a[data-toggle="collapse"][aria-expanded="true"] .caret,
   padding-bottom: 0.625rem;
   min-height: 53px;
   margin-bottom: 20px;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); }
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); 
+}
   .navbar a {
     vertical-align: middle; }
     .navbar a:not(.btn):not(.dropdown-item) {
@@ -2538,16 +2541,24 @@ Created using IcoMoon - icomoon.io
     .sidebar .nav li:hover:not(.active) > a, .sidebar .nav li:focus:not(.active) > a,
     .off-canvas-sidebar .nav li:hover:not(.active) > a,
     .off-canvas-sidebar .nav li:focus:not(.active) > a {
-      background-color: rgba(255, 255, 255, 0.1); }
+      background-color: transparent; 
+      color: #62cde0;
+    }
       .sidebar .nav li:hover:not(.active) > a i, .sidebar .nav li:focus:not(.active) > a i,
       .off-canvas-sidebar .nav li:hover:not(.active) > a i,
       .off-canvas-sidebar .nav li:focus:not(.active) > a i {
-        color: #FFFFFF; }
+        color: #62cde0;
+        transition: all 300ms ease-in-out .2s !important; 
+         }
     .sidebar .nav li.active > a,
     .off-canvas-sidebar .nav li.active > a {
-      background-color: #FFFFFF;
+      background-color: transparent;
       /*border-left: 3px solid white;*/
-      box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1); }
+      box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1); 
+    }
+    .sidebar .nav li > a {
+      background-color: transparent;
+    }
     .sidebar .nav p,
     .off-canvas-sidebar .nav p {
       margin: 0;
@@ -2617,7 +2628,7 @@ Created using IcoMoon - icomoon.io
       right: 15px;
       height: 1px;
       width: calc(100% - 30px);
-      background-color: rgba(255, 255, 255, 0.5); }
+      background-color: rgba(255, 255, 255, 0.1); }
     .sidebar .logo p,
     .off-canvas-sidebar .logo p {
       float: left;
@@ -2690,13 +2701,15 @@ Created using IcoMoon - icomoon.io
       color: #18ce0f; }
   .sidebar[data-color="orange"]:after,
   .off-canvas-sidebar[data-color="orange"]:after {
-    background: rgb(0,0,0); }
+    /*come back*/
+    background: #000E19; }
   .sidebar[data-color="orange"] .nav li.active > a,
   .off-canvas-sidebar[data-color="orange"] .nav li.active > a {
-    color: rgb(0,0,0); }
+    color: #ca7d66; }
     .sidebar[data-color="orange"] .nav li.active > a i,
     .off-canvas-sidebar[data-color="orange"] .nav li.active > a i {
-      color: rgb(0,0,0); }
+      color: #ca7d66; }
+      /*come back*/
   .sidebar[data-color="red"]:after,
   .off-canvas-sidebar[data-color="red"]:after {
     background: #FF3636; }
@@ -2716,6 +2729,7 @@ Created using IcoMoon - icomoon.io
     .off-canvas-sidebar[data-color="yellow"] .nav li.active > a i {
       color: #FFB236; }
 
+
 .visible-on-sidebar-regular {
   display: inline-block !important; }
 
@@ -2726,13 +2740,14 @@ Created using IcoMoon - icomoon.io
 .off-canvas-sidebar .nav > li > a:hover {
   color: #FFFFFF; }
 .off-canvas-sidebar .nav > li > a:focus {
-  background: rgba(200, 200, 200, 0.2); }
+  background: rgba(200, 200, 200, 0.2); 
+}
 
 .main-panel {
   position: relative;
   float: right;
   width: calc(100% - 260px);
-  background-color: #E3E3E3;
+  /*background-color: #E3E3E3;*/
   background-color: #ebecf1;
   -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
   -moz-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
@@ -2756,7 +2771,9 @@ Created using IcoMoon - icomoon.io
 @media (min-width: 991px) {
   .sidebar {
     display: block;
-    box-shadow: 0px 2px 22px 0 rgba(0, 0, 0, 0.2), 0px 2px 30px 0 rgba(0, 0, 0, 0.35); } }
+    box-shadow: 0px 2px 22px 0 rgba(0, 0, 0, 0.2), 0px 2px 30px 0 rgba(0, 0, 0, 0.35); 
+  } 
+  }
 .panel-header {
   height: 260px;
   padding-top: 80px;
@@ -3026,7 +3043,8 @@ Created using IcoMoon - icomoon.io
   position: relative;
   width: 100%;
   margin-bottom: 20px;
-  box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1); }
+  box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1); 
+}
   .card .card-body {
     padding: 15px 15px 10px 15px; }
     .card .card-body.table-full-width {
@@ -4563,3 +4581,45 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   padding: 2% 4%;
 }
 
+
+.divider {
+  margin: 5%;
+}
+.meter {
+  position: absolute;
+  bottom: 0;
+  top: 68%;
+  left: 9%;
+  right: 9%;
+}
+.meter::before {
+  content: "";
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+  height: 3px;
+  background: #57667E;
+  width: 100%;
+  left: 0;
+}
+.percentages .card {
+  padding-bottom: 5%;
+  margin-left: 1%;
+}
+
+.edit {
+  text-align: right;
+}
+
+.return {
+  background-color: #ca7d66;
+  border: 3px solid #ca7d66;
+  color: white;
+  position: fixed;
+  left: 45%;
+  right: 35%;
+  text-align: center;
+}
+.return:hover {
+  opacity: .7;
+}

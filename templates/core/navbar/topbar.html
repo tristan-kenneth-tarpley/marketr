@@ -17,10 +17,6 @@
         <span class="navbar-toggler-bar navbar-kebab"></span>
         <span class="navbar-toggler-bar navbar-kebab"></span>
       </button>
-        {% if request.args.get('home') %}
-          <a href="{{url_for('home')}}" class="return continue">Return home</a>
-        {% endif %}
-
       <div class="collapse navbar-collapse justify-content-end" id="navigation">
 <!--         <form>
           <div class="input-group no-border">
@@ -32,14 +28,7 @@
             </div>
           </div>
         </form> -->
-        
-        
-        <div class="need_help hidden">
-          <span class="xx">X</span><br>
-          <h6 class="title">Feeling a bit overwhelmed? Get help from a marketing expert!</h6><br><br>
-          <a class="continue" href="/">Schedule a call</a>
-        </div>
-        <ul class="navbar-nav">
+
 <!--           <li class="nav-item">
             <a class="nav-link" href="#pablo">
               <i class="now-ui-icons media-2_sound-wave"></i>
