@@ -8,6 +8,7 @@
 <style type="text/css">
 	.card {
 		padding: 3%;
+		border-top: 6px solid #62cde0;
 	}
 </style>
 	<div class="panel-header panel-header-sm">
@@ -18,11 +19,13 @@
 				<div id="profile_information" class="target row row_cancel">
 					<div class="card">
 						<div class="edit">
-							<a href="{{url_for('begin', home=True)}}">Edit</a>
+							<a href="{{url_for('begin', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
-						<h3><u>Marketing Plan</u></h3>
-						<h6>Created: {{last_modified}}</h6>
-						<h5 class="title">{{company_name}}</h5>
+						<h3 class="title"><u>Marketing Plan</u></h3>
+						<h6>Created: {{last_modified}}</h6><br>
+						<h6 class="title">{{company_name}}</h6>
 						<p>{{industry|safe}}  |  {{ city }}, {{ state }} | Stage: {{ stage }}</p>
 						<p>{{ employees }} employees/contractors with approx. ${{revenue}} in annual revenues</p>
 						<h6>Profile owner:</h6><br>
@@ -34,7 +37,9 @@
 				<div class="row">
 					<div id="company" class="target card col-12">
 						<div class="edit">
-							<a href="{{url_for('company', home=True)}}">Edit</a>
+							<a href="{{url_for('company', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Company Info</h3>
 						<p>A {{selling_to}} company in the {{biz_model}} space with their primary sources of revenue coming from the following channels: </p>
@@ -86,14 +91,18 @@
 					</div>
 					<div id="goal" class="target card col-12">
 						<div class="edit">
-							<a href="{{url_for('goals', home=True)}}">Edit</a>
+							<a href="{{url_for('goals', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Marketing Goal</h3>
 						<p>{{company_name}}'s primary marketing goal is to improve {{goal}} from {{current_avg}} to {{target_avg}} within {{timeframe}}</p>
 					</div>
 					<div id="competitors" class="target card col-12">
 						<div class="edit">
-							<a href="{{url_for('competitors', home=True)}}">Edit</a>
+							<a href="{{url_for('competitors', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Top competitors</h3>
 						<h6>{{comp_1_name}} who is a {{comp_1_type}} competitor</h6>
@@ -106,13 +115,16 @@
 					</div>
 					<div id="audience" class="target card col-12">
 						<div class="edit">
-							<a href="{{url_for('audience', home=True)}}">Edit</a>
+							<a href="{{url_for('audience', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Target Market</h3>
 						{% for key, value in audience.iterrows() %}
 							{% if value['persona_name'] %}
 							<h6>Audience name: {{value['persona_name']}}</h6>
-								<table class="table">
+							<hr style="margin: 5%;">
+								<table class="table table-borderless">
 									<thead>
 										<th>Demographic</th>
 										<th>Personality</th>
@@ -198,7 +210,9 @@
 					</div>
 					<div id="products" class="target card col-12">
 						<div class="edit">
-							<a href="{{url_for('product', home=True)}}">Edit</a>
+							<a href="{{url_for('product', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Product / Service Offering</h3>
 						<h6>{{company_name}} offers {{quantity}} products / services.</h6><br><br>
@@ -246,7 +260,12 @@
 								{% for key, value in product_list.iterrows() %}
 									{% if value['name'] %}
 									<tr>
-										<td><a href="/removeProduct/{{value['p_id']}}#products">Remove product</a></td>
+										<td>
+											<a href="/removeProduct/{{value['p_id']}}#products" rel="tooltip" class="btn btn-primary btn-sm btn-icon">
+                    							<i class="now-ui-icons ui-1_simple-remove"></i>
+                							</a>
+                						</td>
+
 										<td><strong>{{value['name']}}</strong></td>
 										<td>{{value['category']}}</td>
 										<td>${{value['cogs']}}</td>
@@ -262,7 +281,9 @@
 						<div class="divider"></div>
 
 						<div class="edit">
-							<a href="{{url_for('product_2', home=True)}}">Edit</a>
+							<a href="{{url_for('product_2', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h6>Offering Detailed Analysis</h6>
 						<table style="overflow-x:scroll;" class="table table-borderless">
@@ -358,7 +379,9 @@
 					<div id="platforms" class="target card col-12">
 
 						<div class="edit">
-							<a href="{{url_for('history', home=True)}}">Edit</a>
+							<a href="{{url_for('history', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
 						</div>
 						<h3>Experience With Advertising Platforms</h3>
 						<h5 class="title blue_header">{{digital_spend}}/month</h5>

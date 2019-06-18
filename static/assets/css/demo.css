@@ -4453,6 +4453,17 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   width: 100%;
   font-weight: bold;
 }
+.meter::before {
+  content: "";
+  width: 40%;
+  display: block;
+  position: absolute;
+  height: 5px;
+  bottom: 100%;
+  background: #e5e5e5;
+  left: 30%;
+  right: 30%;
+}
 .perc_width {
   border-radius: 0.1875rem;
   content: "";
@@ -4498,7 +4509,7 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 }
 
 .smilesHome {
-  height: 9%;
+  height: 10%;
 }
 
 
@@ -4510,12 +4521,14 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   color: rgba(255,255,255,.4) !important;
+  border-radius: 0 !important;
 }
 .sub_nav a:hover {
   color: rgba(255,255,255,.9) !important;
 }
 .sub_nav a.targeted {
   color: white !important;
+  border-left: 3px solid white;
 }
 
 
