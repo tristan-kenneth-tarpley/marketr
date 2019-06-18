@@ -1,7 +1,28 @@
 {% block topbar %}
+<div class="modal fade" id="confirm_home" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Possible unsaved work</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to return home or save your changes?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Stay here</button>
+        <a class="btn btn-primary" href="/home">Return home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="main-panel">
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute bg-primary fixed-top">
+  <nav class="navbar navbar-expand-sm navbar-transparent navbar-absolute bg-primary fixed-top">
     <div class="container-fluid">
       <div class="navbar-wrapper">
         <div class="navbar-toggle">
@@ -17,9 +38,6 @@
         <span class="navbar-toggler-bar navbar-kebab"></span>
         <span class="navbar-toggler-bar navbar-kebab"></span>
       </button>
-        {% if request.args.get('home') %}
-          <a href="{{url_for('home')}}" class="return continue">Return home</a>
-        {% endif %}
 
       <div class="collapse navbar-collapse justify-content-end" id="navigation">
 <!--         <form>
@@ -32,35 +50,23 @@
             </div>
           </div>
         </form> -->
-        
-        
+        {% if request.args.get('home') %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm_home">
+          Return home
+        </button>
+        {% else %}
         <div class="need_help hidden">
           <span class="xx">X</span><br>
           <h6 class="title">Feeling a bit overwhelmed? Get help from a marketing expert!</h6><br><br>
           <a class="continue" href="/">Schedule a call</a>
         </div>
-        <ul class="navbar-nav">
-<!--           <li class="nav-item">
-            <a class="nav-link" href="#pablo">
-              <i class="now-ui-icons media-2_sound-wave"></i>
-              <p>
-                <span class="d-lg-none d-md-block">Stats</span>
-              </p>
-            </a>
-          </li> -->
-<!--           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="now-ui-icons location_world"></i>
-              <p>
-                <span class="d-lg-none d-md-block">Some Actions</span>
-              </p>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="/logout">Logout</a>
-            </div>
-          </li> -->
+        {% endif %}
+        
+        
 
-          <li class="nav-item dropdown">
+        <ul class="navbar-nav">
+
+          <li style="list-style-type: none;" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" arias-haspopup="true" aria-expanded="false">
               <i class="now-ui-icons users_single-02"></i>
               <p>

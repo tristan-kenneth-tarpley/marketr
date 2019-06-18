@@ -6,7 +6,7 @@ server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
 password = 'Fiverrtemp!'
-driver= '{ODBC Driver 17 for SQL Server}'
+driver= '{ODBC Driver 13 for SQL Server}'
 
 connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
 
@@ -21,6 +21,7 @@ except pyodbc.Error as ex:
     retry_count = 0
     while retry_flag and retry_count <5:
     	try:
+    		del db
     		db = pyodbc.connect(connStr)
     		try_flag = False
     	except:

@@ -1,3 +1,18 @@
-{% macro hide(val) %}
-	{{ val | hide() }}
+<!-- add coming_home parameter -->
+{% macro form_open(next_page, home) %}
+	{% if home %}
+
+		{% if next_page == 'platforms' %}
+
+		<form class="ignore_default" method="POST" action="{{ url_for(next_page, coming_home=True, home=True) }}">
+
+		{% else %}
+
+		<form class="ignore_default" method="POST" action="{{ url_for(next_page, coming_home=True) }}">
+
+		{% endif %}
+
+	{% else %}
+		<form class="ignore_default" method="POST" action="{{ url_for(next_page) }}">
+	{% endif %}
 {% endmacro %}

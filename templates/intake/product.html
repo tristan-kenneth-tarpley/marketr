@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -40,7 +42,7 @@
                 </div>
 
 
-                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('product_2') }}">
+                {{ form_open('product_2', request.args.get('home')) }}
 
                   <div class="card-header">
                     <div class="row yellow_border">
@@ -181,11 +183,39 @@
                             <tr class="data-row">
                               <td><input type="text" id="item-1" name="product_1_name" placeholder="name 1"></td>
                               <td><input type="text" id="item-2" name="p1_category" placeholder="details"></td>
-                              <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}"><input class="cogs" id="item-3" name="p1_cogs" placeholder="$0.00"></td>
+                              <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}">
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">$&nbsp;</span>
+                                    </div>
+
+                                    <input class="currency cogs" id="item-3" name="p1_cogs" placeholder="0">
+
+                                    <div class="input-group-append">
+                                      <span class="input-group-text">.00&nbsp;</span>
+                                    </div>
+                                  </div>
+                              </td>
                               {% if hide_1 %}
-                                <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                                <td>
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">$</span>
+                                    </div>
+                                    
+                                    <input class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
+
+                                    <div class="input-group-append">
+                                      <span class="input-group-text">.00</span>
+                                    </div>
+                                  </div>
+                                </td>
                               {% else %}
-                                <td><input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00"></td>
+                                <td>
+                                  <div class="input-group-addon">$</div>
+                                    <input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00">
+                                  <div class="input-group-addon">.00</div>
+                                </td>
                               {% endif %}
 
                               <td class="">

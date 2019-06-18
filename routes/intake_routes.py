@@ -110,8 +110,11 @@ def competitors():
 
             last_modified(str(session['user']))
 
-
-    if request.args.get('splash'):
+    if request.args.get('splash') and not request.args.get('coming_home'):
+        return render_template('intake/competitors.html')
+    elif request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    elif not request.args.get('splash'):
         return render_template('intake/competitors.html')
     else:
         return redirect(url_for("splash", next_step="competitors"))
@@ -153,6 +156,8 @@ def company():
     if request.form:
         if request.args.get('splash'):
             return render_template('intake/company.html')
+        elif request.args.get('coming_home'):
+            return redirect(url_for('home'))
         else:
             return redirect(url_for("splash", next_step="company"))
     else:
@@ -203,12 +208,11 @@ def audience():
         execute(query, False, tup)
         last_modified(str(session['user']))
 
-
     if 'redirect' in request.args:
 
         names_and_ids = get_first_audience(session['user'])
         if names_and_ids == False:
-                # come back
+       
             init_audience(session['user']) 
             query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
             tup = (session['user'],)
@@ -230,6 +234,33 @@ def audience():
         
         return render_template('intake/audience.html', persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
 
+    elif request.args.get('coming_home'):
+        return redirect(url_for('home'))
+
+    elif not request.args.get('splash'):
+        names_and_ids = get_first_audience(session['user'])
+        if names_and_ids == False:
+       
+            init_audience(session['user']) 
+            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
+            tup = (session['user'],)
+            first_persona, cursor = execute(query, True, tup)
+            first_persona = cursor.fetchone()
+            cursor.close()
+        else:
+            tup = (session['user'],)
+            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
+            first_persona, cursor = execute(query, True, tup)
+            first_persona = cursor.fetchone()
+            first_persona = first_persona[0]
+            cursor.close()
+
+
+        me = User(session['user'])
+        page = 'audience'
+        hide_1 = me.hide(page, 1, 'selling_to')
+        
+        return render_template('intake/audience.html', persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
     else:
         return redirect(url_for("splash", next_step="audience", prev_step="company", redirect=True))
 
@@ -341,10 +372,32 @@ def product():
         hide_10 = me.hide(page, 10, 'biz_model')
         hide_11 = me.hide(page, 11, 'biz_model')
         mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
+
         return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool)
+    elif request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    elif not request.args.get('splash'):
+        me = User(session['user'])
+        page = 'product'
+        me.set_biz_model()
+        print(me.biz_model)
+        hide_1 = me.hide(page, 1, 'biz_model')
+        hide_2 = me.hide(page, 2, 'biz_model')
+        mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
+        mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
+        mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
+        mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
+        mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
+        hide_8 = me.hide(page, 8, 'biz_model')
+        hide_9 = me.hide(page, 9, 'biz_model')
+        hide_10 = me.hide(page, 10, 'biz_model')
+        hide_11 = me.hide(page, 11, 'biz_model')
+        mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
+
+        return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool) 
+
     else:
         return redirect(url_for("splash", next_step="product", prev_step="product", redirect=True))
-
 
 
 
@@ -431,15 +484,28 @@ def product_2():
     me = User(session['user'])
     me.set_biz_model()
 
-    if me.biz_model != 'Affiliate' and me.biz_model != 'Media Provider':
-        page = 'product_2'
-
-        hide_1 = me.hide(page,1, 'biz_model')
-        hide_2 = me.hide(page,2, 'biz_model')
-
-        return render_template('intake/product_2.html', hide_1=hide_1, hide_2=hide_2)
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
     else:
-        return redirect(url_for('splash', next_step='salescycle'))
+        if me.biz_model != 'Affiliate' and me.biz_model != 'Media Provider':
+            page = 'product_2'
+
+            hide_1 = me.hide(page,1, 'biz_model')
+            hide_2 = me.hide(page,2, 'biz_model')
+
+            return render_template('intake/product_2.html', hide_1=hide_1, hide_2=hide_2)
+        else:
+            return redirect(url_for('splash', next_step='salescycle'))
+
+
+@app.route('/removeProduct/<pid>')
+@login_required
+def removeProduct(pid):
+    query = "DELETE FROM dbo.product_list WHERE p_id=? and customer_id=?"
+    tup = (pid, session['user'])
+
+    execute(query, False, tup)
+    return redirect(url_for('home'))
 
 
 @app.route('/load_product_list', methods=['GET', 'POST'])
@@ -515,12 +581,15 @@ def nice():
             elif key[:8] == "referral":
                 stage = "referral"
             tup = (session['user'], value, session['user'], value)
-            query = f"""IF NOT EXISTS (SELECT tactic from dbo.{stage} WHERE customer_id = ? AND tactic = ?)
-            INSERT INTO dbo.{stage}(customer_id, tactic) values (?, ?);commit;"""
+            query = """IF NOT EXISTS (SELECT tactic from dbo.%s WHERE customer_id = ? AND tactic = ?)
+            INSERT INTO dbo.%s (customer_id, tactic) values (?, ?);commit;""" % (stage, stage)
 
             execute(query, False, tup)
 
-    return redirect(url_for('splash', next_step='goals'))
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    else:
+        return redirect(url_for('splash', next_step='goals'))
 
 
 
@@ -537,7 +606,11 @@ def goals():
     page = 'goals'
     hide_1 = me.hide(page, 1, 'biz_model')
 
-    return render_template('intake/2/goals.html', hide_1=hide_1)
+
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    else:
+        return render_template('intake/2/goals.html', hide_1=hide_1)
 
 @app.route('/history', methods=['GET','POST'])
 @login_required
@@ -559,7 +632,11 @@ def history():
 
         execute(query, False, tup)
         last_modified(str(session['user']))
-    return render_template('intake/2/history.html')
+
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    else:
+        return render_template('intake/2/history.html')
 
 
 
@@ -582,17 +659,22 @@ def platforms():
 
         if is_started('history', session['user']):
             tup = (session['user'], POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, POST_none)
-            query = """ UPDATE dbo.goals
+            query = """ UPDATE dbo.history
                         SET customer_id = ?, facebook = ?, google = ?, bing = ?, twitter = ?, instagram = ?, yelp = ?, linkedin = ?, amazon = ?, snapchat = ?, youtube = ?, none = ?
                         ;commit;"""
         else:
             tup = (POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, session['user'], POST_none)
             query = "INSERT INTO dbo.history (facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube, customer_id, none) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);commit;"
         
+        print(query)
         execute(query, False, tup)
         last_modified(str(session['user']))
 
-    return render_template('intake/2/platforms.html')
+
+    if request.args.get('coming_home'):
+        return render_template('intake/2/platforms.html', home=True)
+    else:
+        return render_template('intake/2/platforms.html')
 
 
 
@@ -624,8 +706,26 @@ def past():
             if q%3 == 0:
                 this = d.iloc[s:f,:]
                 tup = (session['user'], this.iloc[0,1], this.iloc[1,1], this.iloc[2,1])
-                query = "INSERT INTO dbo.platforms (customer_id,platform_name,currently_using,results) VALUES (?,?,?,?);commit;"
-                execute(query, False, tup)
+
+                check_tup = (session['user'], this.iloc[0,1])
+                check = "SELECT * FROM dbo.platforms WHERE customer_id = ? and platform_name = ?"
+                check_check = "SELECT * FROM dbo.platforms WHERE customer_id = %d and platform_name = %s" % (session['user'], this.iloc[0,1])
+                print(check_check)
+
+                data, cursor = execute(check, True, check_tup)
+
+                data = cursor.fetchone()
+
+                cursor.close()
+                if data == None:
+                    print(True)
+                    query = "INSERT INTO dbo.platforms (customer_id,platform_name,currently_using,results) VALUES (?,?,?,?);commit;"
+                    execute(query, False, tup)
+
+                else:
+                    update_tup = (session['user'], this.iloc[0,1], this.iloc[1,1], this.iloc[2,1], this.iloc[0,1])
+                    query = "UPDATE dbo.platforms SET customer_id = ?, platform_name = ?, currently_using = ?, results = ? WHERE platform_name = ?;commit;"
+                    execute(query, False, update_tup)
 
 
 
@@ -633,7 +733,10 @@ def past():
             f += 1
             q += 1
 
-    return render_template('intake/2/past.html')
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    else:
+        return render_template('intake/2/past.html')
 
 @app.route('/history/platforms/past/done', methods=['GET', 'POST'])
 @login_required
@@ -645,7 +748,11 @@ def history_freeform():
     execute(query, False, tup)
     last_modified(str(session['user']))
 
-    return redirect(url_for('creative'))
+
+    if request.args.get('coming_home'):
+        return redirect(url_for('home'))
+    else:
+        return redirect(url_for('creative'))
 
 
 

@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -39,7 +41,7 @@
                   </div>
                 </div><br><br>
                 <div class="card-header">
-                  <form method="POST" id="setup" action="{{ url_for('nice') }}">
+                 {{ form_open('nice', request.args.get('home')) }}
                     <div class="row yellow_border row_cancel">
                       <h6 class="title">Finally, let's map out the...</h6>
                       <h2 class="blue_header">Customer Journey Through the Sales Cycle</h2>

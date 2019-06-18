@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -41,25 +43,29 @@
                   </div>
                 </div>
 
-                <div class="page_loading">
-                  <div class='peeek-loading'>
-                    <ul>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                      <li></li>
-                    </ul>
-                  </div>
-                </div>
+                <svg class="loader" width="70" height="20">
+                  <rect width="20" height="20" x="0" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="10;0;0;0;10" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                  <rect width="20" height="20" x="25" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="35;25;25;25;35" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" begin="200ms" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                  <rect width="20" height="20" x="50" y="0" rx="3" ry="3">
+                    <animate attributeName="width" values="0;20;20;20;0" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="height" values="0;20;20;20;0" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="x" values="60;50;50;50;60" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                    <animate attributeName="y" values="10;0;0;0;10" begin="400ms" dur="1000ms" repeatCount="indefinite"/>
+                  </rect>
+                </svg>
 
                 <div class="card-body invisible">
-                    <form class="ignore_default" method="POST" id="setup" action="{{ url_for('product') }}">
+                    {{ form_open('product', request.args.get('home')) }}
                       <div class="card-header">
                         <div class="row row_cancel yellow_border">
                           <h6>Ok, just need to understand a bit more about your key customers...</h6>
@@ -82,7 +88,11 @@
                       {% if names_and_ids != False %}
                       {% for name, id in names_and_ids %}
                         <div class='col-lg-3 col-md-3 col-sm-3 persona product_container'>
-                          <a class="dyn_link" href="{{ url_for('audience', persona_id = id, redirect=True) }}" id="{{ id }}">
+                          {% if request.args.get('home') %}
+                            <a class="dyn_link" href="{{ url_for('audience', persona_id = id, home=True, redirect=False) }}" id="{{ id }}">
+                          {% else %}
+                            <a class="dyn_link" href="{{ url_for('audience', persona_id = id, redirect=True) }}" id="{{ id }}">
+                          {% endif %}
                             {% if name != None %}
                               <p>{{name}}</p>
                             {% else %}
@@ -92,6 +102,7 @@
                         </div>
                       {% endfor %}
                       {% endif %}
+
                       </div><hr>
 
                       <div class="yellow_border">
@@ -442,9 +453,9 @@
 {% block js %}
 <script>
   setTimeout(function(){
-    $('.page_loading').addClass('hidden')
+    $('.loader').addClass('hidden')
     $('.card-body').removeClass('invisible')
-  }, 200)
+  }, 2000)
 </script>
 {% endblock %}
 

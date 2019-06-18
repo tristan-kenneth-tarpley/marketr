@@ -32,7 +32,25 @@ function init_admin(){
 }
 
 
+function smilesMapper(name){
+	var path = "/static/assets/img/"
+	var map = {
+		"bing": "Bing.png",
+		"google": "GoogleAds.png",
+		"linkedin": "Linkedin.png",
+		"instagram": "Instagram.png",
+		"amazon": "Amazon.png",
+		"twitter": "Twitter.png",
+		"snapchat": "Snapchat.png",
+		"youtube": "YouTube.png",
+		"yelp": "Yelp.png",
+		"facebook": "Facebook.png"
+	}
 
+	var url = path + map[name]
+
+	return url
+}
 
 
 
@@ -783,12 +801,6 @@ function isURL(str) {
   return pattern.test(str);
 }
 
-function meters(){
-	var val = $(".meters#text").val()
-	// val = parseInt(val)
-	console.log(val)
-	$(".meters:before").css('width', val)
-}
 
 $(document).ready(function(){
 
@@ -855,7 +867,6 @@ $(document).ready(function(){
 	  	})
     }, 35000);
 
-	meters()
 
 
 })

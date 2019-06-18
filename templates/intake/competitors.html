@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -39,7 +41,7 @@
                 </div>
 
 
-                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('company') }}">
+                {{ form_open('company', request.args.get('home')) }}
                   <div class="card-header">
 
 

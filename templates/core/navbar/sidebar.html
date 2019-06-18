@@ -16,7 +16,29 @@ Tip 1: You can change the color of the sidebar using: data-color="blue | green |
 	        <i class="now-ui-icons design_app"></i>
 	        <p>Marketing Plan</p>
 	      </a>
+
+	      {% if plan=='active' %}
+
+	      	<ul class="sub_nav nav">
+	      		<li><a class="profile_information" href="#profile_information">Profile Information</a></li>
+	      		<li><a class="company" href="#company">Company Information</a></li>
+	      		<li><a class="goal" href="#goal">Goals</a></li>
+	      		<li><a class="competitors" href="#competitors">Competitors</a></li>
+	      		<li><a class="audience" href="#audience">Target Market</a></li>
+	      		<li><a class="products" href="#products">Products</a></li>
+	      		<li><a class="platforms" href="#platforms">Platforms</a></li>
+	      	</ul>
+
+	      {% endif %}
 	    </li>
+
+	    <li class="{{ next }}">
+	      <a href="#">
+	        <i class="now-ui-icons business_bulb-63"></i>
+	        <p>Test don't click yet</p>
+	      </a>
+	    </li>
+
 	  </ul>
 	</div>
 </div>

@@ -43,8 +43,7 @@ def reset():
         token = s.dumps(POST_USERNAME, salt="password-reset")
         msg = Message('Reset Password', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
         link = url_for('forgot_password', token=token, _external=True)
-
-        msg.body = f"Your password reset link is: {link}"
+        msg.body = "Your password reset link is: %s" % (link,)
         mail.send(msg)
         message_sent = "Your password reset link has been sent. If there is an account associated with that email, you should see it any moment."
     else:
@@ -108,7 +107,7 @@ def create_user():
         msg = Message('Confirm Email', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
         link = url_for('confirm_email', token=token, _external=True)
 
-        msg.body = f"Your link is: {link}"
+        msg.body = "Your link is: %s" % (link,)
 
         mail.send(msg)
 
@@ -226,7 +225,10 @@ def new():
 @app.route('/begin')
 @login_required
 def begin():
-    return render_template('intake/init_setup.html')
+    if request.args.get('home'):
+        return render_template('intake/init_setup.html', home=True)
+    else:
+        return render_template('intake/init_setup.html')
 
 
 
@@ -314,32 +316,32 @@ def company_view(customer_id):
         load_company = basics_df
         load_company.insert(loc=0, column='is profile', value=True)
     elif page == "audience":
-        load_company = an.sql_to_df(f"""SELECT * FROM dbo.audience WHERE customer_id = {customer_id}""")
+        load_company = an.sql_to_df("""SELECT * FROM dbo.audience WHERE customer_id = %d""" % (customer_id,))
         load_company = load_company.drop(columns=['customer_id', 'age_group_1', 'age_group_2', 'age_group_3', 'age_group_4', 'age_group_5', 'age_group_6', 'age_group_7', 'age_group_8', 'before_1', 'before_2', 'before_3', 'before_4', 'before_5', 'before_6', 'before_7', 'before_8', 'before_9', 'before_10', 'before_freeform', 'after_1', 'after_2', 'after_3', 'after_4', 'after_5', 'after_6', 'after_7', 'after_8', 'after_9', 'after_10', 'after_freeform'])
         audiences_dict = clean_audience(customer_id)
         columns = list(load_company.columns)
         return render_template('admin_view/company_view.html',columns=columns,audiences=audiences_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
     elif page == "product":
-        load_company = an.sql_to_df(f"""SELECT gen_description, quantity, link FROM dbo.product WHERE customer_id = {customer_id}""")
+        load_company = an.sql_to_df("""SELECT gen_description, quantity, link FROM dbo.product WHERE customer_id = %d""" % (customer_id,))
         product_dict = clean_product(customer_id)
 
-        product_list = an.sql_to_df(f"""SELECT * FROM dbo.product_list WHERE customer_id = {customer_id}""")
+        product_list = an.sql_to_df("""SELECT * FROM dbo.product_list WHERE customer_id = %d""" % (customer_id,))
         product_list = product_list.drop(columns=['customer_id'])
         product_list = clean_for_display(product_list)
 
         return render_template('admin_view/company_view.html',product_list=product_list,product_dict=product_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
     elif page == "notes":
-        load_company = an.sql_to_df(f"""SELECT * from dbo.notes WHERE customer_id = {customer_id} ORDER BY added DESC""")
+        load_company = an.sql_to_df("""SELECT * from dbo.notes WHERE customer_id = {customer_id} ORDER BY added%d""" % (customer_id,))
     elif page == "salescycle":
-        awareness = an.sql_to_df(f"""SELECT tactic FROM dbo.awareness WHERE customer_id = {customer_id}""")
-        evaluation = an.sql_to_df(f"""SELECT tactic FROM dbo.evaluation WHERE customer_id = {customer_id}""")
-        conversion = an.sql_to_df(f"""SELECT tactic FROM dbo.conversion WHERE customer_id = {customer_id}""")
-        retention = an.sql_to_df(f"""SELECT tactic FROM dbo.retention WHERE customer_id = {customer_id}""")
-        referral = an.sql_to_df(f"""SELECT tactic FROM dbo.referral WHERE customer_id = {customer_id}""")
+        awareness = an.sql_to_df("""SELECT tactic FROM dbo.awareness WHERE customer_id = %d""" % (customer_id,))
+        evaluation = an.sql_to_df("""SELECT tactic FROM dbo.evaluation WHERE customer_id = %d""" % (customer_id,))
+        conversion = an.sql_to_df("""SELECT tactic FROM dbo.conversion WHERE customer_id = %d""" % (customer_id,))
+        retention = an.sql_to_df("""SELECT tactic FROM dbo.retention WHERE customer_id = %d""" % (customer_id,))
+        referral = an.sql_to_df("""SELECT tactic FROM dbo.referral WHERE customer_id = %d""" % (customer_id,))
 
         return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data='hi', awareness=awareness, evaluation=evaluation, conversion=conversion, retention=retention, referral=referral)
     else:
-        load_company = an.sql_to_df(""" SELECT * FROM dbo.""" + page + """ WHERE customer_id = """ + str(customer_id))
+        load_company = an.sql_to_df("""SELECT * FROM dbo.""" + page + """ WHERE customer_id = """ + str(customer_id))
         load_company.insert(loc=0, column='is_profile', value=False)
     
     load_company = clean_for_display(load_company)
@@ -482,6 +484,7 @@ def delete_asset():
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
+
     # customer_basic
     cust_tup = (session['user'],)
     customer_query = "SELECT company_name, city, state, stage, employees, revenue, first_name, last_name, email, last_modified FROM dbo.customer_basic WHERE id = ?"
@@ -553,7 +556,7 @@ def home():
     cursor.close()
 
     # audience
-    audience_query = f"SELECT * from dbo.audience where customer_id = {session['user']}"
+    audience_query = "SELECT * from dbo.audience where customer_id = %d" % (session['user'],)
     
     audience = sql_to_df(audience_query)
     ages_before_after = clean_audience(session['user'])
@@ -589,7 +592,7 @@ def home():
     cursor.close()
 
     # product_list
-    plist_query = f"SELECT * from dbo.product_list where customer_id = {session['user']}"
+    plist_query = "SELECT * from dbo.product_list where customer_id = %d" % (session['user'],)
 
     product_list = sql_to_df(plist_query)
 
@@ -605,7 +608,7 @@ def home():
     cursor.close()
 
     # platforms
-    platforms_query = f"SELECT * FROM dbo.platforms where customer_id = {session['user']}"
+    platforms_query = "SELECT * FROM dbo.platforms where customer_id = %d" % (session['user'],)
     platforms = sql_to_df(platforms_query)
 
     return render_template('core/home.html',platforms=platforms,sources=sources, segments=segments, ages_before_after=ages_before_after, last_modified=last_modified, company_name=company_name,city=city,state=state,stage=stage,employees=employees,revenue=revenue,primary_first=primary_first,primary_last=primary_last,email=email,selling_to=selling_to,biz_model=biz_model,storefront_perc=storefront_perc,direct_perc=direct_perc,online_perc=online_perc,tradeshows_perc=tradeshows_perc,other_perc=other_perc,rev_channel_freeform=rev_channel_freeform,goal=goal,current_avg=current_avg,target_avg=target_avg,timeframe=timeframe,industry=industry,comp_1_name=comp_1_name,comp_1_website=comp_1_website,comp_1_type=comp_1_type,comp_2_name=comp_2_name,comp_2_website=comp_2_website,comp_2_type=comp_2_type,audience=audience,quantity=quantity,segment_1=segment_1,segment_2=segment_2,segment_3=segment_3,segment_4=segment_4,segment_5=segment_5,segment_6=segment_6,segment_7=segment_7,segment_8=segment_8,segment_9=segment_9,segment_10=segment_10,source_1=source_1,source_2=source_2,source_3=source_3,source_4=source_4,source_freeform=source_freeform,product_list=product_list,digital_spend=digital_spend,history_freeform=history_freeform)

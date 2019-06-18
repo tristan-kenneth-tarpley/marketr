@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
 
 {% block title %}
 <title>
@@ -32,7 +33,7 @@
                   </div>
                 </div><br><br>
                 <div class="card-body">
-                  <form class="ignore_default" action=" {{ url_for( 'history_freeform' ) }}" method="post">
+                  {{ form_open('history_freeform', request.args.get('home')) }}
                     <div class="card-header">
                       <div class="row yellow_border">
                         <h6>Let's learn from your past performance...</h6><br>

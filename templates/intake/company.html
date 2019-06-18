@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -38,7 +40,7 @@
                     <a href="/competitors/company/audience/product/product_2/salescycle" class="step_name">Sales Cycle</a>
                   </div>
                 </div>  
-                <form class="ignore_default" method="POST" id="setup" action="{{ url_for('audience') }}">
+                {{ form_open('audience', request.args.get('home')) }}
                   <div class="card-header">
                     <div class="row yellow_border">
                       <h6 class="title">Now, let's talk business...</h6>

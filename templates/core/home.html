@@ -15,7 +15,7 @@
 	<div class="content">
 		<div class="append_to">
 			<div class="container-fluid">
-				<div class="row row_cancel">
+				<div id="profile_information" class="target row row_cancel">
 					<div class="card">
 						<div class="edit">
 							<a href="{{url_for('begin', home=True)}}">Edit</a>
@@ -32,7 +32,7 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="card col-12">
+					<div id="company" class="target card col-12">
 						<div class="edit">
 							<a href="{{url_for('company', home=True)}}">Edit</a>
 						</div>
@@ -46,7 +46,7 @@
 									<h6 class="title">Storefront</h6>
 									<p>(physical store, kiosk, truck, etc.)</p>
 								</div>
-								<p class="meter">{{storefront_perc}}%</p>
+								<p class="meter">{{storefront_perc}}%<span class="perc_width"></span></p>
 							</div>
 							<div class="card col-md-2 col-sm-4 center_it">
 								<div class="">
@@ -54,7 +54,7 @@
 									<h6 class="title">Direct</h6>
 									<p>(phone, mailers, email, etc.)</p>
 								</div>
-								<p class="meter">{{direct_perc if direct_perc|length else '0'}}%</p>
+								<p class="meter">{{direct_perc if direct_perc|length else '0'}}%<span class="perc_width"></span></p>
 							</div>
 							<div class="card col-md-2 col-sm-4 center_it">
 								<div class="">
@@ -62,7 +62,7 @@
 									<h6 class="title">Online</h6>
 									<p>(eCommerce, Saas, blog, online ads, blog, etc)</p>
 								</div>
-								<p class="meter">{{online_perc if online_perc|length else '0'}}%</p>
+								<p class="meter">{{online_perc if online_perc|length else '0'}}%<span class="perc_width"></span></p>
 							</div>
 							<div class="card col-md-2 col-sm-4 center_it">
 								<div class="">
@@ -70,7 +70,7 @@
 									<h6 class="title">Tradeshows</h6>
 									<p></p>
 								</div>
-								<p class="meter">{{ tradeshows_perc if tradeshows_perc|length else '0' }}%</p>
+								<p class="meter">{{ tradeshows_perc if tradeshows_perc|length else '0' }}%<span class="perc_width"></span></p>
 							</div>
 							<div class="card col-md-2 col-sm-4 center_it">
 								<div class="">
@@ -78,20 +78,20 @@
 									<h6 class="title">Other</h6>
 									<p></p>
 								</div>
-								<p class="meter">{{other_perc if other_perc|length else '0'}}%</p>
+								<p class="meter">{{other_perc if other_perc|length else '0'}}%<span class="perc_width"></span></p>
 							</div>
 						</div>
 						<h6>Additional notes:</h6>
 						<p class="truncate inset">{{rev_channel_freeform}}</p>
 					</div>
-					<div class="card col-12">
+					<div id="goal" class="target card col-12">
 						<div class="edit">
 							<a href="{{url_for('goals', home=True)}}">Edit</a>
 						</div>
 						<h3>Marketing Goal</h3>
 						<p>{{company_name}}'s primary marketing goal is to improve {{goal}} from {{current_avg}} to {{target_avg}} within {{timeframe}}</p>
 					</div>
-					<div class="card col-12">
+					<div id="competitors" class="target card col-12">
 						<div class="edit">
 							<a href="{{url_for('competitors', home=True)}}">Edit</a>
 						</div>
@@ -104,7 +104,7 @@
 						<a href="{{comp_2_site}}">Visit website</a>
 						{% endif %}
 					</div>
-					<div class="card col-12">
+					<div id="audience" class="target card col-12">
 						<div class="edit">
 							<a href="{{url_for('audience', home=True)}}">Edit</a>
 						</div>
@@ -120,8 +120,12 @@
 									</thead>
 									<tbody>
 										<td>
-											<ul>
-												<li>{{value['gender']}}</li>
+											<ul>	
+												{% if value['gender'] == 'both' %}
+													<li>{{value['gender']}} genders</li>
+												{% else %}
+													<li>{{value['gender']}}</li>
+												{% endif %}
 												<li>Target ages:
 													<ul>
 												{% for key in ages_before_after %}
@@ -192,7 +196,7 @@
 							{% endif %}
 						{% endfor %}
 					</div>
-					<div class="card col-12">
+					<div id="products" class="target card col-12">
 						<div class="edit">
 							<a href="{{url_for('product', home=True)}}">Edit</a>
 						</div>
@@ -228,8 +232,9 @@
 						<p class="truncate">{{source_freeform}}</p>
 						<hr style="margin: 5%;">
 						<h6>Offering Details</h6>
-						<table class="table">
+						<table id="products" class="table table-borderless">
 							<thead>
+								<th></th>
 								<th>Product Name</th>
 								<th>Category</th>
 								<th>COGS</th>
@@ -241,6 +246,7 @@
 								{% for key, value in product_list.iterrows() %}
 									{% if value['name'] %}
 									<tr>
+										<td><a href="/removeProduct/{{value['p_id']}}#products">Remove product</a></td>
 										<td><strong>{{value['name']}}</strong></td>
 										<td>{{value['category']}}</td>
 										<td>${{value['cogs']}}</td>
@@ -349,7 +355,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="card col-12">
+					<div id="platforms" class="target card col-12">
 
 						<div class="edit">
 							<a href="{{url_for('history', home=True)}}">Edit</a>
@@ -360,11 +366,10 @@
 						<div class="divider"></div>
 						<h6>Platform experience</h6>
 						{% for key, value in platforms.iterrows() %}
-						<hr>
 							<div class="row">
 								<div class="col-1"></div>
-								<div class="col-3"><h6>{{value['platform_name']}}</h6></div>
-								<div class="col-3">{{value['results']}}</div>
+								<div class="col-3"><h6><span class="platform_img">{{value['platform_name']}}</span></h6></div>
+								<div class="col-3 results_img"><span>{{value['results']}}</span></div>
 								{% if value['currently_using'] == 'yes' %}
 									<div class="col-2 center_it alert alert-success">
 										ACTIVE
@@ -377,7 +382,12 @@
 							</div>
 						{% endfor %}
 						<h6>Additional notes</h6>
-						<p class="inset truncate">{{history_freeform}}</p>
+						<p class="inset truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.{{history_freeform}}</p>
 
 					</div>
 				</div>
@@ -386,3 +396,119 @@
 	</div>
 
 {% endblock %}
+{% block js %}
+<script type="text/javascript" defer>
+$('.truncate').each(function(){
+	var full_text = $(this).text()
+	// $(this).after("<p class='full_text'>" + full_text + "</p>")
+	if ($(this).text().length > 49){
+		var truncated_text = $(this).text()
+			.trim()    // remove leading and trailing spaces
+		    .substring(0, 50)    // get first 600 characters
+		    .split(" ") // separate characters into an array of words
+		    .slice(0, -1)    // remove the last full or partial word
+		    .join(" ") + "..."; // combine into a single string and append "..."
+		$(this).html("<span class='daText'>" + truncated_text + "</span> <span class='showAll'>Show more</span>")
+
+		$('.showAll').click(function(){
+
+			$(this).toggleClass('clicked')
+			if ($(this).hasClass('clicked')){
+				$(this).siblings('.daText').html(full_text)
+				$(this).html("<span class='showAll'>See less</span>")
+			} else {
+				$(this).siblings('.daText').html(truncated_text)
+				$(this).html("<span class='showAll'>Show more</span>")
+			}
+
+		})
+	}
+})
+
+
+$('.results_img').each(function(){
+	var val = parseInt($(this).text())
+	if (val == 2){
+
+		$(this).html('<img class="smilesHome" src="/static/assets/img/frown.png">')
+
+	} else if (val == 3){
+
+		$(this).html('<img class="smilesHome" src="/static/assets/img/neutral.png">')
+
+	} else if (val == 4){
+
+		$(this).html('<img class="smilesHome" src="/static/assets/img/smile.png">')
+
+	} else if (val == 5){
+
+		$(this).html('<img class="smilesHome" src="/static/assets/img/grin.png">')
+
+	}
+})
+
+$(".platform_img").each(function(){
+	var platform = $(this).text()
+	var img = smilesMapper(platform)
+	// $(this).css('color', 'red')
+	$(this).html(`<img class="smilesHome" src='${img}'>`)
+})
+
+$('.meter').each(function(){
+	var perc = parseInt($(this).text().replace('%',''))
+	$(this).addClass('special')
+	$(this).find('.perc_width').css('width', perc+"%")
+})
+
+
+
+$('.sub_nav a').click(function(){
+	$(document).unbind("scroll")
+	$(this).addClass('targeted')
+	$('.sub_nav a').not(this).removeClass('targeted')
+	setTimeout(function(){ 
+		$(document).bind('scroll',function(e){
+		    $('.target').each(function(){
+		        if (
+		           $(this).offset().top < window.pageYOffset + 10
+		//begins before top
+		        && $(this).offset().top + $(this).height() > window.pageYOffset + 10
+		//but ends in visible area
+		//+ 10 allows you to change hash before it hits the top border
+		        ) {
+		            window.location.hash = $(this).attr('id');
+		        }
+		    });
+		});
+
+	}, 1000);
+})
+
+$(window).on('hashchange', function() {
+  	var select = "." + window.location.hash.substring(1)
+	var target = "a" + select
+  	$('a').not(target).removeClass('targeted')
+  	$(target).addClass("targeted")
+});
+
+
+$(document).bind('scroll',function(e){
+    $('.target').each(function(){
+        if (
+           $(this).offset().top < window.pageYOffset + 10
+//begins before top
+        && $(this).offset().top + $(this).height() > window.pageYOffset + 10
+//but ends in visible area
+//+ 10 allows you to change hash before it hits the top border
+        ) {
+            window.location.hash = $(this).attr('id');
+        }
+    });
+});
+
+
+
+</script>
+{% endblock %}
+
+

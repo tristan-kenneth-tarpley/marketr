@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% from "_macros.html" import form_open %}
+
 
 {% block title %}
 <title>
@@ -252,8 +254,12 @@
                     </div>
 
 
-                  <div class="onward">                
+                  <div class="onward">   
+                  {% if request.args.get('home') %}
+                    <a class="final hidden continue" href="{{url_for('home')}}">Let's keep going!</a>
+                  {% else %}             
                     <a class="final hidden continue" href="{{ url_for('splash', next_step='salescycle') }}">Let's keep going!</a>
+                  {% endif %}
                   </div>
 
               </div>
