@@ -40,7 +40,7 @@ function smilesMapper(name){
 		"linkedin": "Linkedin.png",
 		"instagram": "Instagram.png",
 		"amazon": "Amazon.png",
-		"twitter": "Twitter.png",
+		"twitter": "twitter.png",
 		"snapchat": "Snapchat.png",
 		"youtube": "YouTube.png",
 		"yelp": "Yelp.png",
