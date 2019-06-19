@@ -134,13 +134,25 @@
                           <input type="text" name="frequency_of_use" class="hidden hidden_input">
                           </div>
                         </div>
-    
+                 
                         <div class="row ">
+
                           <div class="center_it col-lg-5 col-md-5 col-sm-12">
                             <h6>Frequency of Purchase</h6>
-                            <p>How often does a customer buy this?</p>
+                            <p>How often does a customer buy this?
+
+                             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#freq_purch" aria-expanded="false" aria-controls="freq_purch">
+                              What does this mean?
+                            </button>
+
+                              <div class="collapse" id="freq_purch">
+                                <div class="card card-body">
+                                  <p>Frequency of purchase describes how often a typical customer may purchase that item.  i.e. for seller of high-end hot tubs, this might be [Single purchase or greater than once every 5 years]. For cell phones, [every 2-5 years]. And a container of protein powder for shakes could be [monthly] </p>
+                                </div>
+                              </div>
+                            </p>
                           </div>
-                          <div class="radio_container col-lg-6 col-md-6 col-sm-12">
+                          <div class=" col-lg-6 col-md-6 col-sm-12">
                             &nbsp;<div class="hover_box col-lg-2 col-md-2">
                               <h6>Weekly</h6>
                             </div>
@@ -207,7 +219,20 @@
                         <div class="row {{ 'hidden' if hide_1 else ' ' }}">
                           <div class="center_it col-lg-6 col-md-6 col-sm-12">
                             <h6>Low or High Number of SKUs</h6>
-                            <p>How many different product items do you currently offer?</p>
+                            <p>How many different product items do you currently offer?
+                              
+                             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#sku" aria-expanded="false" aria-controls="sku">
+                              What does this mean?
+                            </button>
+
+                              <div class="collapse" id="sku">
+                                <div class="card card-body">
+                                  <p>What's a SKU?: Stockkeeping Unit, and represents how many different product items do you have in a given category?  
+
+                                  I.e. if one of your product categories was "sunglasses" and you carry 3 comparable frames and each pair comes in 3 color options, then you would have 9 SKUs for the category of "sunglasses"</p>
+                                </div>
+                              </div>
+                            </p>
                           </div>
                           <div class="radio_container col-lg-5 col-md-5 col-sm-12">
                             &nbsp;<div class="hover_box col-lg-2 col-md-2">

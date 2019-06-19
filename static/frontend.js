@@ -867,6 +867,9 @@ $(document).ready(function(){
 	  	})
     }, 35000);
 
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
 
 
 })

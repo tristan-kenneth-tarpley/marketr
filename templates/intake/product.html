@@ -73,11 +73,41 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                           <p>Link to your top-level product page</p>
-                          <input type="text" name="link" class="form-control website" placeholder="www.awesomeproducts.com/products">
+                          <div class="input-group">
+
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">https://</span>
+                            </div>
+                            <input type="text" name="link" class="form-control website" placeholder="www.awesomeproducts.com/products">
+                          </div>
                           <span class="isValid"></span>
                         </div>
                       </div>
-                      <p><em>How do you currently segment your products/services? (select all that apply)</em></p>
+                      <p>
+                          How do you currently segment your products/services? (select all that apply)
+
+                          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            What does this mean?
+                          </button>
+                            <div class="collapse" id="collapseExample">
+                              <div class="card card-body">
+                                <p>Product Category can be defined as any definable segmentation in your product offerings.  </p>
+                                <p><em>The following are common types of product category.</em></p>
+                                <ol>
+                                  <li>Industry | such as health care or accounting.</li>
+                                  <li>Functionality | such as sunglasses or watches.</li>
+                                  <li>Customer Needs | such as hot weather socks vs. cold weather socks.</li>
+                                  <li>Customer Preferences | such as healthy ingredients or a particular style. For example, organic fruit or indie music.</li>
+                                  <li>Performance | such as casual kayaks vs. fishing kayaks.</li>
+                                  <li>Demographics | such as children's goods or men's clothing.</li>
+                                  <li>Convenience | such as daily consumer goods and fast food.</li>
+                                  <li>Quality | such as economy versus business class flights.</li>
+                                  <li>Premiumisation | premium features or production methods. For example, premium craft beer vs. regular.</li>
+                                </ol>
+                              </div>
+                            </div>
+                          
+                      </p>
                       <div class="row row_cancel">
                         <div class="hover_box hb_many col-lg-2 col-md-2">
                           <h6>Industry</h6>
@@ -160,7 +190,17 @@
                                 <!-- product name -->
                                 <th>{{ mask_12 }}</th> 
                                 <!-- category  -->
-                                <th>Category</th>
+                                <th>Category
+                                   <button class="btn btn-primary btn-icon" type="button" data-toggle="collapse" data-target="#category" aria-expanded="false" aria-controls="category">
+                                    i
+                                  </button>
+                                    <div class="collapse" id="category">
+                                      <div class="card card-body">
+                                        <p>Category refers to the general segments you segment your products into.</p>  
+                                        <p>I.e. Men's clothing, Women's clothing, etc. or maybe Boating accessories, Camping accessories, etc.</p>
+                                      </div>
+                                    </div>
+                                </th>
                                 <!-- cogs -->
                                 <th class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}">{{ mask_6 }}</th>
 
@@ -186,14 +226,10 @@
                               <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}">
                                   <div class="input-group">
                                     <div class="input-group-prepend">
-                                      <span class="input-group-text">$&nbsp;</span>
+                                      <span class="input-group-text">$</span>
                                     </div>
 
                                     <input class="currency cogs" id="item-3" name="p1_cogs" placeholder="0">
-
-                                    <div class="input-group-append">
-                                      <span class="input-group-text">.00&nbsp;</span>
-                                    </div>
                                   </div>
                               </td>
                               {% if hide_1 %}
@@ -202,19 +238,17 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">$</span>
                                     </div>
-                                    
                                     <input class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
-
-                                    <div class="input-group-append">
-                                      <span class="input-group-text">.00</span>
-                                    </div>
                                   </div>
                                 </td>
                               {% else %}
                                 <td>
-                                  <div class="input-group-addon">$</div>
-                                    <input class="price" id="item-4" name="p1_sales_price" placeholder="$0.00">
-                                  <div class="input-group-addon">.00</div>
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">$</span>
+                                    </div>
+                                    <input class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
+                                  </div>
                                 </td>
                               {% endif %}
 
