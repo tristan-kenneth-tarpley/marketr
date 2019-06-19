@@ -601,9 +601,12 @@ def home():
     
     data, cursor = execute(history_query, True, cust_tup)
     data = data.fetchall()
-
-    digital_spend = data[0][0]
-    history_freeform = data[0][1]
+    try:
+        digital_spend = data[0][0]
+        history_freeform = data[0][1]
+    except:
+        digital_spend = "n/a"
+        history_freeform = "n/a"
 
     cursor.close()
 
