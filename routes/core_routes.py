@@ -610,15 +610,23 @@ def home():
 
     cursor.close()
 
+    # sales cycle
+    awareness_query = "SELECT tactic FROM dbo.awareness WHERE customer_id = %d" % (session['user'],)
+    awareness = sql_to_df(awareness_query)
+    evaluation_query = "SELECT tactic FROM dbo.evaluation WHERE customer_id = %d" % (session['user'],)
+    evaluation = sql_to_df(evaluation_query)
+    conversion_query = "SELECT tactic FROM dbo.conversion WHERE customer_id = %d" % (session['user'],)
+    conversion = sql_to_df(conversion_query)
+    retention_query = "SELECT tactic FROM dbo.retention WHERE customer_id = %d" % (session['user'],)
+    retention = sql_to_df(retention_query)
+    referral_query = "SELECT tactic FROM dbo.referral WHERE customer_id = %d" % (session['user'],)
+    referral = sql_to_df(referral_query)
+
     # platforms
     platforms_query = "SELECT * FROM dbo.platforms where customer_id = %d" % (session['user'],)
     platforms = sql_to_df(platforms_query)
 
-    return render_template('core/home.html',platforms=platforms,sources=sources, segments=segments, ages_before_after=ages_before_after, last_modified=last_modified, company_name=company_name,city=city,state=state,stage=stage,employees=employees,revenue=revenue,primary_first=primary_first,primary_last=primary_last,email=email,selling_to=selling_to,biz_model=biz_model,storefront_perc=storefront_perc,direct_perc=direct_perc,online_perc=online_perc,tradeshows_perc=tradeshows_perc,other_perc=other_perc,rev_channel_freeform=rev_channel_freeform,goal=goal,current_avg=current_avg,target_avg=target_avg,timeframe=timeframe,industry=industry,comp_1_name=comp_1_name,comp_1_website=comp_1_website,comp_1_type=comp_1_type,comp_2_name=comp_2_name,comp_2_website=comp_2_website,comp_2_type=comp_2_type,audience=audience,quantity=quantity,segment_1=segment_1,segment_2=segment_2,segment_3=segment_3,segment_4=segment_4,segment_5=segment_5,segment_6=segment_6,segment_7=segment_7,segment_8=segment_8,segment_9=segment_9,segment_10=segment_10,source_1=source_1,source_2=source_2,source_3=source_3,source_4=source_4,source_freeform=source_freeform,product_list=product_list,digital_spend=digital_spend,history_freeform=history_freeform)
-
-
-
-
+    return render_template('core/home.html', awareness=awareness, evaluation=evaluation, conversion=conversion, retention=retention, referral=referral, platforms=platforms,sources=sources, segments=segments, ages_before_after=ages_before_after, last_modified=last_modified, company_name=company_name,city=city,state=state,stage=stage,employees=employees,revenue=revenue,primary_first=primary_first,primary_last=primary_last,email=email,selling_to=selling_to,biz_model=biz_model,storefront_perc=storefront_perc,direct_perc=direct_perc,online_perc=online_perc,tradeshows_perc=tradeshows_perc,other_perc=other_perc,rev_channel_freeform=rev_channel_freeform,goal=goal,current_avg=current_avg,target_avg=target_avg,timeframe=timeframe,industry=industry,comp_1_name=comp_1_name,comp_1_website=comp_1_website,comp_1_type=comp_1_type,comp_2_name=comp_2_name,comp_2_website=comp_2_website,comp_2_type=comp_2_type,audience=audience,quantity=quantity,segment_1=segment_1,segment_2=segment_2,segment_3=segment_3,segment_4=segment_4,segment_5=segment_5,segment_6=segment_6,segment_7=segment_7,segment_8=segment_8,segment_9=segment_9,segment_10=segment_10,source_1=source_1,source_2=source_2,source_3=source_3,source_4=source_4,source_freeform=source_freeform,product_list=product_list,digital_spend=digital_spend,history_freeform=history_freeform)
 
 
 

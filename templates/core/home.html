@@ -376,6 +376,79 @@
 							</tbody>
 						</table>
 					</div>
+					<div id="salescycle" class="target card col-12">
+						<div class="edit">
+							<a href="{{url_for('salescycle', home=True)}}" class="edit btn-primary btn">
+								<i class="now-ui-icons ui-2_settings-90"></i>
+							</a>
+						</div>
+
+						<h3>Sales Cycle</h3>
+
+						<div class="row">
+							<div class="col-1"></div>
+							<div class="card home_stages col-2">
+								<div class="container-fluid center_it">
+									<h6>Awareness</h6>
+								</div>
+								<div class="container-fluid">
+									<ul>
+									{% for value in awareness['tactic'] %}
+										<li>{{value}}</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</div>&nbsp;
+							<div class="card home_stages col-2">
+								<div class="container-fluid center_it">
+									<h6>Evaluation</h6>
+								</div>
+								<div class="container-fluid">
+									<ul>
+									{% for value in evaluation['tactic'] %}
+										<li>{{value}}</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</div>&nbsp;
+							<div class="card home_stages col-2">
+								<div class="container-fluid center_it">
+									<h6>Conversion</h6>
+								</div>
+								<div class="container-fluid">
+									<ul>
+									{% for value in conversion['tactic'] %}
+										<li>{{value}}</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</div>&nbsp;
+							<div class="card home_stages col-2">
+								<div class="container-fluid center_it">
+									<h6>Retention</h6>
+								</div>
+								<div class="container-fluid">
+									<ul>
+									{% for value in retention['tactic'] %}
+										<li>{{value}}</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</div>&nbsp;
+							<div class="card home_stages col-2">
+								<div class="container-fluid center_it">
+									<h6>Referral</h6>
+								</div>
+								<div class="container-fluid">
+									<ul>
+									{% for value in referral['tactic'] %}
+										<li>{{value}}</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div id="platforms" class="target card col-12">
 
 						<div class="edit">
