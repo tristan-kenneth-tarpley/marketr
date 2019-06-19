@@ -238,7 +238,7 @@ function init_products(){
 			$('.final').removeClass('hidden')
 			$('.product_prev_container').addClass("hidden")
 			$('.hide_on_end').addClass('hidden')
-			$(".change_on_submit").html('Ready to keep going?')
+			$(".change_on_submit").html("<h5>Nice! Let's keep going.</h5>")
 		}
 
 

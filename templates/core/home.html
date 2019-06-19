@@ -391,7 +391,7 @@
 						{% for key, value in platforms.iterrows() %}
 							<div class="row">
 								<div class="col-1"></div>
-								<div class="col-3"><h6><span class="platform_img">{{value['platform_name']}}</span></h6></div>
+								<div class="col-3"><h6>{{value['platform_name']}}<span class="platform_img">{{value['platform_name']}}</span></h6></div>
 								<div class="col-3 results_img"><span>{{value['results']}}</span></div>
 								{% if value['currently_using'] == 'yes' %}
 									<div class="col-2 center_it alert alert-success">
