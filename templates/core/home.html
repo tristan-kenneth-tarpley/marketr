@@ -493,11 +493,17 @@
 					<h5 class="title blue_header">{{digital_spend}}/month</h5>
 					<p>Average total spend across all platforms</p>
 					<div class="divider"></div>
-					<div class="row">
+					<div class="row center_it">
 						<div class="col-1"></div>
-						<div class="col-3">Platform Name</div>
-						<div class="col-3">Results</div>
-						<div class="col-3">Still using?</div>
+						<div class="col-3">
+							<h6>Platform Name</h6>
+						</div>
+						<div class="col-3">
+							<h6>Results</h6>
+						</div>
+						<div class="col-3">
+							<h6>Still using?</h6>
+						</div>
 					</div>
 					{% for key, value in platforms.iterrows() %}
 					<div class="row">
