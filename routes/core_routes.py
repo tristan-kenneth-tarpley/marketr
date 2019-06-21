@@ -159,9 +159,13 @@ def customer_login():
         data, cursor = execute(query, True, tup)
         data = cursor.fetchall()
         cursor.close()
-        pw = data[0][1]
-        uid = data[0][2]
-        email_confirmed = data[0][3]
+        try:
+            pw = data[0][1]
+            uid = data[0][2]
+            email_confirmed = data[0][3]
+        except:
+            error = "Invalid credentials. Try again."
+            return render_template("login.html", error = error)  
 
         if sha256_crypt.verify(POST_PASSWORD, pw):
             if email_confirmed == 1:
