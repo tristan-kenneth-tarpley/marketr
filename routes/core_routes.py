@@ -198,8 +198,8 @@ def customer_login():
             error = "Invalid credentials. Try again."
             return render_template("login.html", error = error)  
 
-    except Exception as e:
-    # except AssertionError:
+    # except Exception as e:
+    except AssertionError:
         error = "Invalid credentials. Try again!"
         return render_template("login.html", error = error)  
         
