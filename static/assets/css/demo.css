@@ -4478,7 +4478,28 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 }
 
 .edit {
-  text-align: right;
+  position: absolute;
+  left: 90%;
+  top: 3%;
+}
+.target_container > h3 {
+  position: relative;
+}
+.target_container h3 {
+  left: 2%;
+  font-weight: bold;
+  top: 35%;
+  width: 50%;
+}
+.target_container {
+  background-color: hsl(220, 12%, 95%);
+  height: 100px;
+  margin-bottom: 5%;
+  width: 106.4%;
+  padding-left: -300vw !important;
+  margin-left: -3.2%;
+  margin-top: -3.2%;
+  border-radius: 0.1875rem 0.1875rem 0 0;
 }
 
 .return {
@@ -4534,7 +4555,8 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   margin-left: -10% !important;
 }
 .home_stages.card {
-  padding: 2% 0 5% !important;
+  border-top: 7px solid #62cde0;
+  padding: 4% 0 5% !important;
 }
 .home_stages .container-fluid {
   width: 100%;
