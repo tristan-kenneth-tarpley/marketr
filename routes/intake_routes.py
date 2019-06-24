@@ -218,6 +218,8 @@ def audience():
 
     if 'persona_id' in request.args:
         session['persona_id'] = request.args.get('persona_id')
+    else:
+        session['persona_id'] = None
 
     if 'redirect' in request.args:
 

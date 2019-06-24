@@ -185,6 +185,8 @@ def customer_login():
                     step = load_last_page(session['user'])
                     if step == "product":
                         return redirect(url_for("product", redirect=True))
+                    if step == "audience":
+                        return redirect(url_for("audience", redirect=True))
                     elif step == "home":
                         return redirect(url_for('home'))
                     else:
