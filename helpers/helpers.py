@@ -2,7 +2,7 @@ from app import app, session
 import time
 import datetime
 import zipcodes
-from data.db import db, sql_to_df, execute
+from data.db import sql_to_df, execute
 import pandas as pd
 
 def validate_login(username, password):

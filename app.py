@@ -9,7 +9,7 @@ from functools import wraps
 
 app = Flask(__name__)
 
-from data.db import db, sql_to_df, execute
+from data.db import sql_to_df, execute
 from routes.core_routes import *
 from routes.intake_routes import *
 from helpers.helpers import *

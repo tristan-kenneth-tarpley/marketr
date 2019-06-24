@@ -6,43 +6,32 @@ server = 'tarpley.database.windows.net'
 database = 'marketr'
 username = 'tristan'
 password = 'Fiverrtemp!'
-driver= '{ODBC Driver 13 for SQL Server}'
+driver= '{ODBC Driver 17 for SQL Server}'
 
 connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
 
-try:
-	db = pyodbc.connect(connStr)
-except pyodbc.Error as ex:
-    # sqlstate = ex.args[0]
-    # if sqlstate == '08001':
-    #     pass
-    print("DB didn't connect")
-    retry_flag = True
-    retry_count = 0
-    while retry_flag and retry_count <5:
-    	try:
-    		del db
-    		db = pyodbc.connect(connStr)
-    		try_flag = False
-    	except:
-    		retry_count = retry_count + 1
-    		time.sleep(1)
-
-def sql_to_df(x):
-	retry_flag = True
-	retry_count = 0
-	while retry_flag and retry_count <5:
-		if retry_count == 4:
-			return "can you try again, please?"
-		try:
-			retry_flag = False
-			return pd.read_sql_query(x, db, index_col=None, coerce_float=True, params=None, parse_dates=None, chunksize=None)
-		except:
-			retry_count = retry_count + 1
-			time.sleep(1)
+def init_db():
+	try:
+		db = pyodbc.connect(connStr)
+		return db
+	except pyodbc.OperationalError as ex:
+	    print("DB didn't connect")
+	    retry_flag = True
+	    retry_count = 0
+	    while retry_flag and retry_count <5:
+	    	try:
+	    		del db
+	    		db = pyodbc.connect(connStr)
+	    		return db
+	    		try_flag = False
+	    	except:
+	    		retry_count = retry_count + 1
+	    		time.sleep(1)
 
 
 def execute(query, returned, tup):
+
+	db = init_db()
 
 	cursor = db.cursor()
 	debug_query = query.replace("?", "%s")
@@ -68,5 +57,30 @@ def execute(query, returned, tup):
 		# except:
 			retry_count = retry_count + 1
 			time.sleep(1)
+
+def sql_to_df(x):
+	retry_flag = True
+	retry_count = 0
+	db = init_db()
+	while retry_flag and retry_count <5:
+		if retry_count == 4:
+			return "can you try again, please?"
+		try:
+			retry_flag = False
+			return pd.read_sql_query(x, db, index_col=None, coerce_float=True, params=None, parse_dates=None, chunksize=None)
+		except:
+			retry_count = retry_count + 1
+			time.sleep(1)
+
+
+
+
+
+
+
+
+
+
+
 
 

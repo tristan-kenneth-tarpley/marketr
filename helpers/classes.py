@@ -2,7 +2,7 @@ from helpers.helpers import *
 import time
 import datetime
 import zipcodes
-from data.db import db, sql_to_df
+from data.db import sql_to_df, execute
 import pandas as pd
 
 
@@ -21,15 +21,17 @@ class User:
 		self.set_biz_model()
 		self.set_selling_to()
 		self.set_num_products()
-		cursor = db.cursor()
+		
 		if trigger == 'biz_model':
 			query ="SELECT hide_val FROM dbo.branches WHERE branch_action = 'hide' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?"
 			test_query = query.replace("?", "%s")
-			data = cursor.execute(query, (trigger, self.biz_model, page, index))
+			tup = (trigger, self.biz_model, page, index)
+			data, cursor = execute(query, True, tup)
 		elif trigger == 'selling_to':
 			query ="SELECT hide_val FROM dbo.branches WHERE branch_action = 'hide' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?"
 			test_query = query.replace("?", "%s")
-			data = cursor.execute(query, (trigger, self.selling_to, page, index))
+			tup = (trigger, self.selling_to, page, index)
+			data, cursor = execute(query, True, tup)
             
 
 		data = cursor.fetchone()
@@ -49,12 +51,16 @@ class User:
 		self.set_biz_model()
 		self.set_selling_to()
 		self.set_num_products()
-		cursor = db.cursor()
+
 		if trigger == 'selling_to':
-			data = cursor.execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", (trigger, self.selling_to, page, index))
+			tup = (trigger, self.selling_to, page, index)
+			data, cursor = execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", True, tup)
 		elif trigger == 'biz_model':
-			data = cursor.execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", (trigger, self.biz_model, page, index))
+			tup = (trigger, self.biz_model, page, index)
+			data, cursor = execute("SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = 'mask' AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=? AND ind=?", True, tup)
+
 		data = cursor.fetchone()
+		
 		try:
 			mask = data[0]
 			default = data[1]
