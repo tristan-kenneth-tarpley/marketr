@@ -675,6 +675,7 @@ function load_past_inputs(){
 			if (data !== 'nah, not this time' && data !== 'nah') {
 
 				var data = JSON.parse(data)
+				console.log(data)
 				//if audience
 
 
@@ -695,6 +696,7 @@ function load_past_inputs(){
 						
 
 						if (param.has('persona_id')){
+
 							let persona_id = param.get('persona_id')
 							var audience_filter = data.filter(function(item){
 							    return item.audience_id == persona_id;         
@@ -710,6 +712,7 @@ function load_past_inputs(){
 						$('textarea[name=' + key + ']').val(data[0][key])
 
 						$('.hover_box').each(function(){
+
 							var hb_many = $(this).hasClass('hb_many')
 							var closest_val = $(this).closest('.hidden_input').val()
 							var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
@@ -724,10 +727,13 @@ function load_past_inputs(){
 
 
 							if (many_check){
+
 								if ($(this).children('.hidden_input').val() !== ""){
 									$(this).addClass('hover_box_selected')
 								}
+
 							} else if (single_check){
+
 								var single_select =  $(this).siblings('.hidden_input').val()
 								var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
 								add_select.addClass("hover_box_selected")
@@ -865,7 +871,7 @@ $(document).ready(function(){
 	  	$(".xx").click(function(){
 	  		$(this).parent().remove()
 	  	})
-    }, 35000);
+    }, 100000);
 
 	$(function () {
 	  $('[data-toggle="tooltip"]').tooltip()

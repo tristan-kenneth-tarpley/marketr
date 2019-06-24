@@ -5,6 +5,12 @@ import zipcodes
 from data.db import sql_to_df, execute
 import pandas as pd
 
+def test_query(query, tup):
+    test_query = query.replace("?", "%s")
+    test_query = test_query % tup
+
+    print(test_query)
+
 def validate_login(username, password):
     print('hi')
 
@@ -155,7 +161,7 @@ def past_inputs(page, user, persona_id):
     intake_pages = ['begin', 'competitors', 'company', 'competitors', 'audience', 'product', 'product_2', 'salescycle', 'goals', 'history', 'platforms', 'past', 'creative']
     if page in intake_pages:
         if page == 'begin':
-            query = "SELECT first_name, last_name, company_name, revenue, employees, zip, stage FROM dbo.customer_basic WHERE ID = %s" % (user,)
+            query = "SELECT first_name, last_name, company_name, revenue, employees, zip, stage, website FROM dbo.customer_basic WHERE ID = %s" % (user,)
             result = sql_to_df(query)
         elif page == 'salescycle':
             awareness = sql_to_df("select * from dbo.awareness WHERE customer_id=%d" % (user,))

@@ -522,7 +522,7 @@ def load_product_list():
 
 @app.route('/product_submit', methods=['POST'])
 def product_submit():
-    print('hi')
+
     # if request.method == 'POST':
     POST_complexity = request.form['complexity']
     POST_price = request.form['price']
@@ -542,12 +542,10 @@ def product_submit():
                 SET complexity = ?, price = ?, product_or_service = ?, frequency_of_use = ?, frequency_of_purchase = ?, value_prop = ?, warranties_or_guarantee = ?, warranty_guarantee_freeform = ?, num_skus = ?, level_of_customization = ?
                 WHERE p_id = ?;commit;"""
 
-    test_query = query.replace("?", "%s")
-    test_query = test_query % tup
-
-
     execute(query, False, tup)
     last_modified(str(session['user']))
+
+    test_query(query, tup)
 
     return "success"
 
@@ -584,6 +582,7 @@ def nice():
             query = """IF NOT EXISTS (SELECT tactic from dbo.%s WHERE customer_id = ? AND tactic = ?)
             INSERT INTO dbo.%s (customer_id, tactic) values (?, ?);commit;""" % (stage, stage)
 
+            test_query(query, tup)
             execute(query, False, tup)
 
     if request.args.get('coming_home'):
@@ -632,6 +631,8 @@ def history():
 
         execute(query, False, tup)
         last_modified(str(session['user']))
+
+        test_query(query, tup)
 
     if request.args.get('coming_home'):
         return redirect(url_for('home'))

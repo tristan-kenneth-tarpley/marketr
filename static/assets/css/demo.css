@@ -4493,6 +4493,7 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 }
 .target_container {
   background-color: hsl(220, 12%, 95%);
+  border-bottom: 3px solid #62cde0;
   height: 100px;
   margin-bottom: 5%;
   width: 106.4%;
