@@ -168,12 +168,20 @@ def company():
 @app.route("/remove/<persona_id>", methods=['GET', 'POST'])
 @login_required
 def removePersona(persona_id):
-    query = "DELETE FROM dbo.audience WHERE audience_id=? and customer_id=?"
+    query = "DELETE FROM dbo.audience WHERE audience_id=? and customer_id=?;commit;"
     tup = (persona_id, session['user'])
 
     execute(query, False, tup)
 
-    return redirect(url_for('audience', redirect=True))
+    return_id = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
+    tup = (session['user'])
+    data, cursor = execute(return_id, True, tup)
+
+    data = cursor.fetchone()
+    return_persona = data[0]
+    cursor.close()
+
+    return redirect(url_for('audience', redirect=True, persona_id=return_persona))
 
 
 
@@ -208,17 +216,21 @@ def audience():
         execute(query, False, tup)
         last_modified(str(session['user']))
 
+    if 'persona_id' in request.args:
+        session['persona_id'] = request.args.get('persona_id')
+
     if 'redirect' in request.args:
 
         names_and_ids = get_first_audience(session['user'])
         if names_and_ids == False:
-       
+        
             init_audience(session['user']) 
             query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
             tup = (session['user'],)
             first_persona, cursor = execute(query, True, tup)
             first_persona = cursor.fetchone()
             cursor.close()
+
         else:
             tup = (session['user'],)
             query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
@@ -255,12 +267,12 @@ def audience():
             first_persona = first_persona[0]
             cursor.close()
 
-
         me = User(session['user'])
         page = 'audience'
         hide_1 = me.hide(page, 1, 'selling_to')
+        session['first_persona'] = first_persona
         
-        return render_template('intake/audience.html', persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
+        return render_template('intake/audience.html', first_persona=session['first_persona'], persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
     else:
         return redirect(url_for("splash", next_step="audience", prev_step="company", redirect=True))
 
@@ -321,6 +333,7 @@ def product():
 
         session['hide'] = False
 
+
         if request.form['submit_button'] == '+ ADD ANOTHER PERSONA':
             init_audience(session['user'])
             first_tup = (session['user'],)
@@ -335,8 +348,6 @@ def product():
             update_query = """UPDATE dbo.audience
                         SET formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, customer_id = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
                         WHERE customer_id = ? AND audience_id = ?; commit;"""
-
-            print(update_query, tup)
  
             session['hide'] = True
 
@@ -344,56 +355,60 @@ def product():
 
             return redirect(url_for('audience', redirect=True, hide=session['hide'], persona_id = next_audience_id))
 
+            # if 'persona_id' not in request.args:
+            #     persona_id = session['first_persona']
+            # else:
+            #     persona_id = request.args('persona_id')
+
+            # tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], persona_id)
+            # query = """UPDATE dbo.audience
+            #             SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
+            #             WHERE customer_id = ? AND audience_id = ?; commit;"""
+
+            # execute(query, False, tup)
+            # last_modified(str(session['user']))
+
+        if session['persona_id'] != None:
+            persona_id = session['persona_id']
         else:
-            tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], session['current_audience_id'])
-            query = """UPDATE dbo.audience
-                        SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
-                        WHERE customer_id = ? AND audience_id = ?; commit;"""
+            persona_id = session['first_persona']
 
-        if POST_gender:
-            execute(query, False, tup)
-            last_modified(str(session['user']))
+        tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], persona_id)
+        query = """UPDATE dbo.audience
+                    SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
+                    WHERE customer_id = ? AND audience_id = ?; commit;"""
+        execute(query, False, tup)
+        last_modified(str(session['user']))
 
+    me = User(session['user'])
+    page = 'product'
+
+    # masks = me.branch('mask', page, 'biz_model')
+    inds, hides = me.branch('hide', page, 'biz_model')
+    me.set_biz_model()
+
+    hide_1 = dirty_mask_handler(hides, me.biz_model, 1)
+    hide_2 = dirty_mask_handler(hides, me.biz_model, 2)
+    hide_8 = dirty_mask_handler(hides, me.biz_model, 8)
+    hide_9 = dirty_mask_handler(hides, me.biz_model, 9)
+    hide_10 = dirty_mask_handler(hides, me.biz_model, 10)
+    hide_11 = dirty_mask_handler(hides, me.biz_model, 11)
+    hide_12 = dirty_mask_handler(hides, me.biz_model, 12)
+    
+    mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
+    mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
+    mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
+    mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
+    mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
+    mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
 
     if 'redirect' in request.args:
-        me = User(session['user'])
-        page = 'product'
-        me.set_biz_model()
-        print(me.biz_model)
-        hide_1 = me.hide(page, 1, 'biz_model')
-        hide_2 = me.hide(page, 2, 'biz_model')
-        mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
-        mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
-        mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
-        mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
-        mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
-        hide_8 = me.hide(page, 8, 'biz_model')
-        hide_9 = me.hide(page, 9, 'biz_model')
-        hide_10 = me.hide(page, 10, 'biz_model')
-        hide_11 = me.hide(page, 11, 'biz_model')
-        mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
-
         return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool)
+
     elif request.args.get('coming_home'):
         return redirect(url_for('home'))
-    elif not request.args.get('splash'):
-        me = User(session['user'])
-        page = 'product'
-        me.set_biz_model()
-        print(me.biz_model)
-        hide_1 = me.hide(page, 1, 'biz_model')
-        hide_2 = me.hide(page, 2, 'biz_model')
-        mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
-        mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
-        mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
-        mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
-        mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
-        hide_8 = me.hide(page, 8, 'biz_model')
-        hide_9 = me.hide(page, 9, 'biz_model')
-        hide_10 = me.hide(page, 10, 'biz_model')
-        hide_11 = me.hide(page, 11, 'biz_model')
-        mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
 
+    elif not request.args.get('splash'):
         return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool) 
 
     else:

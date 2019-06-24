@@ -17,6 +17,42 @@ class User:
 	def set_num_products(self):
 		self.num_products = get_num_products(self.id)
 
+
+	def branch(self, action, page, trigger):
+		self.set_biz_model()
+		self.set_selling_to()
+		self.set_num_products()
+		
+		
+		tup = (action, trigger, page)
+
+
+		if action == 'hide':
+		    query = "SELECT ind, hide_val, branch_trigger_val FROM dbo.branches WHERE branch_action = ? AND branch_trigger=? AND affected_page=?"
+
+		    ind_query = "SELECT distinct ind FROM dbo.branches WHERE branch_action = 'hide' AND affected_page = ?"
+		    ind_list, cursor = execute(ind_query, True, (page,))
+		    ind_list = cursor.fetchall()
+		    cursor.close()
+
+		elif action == 'mask':
+		    query = "SELECT mask_val, default_mask FROM dbo.branches WHERE branch_action = ? AND branch_trigger=? AND branch_trigger_val = ? AND affected_page=?"
+
+		data, cursor = execute(query, True, tup)
+		data = data.fetchall()
+
+		if data:
+
+		    if action == 'hide':
+		        i = 0
+		        for ind in ind_list:
+		            ind_list[i] = ind_list[i][0]
+		            i+=1
+
+		        return ind_list, data
+
+
+
 	def hide(self, page, index, trigger):
 		self.set_biz_model()
 		self.set_selling_to()

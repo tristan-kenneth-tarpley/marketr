@@ -5,14 +5,21 @@ import zipcodes
 from data.db import sql_to_df, execute
 import pandas as pd
 
+
+
+
 def test_query(query, tup):
     test_query = query.replace("?", "%s")
     test_query = test_query % tup
 
     print(test_query)
 
-def validate_login(username, password):
-    print('hi')
+def dirty_mask_handler(hides, biz_model, ind):
+    for row in hides:
+        if row[0] == ind:
+            if row[2] == biz_model:
+                return True
+    return False
 
 def get_trigger_val(val, table, user):
     tup = (user,)
@@ -42,11 +49,6 @@ def get_num_products(user):
 def get_selling_to(user):
     x = get_trigger_val("selling_to", "company", user)
     return x
-
-
-def update_for_home(query, user, tup):
-    print('hi')
-
 
 def last_modified(user):
     ts = time.time()
@@ -108,8 +110,6 @@ def is_started(table, user):
     cursor.close()
     
     if len(data) > 0:
-        print(data)
-        print(len(data))
         return True
     else:
         return False
@@ -138,22 +138,22 @@ def load_last_page(user):
             if step == "history_2":
                 query = "SELECT history_freeform FROM dbo.history WHERE customer_id = %d" % (user,)
                 def_query = sql_to_df(query)
+            elif step == "audience":
+                query = "SELECT persona_name FROM dbo.audience WHERE customer_id = %d" % (user,)
+                def_query = sql_to_df(query)
             else:
                 query = "SELECT customer_id FROM %s WHERE customer_id = %d" % (step, user)
                 def_query = sql_to_df(query)
             i+=1
+
             if def_query.empty == True:
                 perc_complete = str(i*10)
                 tup = (perc_complete, user)
                 query = """UPDATE dbo.customer_basic SET perc_complete = ? WHERE id = ?;commit;"""
                 execute(query, False, tup)
-                if step == "product":
-                    return call_it(step)
-                else:
-                    print(step)
-                    return call_it(step)
-            else:
-                return 'home'
+                return call_it(step)
+        else:
+            return 'home'
 
 
 
@@ -184,7 +184,7 @@ def past_inputs(page, user, persona_id):
 
         
         elif page == 'audience':
-            query = "SELECT * FROM dbo.audience WHERE customer_id = %s and audience_id = %d" % (user, persona_id)
+            query = "SELECT * FROM dbo.audience WHERE customer_id = %s and audience_id = %s" % (user, persona_id)
             result = sql_to_df(query)
 
 
