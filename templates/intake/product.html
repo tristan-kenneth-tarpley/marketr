@@ -41,9 +41,8 @@
                   </div>
                 </div>
 
-
+              <div id="product">
                 {{ form_open('product_2', request.args.get('home')) }}
-
                   <div class="card-header">
                     <div class="row yellow_border">
                       <h6 class="title">Meat & Potatoes time.</h6>
@@ -229,7 +228,7 @@
                                       <span class="input-group-text">$</span>
                                     </div>
 
-                                    <input class="currency cogs" id="item-3" name="p1_cogs" placeholder="0">
+                                    <input type="number" class="currency cogs" id="item-3" name="p1_cogs" placeholder="0">
                                   </div>
                               </td>
                               {% if hide_1 %}
@@ -238,7 +237,7 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">$</span>
                                     </div>
-                                    <input class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
+                                    <input type="number" class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
                                   </div>
                                 </td>
                               {% else %}
@@ -281,8 +280,79 @@
                 </div>
               </form>
             </div>
+            </div>
           </div>
         </div> <!--end row-->
       </div>
     </div>
 {% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  
+const form = document.querySelector('#product > form')
+const table = document.querySelector('.input_table')
+
+const urlBuilder = (url, parameters) => {
+  let qs = "";
+  for (const key in parameters) {
+      if (parameters.hasOwnProperty(key)) {
+          const value = parameters[key];
+          qs +=
+              encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
+      }
+  }
+  if (qs.length > 0) {
+      qs = qs.substring(0, qs.length - 1); //chop off last "&"
+      url = url + "?" + qs;
+  }
+
+  return url;
+}
+
+const checkNull = (val) => {
+  const result = ((val == '') ? 'na' : val)
+  return result
+}
+
+form.addEventListener('submit', e=>{
+  e.preventDefault()
+  const rows = table.rows
+  for (let i = 1; i<rows.length; i++){
+
+    const name = checkNull(rows[i].cells[0].childNodes[0].value)
+          category = checkNull(rows[i].cells[1].childNodes[0].value),
+          cogs = checkNull(rows[i].cells[2].childNodes[1].childNodes[3].value),
+          sales_price = checkNull(rows[i].cells[3].childNodes[1].childNodes[3].value),
+          price_model = checkNull(rows[i].cells[4].childNodes[1].value),
+          qty_sold = checkNull(rows[i].cells[5].childNodes[0].value),
+          est_unique_buyers = checkNull(rows[i].cells[6].childNodes[0].value)
+
+    // const currentUrl = window.location.hostname
+    const route = '/submit_product'
+
+    const args = {
+      'name': name,
+      'category': category,
+      'cogs': cogs,
+      'sales_price': sales_price,
+      'price_model': price_model,
+      'qty_sold': qty_sold,
+      'est_unique_buyers': est_unique_buyers
+    }
+
+    const url = urlBuilder(route, args)
+    
+    fetch(url)
+
+  }
+})
+
+
+
+</script>
+{% endblock %}
+
+
+
+

@@ -12,7 +12,7 @@ def test_query(query, tup):
     test_query = query.replace("?", "%s")
     test_query = test_query % tup
 
-    print(test_query)
+    return test_query
 
 def dirty_mask_handler(hides, biz_model, ind):
     for row in hides:

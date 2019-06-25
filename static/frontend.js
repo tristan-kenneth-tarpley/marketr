@@ -810,6 +810,8 @@ function isURL(str) {
 
 $(document).ready(function(){
 
+	
+
 	$('.ignore_default input').keydown(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 

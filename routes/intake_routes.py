@@ -472,30 +472,30 @@ def product_2():
             requestList = requestList[19:]
             return requestList.to_json(orient='columns')
 
-            product_len = int(request.form['product_len'])
+            # product_len = int(request.form['product_len'])
 
-            counterOne = 0
-            newRequestList = {}
-            for x, y in requestList.items():
-                newRequestList[str(counterOne)] = y
-                counterOne = counterOne+1
+            # counterOne = 0
+            # newRequestList = {}
+            # for x, y in requestList.items():
+            #     newRequestList[str(counterOne)] = y
+            #     counterOne = counterOne+1
 
-            productData = list(requestList.iloc[:,1])
+            # productData = list(requestList.iloc[:,1])
 
-            secondCounter = 0
+            # secondCounter = 0
 
-            while secondCounter < product_len:
-                if secondCounter > 0 and secondCounter < product_len:
-                    productData = productData[7:]
-                print("Product info: " + productData[0] + " " + productData[1] + " " + productData[2] + " " + productData[3] + " " + productData[5] + " " + productData[6])
-                tup = (productData[0], session['user'], session['user'], productData[0], productData[1], productData[2], productData[3], productData[4], productData[5], productData[6])
-                query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
-                            INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
+            # while secondCounter < product_len:
+            #     if secondCounter > 0 and secondCounter < product_len:
+            #         productData = productData[7:]
+            #     print("Product info: " + productData[0] + " " + productData[1] + " " + productData[2] + " " + productData[3] + " " + productData[5] + " " + productData[6])
+            #     tup = (productData[0], session['user'], session['user'], productData[0], productData[1], productData[2], productData[3], productData[4], productData[5], productData[6])
+            #     query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
+            #                 INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
 
-                execute(query, False, tup)
-                secondCounter += 1
+            #     execute(query, False, tup)
+            #     secondCounter += 1
 
-            last_modified(str(session['user']))
+            # last_modified(str(session['user']))
 
 
     me = User(session['user'])
@@ -513,6 +513,28 @@ def product_2():
             return render_template('intake/product_2.html', hide_1=hide_1, hide_2=hide_2)
         else:
             return redirect(url_for('splash', next_step='salescycle'))
+
+
+@app.route('/submit_product', methods=['POST', 'GET'])
+@login_required
+def submit_product():
+    customer_id = session['user']
+    name = request.args.get('name')
+    category = request.args.get('category')
+    cogs = request.args.get('cogs')
+    sales_price = request.args.get('sales_price')
+    price_model = request.args.get('price_model')
+    qty_sold = request.args.get('qty_sold')
+    est_unique_buyers = request.args.get('est_unique_buyers')
+
+    tup = (name, customer_id, customer_id, name, category, cogs, sales_price, price_model, qty_sold, est_unique_buyers)
+    query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
+                            INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
+
+    execute(query, False, tup)
+    last_modified(session['user'])
+
+    return query
 
 
 @app.route('/removeProduct/<pid>')
