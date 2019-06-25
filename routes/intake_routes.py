@@ -470,7 +470,7 @@ def product_2():
             req = request.form
             requestList = pd.DataFrame(list(req.items()))
             requestList = requestList[19:]
-            return requestList
+            return requestList.to_json(orient='columns')
 
             product_len = int(request.form['product_len'])
 
