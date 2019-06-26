@@ -316,7 +316,7 @@ const checkNull = (val) => {
 }
 
 form.addEventListener('submit', e=>{
-  e.preventDefault()
+  // e.preventDefault()
   const rows = table.rows
   for (let i = 1; i<rows.length; i++){
 
@@ -328,7 +328,6 @@ form.addEventListener('submit', e=>{
           qty_sold = checkNull(rows[i].cells[5].childNodes[0].value),
           est_unique_buyers = checkNull(rows[i].cells[6].childNodes[0].value)
 
-    // const currentUrl = window.location.hostname
     const route = '/submit_product'
 
     const args = {

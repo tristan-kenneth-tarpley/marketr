@@ -457,45 +457,10 @@ def product_2():
             query = """INSERT INTO dbo.product
                     (customer_id,gen_description,quantity,link,segment_1,segment_2,segment_3,segment_4,segment_5,segment_6,segment_7,segment_8,segment_9,segment_10,source_1,source_2,source_3,source_4,source_freeform)
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);commit;"""
-           
-
 
         if POST_link:
             execute(query, False, tup)
             last_modified(str(session['user']))
-
-
-
-        if POST_product_1_name:
-            req = request.form
-            requestList = pd.DataFrame(list(req.items()))
-            requestList = requestList[19:]
-            return requestList.to_json(orient='columns')
-
-            # product_len = int(request.form['product_len'])
-
-            # counterOne = 0
-            # newRequestList = {}
-            # for x, y in requestList.items():
-            #     newRequestList[str(counterOne)] = y
-            #     counterOne = counterOne+1
-
-            # productData = list(requestList.iloc[:,1])
-
-            # secondCounter = 0
-
-            # while secondCounter < product_len:
-            #     if secondCounter > 0 and secondCounter < product_len:
-            #         productData = productData[7:]
-            #     print("Product info: " + productData[0] + " " + productData[1] + " " + productData[2] + " " + productData[3] + " " + productData[5] + " " + productData[6])
-            #     tup = (productData[0], session['user'], session['user'], productData[0], productData[1], productData[2], productData[3], productData[4], productData[5], productData[6])
-            #     query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
-            #                 INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
-
-            #     execute(query, False, tup)
-            #     secondCounter += 1
-
-            # last_modified(str(session['user']))
 
 
     me = User(session['user'])
@@ -528,7 +493,7 @@ def submit_product():
     est_unique_buyers = request.args.get('est_unique_buyers')
 
     tup = (name, customer_id, customer_id, name, category, cogs, sales_price, price_model, qty_sold, est_unique_buyers)
-    query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
+    query = """BEGIN TRANSACTION; IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
                             INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
 
     execute(query, False, tup)
