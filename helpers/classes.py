@@ -115,5 +115,41 @@ class User:
 
 
 
+stage_1 = ['competitors', 'company', 'audience', 'product', 'product_2', 'salescycle']
+stage_2 = ['goals']
+stage_3 = ['history', 'platforms', 'past']
+stage_4 = ['creative']
+class Page:
+	def __init__(self, id, title, user_name):
+		self.id = id
+		self.title = title
+		self.name = user_name
+
+		if self.title in stage_1:
+			self.stage = 1
+		elif self.title in stage_2:
+			self.stage = 2
+		elif self.title in stage_3:
+			self.stage = 3
+		elif self.title in stage_4:
+			self.stage = 4
+		else:
+			self.stage = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

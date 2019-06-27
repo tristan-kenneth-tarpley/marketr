@@ -1,12 +1,12 @@
 from app import *
 from helpers.helpers import *
-from helpers.classes import User
+from helpers.classes import User, Page
 import hashlib
 from bleach import clean
 from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-
+# from helpers.filters import *
 
 
 @app.errorhandler(404)
@@ -17,7 +17,11 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('error.html', first=5, second=0,third=0), 500
 
-
+@app.route('/testing')
+@login_required
+def testing():
+    page = Page(session['user'], 'competitors', session['user_name'])
+    return render_template('intake_layout.html', page=page)
 
 
 
@@ -155,7 +159,7 @@ def customer_login():
     
     try:   
         tup = (POST_USERNAME,)
-        query = "SELECT email, password, ID, email_confirmed FROM dbo.customer_basic WHERE email = ?"
+        query = "SELECT email, password, ID, email_confirmed, first_name, last_name FROM dbo.customer_basic WHERE email = ?"
         data, cursor = execute(query, True, tup)
         data = cursor.fetchall()
         cursor.close()
@@ -163,6 +167,8 @@ def customer_login():
             pw = data[0][1]
             uid = data[0][2]
             email_confirmed = data[0][3]
+            first_name = data[0][4]
+            last_name = data[0][5]
         except:
             error = "Invalid credentials. Try again."
             return render_template("login.html", error = error)  
@@ -171,6 +177,7 @@ def customer_login():
             if email_confirmed == 1:
                 session['logged_in'] = True
                 session['user'] = int(uid)
+                session['user_name'] = "%s %s" % (first_name, last_name)
                 session.permanent = True
                 session.remember = True
 

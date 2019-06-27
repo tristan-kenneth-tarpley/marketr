@@ -15,6 +15,7 @@ from routes.intake_routes import *
 from helpers.helpers import *
 import helpers.analysis as an
 from routes.branding_routes import *
+from helpers.filters import *
 
 
 if __name__ == '__main__':

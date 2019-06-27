@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import form_open, text_input, breadcrumb, left_nav %}
+
+{% block title %}
+<title>Market(r) - {{ page.title | capitalize }}</title>
+{% endblock %}
+
+
+{% block content %}
+	{{ left_nav(page.stage, True) }}
+	{% include "/topbar/topbar-customer.html" %}
+
+
+
+	<div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="row row_cancel">
+			<div class="col-md-12">
+				<div class="card yellow_border" style="padding: 5%;">
+					<div class="card-header">
+
+						{{ breadcrumb(page.title, page.stage, page.title) }}
+
+					</div>
+					<div class="card-body">
+						{{ text_input('hello', 'website', 'website', 'test', 'test', True) }}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

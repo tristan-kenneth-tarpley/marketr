@@ -44,17 +44,32 @@
         .notices h1 {
             font-size: 120%;
         }
+        .home_container a {
+            position: absolute;
+            left: 95%;
+            font-size: 40px;
+            color: black;
+            opacity: .3;
+            transition-duration: .2s;
+        }
+        .home_container a:hover {
+            opacity: .2;
+            text-decoration: none;
+        }
     </style>
 
     {% block title %}{% endblock %}
   </head>
   <body>
     <div id="body-cont">
-        <aside>
+<!--         <aside>
           <a style="margin: 0 auto;" href="/">
             <img style="margin-left: 20%; width: 50%;" class="logo" src="/static/branding/img/white-logo.svg">
           </a>
-        </aside>
+        </aside> -->
+        <div class="home_container">
+            <a href="/" class="button btn back_home">x</a>
+        </div>
 
         <main>
             <div class="mCont">

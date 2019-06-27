@@ -116,22 +116,29 @@ $(".edit_products").click(function(e){
 
 	if ($(this).hasClass("add_product")){
 		i++
+
 		var data = $('.data-row').last().clone()
-		var item_1_name = "product_" + i + "_name"
+		var item_1_name = `product_name[${i}]`
 		data.find('#item-1').attr("name", item_1_name)
-		var placeholder = "name " + i
+		var placeholder = `name ${i}`
 		data.find('#item-1').attr('placeholder', placeholder)
-		var item_2_name = "p" + i + "_category"
+
+		var item_2_name = `p_category[${i}]`
 		data.find('#item-2').attr("name", item_2_name)
-		var item_3_name = "p" + i + "_cogs"
+
+		var item_3_name = `cogs[${i}]`
 		data.find('#item-3').attr("name", item_3_name)
-		var item_4_name = "p" + i + "_sales_price"
+
+		var item_4_name = `sales_price[${i}]`
 		data.find('#item-4').attr("name", item_4_name)
-		var item_5_name = "p" + i + "_qty_sold"
+
+		var item_5_name = `price_model[${i}]`
 		data.find('#item-5').attr("name", item_5_name)
-		var item_6_name = "p" + i + "_est_unique_buyers"
+
+		var item_6_name = `qty_sold[${i}]`
 		data.find('#item-6').attr("name", item_6_name)
-		var item_7_name = "price_model_" + i
+
+		var item_7_name = `est_unique_buyers[${i}]`
 		data.find('#item-7').attr("name", item_7_name)
 
 		$('.input_table').append(data)
@@ -186,41 +193,45 @@ function init_products(){
 	$('.form-radio').click(function(){
 		console.log($(this).val())
 	})
-//come back
+
 	var it = 0 
 
 	$('.p_form_submit').click(function(){
 
-		var results = localStorage.getItem('results');
-		results = JSON.parse(results)
+		let local_results = localStorage.getItem('results');
+		const results = JSON.parse(local_results)
+	
+		let p_value = $("#p_id").val()
+		console.log(p_value)
+		let complexity = $('input[name=complexity]').val()
+		let price = $('input[name=price]').val()
+		let product_or_service = $('input[name=product_or_service]').val()
+		let frequency_of_use = $('input[name=frequency_of_use]').val()
+		let frequency_of_purchase = $('input[name=frequency_of_purchase]').val()
+		let value_prop = $('input[name=value_prop]').val()
+		let warranties_or_guarantee = $('input[name=warranties_or_guarantee]').val()
+		let warranties_or_guarantee_freeform = $('textarea[name=warranties_or_guarantee_freeform]').val()
+		let num_skus = $('input[name=num_skus]').val()
+		let level_of_customization = $('input[name=level_of_customization]').val()
 
-		var complexity = $('input[name=complexity]').val()
-		var price = $('input[name=price]').val()
-		var product_or_service = $('input[name=product_or_service]').val()
-		var frequency_of_use = $('input[name=frequency_of_use]').val()
-		var frequency_of_purchase = $('input[name=frequency_of_purchase]').val()
-		var value_prop = $('input[name=value_prop]').val()
-		var warranties_or_guarantee = $('input[name=warranties_or_guarantee]').val()
-		var warranties_or_guarantee_freeform = $('textarea[name=warranties_or_guarantee_freeform]').val()
-		var num_skus = $('input[name=num_skus]').val()
-		var level_of_customization = $('input[name=level_of_customization]').val()
+		const length = results.length
 
-		var length = results.length
+		const args = { complexity: complexity, price: price, product_or_service: product_or_service, frequency_of_use: frequency_of_use, frequency_of_purchase: frequency_of_purchase, value_prop: value_prop, warranties_or_guarantee: warranties_or_guarantee, warranties_or_guarantee_freeform: warranties_or_guarantee_freeform, num_skus: num_skus, level_of_customization: level_of_customization, p_id: p_value }
+		for (let key in args) {
+			if (args[key] == undefined || args[key] == ""){
+				args[key] = "n/a"
+			}
+		}
+		console.log(args)
+		$.post("/product_submit", args )
+
 		it++
-
 
 		if (it < length){
 
 			$('#product-name').text(results[it]['name'])
-			var p_value = $("#p_id").val()
-			var args = { complexity: complexity, price: price, product_or_service: product_or_service, frequency_of_use: frequency_of_use, frequency_of_purchase: frequency_of_purchase, value_prop: value_prop, warranties_or_guarantee: warranties_or_guarantee, warranties_or_guarantee_freeform: warranties_or_guarantee_freeform, num_skus: num_skus, level_of_customization: level_of_customization, p_id: p_value }
-			for (var key in args) {
-				if (args[key] == undefined || args[key] == ""){
-					args[key] = "n/a"
-				}
-			}
-			console.log(args)
-			$.post("/product_submit", args )
+			console.log(results[it]['name'])
+			let p_value = $("#p_id").val()
 
 			
 			$('.product_container').not('.product_container:nth-of-type(' + (it+1) + ')').removeClass('product_container_active')
@@ -231,9 +242,6 @@ function init_products(){
 			$('#p_id').val(p_id)
 		} else {
 			$('.card-body').addClass("hidden")
-		}
-
-		if(it == length) {
 			$('.p_form_submit').addClass('hidden')
 			$('.final').removeClass('hidden')
 			$('.product_prev_container').addClass("hidden")
@@ -241,10 +249,11 @@ function init_products(){
 			$(".change_on_submit").html("<h5>Nice! Let's keep going.</h5>")
 		}
 
-
 	   $("html, body").animate({ scrollTop: 0 }, "slow");
 		$('textarea').val("")
 		$('.hover_box').removeClass('hover_box_selected')
+
+
 		// $('input:checked').prop('checked', false)
 	})
 }
@@ -436,15 +445,7 @@ function init_sales_cycle(){
 }
 
 function init_platforms(){
-	$.get('/load_history',function(data){
 
-		var results = JSON.parse(data)
-
-		for (var i = 0; i<results['data'][0].length; i++){
-			if(results['data'][0][i] == "yes"){
-				$('.platforms_container').append("<div class='platform_row'><div class='col-lg-2'><h6>" + results['columns'][i] + "</h6><input style='display:none' type='text' value='" + results['columns'][i] + "' name='platform_" + i + "'></div><div class='col-lg-4 col-md-4'><h6>Still using?</h6><br><div class='hover_box col-lg-5 col-md-5'><h6>yes</h6></div>&nbsp;<div class='hover_box col-lg-5 col-md-5'><h6>no</h6></div><input class='hidden_input hidden' type='text' name='still_using_" + i + "'></div><div class='col-lg-6 col-md-6'><h6>How are the results?</h6><br><img src='/static/assets/img/frown.png' class='col-lg-3'><img src='/static/assets/img/neutral.png' class='col-lg-3'><img src='/static/assets/img/smile.png' class='col-lg-3'><img src='/static/assets/img/grin.png' class='col-lg-3'><input type='text' style='display:none;' class='img_input' name='results_" + i + "'></div></div><hr>")
-			}
-		}
 
 		
 		$('.platform_row img').click(function(){
@@ -484,7 +485,7 @@ function init_platforms(){
 
 		})
 
-	})
+
 }
 	
 
@@ -555,7 +556,6 @@ function hover_box(){
 				} else {	
 					$(this).find(".in_box").val("")
 				}
-
 			}
 		} else {
 			$(this).toggleClass('hover_box_selected')
@@ -681,6 +681,51 @@ function load_past_inputs(){
 
 				if (url_path == "/creative") {
 					console.log(data)
+				}
+
+				if (url_path == "/history/platforms") {
+					for (var i = 0; i < data.length; i++){
+						Object.keys(data[i]).forEach(function(key){
+							const value = data[i][key]
+							$('select[name=' + key + ']').val(value)
+							$('input[name=' +  key + ']').val(data[0][key])
+							$('textarea[name=' + key + ']').val(data[0][key])
+
+							$('.hover_box').each(function(){
+
+								var hb_many = $(this).hasClass('hb_many')
+								var closest_val = $(this).closest('.hidden_input').val()
+								var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
+
+								var many_check = hb_many && closest_val !== ""
+								var single_check = single && $(this).siblings('.hidden_input').val() !== ""
+
+								var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
+								var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
+
+								var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
+
+
+								if (many_check){
+
+									if ($(this).children('.hidden_input').val() !== ""){
+										$(this).addClass('hover_box_selected')
+									}
+
+								} else if (single_check){
+
+									var single_select =  $(this).siblings('.hidden_input').val()
+									var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
+									add_select.addClass("hover_box_selected")
+									
+								} else if (multi_row_check) {
+
+									$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
+								
+								}
+							})
+						})
+					}
 				}
 
 
@@ -832,8 +877,9 @@ $(document).ready(function(){
 	if (url_path == "/competitors/company/audience"){
 		load_audience()
 	} 
-		hover_box()
-		init_creative()
+
+	hover_box()
+	init_creative()
 
 	$(".website").blur(function(){
 		var x = isURL($(this).val())

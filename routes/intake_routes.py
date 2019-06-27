@@ -398,11 +398,17 @@ def product():
     hide_12 = dirty_mask_handler(hides, me.biz_model, 12)
     
     mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
+    # mask_3, mask_3_bool = ('hi', True)
     mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
+    # mask_4, mask_4_bool = ('hi', True)
     mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
+    # mask_5, mask_5_bool = ('hi', True)
     mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
+    # mask_6, mask_6_bool = ('hi', True)
     mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
+    # mask_7, mask_7_bool = ('hi', True)
     mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
+    # mask_12, mask_12_bool = ('hi', True)
 
     if 'redirect' in request.args:
         return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool)
@@ -444,7 +450,7 @@ def product_2():
         POST_source_freeform = clean(request.form['source_freeform'])
         POST_source_freeform = POST_source_freeform.replace("'", "")
         POST_source_freeform = POST_source_freeform.replace('"', "")
-        POST_product_1_name = clean(request.form['product_1_name'])
+        product_len = int(request.form['product_len'])
 
 
         if is_started('product', session['user']):
@@ -463,12 +469,32 @@ def product_2():
             last_modified(str(session['user']))
 
 
-    me = User(session['user'])
-    me.set_biz_model()
+        if request.form['product_name[1]'] != "":
+            i = 1
+            while i <= product_len:
+                product_name = request.form['product_name[' + str(i) + ']']
+                p_category = request.form['p_category[' + str(i) + ']']
+                cogs = request.form['cogs[' + str(i) + ']']
+                sales_price = request.form['sales_price[' + str(i) + ']']
+                price_model = request.form['price_model[' + str(i) + ']']
+                qty_sold = request.form['qty_sold[' + str(i) + ']']
+                est_unique_buyers = request.form['est_unique_buyers[' + str(i) + ']']
+                customer_id = session['user']
+
+                tup = (product_name, customer_id, customer_id, product_name, p_category, cogs, sales_price, price_model, qty_sold, est_unique_buyers)
+                query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
+                                INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
+                print(test_query(query, tup))
+
+                execute(query, False, tup)
+
+                i += 1
 
     if request.args.get('coming_home'):
         return redirect(url_for('home'))
     else:
+        me = User(session['user'])
+        me.set_biz_model()
         if me.biz_model != 'Affiliate' and me.biz_model != 'Media Provider':
             page = 'product_2'
 
@@ -671,72 +697,72 @@ def platforms():
             tup = (POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, session['user'], POST_none)
             query = "INSERT INTO dbo.history (facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube, customer_id, none) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);commit;"
         
-        print(query)
         execute(query, False, tup)
         last_modified(str(session['user']))
 
 
+    platforms = []
+    query = "SELECT facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube FROM dbo.history WHERE customer_id = ?"
+    tup = (session['user'],)
+    data, cursor = execute(query, True, tup)
+    data = cursor.fetchall()
+
+    for data in data:
+        for val in data:
+            if val != "":
+                platforms.append(val)
+
+    cursor.close()
+
     if request.args.get('coming_home'):
-        return render_template('intake/2/platforms.html', home=True)
+        return render_template('intake/2/platforms.html', platforms=platforms, home=True)
     else:
-        return render_template('intake/2/platforms.html')
+        return render_template('intake/2/platforms.html', platforms=platforms)
 
 
 
 
-@app.route('/load_history', methods=['GET'])
-@login_required
-def load_history():
-    results = sql_to_df("SELECT * FROM dbo.history WHERE customer_id = " + str(session['user']))
-    results = results.to_json(orient='split')
-    return results
+# @app.route('/load_history', methods=['GET'])
+# @login_required
+# def load_history():
+#     results = sql_to_df("SELECT * FROM dbo.history WHERE customer_id = " + str(session['user']))
+#     results = results.to_json(orient='split')
+#     return results
 
 @app.route('/history/platforms/past', methods=['GET','POST'])
 @login_required
 def past():
     if request.form:
 
-        req = request.form
-        d = pd.DataFrame(list(req.items()))
-        q = 0
+        length = int(request.form['length'])
 
-        tup = (d.iloc[-1,1], session['user'])
+        i=1
+        while i <= length:
+
+            platform = request.form['platform[' + str(i) + ']']
+            currently_using = request.form['currently_using[' + str(i) + ']']
+            results = request.form['results[' + str(i) + ']']
+                       
+            tup = (platform, session['user'], session['user'], platform, currently_using, results, currently_using, results)
+            query = """IF NOT EXISTS (select platform_name from dbo.platforms WHERE platform_name = ? and customer_id = ?) 
+                            INSERT INTO dbo.platforms (customer_id, platform_name, currently_using, results) VALUES (?,?,?,?);
+                        ELSE
+                            UPDATE dbo.platforms
+                                SET currently_using = ?, results = ?;
+                        commit;"""
+
+            # print(test_query(query, tup))
+            if results != "" and currently_using != "":    
+                execute(query, False, tup)
+
+            i += 1
+
+        tup = (request.form['spend'], session['user'])
+
         query = "UPDATE dbo.history SET digital_spend = ? WHERE customer_id = ?;commit;"
+
         execute(query, False, tup)
-        last_modified(str(session['user']))
 
-        s = 0
-        f = 3
-        while q < (len(request.form) - 1):
-            if q%3 == 0:
-                this = d.iloc[s:f,:]
-                tup = (session['user'], this.iloc[0,1], this.iloc[1,1], this.iloc[2,1])
-
-                check_tup = (session['user'], this.iloc[0,1])
-                check = "SELECT * FROM dbo.platforms WHERE customer_id = ? and platform_name = ?"
-                check_check = "SELECT * FROM dbo.platforms WHERE customer_id = %d and platform_name = %s" % (session['user'], this.iloc[0,1])
-                print(check_check)
-
-                data, cursor = execute(check, True, check_tup)
-
-                data = cursor.fetchone()
-
-                cursor.close()
-                if data == None:
-                    print(True)
-                    query = "INSERT INTO dbo.platforms (customer_id,platform_name,currently_using,results) VALUES (?,?,?,?);commit;"
-                    execute(query, False, tup)
-
-                else:
-                    update_tup = (session['user'], this.iloc[0,1], this.iloc[1,1], this.iloc[2,1], this.iloc[0,1])
-                    query = "UPDATE dbo.platforms SET customer_id = ?, platform_name = ?, currently_using = ?, results = ? WHERE platform_name = ?;commit;"
-                    execute(query, False, update_tup)
-
-
-
-            s += 1
-            f += 1
-            q += 1
 
     if request.args.get('coming_home'):
         return redirect(url_for('home'))

@@ -48,9 +48,39 @@
 
                     <div class="reveal">
                       <div class="platforms_container">
-                      </div> 
-
-                      <br>
+                        {% for platform in platforms %}
+                          <div class="row platform_row">
+                            <div class='col-lg-2'>
+                              <h6><span class="platform_img">{{ platform }}</span></h6>
+                              <input style="display:none;" type='text' value='{{ platform }}' name='platform[{{ loop.index }}]'>
+                            </div>
+                            <div class='col-lg-4 col-md-4'>
+                              <h6>Still using?</h6><br>
+                              <div class="container row col-12">
+                                <div class='hover_box col-lg-5 col-md-5'>
+                                  <h6>yes</h6>
+                                </div>
+                                &nbsp;
+                                <div class='hover_box col-lg-5 col-md-5'>
+                                  <h6>no</h6>
+                                </div>
+                                <input style="display:none;" type="text" name="currently_using[{{ loop.index }}]" class="hidden_input">
+                              </div>
+                            </div>
+                            <div class='col-lg-6 col-md-6'>
+                              <h6>How are the results?</h6>
+                              <br>
+                              <img src='/static/assets/img/frown.png' class='col-lg-2'>
+                              <img src='/static/assets/img/neutral.png' class='col-lg-2'>
+                              <img src='/static/assets/img/smile.png' class='col-lg-2'>
+                              <img src='/static/assets/img/grin.png' class='col-lg-2'>
+                              <input type='text' style='display:none;' class='img_input' name='results[{{ loop.index }}]'>
+                            </div>
+                          </div>
+                        {% endfor %}
+                        <input type="number" style="display:none;" name="length" value="{{ platforms | length }}">
+                      </div>
+                                            <br>
                       <div class="col-lg-6">   
                         <p>Average total monthly spend across all digital platforms</p>
                          <div class="slidecontainer">
@@ -65,7 +95,7 @@
                             </select>
                           </div>
 
-                          <script>
+  <!--                         <script>
 
                           function numberWithCommas(x) {
                               return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -77,12 +107,15 @@
                           slider.oninput = function() {
                             output.innerHTML = numberWithCommas(this.value);
                           }
-                          </script>
+                          </script> -->
                       </div>
 
                       <div class="onward">            
                         <input type="submit" class="continue">
                       </div>
+                    </div> 
+
+
 
 
                     </div>
@@ -103,7 +136,18 @@
 {% block js %}
 <script>
   $(document).ready(function(){
+
     init_platforms()
+    hover_box()
+
+    $(".platform_img").each(function(){
+      var platform = $(this).text()
+      var img = smilesMapper(platform)
+      console.log(platform)
+      // $(this).css('color', 'red')
+      $(this).html(`<img style="width: 50%;" class="smilesHome" src='${img}'>`)
+    })
+
   })
 </script>
 {% endblock %}

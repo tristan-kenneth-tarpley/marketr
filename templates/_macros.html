@@ -3,16 +3,141 @@
 	{% if home %}
 
 		{% if next_page == 'platforms' %}
-
 		<form class="ignore_default" method="POST" action="{{ url_for(next_page, coming_home=True, home=True) }}">
-
 		{% else %}
-
 		<form class="ignore_default" method="POST" action="{{ url_for(next_page, coming_home=True) }}">
-
 		{% endif %}
 
 	{% else %}
 		<form class="ignore_default" method="POST" action="{{ url_for(next_page) }}">
 	{% endif %}
+
 {% endmacro %}
+
+
+{% macro text_input(text, type, format, name, id, required) %}
+
+	<input type={{type}} class="form-control {{ format }}" name="{{name}}" id="{{id}}" placeholder="{{ text }}" required="{{ required }}">
+
+{% endmacro %}
+
+
+
+{% macro left_nav(stage, intake) %}
+
+	{% if intake == True %}
+		<div class="sidebar" data-color="orange">
+			<div class="logo">
+			  <a href="https://marketr.life" class="simple-text logo-normal">
+			    <img src="/static/assets/img/marketrwhite.png">
+			  </a>
+			</div>
+			<div class="sidebar-wrapper">
+			  <ul class="nav">
+			    <li class="{{ 0 | check_active(stage) }}">
+			      <a href="/begin">
+			        <i class="now-ui-icons design_app"></i>
+			        <p>Profile</p>
+			      </a>
+			    </li>
+			    <li class="{{ 1 | check_active(stage) }}">
+			      <a href="/competitors">
+			        <i class="now-ui-icons education_atom"></i>
+			        <p>Company Info</p>
+			      </a>
+			    </li>
+			    <li class="{{ 2 | check_active(stage) }}">
+			      <a href="/goals">
+			        <i class="now-ui-icons location_map-big"></i>
+			        <p>Goals</p>
+			      </a>
+			    </li>
+			    <li class="{{ 3 | check_active(stage) }}">
+			      <a href="/history">
+			        <i class="now-ui-icons ui-1_bell-53"></i>
+			        <p>History</p>
+			      </a>
+			    </li>
+			    <li class="{{ 4 | check_active(stage) }}">
+			      <a href="/creative">
+			        <i class="now-ui-icons design_palette"></i>
+			        <p>Creative</p>
+			      </a>
+			    </li>
+			  </ul>
+			</div>
+		</div>
+
+	{% endif %}
+
+{% endmacro %}
+
+
+
+
+
+
+
+{% macro breadcrumb(page, current_stage, view) %}
+
+
+	{% macro formulate_row(link, name, view) %}
+
+	  <div class="step {{ name | breadcrumb_active('step', view) }}">
+	    <a href="{{ url_for(link) }}" class="step_name {{ name | breadcrumb_active('step_name', view) }}">{{name}}</a>
+	  </div>
+
+	{% endmacro %}
+
+
+
+	 <div class="sub_menu">
+
+		{% if current_stage == 1 %}
+
+		  {{ formulate_row('competitors', 'competitors', view) }}
+		  {{ formulate_row('company', 'company', view) }}
+		  {{ formulate_row('audience', 'audience', view) }}
+		  {{ formulate_row('product', 'product', view) }}
+		  {{ formulate_row('salescycle', 'salescycle', view) }}
+
+		{% elif current_stage == 2 %}
+
+		  {{ formulate_row('goals', 'goals', view) }}
+
+		{% elif current_stage == 3 %}
+
+		  {{ formulate_row('history', 'history', view) }}
+		  {{ formulate_row('platforms', 'platforms', view) }}
+		  {{ formulate_row('past', 'past', view) }}
+
+		{% elif current_stage == 4 %}
+
+		  {{ formulate_row('creative', 'creative', view) }}
+
+		{% endif %}
+
+	</div>
+
+{% endmacro %}
+
+
+
+{% macro tiles(num) %}
+
+
+
+
+
+{% endmacro %}
+
+
+
+
+
+
+
+
+
+
+

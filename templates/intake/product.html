@@ -220,15 +220,15 @@
                   
                             </thead>
                             <tr class="data-row">
-                              <td><input type="text" id="item-1" name="product_1_name" placeholder="name 1"></td>
-                              <td><input type="text" id="item-2" name="p1_category" placeholder="details"></td>
+                              <td><input type="text" id="item-1" name="product_name[1]" placeholder="name 1"></td>
+                              <td><input type="text" id="item-2" name="p_category[1]" placeholder="details"></td>
                               <td class="{{ 'hidden' if hide_1 or hide_8 else ' ' }}">
                                   <div class="input-group">
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">$</span>
                                     </div>
 
-                                    <input type="number" class="currency cogs" id="item-3" name="p1_cogs" placeholder="0">
+                                    <input type="number" class="currency cogs" id="item-3" name="cogs[1]" placeholder="0">
                                   </div>
                               </td>
                               {% if hide_1 %}
@@ -237,7 +237,7 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">$</span>
                                     </div>
-                                    <input type="number" class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
+                                    <input type="number" class="currency price" id="item-4" name="sales_price[1]" placeholder="0">
                                   </div>
                                 </td>
                               {% else %}
@@ -246,13 +246,13 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">$</span>
                                     </div>
-                                    <input class="currency price" id="item-4" name="p1_sales_price" placeholder="0">
+                                    <input class="currency price" id="item-4" name="sales_price[1]" placeholder="0">
                                   </div>
                                 </td>
                               {% endif %}
 
                               <td class="">
-                                <select class="form-control" id="item-7" name="price_model_1">
+                                <select class="form-control" id="item-7" name="price_model[1]">
                                   <option></option>
                                   <option>monthly recurring</option>
                                   <option>annual recurring</option>
@@ -260,8 +260,8 @@
                                   <option>commission/rev share</option>
                                 </select>
                               </td>
-                              <td><input type="number" id="item-5" name="p1_qty_sold" placeholder="0"></td>
-                              <td class="{{ ' ' if hide_9 else 'hidden' }}"><input type="number" id="item-6" name="p1_est_unique_buyers" placeholder="0"></td>
+                              <td><input type="number" id="item-5" name="qty_sold[1]" placeholder="0"></td>
+                              <td class="{{ ' ' if hide_9 else 'hidden' }}"><input type="number" id="item-6" name="est_unique_buyers[1]" placeholder="0"></td>
                             </tr>
                             <input type="number" name="product_len" value="1" class="product_len hidden">
                           </table>
@@ -290,62 +290,62 @@
 {% block js %}
 <script type="text/javascript">
   
-const form = document.querySelector('#product > form')
-const table = document.querySelector('.input_table')
+// const form = document.querySelector('#product > form')
+// const table = document.querySelector('.input_table')
 
-const urlBuilder = (url, parameters) => {
-  let qs = "";
-  for (const key in parameters) {
-      if (parameters.hasOwnProperty(key)) {
-          const value = parameters[key];
-          qs +=
-              encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
-      }
-  }
-  if (qs.length > 0) {
-      qs = qs.substring(0, qs.length - 1); //chop off last "&"
-      url = url + "?" + qs;
-  }
+// const urlBuilder = (url, parameters) => {
+//   let qs = "";
+//   for (const key in parameters) {
+//       if (parameters.hasOwnProperty(key)) {
+//           const value = parameters[key];
+//           qs +=
+//               encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
+//       }
+//   }
+//   if (qs.length > 0) {
+//       qs = qs.substring(0, qs.length - 1); //chop off last "&"
+//       url = url + "?" + qs;
+//   }
 
-  return url;
-}
+//   return url;
+// }
 
-const checkNull = (val) => {
-  const result = ((val == '') ? 'na' : val)
-  return result
-}
+// const checkNull = (val) => {
+//   const result = ((val == '') ? 'na' : val)
+//   return result
+// }
 
-form.addEventListener('submit', e=>{
-  // e.preventDefault()
-  const rows = table.rows
-  for (let i = 1; i<rows.length; i++){
+// form.addEventListener('submit', e=>{
+//   // e.preventDefault()
+//   const rows = table.rows
+//   for (let i = 1; i<rows.length; i++){
 
-    const name = checkNull(rows[i].cells[0].childNodes[0].value)
-          category = checkNull(rows[i].cells[1].childNodes[0].value),
-          cogs = checkNull(rows[i].cells[2].childNodes[1].childNodes[3].value),
-          sales_price = checkNull(rows[i].cells[3].childNodes[1].childNodes[3].value),
-          price_model = checkNull(rows[i].cells[4].childNodes[1].value),
-          qty_sold = checkNull(rows[i].cells[5].childNodes[0].value),
-          est_unique_buyers = checkNull(rows[i].cells[6].childNodes[0].value)
+//     const name = checkNull(rows[i].cells[0].childNodes[0].value)
+//           category = checkNull(rows[i].cells[1].childNodes[0].value),
+//           cogs = checkNull(rows[i].cells[2].childNodes[1].childNodes[3].value),
+//           sales_price = checkNull(rows[i].cells[3].childNodes[1].childNodes[3].value),
+//           price_model = checkNull(rows[i].cells[4].childNodes[1].value),
+//           qty_sold = checkNull(rows[i].cells[5].childNodes[0].value),
+//           est_unique_buyers = checkNull(rows[i].cells[6].childNodes[0].value)
 
-    const route = '/submit_product'
+//     const route = '/submit_product'
 
-    const args = {
-      'name': name,
-      'category': category,
-      'cogs': cogs,
-      'sales_price': sales_price,
-      'price_model': price_model,
-      'qty_sold': qty_sold,
-      'est_unique_buyers': est_unique_buyers
-    }
+//     const args = {
+//       'name': name,
+//       'category': category,
+//       'cogs': cogs,
+//       'sales_price': sales_price,
+//       'price_model': price_model,
+//       'qty_sold': qty_sold,
+//       'est_unique_buyers': est_unique_buyers
+//     }
 
-    const url = urlBuilder(route, args)
+//     const url = urlBuilder(route, args)
     
-    fetch(url)
+//     fetch(url)
 
-  }
-})
+//   }
+// })
 
 
 
