@@ -9,6 +9,18 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignat
 # from helpers.filters import *
 
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first!")
+            return redirect(url_for('login_page'))
+
+    return wrap
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', first=4, second=0,third=4), 404
@@ -140,17 +152,6 @@ def create_user():
 def login_page():
     return render_template('login.html')
 
-
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("You need to login first!")
-            return redirect(url_for('login_page'))
-
-    return wrap
 
 @app.route('/login', methods=['POST'])
 def customer_login():
