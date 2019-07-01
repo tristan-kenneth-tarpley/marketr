@@ -119,6 +119,7 @@ stage_1 = ['competitors', 'company', 'audience', 'product', 'product_2', 'salesc
 stage_2 = ['goals']
 stage_3 = ['history', 'platforms', 'past']
 stage_4 = ['creative']
+
 class Page:
 	def __init__(self, id, title, user_name):
 		self.id = id
@@ -135,6 +136,39 @@ class Page:
 			self.stage = 4
 		else:
 			self.stage = 0
+
+		def get_copy(self):
+			tup = (self.title,)
+			query = """
+				SELECT q.*, pages.page_title, pages.page_h1, pages.page_p, answers.*, 
+						STUFF((SELECT '^' + t.name_h6
+									FROM dbo.tiles as t
+									WHERE t.answer_id = q.answer_id
+									FOR XML PATH('')), 1, 1, '') [tiles_name_h6],
+						
+						STUFF((SELECT '^' + t.name_p
+									FROM dbo.tiles as t
+									WHERE t.answer_id = q.answer_id
+									FOR XML PATH('')), 1, 1, '') [tiles_name_p]
+					FROM dbo.questions as q
+
+				LEFT JOIN pages
+					ON q.page_id = pages.page_id
+
+				RIGHT JOIN answers
+					ON answers.fk_answer_id = q.answer_id
+
+				WHERE pages.page_title = ?
+				ORDER BY q.order_on_page
+					"""
+			data, cursor = execute(query, True, tup)
+			data = data.fetchall()
+			cursor.close()
+			return data
+
+		self.questions = get_copy(self)
+		self.header = self.questions[0][15].replace("`", "'")
+		self.intro = self.questions[0][16].replace("`", "'")
 
 
 

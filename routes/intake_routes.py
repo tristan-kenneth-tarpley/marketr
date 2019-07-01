@@ -81,14 +81,14 @@ def splash():
 @login_required
 def competitors():
     if request.form:
-        POST_website = clean(request.form['website'])
+        # POST_website = clean(request.form['website'])
         POST_first_name = clean(request.form['first_name'])
         POST_last_name = clean(request.form['last_name'])
         POST_company_name = clean(request.form['company_name'])
-        POST_revenue = clean(request.form['revenue'])
+        POST_revenue = int(clean(request.form['revenue']).replace(",",""))
         POST_zip = clean(request.form['zip'])
         POST_stage = clean(request.form['stage'])
-        POST_employees = clean(request.form['employees'])
+        POST_employees = int(clean(request.form['employees']).replace(",",""))
 
         try:
             zips = zipcodes.matching(POST_zip)
@@ -99,10 +99,10 @@ def competitors():
             POST_state = "not defined"
             POST_zip = "00000"
 
-        tup = (POST_first_name, POST_last_name, POST_company_name, POST_revenue, POST_city, POST_state, POST_stage, POST_employees, POST_zip, POST_website, session['user'])
+        tup = (POST_first_name, POST_last_name, POST_company_name, POST_revenue, POST_city, POST_state, POST_stage, POST_employees, POST_zip, session['user'])
 
         query = """UPDATE dbo.customer_basic 
-                    SET first_name = ?, last_name = ?, company_name = ?, revenue = ?, city = ?, state = ?, stage = ?, employees = ?, zip = ?, website = ?
+                    SET first_name = ?, last_name = ?, company_name = ?, revenue = ?, city = ?, state = ?, stage = ?, employees = ?, zip = ?
                     WHERE dbo.customer_basic.ID = ?; commit;"""
 
         if POST_first_name:

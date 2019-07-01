@@ -533,8 +533,8 @@ function hover_box(){
 
 	$(".in_box").click(function(event){
 		event.stopPropagation()
-		if (!$(this).parent().hasClass('hover_box_selected')) {
-			$(this).parent().addClass('hover_box_selected')
+		if (!$(this).parent().parent().parent().parent().parent().hasClass('hover_box_selected')) {
+			$(this).parent().parent().parent().parent().parent().addClass('hover_box_selected')
 		}
 		input_clicked = true
 		return input_clicked
@@ -853,9 +853,24 @@ function isURL(str) {
 }
 
 
+function char_cap(){
+	var maxLength = $(this).attr('maxLength');
+
+	$('.char_cap').keyup(function() {
+	  var length = $(this).val().length;
+	  var length = maxLength-length;
+	  $(this).siblings('#chars').text(length);
+	});
+}
+
+
 $(document).ready(function(){
 
-	
+	$('.ignore_btn').click(function(event){
+		event.preventDefault()
+	})
+
+
 
 	$('.ignore_default input').keydown(function(event){
 		var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -924,6 +939,8 @@ $(document).ready(function(){
 	$(function () {
 	  $('[data-toggle="tooltip"]').tooltip()
 	})
+
+	//char_cap()
 
 
 })

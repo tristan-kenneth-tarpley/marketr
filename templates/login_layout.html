@@ -56,6 +56,22 @@
             opacity: .2;
             text-decoration: none;
         }
+        .fieldCont input {
+            transition-duration: .3s;
+        }
+        .fieldCont input::placeholder {
+            opacity: .6;
+            text-transform: uppercase;
+            font-size: 105%;
+            position: absolute;
+            top: 0;
+            font-weight: bold;
+        }
+        .fieldCont input:focus {     
+              border-color: #62cde0;
+              box-shadow: 0 0 5px 1px rgba(0,188,255,.25);
+              outline: none;
+        }
     </style>
 
     {% block title %}{% endblock %}

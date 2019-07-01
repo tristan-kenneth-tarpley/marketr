@@ -32,7 +32,8 @@ def page_not_found(e):
 @app.route('/testing')
 @login_required
 def testing():
-    page = Page(session['user'], 'competitors', session['user_name'])
+    view = request.args.get('view')
+    page = Page(session['user'], view, session['user_name'])
     return render_template('intake_layout.html', page=page)
 
 
