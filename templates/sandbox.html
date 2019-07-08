@@ -1,0 +1,18 @@
+{% extends "layouts/layout.html" %}
+{% from "macros/_macros.html" import form_open, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
+
+{% block content %}
+<div class="container">
+	<div class="col-lg-3">
+	</div>
+	<div class="col-lg-9">
+		<form class="form" method="POST" action="form_test">
+			{{ form.csrf_token }}
+			{{ render_field(form.email, class="form-control") }}
+			{{ render_field(form.password, class="form-control") }}
+			<input type="submit" class="btn btn-primary">
+		</form>
+	</div>
+
+</div>
+{% endblock %}

@@ -1,41 +1,18 @@
 from app import *
 from helpers.helpers import *
-from helpers.classes import User, Page
+from helpers.classes import *
 import hashlib
 from bleach import clean
 from flask_mail import Mail, Message
-from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-# from helpers.filters import *
-
-
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("You need to login first!")
-            return redirect(url_for('login_page'))
-
-    return wrap
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('error.html', first=4, second=0,third=4), 404
-
-@app.errorhandler(500)
-def page_not_found(e):
-    return render_template('error.html', first=5, second=0,third=0), 500
+from helpers.LoginHandlers import *
 
 @app.route('/testing')
 @login_required
 def testing():
     view = request.args.get('view')
     page = Page(session['user'], view, session['user_name'])
-    return render_template('intake_layout.html', page=page)
-
+    return render_template('layouts/intake_layout.html', page=page)
 
 
 app.config.from_pyfile('config.cfg')
@@ -56,7 +33,7 @@ def reset():
 
     data = data.fetchone()
 
-    if data != None:
+    if data != None and request.method=='POST':
         token = s.dumps(POST_USERNAME, salt="password-reset")
         msg = Message('Reset Password', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
         link = url_for('forgot_password', token=token, _external=True)
@@ -85,7 +62,7 @@ def update_password():
 
     tup = (password, email)
     query = "UPDATE dbo.customer_basic SET password = ? WHERE email = ?;commit;"
-    print(query)
+
     execute(query, False, tup)
 
     return render_template('login.html', reset=True)
@@ -213,8 +190,8 @@ def customer_login():
             error = "Invalid credentials. Try again."
             return render_template("login.html", error = error)  
 
-    # except Exception as e:
-    except AssertionError:
+    except Exception as e:
+    # except AssertionError:
         error = "Invalid credentials. Try again!"
         return render_template("login.html", error = error)  
         
@@ -226,24 +203,16 @@ def customer_login():
 def logout():
     session['logged_in'] = False
     session.clear()
-    return redirect(url_for('index'))
+    if request.args.get('admin'):
+        return redirect(url_for('admin_login_view'))
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/new')
 def new():
-    if not session.get('logged_in'):
-        return render_template('create.html')
-    else:
-        return begin()
+    return render_template('create.html')
 
-
-@app.route('/begin')
-@login_required
-def begin():
-    if request.args.get('home'):
-        return render_template('intake/init_setup.html', home=True)
-    else:
-        return render_template('intake/init_setup.html')
 
 
 
@@ -256,216 +225,9 @@ def availability():
 
 
 
-########admin###########
+########home page###########
 
 
-def admin_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'admin_logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            return render_template('admin_view/login.html')
-
-    return wrap
-
-
-@app.route('/admin')
-@admin_required
-def admin():
-    results = sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
-    return render_template('admin_view/admin_index.html', results=results)
-
-
-@app.route('/admin/branch', methods=['GET', 'POST'])
-@admin_required
-def branch():
-
-    if request.method == 'POST':
-        branch_trigger = str(request.form['branch_trigger'])
-        branch_trigger_val = str(request.form['branch_trigger_val'])
-        branch_action = str(request.form['branch_action'])
-        affected_page = str(request.form['affected_page'])
-        mask_val = str(request.form['mask_val'])
-        default_mask = str(request.form['default_mask'])
-        hide_val = request.form['hide_val']
-        ind = request.form['ind']
-
-        cursor = db.cursor()
-        if branch_action == "hide":
-            tup = (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
-            query = """INSERT INTO dbo.branches
-                        (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
-                        VALUES (?,?,?,?,?,?);commit;"""
-            execute(query, False, tup)
-
-        elif branch_action == "mask":
-            tup = (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
-            query = """INSERT INTO dbo.branches
-                        (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
-                        VALUES (?,?,?,?,?,?,?);commit;"""
-            execute(query, False, tup)
-        else:
-            return False
-
-    branch_tup = ('affected_page',)
-    branches = "SELECT ind, ?, branch_action, branch_trigger_val FROM dbo.branches ORDER BY affected_page ASC"
-    branches, cursor = execute(branches, True, branch_tup)
-    branches = cursor.fetchall()
-
-    cursor.close()
-
-    return render_template('admin_view/branch.html', branches=branches)
-
-@app.route('/admin/<customer_id>')
-@admin_required
-def company_view(customer_id):
-
-
-    page = request.args.get('page')
-    basics_df = an.sql_to_df("""SELECT * FROM dbo.customer_basic WHERE ID = """ + customer_id)
-    company_name = basics_df['company_name'][0]
-
-
-    if page == "profile":
-        load_company = basics_df
-        load_company.insert(loc=0, column='is profile', value=True)
-    elif page == "audience":
-        load_company = an.sql_to_df("""SELECT * FROM dbo.audience WHERE customer_id = %d""" % (customer_id,))
-        load_company = load_company.drop(columns=['customer_id', 'age_group_1', 'age_group_2', 'age_group_3', 'age_group_4', 'age_group_5', 'age_group_6', 'age_group_7', 'age_group_8', 'before_1', 'before_2', 'before_3', 'before_4', 'before_5', 'before_6', 'before_7', 'before_8', 'before_9', 'before_10', 'before_freeform', 'after_1', 'after_2', 'after_3', 'after_4', 'after_5', 'after_6', 'after_7', 'after_8', 'after_9', 'after_10', 'after_freeform'])
-        audiences_dict = clean_audience(customer_id)
-        columns = list(load_company.columns)
-        return render_template('admin_view/company_view.html',columns=columns,audiences=audiences_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
-    elif page == "product":
-        load_company = an.sql_to_df("""SELECT gen_description, quantity, link FROM dbo.product WHERE customer_id = %d""" % (customer_id,))
-        product_dict = clean_product(customer_id)
-
-        product_list = an.sql_to_df("""SELECT * FROM dbo.product_list WHERE customer_id = %d""" % (customer_id,))
-        product_list = product_list.drop(columns=['customer_id'])
-        product_list = clean_for_display(product_list)
-
-        return render_template('admin_view/company_view.html',product_list=product_list,product_dict=product_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
-    elif page == "notes":
-        load_company = an.sql_to_df("""SELECT * from dbo.notes WHERE customer_id = {customer_id} ORDER BY added%d""" % (customer_id,))
-    elif page == "salescycle":
-        awareness = an.sql_to_df("""SELECT tactic FROM dbo.awareness WHERE customer_id = %d""" % (customer_id,))
-        evaluation = an.sql_to_df("""SELECT tactic FROM dbo.evaluation WHERE customer_id = %d""" % (customer_id,))
-        conversion = an.sql_to_df("""SELECT tactic FROM dbo.conversion WHERE customer_id = %d""" % (customer_id,))
-        retention = an.sql_to_df("""SELECT tactic FROM dbo.retention WHERE customer_id = %d""" % (customer_id,))
-        referral = an.sql_to_df("""SELECT tactic FROM dbo.referral WHERE customer_id = %d""" % (customer_id,))
-
-        return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data='hi', awareness=awareness, evaluation=evaluation, conversion=conversion, retention=retention, referral=referral)
-    else:
-        load_company = an.sql_to_df("""SELECT * FROM dbo.""" + page + """ WHERE customer_id = """ + str(customer_id))
-        load_company.insert(loc=0, column='is_profile', value=False)
-    
-    load_company = clean_for_display(load_company)
-
-    return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data=load_company)
-
-
-@app.route('/admin/<customer_id>/note', methods=['POST'])
-@admin_required
-def add_note(customer_id):
-    if request.method == 'POST':
-        POST_note = clean(request.form['note'])
-        # ' = `
-        # " = ~
-        POST_note = POST_note.replace("'","`")
-        POST_note = POST_note.replace('"',"~")
-        tup = (customer_id, session['admin_first'], session['admin_last'], POST_note)
-        query = "INSERT INTO dbo.notes (customer_id, author, author_last, content) VALUES(?,?,?,?);commit;"
-        execute(query, False, tup)
-
-    return redirect(url_for('company_view', customer_id=customer_id, page="notes"))
-
-
-@app.route('/admin_login', methods=['POST'])
-def admin_login():
-
- 
-    POST_USERNAME = clean(request.form['username'])
-    POST_PASSWORD = clean(request.form['password'])
- 
-    
-    # try:    
-    tup = (POST_USERNAME,)
-    query = "SELECT email, password, ID, first_name, last_name FROM dbo.admins WHERE email = ?"
-    data, cursor = execute(query, True, tup)
-    data = cursor.fetchall()
-    pw = data[0][1]
-    uid = data[0][2]
-    admin_first = data[0][3]
-    admin_last = data[0][4]
-    cursor.close()
-
-
-    if sha256_crypt.verify(POST_PASSWORD, pw):
-        session['logged_in'] = True
-        session['admin'] = int(uid)
-        session['admin_first'] = admin_first
-        session['admin_last'] = admin_last
-        session['admin_logged_in'] = True
-        session.permanent = True
-        session.remember = True
-        return redirect(url_for('admin'))
-    else:
-        flash('incorrect email or password')
-        return redirect(url_for('logout'))
-
-
-    # except:
-    #     flash('incorrect email or password')
-    #     return redirect(url_for('logout'))
-
-
-@app.route('/load_admin')
-@admin_required
-def load_admin():
-    results = sql_to_df('SELECT customer_basic.id, customer_basic.company_name, admins.first_name FROM customer_basic, admins WHERE admins.ID = ' + str(session['admin']))
-
-    results = results.to_json(orient='records')
-
-    return results
-
-
-@app.route('/admin_availability', methods=['GET'])
-def admin_availability():
-    result = sql_to_df('select email from dbo.admins')
-    result = result.to_json(orient='records')
-
-    return result
-
-
-@app.route('/new_admin')
-def new_admin():
-    return render_template('admin_view/new.html')
-
-
-@app.route('/add_admin', methods=['POST'])
-@admin_required
-def add_admin():
-    POST_first_name = clean(request.form['first_name'])
-    POST_last_name = clean(request.form['last_name'])
-    POST_USERNAME = clean(request.form['email'])
-    POST_PASSWORD = clean(request.form['password'])
-    password = sha256_crypt.encrypt(str(POST_PASSWORD))
-
-    cursor = db.cursor()
-    tup = (POST_first_name, POST_last_name, POST_USERNAME, password)
-    query = """INSERT INTO dbo.admins (
-                                    first_name,
-                                    last_name,
-                                    email,
-                                    password)
-                VALUES (?,
-                        ?,
-                        ?,
-                        ?); commit;"""
-
-    execute(query, False, tup)
-
-    return redirect(url_for('admin'))
 
 
 
@@ -644,6 +406,62 @@ def home():
     return render_template('core/home.html', awareness=awareness, evaluation=evaluation, conversion=conversion, retention=retention, referral=referral, platforms=platforms,sources=sources, segments=segments, ages_before_after=ages_before_after, last_modified=last_modified, company_name=company_name,city=city,state=state,stage=stage,employees=employees,revenue=revenue,primary_first=primary_first,primary_last=primary_last,email=email,selling_to=selling_to,biz_model=biz_model,storefront_perc=storefront_perc,direct_perc=direct_perc,online_perc=online_perc,tradeshows_perc=tradeshows_perc,other_perc=other_perc,rev_channel_freeform=rev_channel_freeform,goal=goal,current_avg=current_avg,target_avg=target_avg,timeframe=timeframe,industry=industry,comp_1_name=comp_1_name,comp_1_website=comp_1_website,comp_1_type=comp_1_type,comp_2_name=comp_2_name,comp_2_website=comp_2_website,comp_2_type=comp_2_type,audience=audience,quantity=quantity,segment_1=segment_1,segment_2=segment_2,segment_3=segment_3,segment_4=segment_4,segment_5=segment_5,segment_6=segment_6,segment_7=segment_7,segment_8=segment_8,segment_9=segment_9,segment_10=segment_10,source_1=source_1,source_2=source_2,source_3=source_3,source_4=source_4,source_freeform=source_freeform,product_list=product_list,digital_spend=digital_spend,history_freeform=history_freeform)
 
 
+
+
+
+# CLIENT_SECRETS_FILE = "client_secret.json"
+
+# # This OAuth 2.0 access scope allows for full read/write access to the
+# # authenticated user's account and requires requests to use an SSL connection.
+# SCOPES = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
+# API_SERVICE_NAME = 'ads'
+# API_VERSION = 'v2'
+
+# import string
+# import random
+# def id_generator(size=43, chars=string.ascii_uppercase + string.digits):
+#     return ''.join(random.choice(chars) for _ in range(size))
+
+# redirect_uri = 'https://127.0.0.1:5000/google_test'
+
+
+# # Initialize the flow using the client ID and secret downloaded earlier.
+# flow = OAuth2WebServerFlow(client_id='612075856877-1epe8u6omk3i15hg00aorip67ath8hsb.apps.googleusercontent.com',
+#                        client_secret='PummnRa1jDQ4SgI0L3weY3k1',
+#                        scope=SCOPES,
+#                        redirect_uri=redirect_uri,
+#                        access_type='offline')
+
+# @app.route('/auth', methods=['GET', 'POST'])
+# def oauth2callback():
+    
+#     auth_uri = flow.step1_get_authorize_url()
+
+#     return redirect(auth_uri)
+
+# import pprint
+
+# @app.route('/google_test', methods=['GET', 'POST'])
+# def google_test():
+
+#     # flow = OAuth2WebServerFlow(client_id='612075856877-1epe8u6omk3i15hg00aorip67ath8hsb.apps.googleusercontent.com',
+#                        # client_secret='PummnRa1jDQ4SgI0L3weY3k1',
+#                        # scope=SCOPES,
+#                        # redirect_uri=redirect_uri)
+
+#     code = request.args.get('code')
+
+#     credentials = flow.step2_exchange(code)
+#     pprint.pprint(credentials.__dict__)
+#     img = credentials.__dict__['id_token']['picture']
+
+#     http = httplib2.Http()
+#     http = credentials.authorize(http)
+
+    
+
+
+#     return f"""<img src='{img}'><p>{string}</p>"""
 
 
 

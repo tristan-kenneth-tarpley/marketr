@@ -1,78 +1,56 @@
-{% extends "layout.html" %}
+{% extends "/layouts/admin_layout.html" %}
 
-{% block title %}
-<title>
-  Market(r) - Admin
-</title>
-
-{% endblock %}
 
 {% block css %}
 <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
 {% endblock %}
 
 
-{% block content %}
-<div class="main-panel">
-  {% include "/sidebar/admin/sidebar-admin.html" %}
-  {% include "/topbar/topbar-admin.html" %}
-  <div class="panel-header panel-header-sm">
+{% block admin_content %}
+
+  <div class="card-header">
+    {% if results['first_name'][0] %}
+    <h2 class="blue_header">Admin view for {{ results['first_name'][0] }}</h2>
+    {% endif %}
   </div>
-  <div class="content">
-    <div class="append_to">
 
-      <div class="card" style="padding: 5%;">
 
-        <div class="card-header">
-          {% if results['first_name'][0] %}
-          <h2 class="blue_header">Admin view for {{ results['first_name'][0] }}</h2>
+
+  <div class="card-body">
+
+    <table id="display" style="width:100%;" class="admin_table">
+      <thead>
+        <tr class="orange">
+          <th class="headers" style="cursor:pointer;">Company name</th>
+          <th class="headers" style="cursor:pointer;">% profile complete</th>
+          <th class="headers" style="cursor:pointer;">Account Created</th>
+          <th class="headers" style="cursor:pointer;">Last Modified</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% if results['id'][0] %}
+        {% for i, row in results.iterrows() %}
+        <tr>
+          {% if row[1] != None %}
+            <td><a href="/admin/{{ row[0] }}?page=profile">{{ row[1] }}</a></td>
+          {% else %}
+            <td><a href="/admin/{{ row[0] }}?page=profile">Name unavailable</a></td>
           {% endif %}
 
-        </div>
-
-
-
-        <div class="card-body">
-
-          <table id="display" style="width:100%;" class="admin_table">
-            <thead>
-              <tr class="orange">
-                <th class="headers" style="cursor:pointer;">Company name</th>
-                <th class="headers" style="cursor:pointer;">% profile complete</th>
-                <th class="headers" style="cursor:pointer;">Account Created</th>
-                <th class="headers" style="cursor:pointer;">Last Modified</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              {% if results['id'][0] %}
-              {% for i, row in results.iterrows() %}
-              <tr>
-                {% if row[1] != None %}
-                  <td><a href="/admin/{{ row[0] }}?page=profile">{{ row[1] }}</a></td>
-                {% else %}
-                  <td><a href="/admin/{{ row[0] }}?page=profile">Name unavailable</a></td>
-                {% endif %}
-
-                <td>{{ row[3] }}%</td>
-                <td>{{ row[2] }}</td>
-                <td>{{ row[4] }}</td>
-              </tr>
-              {% endfor %}
-              {% endif %}
-              
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-    </div> <!--end row-->
+          <td>{{ row[3] }}%</td>
+          <td>{{ row[2] }}</td>
+          <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        
+      </tbody>
+    </table>
   </div>
 
-</div>
-
 {% endblock %}
+
 
 {% block js %}
 <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" defer></script>

@@ -651,7 +651,8 @@ function load_audience(){
 
 }
 
-function load_past_inputs(){
+function load_past_inputs(callback=null){
+
 	var url_path = window.location.pathname;
 	var product_2_path = "/competitors/company/audience/product/product_2"
 
@@ -659,34 +660,125 @@ function load_past_inputs(){
 
 	var args = {}
 
-	if (init_params.has('persona_id')){
+	if (init_params.has('persona_id') && !init_params.has('view')){
 		args = {page: url_path,
 				persona_id: init_params.get('persona_id')}
-	} else {
+	} else if (init_params.has('view')) {
+		args = {page: init_params.get('view')}
+	} else if (init_params.has('view') && init_params.has('persona_id')){
+		args = {page: init_params.get('view'),
+				persona_id: init_params.get('persona_id')}
+	}
+	else {
 		args = {page: url_path}
 	}
 
 
 	$(".onward .continue").attr('value', 'SAVE AND CONTINUE')
 
-	if (url_path !== "/home" && url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
+	var load_vals = new Promise((resolve, reject)=>{
 
-		$.get('/load_past_inputs', args, function(data){
-			if (data !== 'nah, not this time' && data !== 'nah') {
+		if (url_path !== "/home" && url_path !== "/" && url_path !== "/new" && url_path !== "/admin" && url_path !== "/admin/branch" && url_path !== "/class" && url_path !== "/splash") {
 
-				var data = JSON.parse(data)
-				console.log(data)
-				//if audience
+			$.get('/load_past_inputs', args, function(data){
+				setTimeout(function() {
+
+				    let sum = 0
+					$(".percent").each(function(){
+						let val = parseInt($(this).val())
+					    if (!Number.isNaN(val)){
+					    	sum += val;					    	
+
+							setTimeout(function(valsum=sum){
+								resolve(valsum)
+							}, 400)
+						}
 
 
-				if (url_path == "/creative") {
+					});
+
+
+				}, 300);
+				if (data !== 'nah, not this time' && data !== 'nah') {
+
+					var data = JSON.parse(data)
 					console.log(data)
-				}
+					//if audience
 
-				if (url_path == "/history/platforms") {
-					for (var i = 0; i < data.length; i++){
-						Object.keys(data[i]).forEach(function(key){
-							const value = data[i][key]
+
+					if (url_path == "/creative") {
+						console.log(data)
+					}
+
+					if (url_path == "/history/platforms") {
+						for (var i = 0; i < data.length; i++){
+							Object.keys(data[i]).forEach(function(key){
+								const value = data[i][key]
+								$('select[name=' + key + ']').val(value)
+								$('input[name=' +  key + ']').val(data[0][key])
+								$('textarea[name=' + key + ']').val(data[0][key])
+
+								$('.hover_box').each(function(){
+
+									var hb_many = $(this).hasClass('hb_many')
+									var closest_val = $(this).closest('.hidden_input').val()
+									var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
+
+									var many_check = hb_many && closest_val !== ""
+									var single_check = single && $(this).siblings('.hidden_input').val() !== ""
+
+									var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
+									var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
+
+									var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
+
+
+									if (many_check){
+
+										if ($(this).children('.hidden_input').val() !== ""){
+											$(this).addClass('hover_box_selected')
+										}
+
+									} else if (single_check){
+
+										var single_select =  $(this).siblings('.hidden_input').val()
+										var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
+										add_select.addClass("hover_box_selected")
+										
+									} else if (multi_row_check) {
+
+										$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
+									
+									}
+								})
+							})
+						}
+					}
+
+
+					load_sales_cycle(data, init_sales_cycle)
+
+					//if not sales cycle
+					if (data.length > 0){
+						Object.keys(data[0]).forEach(function(key) {
+
+							var value = data[0][key]
+							let param = new URLSearchParams(window.location.search)
+							//Does sent exist?
+							
+
+							if (param.has('persona_id')){
+
+								let persona_id = param.get('persona_id')
+								var audience_filter = data.filter(function(item){
+								    return item.audience_id == persona_id;         
+								});
+								$("#" + persona_id).parent().addClass("product_container_active")
+								$(".dyn_link").not("#" + persona_id).parent().removeClass('product_container_active')
+								data = audience_filter
+
+							}
+
 							$('select[name=' + key + ']').val(value)
 							$('input[name=' +  key + ']').val(data[0][key])
 							$('textarea[name=' + key + ']').val(data[0][key])
@@ -726,75 +818,27 @@ function load_past_inputs(){
 							})
 						})
 					}
+					load_company()
 				}
+			})
+		}
 
 
-				load_sales_cycle(data, init_sales_cycle)
 
-				//if not sales cycle
-				if (data.length > 0){
-					Object.keys(data[0]).forEach(function(key) {
-
-						var value = data[0][key]
-						let param = new URLSearchParams(window.location.search)
-						//Does sent exist?
-						
-
-						if (param.has('persona_id')){
-
-							let persona_id = param.get('persona_id')
-							var audience_filter = data.filter(function(item){
-							    return item.audience_id == persona_id;         
-							});
-							$("#" + persona_id).parent().addClass("product_container_active")
-							$(".dyn_link").not("#" + persona_id).parent().removeClass('product_container_active')
-							data = audience_filter
-
-						}
-
-						$('select[name=' + key + ']').val(value)
-						$('input[name=' +  key + ']').val(data[0][key])
-						$('textarea[name=' + key + ']').val(data[0][key])
-
-						$('.hover_box').each(function(){
-
-							var hb_many = $(this).hasClass('hb_many')
-							var closest_val = $(this).closest('.hidden_input').val()
-							var single = $(this).hasClass('multi_row') == false && $(this).hasClass('hb_many') == false
-
-							var many_check = hb_many && closest_val !== ""
-							var single_check = single && $(this).siblings('.hidden_input').val() !== ""
-
-							var multi_input_select = $(this).parentsUntil('.grandparent').find('.hidden_input').val()
-							var multi_row_check = $(this).hasClass('multi_row') && multi_input_select !== ""
-
-							var contains_val = $(this).closest("h6:contains('" + closest_val + "')")
-
-
-							if (many_check){
-
-								if ($(this).children('.hidden_input').val() !== ""){
-									$(this).addClass('hover_box_selected')
-								}
-
-							} else if (single_check){
-
-								var single_select =  $(this).siblings('.hidden_input').val()
-								var add_select = $(this).children("h6:contains('" + single_select +"')").closest('.hover_box')
-								add_select.addClass("hover_box_selected")
-								
-							} else if (multi_row_check) {
-
-								$(this).parentsUntil('.grandparent').find("h6:contains('" + multi_input_select + "')").closest('.hover_box').addClass('hover_box_selected')
-							
-							}
-						})
-					})
-				}
-				load_company()
+	})
+		
+	if (callback !== null){
+		load_vals.then(function(value){
+			if (url_path == "/competitors/company" || url_path == "/testing"){
+				init_company(value)
 			}
 		})
+	} else {
+		load_vals.then(function(){
+			console.log('done')
+		})
 	}
+
 }
 
 
@@ -864,58 +908,26 @@ function char_cap(){
 }
 
 
-$(document).ready(function(){
 
-	$('.ignore_btn').click(function(event){
-		event.preventDefault()
-	})
+function init_company(sum=0){
 
-
-
-	$('.ignore_default input').keydown(function(event){
-		var keycode = (event.keyCode ? event.keyCode : event.which);
-
-	    if(keycode == '13'){
-	        event.preventDefault()
-	    }
-	})
-
-	load_past_inputs()
-	init_sub_menu()
-
-	$('.reveal_button').click(function(){
-		$('.reveal').fadeIn('slow')
-		$(this).addClass("hidden")
-	})
-
-	var url_path = window.location.pathname;
-	if (url_path == "/competitors/company/audience"){
-		load_audience()
-	} 
-
-	hover_box()
-	init_creative()
-
-	$(".website").blur(function(){
-		var x = isURL($(this).val())
-		if (x == false){
-			$(this).siblings('.isValid').text("Invalid website")
-		} else {
-			$(this).siblings('.isValid').text(' ')
-		}
-		
-	})
-
-	var perc = []
-	$(".percent").keyup(function(){
-		$('.perc').empty()
-
-		var sum = 0;
+	function get_sum() {
+		let sums = 0
 		$(".percent").each(function(){
-		    sum += +$(this).val();
+			let val = parseInt($(this).val())
+
+		    if (!Number.isNaN(val)){
+		    	sums += val;	
+			}
 		});
 
-		$(".perc").text(sum);
+		return sums
+	}
+
+
+	const sum_and_populate = (sums=0) =>{
+
+		$(".perc").text(sums)
 
 		if (parseInt($('.perc').text()) == 100) {
 			$('.container.counter').addClass('green')
@@ -926,6 +938,76 @@ $(document).ready(function(){
 		} else {
 			$('.container.counter').removeClass('red')
 			$('.container.counter').removeClass('green')
+		}
+
+	}
+
+	const perc_container = `
+		<div style="text-align: center;" class="container counter">
+        	<span style="font-size:120%" class="perc"></span>%
+    	</div>
+    	`
+
+    $('.percent').parent().parent().parent().parent().parent().parent().after(perc_container)
+    
+    sum_and_populate(get_sum())
+
+	$(".percent").keyup(function(){
+		sum_and_populate(get_sum())
+	})
+}
+
+
+
+
+
+
+
+$(document).ready(function(){
+
+	hover_box()
+	//take this out soon
+	init_sub_menu()
+
+
+	var url_path = window.location.pathname;
+	if (url_path == "/competitors/company/audience"){
+		load_past_inputs(load_audience)
+	} else if (url_path == "/create") {
+		init_creative()
+	} else if (url_path == "/competitors/company" || url_path == "/testing") {
+
+		load_past_inputs(function(){
+			load_company()
+		})
+		
+	} else {
+		load_past_inputs()
+	}
+
+	$('.ignore_btn').click(function(event){
+		event.preventDefault()
+	})
+
+	$('.ignore_default input').keydown(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+
+	    if(keycode == '13'){
+	        event.preventDefault()
+	    }
+	})
+
+	$('.reveal_button').click(function(){
+		$('.reveal').fadeIn('slow')
+		$(this).addClass("hidden")
+	})
+
+	$(".website").blur(function(){
+		var x = isURL($(this).val())
+		if (x == false){
+			$(this).siblings('.isValid').text("Invalid website")
+		} else {
+			$(this).siblings('.isValid').text(' ')
 		}
 	})
 
@@ -939,9 +1021,6 @@ $(document).ready(function(){
 	$(function () {
 	  $('[data-toggle="tooltip"]').tooltip()
 	})
-
-	//char_cap()
-
 
 })
 

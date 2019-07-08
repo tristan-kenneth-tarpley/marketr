@@ -4450,6 +4450,10 @@ clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
 .divider {
   margin: 5%;
 }
+.separator {
+  border-bottom: 3px solid #e5e5e5;
+  margin: 5% 0;
+}
 .meter {
   position: absolute;
   bottom: 0;
@@ -4587,6 +4591,30 @@ input::placeholder {
 textarea::placeholder {
   opacity: .4 !important;
 }
+
+.personnel {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-top: 7px solid #62cde0;
+  padding: 3% 5% 5%;
+  border-radius: 5px;
+  margin-left: 1%;
+}
+.personnel_actions_container {
+
+  width: 100%;
+  text-align:center;
+  display:inline-block;
+
+}
+
+
+
+
+
+
+
+
+
 
 
 

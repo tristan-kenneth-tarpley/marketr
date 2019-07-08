@@ -20,7 +20,10 @@ def clean_chars(copy):
 	return copy.replace("`", "'")
 
 def tiles_to_array(copy):
-	return copy.split("^")
+	if copy != None:
+		return copy.split("^")
+	else:
+		return [copy]
 
 def layout(element):
 	same_row = ['100char_limit_max', '30char_limit_max', 'integer', 'currency']
@@ -45,10 +48,12 @@ def form_route_map(title):
 		'salescycle': 'nice',
 		'goals': 'history',
 		'history': 'platforms',
-		'platforms': 'past'
+		'platforms': 'past',
+		'past': 'home'
 	}
-
+	
 	return pages[title]
+
 
 def splash_page(title):
 	splashes = ['init_setup', 'competitors', 'company', 'audience', 'product_2', 'salescycle', 'goals']
@@ -69,6 +74,11 @@ def perc_array(p):
 	names = ['storefront_perc', 'direct_perc', 'online_perc', 'tradeshows_perc', 'other_perc']
 	return names
 
+def call_macro(ref):
+	return 'hi'
+
+
+
 
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active
@@ -81,6 +91,7 @@ app.jinja_env.filters['form_route_map'] = form_route_map
 app.jinja_env.filters['splash_page'] = splash_page
 app.jinja_env.filters['tiles'] = tiles
 app.jinja_env.filters['perc_array'] = perc_array
+app.jinja_env.filters['call_macro'] = call_macro
 
 
 

@@ -2,10 +2,15 @@ from app import app, session
 import time
 import datetime
 import zipcodes
-from data.db import sql_to_df, execute
+from data.db import *
 import pandas as pd
+import math
 
 
+
+def intake_page_map():
+    pages = ['competitors', 'company', 'audience', 'product', 'product_2', 'salescycle', 'goals', 'history', 'platforms', 'past', 'home']
+    return pages
 
 
 def test_query(query, tup):
@@ -49,16 +54,6 @@ def get_num_products(user):
 def get_selling_to(user):
     x = get_trigger_val("selling_to", "company", user)
     return x
-
-def last_modified(user):
-    ts = time.time()
-    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    tup = (st, user)
-    query = """UPDATE dbo.customer_basic
-                SET last_modified = ?
-                WHERE dbo.customer_basic.id = ?;commit;"""
-
-    execute(query, False, tup)
 
 
 def clean_for_display(df):
@@ -115,45 +110,30 @@ def is_started(table, user):
         return False
 
 
+def perc_complete(page, user):
+    pages = intake_page_map()
+
+    def get_perc(target_page):
+        for step in pages:
+            if step == target_page:
+                return math.ceil(int((pages.index(step) + 1)/len(pages) * 100))
+
+    perc = get_perc(page)
+    tup = (perc, user)
+    query = """UPDATE dbo.customer_basic SET perc_complete = ? WHERE id = ?;commit;"""
+    execute(query, False, tup)
+
 def load_last_page(user):
-    steps = {'competitors': 'competitors',
-             'company': 'company',
-             'audience': 'audience',
-             'product': 'product',
-             'product_list': 'product_2',
-             'awareness': 'salescycle',
-             'goals': 'goals',
-             'history': 'history',
-             'platforms': 'platforms',
-             'history_2': 'past',
-             'the end': 'home'}
-    
-    def call_it(name):
-        return steps[name]
+    pages = intake_page_map()
+    tup = (user,)
+    data, cursor = execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
+    data = cursor.fetchall()
+    data = int(data[0][0])
+    data = int(data/(len(pages)-1))
+    cursor.close()
 
-    i = 0
+    return pages[data]
 
-    for step in steps:
-        if step != 'the end':
-            if step == "history_2":
-                query = "SELECT history_freeform FROM dbo.history WHERE customer_id = %d" % (user,)
-                def_query = sql_to_df(query)
-            elif step == "audience":
-                query = "SELECT persona_name FROM dbo.audience WHERE customer_id = %d" % (user,)
-                def_query = sql_to_df(query)
-            else:
-                query = "SELECT customer_id FROM %s WHERE customer_id = %d" % (step, user)
-                def_query = sql_to_df(query)
-            i+=1
-
-            if def_query.empty == True:
-                perc_complete = str(i*10)
-                tup = (perc_complete, user)
-                query = """UPDATE dbo.customer_basic SET perc_complete = ? WHERE id = ?;commit;"""
-                execute(query, False, tup)
-                return call_it(step)
-        else:
-            return 'home'
 
 
 
@@ -305,6 +285,7 @@ def clean_product(user):
         return product_dict
     else:
         return False
+
 
 
 

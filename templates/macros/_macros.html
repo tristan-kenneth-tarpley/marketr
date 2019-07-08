@@ -1,0 +1,546 @@
+<!-- blocks -->
+{% macro render_field(field, currency=False, website=False) %}
+
+<div class="form-group">
+	{% if currency %}
+	<div class="input-group">
+	  <div class="input-group-prepend">
+	    <span class="input-group-text">$</span>
+	  </div>
+	{% endif %}
+	{% if website %}
+	<div class="input-group col-12">
+      <div class="input-group-prepend">
+        <span class="input-group-text">https://</span>
+      </div>
+	{% endif %}
+
+		{{ field(**kwargs)|safe }}
+
+	{% if website %}
+	</div>
+	{% endif %}
+
+	{% if currency %}
+	  <div class="input-group-append">
+	    <span class="input-group-text">.00</span>
+	  </div>
+	</div>
+	{% endif %}
+		{% if field.errors %}
+			<ul class="errors text-danger">
+			{% for error in field.errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+		</dd>
+</div>
+
+{% endmacro %}
+
+
+
+{% macro form_open(page, home, form) %}
+
+	{% if page == 'profile' %}
+		{% set route = 'begin' %}
+	{% else %}
+		{% set route = page %}
+	{% endif %}
+
+	{% if home %}
+
+		{% if route == 'platforms' %}
+			<form class="ignore_default" method="POST" action="{{ url_for(route, coming_home=True, home=True) }}">
+		{% else %}
+			<form class="ignore_default" method="POST" action="{{ url_for(route, coming_home=True) }}">
+		{% endif %}
+
+	{% else %}
+		<form class="ignore_default" method="POST" action="{{ url_for(route) }}">
+	{% endif %}
+
+	{{ form.csrf_token }}
+
+{% endmacro %}
+
+
+
+
+{% macro left_nav(stage, intake) %}
+
+	{% if intake == True %}
+	
+		<div class="sidebar" data-color="orange">
+			<div class="logo">
+			  <a href="https://marketr.life" class="simple-text logo-normal">
+			    <img src="/static/assets/img/marketrwhite.png">
+			  </a>
+			</div>
+			<div class="sidebar-wrapper">
+			  <ul class="nav">
+			    <li class="{{ 0 | check_active(stage) }}">
+			      <a href="/begin">
+			        <i class="now-ui-icons design_app"></i>
+			        <p>Profile</p>
+			      </a>
+			    </li>
+			    <li class="{{ 1 | check_active(stage) }}">
+			      <a href="/competitors">
+			        <i class="now-ui-icons education_atom"></i>
+			        <p>Company Info</p>
+			      </a>
+			    </li>
+			    <li class="{{ 2 | check_active(stage) }}">
+			      <a href="/goals">
+			        <i class="now-ui-icons location_map-big"></i>
+			        <p>Goals</p>
+			      </a>
+			    </li>
+			    <li class="{{ 3 | check_active(stage) }}">
+			      <a href="/history">
+			        <i class="now-ui-icons ui-1_bell-53"></i>
+			        <p>History</p>
+			      </a>
+			    </li>
+			    <li class="{{ 4 | check_active(stage) }}">
+			      <a href="/creative">
+			        <i class="now-ui-icons design_palette"></i>
+			        <p>Creative</p>
+			      </a>
+			    </li>
+			  </ul>
+			</div>
+		</div>
+
+	{% endif %}
+
+{% endmacro %}
+
+
+
+
+
+
+
+{% macro breadcrumb(page, current_stage, view) %}
+
+
+	{% macro formulate_row(link, name, view) %}
+
+	    <li class="breadcrumb-item{% if name == view %} active" aria-current="page"{% else %}"{% endif %}>
+
+	    	<a href="{{ url_for(link) }}">
+	    		{{name}}
+	    	</a>
+
+	    </li>
+
+	{% endmacro %}
+
+
+	{% if current_stage > 0 %}
+
+		 <nav aria-label="breadcrumb" role="navigation">
+		 	<ol class="breadcrumb">
+
+			{% if current_stage == 1 %}
+
+			  {{ formulate_row('competitors', 'competitors', view) }}
+			  {{ formulate_row('company', 'company', view) }}
+			  {{ formulate_row('audience', 'audience', view) }}
+			  {{ formulate_row('product', 'product', view) }}
+			  {{ formulate_row('salescycle', 'salescycle', view) }}
+
+			{% elif current_stage == 2 %}
+
+			  {{ formulate_row('goals', 'goals', view) }}
+
+			{% elif current_stage == 3 %}
+
+			  {{ formulate_row('history', 'history', view) }}
+			  {{ formulate_row('platforms', 'platforms', view) }}
+			  {{ formulate_row('past', 'past', view) }}
+
+			{% elif current_stage == 4 %}
+
+			  {{ formulate_row('creative', 'creative', view) }}
+
+			{% endif %}
+			</ol>
+		</nav>
+
+	{% endif %}
+
+{% endmacro %}
+
+
+
+
+<!-- components -->
+
+
+
+
+{% macro popout(why_or_what, copy, target) %}
+
+{% if why_or_what == "why" %}
+
+<button class="ignore_btn btn btn-neutral" data-toggle="collapse" data-target="#{{target}}" aria-expanded="false" aria-controls="{{target}}">
+	Why?
+
+{% else %}
+<button class="ignore_btn btn btn-icon btn-primary btn-round" data-toggle="collapse" data-target="#{{target}}" aria-expanded="false" aria-controls="{{target}}">
+	<h6><strong>?</strong></h6>
+{% endif %}
+
+</button>
+
+<div class="collapse" id="{{target}}">
+  <div class="card card-body">
+    <p>{{ copy | safe | clean_chars }}</p>
+  </div>
+</div>
+
+{% endmacro %}
+
+
+
+
+{% macro input(name, placeholder, type, format, required, form, route=None) %}
+
+{% if required == 1 %}
+	{% set required_val = 'required' %}
+{% elif required == 0 %}
+	{% set required_val = '' %}
+{% endif %}
+
+{% if format == '100char_limit_max' %}
+	{% set maxlength = 100 %}
+{% elif format == '5000char_limit_max' %}
+	{% set maxlength = 5000 %}
+{% else %}
+	{% set maxlength = 50000 %}
+{% endif %}
+
+{% set class_list = "form-control col-lg-12 col-md-12 col-sm-12" %}
+{% set name = name | safe %}
+
+{% if format == "currency" %}
+	{% set currency = True %}
+{% else %}
+	{% set currency = False %}
+{% endif %}
+
+{% if format == "website" %}
+	{% set website = True %}
+{% else %}
+	{% set website = False %}
+{% endif %}
+
+
+	{{ render_field(form[name], id=name, maxlength=maxlength, placeholder=placeholder, class=class_list, website=website, currency=currency) }}
+
+	{% if type == "number_input" and name != "zip" %}
+		<script type="text/javascript">
+		var cleave{{name}} = new Cleave('#{{ name }}', {
+		    numeral: true,
+		    numeralThousandsGroupStyle: 'thousand'
+		});
+		</script>
+	{% elif type == "auto-complete" %}
+
+		<script type="text/javascript">
+			var options = {
+			  url: "{{ route }}",
+			  getValue: "{{ route | remove_first_char }}",
+			  list: {	
+			    match: {
+			      enabled: true
+			    }
+			  },
+			  theme: "square"
+			};
+			$("#{{name}}").easyAutocomplete(options);
+		</script>
+
+	{% endif %}
+
+
+{% endmacro %}
+
+
+
+
+
+{% macro tiles(h6, p, type, name, file_path, sub_name, form) %}
+
+	{% set h6 = h6 | tiles_to_array %}
+	{% if p != None %}	
+		{% set p = p | tiles_to_array %}
+	{% else %}
+		{% set p = None %}
+	{% endif %}
+
+	{% if h6 | length < 6 and h6 | length > 4 %}
+		{% set large_md_sm_col = 'col-lg-2 col-md-5 col-sm-5 ' %}
+	{% elif h6 | length < 4 and h6 | length > 2 %}
+		{% set large_md_sm_col = 'col-lg-2 col-md-5 col-sm-5 ' %}
+	{% elif h6 | length < 5 and p == None %}
+		{% set large_md_sm_col = 'col-lg-2 col-md-2 col-sm-5 ' %}
+	{% elif h6 | length > 6 %}
+		{% set large_md_sm_col = 'col-lg-3 col-md-3 col-sm-5' %}
+	{% endif %}
+
+	{% macro core(h6, p, tile_type, file_path, sub_name) %}
+
+		<div class="table-responsive
+			{% if tile_type == 'multi' or tile_type == 'perc' %}
+			hb_many
+			{% endif %}
+			hover_box
+			{{ large_md_sm_col }}
+			col-5">
+			<table style="width: 100%; vertical-align: middle;" class="table table-borderless">
+			    <thead style="text-align: center;">
+			      <th style="font-size: 100%;">
+			      	{% if file_path != [None] %}
+
+			      		<img src="{{ file_path }}">
+			      		<h6 class="hidden">{{h6}}</h6>
+
+			      	{% else %} 
+
+			      		<h6>{{h6}}</h6>
+
+			      	{% endif %}
+			      	{% if tile_type == 'multi'%}
+				{# 		<input type='text' class="hidden_input hidden" name="{{ sub_name }}"> #}
+
+						{{ render_field(form[sub_name], class="hidden_input") }}
+			      	{% endif %}
+			      </th>
+			    </thead>
+			    {% if p != None %}
+				    <tbody>
+				    	<tr style="padding: 0% 4%;">
+						    <td>
+						      	<p>{{p}}</p>
+						    </td>
+				    	</tr>
+
+						{% if tile_type == 'perc' %}
+				    	<tr>
+				    		<td>	
+								<input style="text-align:center; width:100%;" type="number" class="percent in_box form-control" placeholder="x%" name="{{sub_name}}">
+				    		</td>
+				    	</tr>
+						{% endif %}
+				    </tbody>
+				{% endif %}
+		    </table>
+	    </div>
+
+	{% endmacro %}
+
+	<div class="row">
+
+
+
+		{% for h in h6 %}
+
+			{% if p != None %}
+				{% set param_p = p[loop.index-1] %}
+			{% else %}
+				{% set param_p = None %}
+			{% endif %}
+
+			{% if file_path != [None] %}
+				{% set path_view = file_path[loop.index-1] %}
+			{% else %}
+				{% set path_view = [None] %}
+			{% endif %}
+
+
+			{% if type == 'tiles_single_select' %}	
+				{{ core(h, param_p, 'single', path_view, sub_name) }}
+			{% elif type == 'tiles_multi_select' %}
+				{{ core(h, param_p, 'multi', path_view, sub_name[loop.index-1]) }}
+			{% elif type == 'tiles_multi_select_with_%' %}
+				{{ core(h, param_p, 'perc', path_view, sub_name[loop.index-1]) }}
+			{% endif %}
+
+		{% endfor %}
+
+		{% if type == 'tiles_single_select' %}
+			{{ render_field(form[name], class="hidden_input") }}
+		{% endif %}
+
+	</div>
+
+{% endmacro %}
+
+
+
+{% macro create_element(why, what, copy, target, p_or_l, label, type, placeholder, format, name, route, h6, p, required, file_path, sub_name, form) %}
+
+
+	{% macro create_label_p(el, type, name=None) %}
+		{% if el != "" and el != None %}		
+			
+			{% if type == 'p' %}
+
+				<p style="display:inline-block">{{el | safe }}</p>
+
+			{% elif type == 'l' %}
+
+				<label style="display:inline-block" for="{{name}}">{{el | safe}}</label>
+
+			{% endif %}
+
+		{% endif %}
+	{% endmacro %}
+
+
+
+	{% if not type | tiles %}
+
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			
+			<div>
+
+				{{ create_label_p(label, 'l', name=name) }}
+				{{ create_label_p(p_label, 'p') }}
+
+				{% if why == 1 %}
+					{{ popout('why', copy, target) }}
+				{% endif %}
+
+				{% if what == 1 %}
+					{{ popout('what', copy, target) }}
+				{% endif %}
+
+			</div>
+
+			{% if type == 'text_input' or type == "number_input" or type == "textarea" or type=='auto-complete' or type=="website" %}
+
+				{{ input(name, placeholder, type, format, required, form, route=route) }}
+
+			 {% endif %}
+
+		</div>
+
+	{% else %}
+
+		<div class="col-lg-12 col-md-12 col-sm-12">
+
+			{{ create_label_p(label, 'l', name=name) }}
+			{{ create_label_p(p_label, 'p') }}
+
+			{% if why == 1 %}
+				{{ popout('why', copy, target) }}
+			{% endif %}
+
+			{% if what == 1 %}
+				{{ popout('what', copy, target) }}
+			{% endif %}
+
+			{{ tiles(h6, p, type, name, file_path, sub_name, form) }}
+
+		</div>
+
+
+
+	{% endif %}
+
+
+
+{% endmacro %}
+
+
+
+
+
+<!-- core build -->
+
+{% macro form_body(questions, form) %}
+
+	{# vars for question builds. Didn't do vars for p rows as they are less common and less configurable. #}
+	{% for question in questions %}
+
+		{% set target = question[0] %}
+		{% set label = question[3] %}
+		{% set why = question[6] %}
+		{% set what = question[8] %}
+		{% if why == 1 %}
+			{% set copy = question[7] %}
+		{% elif what == 1 %}
+			{% set copy = question[9] %}
+		{% endif %}
+		{% set required = question[10] %}
+		{% set p_label = question[13] %}
+		{% set type = question[19] %}
+		{% set placeholder = question[20] %}
+		{% set format = question[21] %}
+		{% set name = question[22] %}
+		{% set route = question[23] %}
+		{% set tile_h6 = question[25] %}
+		{% set tile_p = question[26]  %}
+		{% set divider = question[14] %}
+		{% set file_path = question[27] | tiles_to_array %}
+		{% set sub_name = question[28] | tiles_to_array %}
+
+		{% set next = loop.index %}
+		{% set last = loop.index - 2 %}
+	
+
+		{# check if it's a p row or question row #}
+		{% if divider == 1 %}
+
+			<hr>
+
+		{% else %}
+			{% if label != None %}
+
+				{% if format | layout and type != 'auto-complete' %}
+					{% if not questions[last][21] | layout %}	
+						<div class="row">
+					{% endif %}
+
+						{{ create_element(why, what, copy, target, 'l', label, type, placeholder, format, name, route, '', '', required, file_path, sub_name, form) }}
+
+					{% if not questions[next][21] | layout %}
+						</div>
+					{% endif %}
+
+				{% else %}
+					<div class="row">
+						{{ create_element(why, what, copy, target, 'l', label, type, placeholder, format, name, route, tile_h6, tile_p, required, file_path, sub_name, form) }}
+					</div>
+
+				{% endif %}
+
+
+			{% else %}
+
+				<div class="row">
+
+					{{ create_element(why, what, question[9], question[0],'p', label, question[19], question[20], question[21], question[22], '', '', file_path, sub_name, form) }}
+					
+				</div>
+
+			{% endif %}
+		{% endif %}
+
+	{% endfor %}
+
+{% endmacro %}
+
+
+
+
+
+
+
+

@@ -7,37 +7,23 @@ from bleach import clean
 import json
 
 
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("You need to login first!")
-            return redirect(url_for('login_page'))
-
-    return wrap
-
 @app.route('/areas', methods=['GET'])
 def cities():
-    if request.method == "GET":
-        with open('data/areas.json') as json_file:  
-            data = json.load(json_file)
-            return json.dumps(data)
+    with open('data/areas.json') as json_file:  
+        data = json.load(json_file)
+        return json.dumps(data)
 
 @app.route('/industries', methods=['GET'])
 def industries():
-    if request.method == 'GET':
-        with open('data/industries.json') as json_file:
-            data = json.load(json_file)
-            return json.dumps(data)
+    with open('data/industries.json') as json_file:
+        data = json.load(json_file)
+        return json.dumps(data)
 
 @app.route('/stages', methods=['GET'])
 def stages():
-    if request.method == 'GET':
-        with open('data/salescycle.json') as json_file:
-            data = json.load(json_file)
-            return json.dumps(data)
+    with open('data/salescycle.json') as json_file:
+        data = json.load(json_file)
+        return json.dumps(data)
 
 def get_first_audience(user):
     try:
@@ -76,48 +62,31 @@ def splash():
 
 
 
+@app.route('/begin', methods=['GET', 'POST'])
+@login_required
+def begin():    
+    form = forms.Profile()
+    
+    if request.method == 'POST' and form.validate_on_submit():
+        # return IntakeService.begin(form.data, session['user'])
+        return redirect(url_for('competitors'))
+    
+    page = IntakeViewModel(session['user'], session['user_name'], title='profile')
+    return ViewFuncs.view_page(form=form, next_page='competitors', page=page, coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
+
+
 
 @app.route('/competitors', methods=['POST','GET'])
 @login_required
 def competitors():
-    if request.form:
-        # POST_website = clean(request.form['website'])
-        POST_first_name = clean(request.form['first_name'])
-        POST_last_name = clean(request.form['last_name'])
-        POST_company_name = clean(request.form['company_name'])
-        POST_revenue = int(clean(request.form['revenue']).replace(",",""))
-        POST_zip = clean(request.form['zip'])
-        POST_stage = clean(request.form['stage'])
-        POST_employees = int(clean(request.form['employees']).replace(",",""))
+    form = forms.Competitors()
+    if form.validate_on_submit() and request.method == 'POST':
+        IntakeService.competitors(form.data, session['user'])
+        return redirect(url_for('company'))
 
-        try:
-            zips = zipcodes.matching(POST_zip)
-            POST_city = zips[0]['city']
-            POST_state = zips[0]['state']
-        except:
-            POST_city = "not defined"
-            POST_state = "not defined"
-            POST_zip = "00000"
+    page = IntakeViewModel(session['user'], session['user_name'], title='competitors')
 
-        tup = (POST_first_name, POST_last_name, POST_company_name, POST_revenue, POST_city, POST_state, POST_stage, POST_employees, POST_zip, session['user'])
-
-        query = """UPDATE dbo.customer_basic 
-                    SET first_name = ?, last_name = ?, company_name = ?, revenue = ?, city = ?, state = ?, stage = ?, employees = ?, zip = ?
-                    WHERE dbo.customer_basic.ID = ?; commit;"""
-
-        if POST_first_name:
-            execute(query, False, tup)
-
-            last_modified(str(session['user']))
-
-    if request.args.get('splash') and not request.args.get('coming_home'):
-        return render_template('intake/competitors.html')
-    elif request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    elif not request.args.get('splash'):
-        return render_template('intake/competitors.html')
-    else:
-        return redirect(url_for("splash", next_step="competitors"))
+    return ViewFuncs.view_page(form=form, page=page, next_page='company', coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
 
 
 
@@ -126,42 +95,15 @@ def competitors():
 @app.route('/competitors/company', methods=['POST', 'GET'])
 @login_required
 def company():
-    if request.form:
-        POST_industry = clean(request.form['industry'])
-        POST_comp_1_name = clean(request.form['comp_1_name'])
-        POST_comp_1_website = clean(request.form['comp_1_website'])
-        POST_comp_1_type = clean(request.form['comp_1_type'])
-        POST_comp_2_name = clean(request.form['comp_2_name'])
-        POST_comp_2_website = clean(request.form['comp_2_website'])
-        POST_comp_2_type = clean(request.form['comp_2_type'])
+    form = forms.Company()
 
-        if is_started('competitors', session['user']):
-            tup = (session['user'], POST_industry, POST_comp_1_name, POST_comp_1_website, POST_comp_1_type, POST_comp_2_name, POST_comp_2_website, POST_comp_2_type, session['user'])
-            query = """UPDATE dbo.competitors
-                        SET customer_id = ?, industry = ?, comp_1_name = ?, comp_1_website = ?, comp_1_type = ?, comp_2_name = ?, comp_2_website = ?, comp_2_type = ?
-                        WHERE customer_id = ?;commit;"""
-        else:           
-            tup = (session['user'], POST_industry, POST_comp_1_name, POST_comp_1_website, POST_comp_1_type, POST_comp_2_name, POST_comp_2_website, POST_comp_2_type)     
-            query = """INSERT INTO dbo.competitors 
-                    (customer_id, industry, comp_1_name, comp_1_website, comp_1_type, comp_2_name, comp_2_website, comp_2_type)
-                    VALUES (?,?,?,?,?,?,?,?);commit;""" 
-        
+    if form.validate_on_submit() and form.validate():
+        IntakeService.company(form.data, session['user'])
+        return redirect(url_for('audience'))
 
-        if POST_comp_1_name:
-            execute(query, False, tup)
-            last_modified(str(session['user']))
+    page = IntakeViewModel(session['user'], session['user_name'], title='company')
 
-
-
-    if request.form:
-        if request.args.get('splash'):
-            return render_template('intake/company.html')
-        elif request.args.get('coming_home'):
-            return redirect(url_for('home'))
-        else:
-            return redirect(url_for("splash", next_step="company"))
-    else:
-        return render_template('intake/company.html')
+    return ViewFuncs.view_page(form=form, page=page, next_page='audience', coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
 
 
 
@@ -188,33 +130,6 @@ def removePersona(persona_id):
 @app.route('/competitors/company/audience', methods=['POST', 'GET'])
 @login_required
 def audience():
-    if request.form:
-        POST_selling_to = clean(request.form['selling_to'])
-        POST_biz_model = clean(request.form['biz_model'])
-        POST_storefront_perc = clean(request.form['storefront_perc'])
-        POST_direct_perc = clean(request.form['direct_perc'])
-        POST_online_perc = clean(request.form['online_perc'])
-        POST_tradeshows_perc = clean(request.form['tradeshows_perc'])
-        POST_other_perc = clean(request.form['other_perc'])
-        POST_freeform = clean(request.form['rev_channel_freeform'])
-        POST_freeform = POST_freeform.replace("'", "")
-        POST_freeform = POST_freeform.replace('"', "")
-
-
-
-        if is_started('company', session['user']):
-            tup = (session['user'], POST_selling_to, POST_biz_model, POST_freeform, POST_storefront_perc, POST_direct_perc, POST_online_perc, POST_tradeshows_perc, POST_other_perc, session['user'])
-            query = """UPDATE dbo.company
-                        SET customer_id = ?, selling_to = ?, biz_model = ?, rev_channel_freeform = ?, storefront_perc = ?, direct_perc = ?, online_perc = ?, tradeshows_perc = ?, other_perc = ?
-                        WHERE customer_id = ?;commit;"""
-        else:             
-            tup = (session['user'], POST_selling_to, POST_biz_model, POST_freeform, POST_storefront_perc, POST_direct_perc, POST_online_perc, POST_tradeshows_perc, POST_other_perc)
-            query = """INSERT INTO dbo.company
-                    (customer_id, selling_to, biz_model, rev_channel_freeform, storefront_perc, direct_perc, online_perc, tradeshows_perc, other_perc)
-                    VALUES (?,?,?,?,?,?,?,?,?);commit;"""
-
-        execute(query, False, tup)
-        last_modified(str(session['user']))
 
     if 'persona_id' in request.args:
         session['persona_id'] = request.args.get('persona_id')
