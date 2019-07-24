@@ -19,8 +19,9 @@ def industries():
         data = json.load(json_file)
         return json.dumps(data)
 
-@app.route('/stages', methods=['GET'])
-def stages():
+
+@app.route('/salescycle', methods=['GET'])
+def get_salescycle():
     with open('data/salescycle.json') as json_file:
         data = json.load(json_file)
         return json.dumps(data)
@@ -43,23 +44,15 @@ def get_first_audience(user):
 
 @app.route('/splash', methods=['POST', 'GET'])
 def splash():
-    prev_step = request.args.get('prev_step')
-    next_step = request.args.get('next_step')
-    next_step = clean(next_step)
-    redirect = request.args.get('redirect')
-    tup = (next_step,)
-    query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
-    data, cursor = execute(query, True, tup)
-    heading, paragraph = cursor.fetchone()
-    heading = heading.replace("`", "'")
-    paragraph = paragraph.replace("`", "'")
 
-    cursor.close()
-    if redirect:
-        return render_template('intake/splash.html', redirect=redirect, prev_step=prev_step, next_step=next_step, heading=heading, paragraph=paragraph)
-    else:
-        return render_template('intake/splash.html', next_step=next_step, heading=heading, paragraph=paragraph)
+    splash_page = SplashViewModel(next_step=request.args.get('next_step'))
 
+    return render_template('intake/splash.html',
+                            redirect=splash_page.redirect,
+                            prev_step=splash_page.prev_step,
+                            next_step=splash_page.next_step,
+                            heading=splash_page.heading,
+                            paragraph=splash_page.paragraph)
 
 
 @app.route('/begin', methods=['GET', 'POST'])
@@ -67,12 +60,19 @@ def splash():
 def begin():    
     form = forms.Profile()
     
-    if request.method == 'POST' and form.validate_on_submit():
-        # return IntakeService.begin(form.data, session['user'])
+    # if request.method == 'POST':
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        # return json.dumps(form.data)
+        IntakeService.begin(form.data, session['user'])
         return redirect(url_for('competitors'))
-    
-    page = IntakeViewModel(session['user'], session['user_name'], title='profile')
-    return ViewFuncs.view_page(form=form, next_page='competitors', page=page, coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
+
+    return ViewFuncs.view_page(user=session['user'],
+                            user_name=session['user_name'],
+                            form=form,
+                            view_page='profile',
+                            next_page='competitors',
+                            coming_home=request.args.get('coming_home'),
+                            splash=request.args.get('splash'))
 
 
 
@@ -80,15 +80,18 @@ def begin():
 @login_required
 def competitors():
     form = forms.Competitors()
-    if form.validate_on_submit() and request.method == 'POST':
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
         IntakeService.competitors(form.data, session['user'])
         return redirect(url_for('company'))
 
-    page = IntakeViewModel(session['user'], session['user_name'], title='competitors')
-
-    return ViewFuncs.view_page(form=form, page=page, next_page='company', coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
-
-
+    return ViewFuncs.view_page(user=session['user'],
+                            user_name=session['user_name'],
+                            form=form,
+                            view_page='competitors',
+                            next_page='company',
+                            coming_home=request.args.get('coming_home'),
+                            splash=request.args.get('splash'))
 
 
 
@@ -97,407 +100,151 @@ def competitors():
 def company():
     form = forms.Company()
 
-    if form.validate_on_submit() and form.validate():
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
         IntakeService.company(form.data, session['user'])
         return redirect(url_for('audience'))
 
-    page = IntakeViewModel(session['user'], session['user_name'], title='company')
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='company',
+                                next_page='audience',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash'))
 
-    return ViewFuncs.view_page(form=form, page=page, next_page='audience', coming_home=request.args.get('coming_home'), splash=request.args.get('splash'))
 
-
-
-@app.route("/remove/<persona_id>", methods=['GET', 'POST'])
-@login_required
-def removePersona(persona_id):
-    query = "DELETE FROM dbo.audience WHERE audience_id=? and customer_id=?;commit;"
-    tup = (persona_id, session['user'])
-
-    execute(query, False, tup)
-
-    return_id = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
-    tup = (session['user'])
-    data, cursor = execute(return_id, True, tup)
-
-    data = cursor.fetchone()
-    return_persona = data[0]
-    cursor.close()
-
-    return redirect(url_for('audience', redirect=True, persona_id=return_persona))
 
 
 
 @app.route('/competitors/company/audience', methods=['POST', 'GET'])
 @login_required
 def audience():
+    form = forms.Audience()
 
-    if 'persona_id' in request.args:
-        session['persona_id'] = request.args.get('persona_id')
-    else:
-        session['persona_id'] = None
+    if 'view_id' not in request.args:
+        view_id = IntakeService.get_persona(session['user'])
+        return redirect(url_for('audience', view_id=view_id, splash=False))
 
-    if 'redirect' in request.args:
 
-        names_and_ids = get_first_audience(session['user'])
-        if names_and_ids == False:
-        
-            init_audience(session['user']) 
-            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
-            tup = (session['user'],)
-            first_persona, cursor = execute(query, True, tup)
-            first_persona = cursor.fetchone()
-            cursor.close()
-
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        IntakeService.audience(form.data, session['user'], request.args.get('view_id'))
+  
+        if request.form['submit_button'] == '+ save and add another audience':
+            next_id = IntakeService.get_persona(session['user'])
+            return redirect(url_for('audience', view_id=next_id, splash=False))
         else:
-            tup = (session['user'],)
-            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
-            first_persona, cursor = execute(query, True, tup)
-            first_persona = cursor.fetchone()
-            first_persona = first_persona[0]
-            cursor.close()
+            return redirect(url_for('product'))
 
 
-        me = User(session['user'])
-        page = 'audience'
-        hide_1 = me.hide(page, 1, 'selling_to')
-        
-        return render_template('intake/audience.html', persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='audience',
+                                next_page='product',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash')
+                            )
 
-    elif request.args.get('coming_home'):
-        return redirect(url_for('home'))
 
-    elif not request.args.get('splash'):
-        names_and_ids = get_first_audience(session['user'])
-        if names_and_ids == False:
-       
-            init_audience(session['user']) 
-            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
-            tup = (session['user'],)
-            first_persona, cursor = execute(query, True, tup)
-            first_persona = cursor.fetchone()
-            cursor.close()
-        else:
-            tup = (session['user'],)
-            query = "SELECT TOP 1 audience_id FROM dbo.audience WHERE customer_id = ?"
-            first_persona, cursor = execute(query, True, tup)
-            first_persona = cursor.fetchone()
-            first_persona = first_persona[0]
-            cursor.close()
+@app.route('/container', methods=['GET'])
+@login_required
+def container():
+    print(request.args.get('page'))
+    container = ContainerViewModel(page=request.args.get('page'), user=session['user'])
+    return_data = container.GetData()
 
-        me = User(session['user'])
-        page = 'audience'
-        hide_1 = me.hide(page, 1, 'selling_to')
-        session['first_persona'] = first_persona
-        
-        return render_template('intake/audience.html', first_persona=session['first_persona'], persona_id=first_persona, names_and_ids = names_and_ids, hide_1=hide_1)
-    else:
-        return redirect(url_for("splash", next_step="audience", prev_step="company", redirect=True))
+    return json.dumps(return_data)
 
 
 
-
-
-@app.route('/competitors/company/audience/product', methods=['POST', 'GET'])
+@app.route('/competitors/company/audience/product', methods=['GET', 'POST'])
 @login_required
 def product():
-    if request.form:
-
-        POST_gender = clean(request.form['gender'])
-        POST_age_group_1 = clean(request.form['age_group_1'])
-        POST_age_group_2 = clean(request.form['age_group_2'])
-        POST_age_group_3 = clean(request.form['age_group_3'])
-        POST_age_group_4 = clean(request.form['age_group_4'])
-        POST_age_group_5 = clean(request.form['age_group_5'])
-        POST_age_group_6 = clean(request.form['age_group_6'])
-        POST_age_group_7 = clean(request.form['age_group_7'])
-        POST_age_group_8 = clean(request.form['age_group_8'])
-        POST_location = clean(request.form['location'])
-        POST_why = clean(request.form['why'])
-        POST_before_1 = clean(request.form['before_1'])
-        POST_before_2 = clean(request.form['before_2'])
-        POST_before_3 = clean(request.form['before_3'])
-        POST_before_4 = clean(request.form['before_4'])
-        POST_before_5 = clean(request.form['before_5'])
-        POST_before_6 = clean(request.form['before_6'])
-        POST_before_7 = clean(request.form['before_7'])
-        POST_before_8 = clean(request.form['before_8'])
-        POST_before_9 = clean(request.form['before_9'])
-        POST_before_10 = clean(request.form['before_10'])
-        POST_before_freeform = clean(request.form['before_freeform'])
-        POST_before_freeform = POST_before_freeform.replace("'", "")
-        POST_before_freeform = POST_before_freeform.replace('"', "")
-        POST_after_1 = clean(request.form['after_1'])
-        POST_after_2 = clean(request.form['after_2'])
-        POST_after_3 = clean(request.form['after_3'])
-        POST_after_4 = clean(request.form['after_4'])
-        POST_after_5 = clean(request.form['after_5'])
-        POST_after_6 = clean(request.form['after_6'])
-        POST_after_7 = clean(request.form['after_7'])
-        POST_after_8 = clean(request.form['after_8'])
-        POST_after_9 = clean(request.form['after_9'])
-        POST_after_10 = clean(request.form['after_10'])
-        POST_after_freeform = clean(request.form['after_freeform'])
-        POST_after_freeform = POST_after_freeform.replace('"', "")
-        POST_after_freeform = POST_after_freeform.replace("'", "")
-        POST_formality = clean(request.form['formality'])
-        POST_buying_for = clean(request.form['buying_for'])
-        POST_tech_savvy = clean(request.form['tech_savvy'])
-        POST_decision_making = clean(request.form['decision_making'])
-        POST_decision_making = POST_decision_making.replace("'", "")
-        POST_details = clean(request.form['details'])
-        POST_motive = clean(request.form['motive'])
-        POST_persona_name = clean(request.form['persona_name'])
-
-        session['hide'] = False
-
-
-        if request.form['submit_button'] == '+ ADD ANOTHER PERSONA':
-            init_audience(session['user'])
-            first_tup = (session['user'],)
-            query = "SELECT TOP 2 audience_id FROM dbo.audience WHERE customer_id = ? ORDER BY audience_id desc"
-            data, cursor = execute(query, True, first_tup)
-            data = cursor.fetchall()
-            next_audience_id = data[0][0]
-            current_audience_id = data[1][0]
-            session['current_audience_id'] = current_audience_id
-            cursor.close()
-            tup = (POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, session['user'], POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], current_audience_id)
-            update_query = """UPDATE dbo.audience
-                        SET formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, customer_id = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
-                        WHERE customer_id = ? AND audience_id = ?; commit;"""
- 
-            session['hide'] = True
-
-            execute(update_query, False, tup)
-
-            return redirect(url_for('audience', redirect=True, hide=session['hide'], persona_id = next_audience_id))
-
-            # if 'persona_id' not in request.args:
-            #     persona_id = session['first_persona']
-            # else:
-            #     persona_id = request.args('persona_id')
-
-            # tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], persona_id)
-            # query = """UPDATE dbo.audience
-            #             SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
-            #             WHERE customer_id = ? AND audience_id = ?; commit;"""
-
-            # execute(query, False, tup)
-            # last_modified(str(session['user']))
-
-        if session['persona_id'] != None:
-            persona_id = session['persona_id']
-        else:
-            persona_id = session['first_persona']
-
-        tup = (session['user'], POST_formality, POST_buying_for, POST_tech_savvy, POST_decision_making, POST_details, POST_motive, POST_gender, POST_age_group_1, POST_age_group_2, POST_age_group_3, POST_age_group_4, POST_age_group_5, POST_age_group_6, POST_age_group_7, POST_age_group_8, POST_location, POST_why, POST_before_1, POST_before_2, POST_before_3, POST_before_4, POST_before_5, POST_before_6, POST_before_7, POST_before_8, POST_before_9, POST_before_10, POST_before_freeform, POST_after_1, POST_after_2, POST_after_3, POST_after_4, POST_after_5, POST_after_6, POST_after_7, POST_after_8, POST_after_9, POST_after_10, POST_after_freeform, POST_persona_name, session['user'], persona_id)
-        query = """UPDATE dbo.audience
-                    SET customer_id =  ?, formality = ?, buying_for = ?, tech_savvy = ?, decision_making = ?, details = ?, motive = ?, gender = ?, age_group_1 = ?, age_group_2 = ?, age_group_3 = ?, age_group_4 = ?, age_group_5 = ?, age_group_6 = ?, age_group_7 = ?, age_group_8 = ?, location = ?, why = ?, before_1 = ?, before_2 = ?, before_3 = ?, before_4 = ?, before_5 = ?, before_6 = ?, before_7 = ?, before_8 = ?, before_9 = ?, before_10 = ?, before_freeform = ?, after_1 = ?, after_2 = ?, after_3 = ?, after_4 = ?, after_5 = ?, after_6 = ?, after_7 = ?, after_8 = ?, after_9 = ?, after_10 = ?, after_freeform = ?, persona_name = ?
-                    WHERE customer_id = ? AND audience_id = ?; commit;"""
-        execute(query, False, tup)
-        last_modified(str(session['user']))
-
-    me = User(session['user'])
-    page = 'product'
-
-    # masks = me.branch('mask', page, 'biz_model')
-    inds, hides = me.branch('hide', page, 'biz_model')
-    me.set_biz_model()
-
-    hide_1 = dirty_mask_handler(hides, me.biz_model, 1)
-    hide_2 = dirty_mask_handler(hides, me.biz_model, 2)
-    hide_8 = dirty_mask_handler(hides, me.biz_model, 8)
-    hide_9 = dirty_mask_handler(hides, me.biz_model, 9)
-    hide_10 = dirty_mask_handler(hides, me.biz_model, 10)
-    hide_11 = dirty_mask_handler(hides, me.biz_model, 11)
-    hide_12 = dirty_mask_handler(hides, me.biz_model, 12)
+    form = forms.Product()
     
-    mask_3, mask_3_bool = me.mask(page, 3, 'biz_model')
-    # mask_3, mask_3_bool = ('hi', True)
-    mask_4, mask_4_bool = me.mask(page, 4, 'biz_model')
-    # mask_4, mask_4_bool = ('hi', True)
-    mask_5, mask_5_bool = me.mask(page, 5, 'biz_model')
-    # mask_5, mask_5_bool = ('hi', True)
-    mask_6, mask_6_bool = me.mask(page, 6, 'biz_model')
-    # mask_6, mask_6_bool = ('hi', True)
-    mask_7, mask_7_bool = me.mask(page, 7, 'biz_model')
-    # mask_7, mask_7_bool = ('hi', True)
-    mask_12, mask_12_bool = me.mask(page, 12, 'biz_model')
-    # mask_12, mask_12_bool = ('hi', True)
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        IntakeService.product(form.data, session['user'])
+        return redirect(url_for('product_2'))
 
-    if 'redirect' in request.args:
-        return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool)
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='product',
+                                next_page='product_2',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash'))
 
-    elif request.args.get('coming_home'):
-        return redirect(url_for('home'))
 
-    elif not request.args.get('splash'):
-        return render_template('intake/product.html', hide_1=hide_1, hide_2=hide_2, mask_3=mask_3, mask_3_bool=mask_3_bool, mask_4=mask_4, mask_5=mask_5, mask_6=mask_6, mask_7=mask_7, mask_7_bool=mask_7_bool, hide_8=hide_8, hide_9=hide_9, hide_10=hide_10, hide_11=hide_11, mask_12=mask_12,mask_12_bool=mask_12_bool) 
+@app.route('/branch_data', methods=['GET'])
+@login_required
+def branch_data():
+    query = """
+            SELECT
+                co.selling_to,
+                co.biz_model
+            FROM company as co
 
-    else:
-        return redirect(url_for("splash", next_step="product", prev_step="product", redirect=True))
+            WHERE co.customer_id = %s
+            """ % (session['user'],)
+    data,cursor = execute(query, True, ())
+    data = cursor.fetchone()
+    cursor.close()
+
+    return_data = {
+        'selling_to': str(data[0]),
+        'biz_model': str(data[1])
+    }
+
+    return json.dumps(return_data)
 
 
 
 @app.route('/competitors/company/audience/product/product_2', methods=['POST', 'GET'])
 @login_required
 def product_2():
-    if request.form:
-        POST_gen_description = clean(request.form['gen_description'])
-        POST_gen_description = POST_gen_description.replace("'", "")
-        POST_gen_description = POST_gen_description.replace('"', "")
-        POST_quantity = clean(request.form['quantity'])
-        POST_link = clean(request.form['link'])
-        POST_segment_1 = clean(request.form['segment_1'])
-        POST_segment_2 = clean(request.form['segment_2'])
-        POST_segment_3 = clean(request.form['segment_3'])
-        POST_segment_4 = clean(request.form['segment_4'])
-        POST_segment_5 = clean(request.form['segment_5'])
-        POST_segment_6 = clean(request.form['segment_6'])
-        POST_segment_7 = clean(request.form['segment_7'])
-        POST_segment_8 = clean(request.form['segment_8'])
-        POST_segment_9 = clean(request.form['segment_9'])
-        POST_segment_10 = clean(request.form['segment_10'])
-        POST_source_1 = clean(request.form['source_1'])
-        POST_source_2 = clean(request.form['source_2'])
-        POST_source_3 = clean(request.form['source_3'])
-        POST_source_4 = clean(request.form['source_4'])
-        POST_source_freeform = clean(request.form['source_freeform'])
-        POST_source_freeform = POST_source_freeform.replace("'", "")
-        POST_source_freeform = POST_source_freeform.replace('"', "")
-        product_len = int(request.form['product_len'])
+    form = forms.Product_2()
 
+    if 'view_id' not in request.args:
+        view_id = IntakeService.get_product(session['user'])
+        return redirect(url_for('product_2', view_id=view_id, splash=False))
 
-        if is_started('product', session['user']):
-            tup = (POST_gen_description,POST_quantity,POST_link,POST_segment_1,POST_segment_2,POST_segment_3,POST_segment_4,POST_segment_5,POST_segment_6,POST_segment_7,POST_segment_8,POST_segment_9,POST_segment_10,POST_source_1,POST_source_2,POST_source_3,POST_source_4,POST_source_freeform,session['user'])
-            query = """UPDATE dbo.product
-                        SET gen_description = ?,quantity = ?, link = ?,segment_1 = ?,segment_2 = ?,segment_3 = ?,segment_4 = ?,segment_5 = ?,segment_6 = ?,segment_7 = ?,segment_8 = ?,segment_9 = ?,segment_10 = ?,source_1 = ?,source_2 = ?,source_3 = ?,source_4 = ?,source_freeform = ?
-                        WHERE customer_id = ?"""
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        IntakeService.product_2(form.data, session['user'], request.args.get('view_id'))
+        
+        if request.form['submit_button'] == 'update next product':
+            next_id = IntakeService.get_product(session['user'], request.args.get('view_id'))
+            return redirect(url_for('product_2', view_id=next_id, splash=False))
         else:
-            tup = (session['user'], POST_gen_description, POST_quantity, POST_link, POST_segment_1, POST_segment_2, POST_segment_3, POST_segment_4, POST_segment_5, POST_segment_6, POST_segment_7, POST_segment_8, POST_segment_9, POST_segment_10, POST_source_1, POST_source_2, POST_source_3, POST_source_4, POST_source_freeform)
-            query = """INSERT INTO dbo.product
-                    (customer_id,gen_description,quantity,link,segment_1,segment_2,segment_3,segment_4,segment_5,segment_6,segment_7,segment_8,segment_9,segment_10,source_1,source_2,source_3,source_4,source_freeform)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);commit;"""
+            return redirect(url_for('salescycle'))
 
-        if POST_link:
-            execute(query, False, tup)
-            last_modified(str(session['user']))
-
-
-        if request.form['product_name[1]'] != "":
-            i = 1
-            while i <= product_len:
-                product_name = request.form['product_name[' + str(i) + ']']
-                p_category = request.form['p_category[' + str(i) + ']']
-                cogs = request.form['cogs[' + str(i) + ']']
-                sales_price = request.form['sales_price[' + str(i) + ']']
-                price_model = request.form['price_model[' + str(i) + ']']
-                qty_sold = request.form['qty_sold[' + str(i) + ']']
-                est_unique_buyers = request.form['est_unique_buyers[' + str(i) + ']']
-                customer_id = session['user']
-
-                tup = (product_name, customer_id, customer_id, product_name, p_category, cogs, sales_price, price_model, qty_sold, est_unique_buyers)
-                query = """IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
-                                INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
-                print(test_query(query, tup))
-
-                execute(query, False, tup)
-
-                i += 1
-
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        me = User(session['user'])
-        me.set_biz_model()
-        if me.biz_model != 'Affiliate' and me.biz_model != 'Media Provider':
-            page = 'product_2'
-
-            hide_1 = me.hide(page,1, 'biz_model')
-            hide_2 = me.hide(page,2, 'biz_model')
-
-            return render_template('intake/product_2.html', hide_1=hide_1, hide_2=hide_2)
-        else:
-            return redirect(url_for('splash', next_step='salescycle'))
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='product_2',
+                                next_page='salescycle',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash'))
 
 
-@app.route('/submit_product', methods=['POST', 'GET'])
-@login_required
-def submit_product():
-    customer_id = session['user']
-    name = request.args.get('name')
-    category = request.args.get('category')
-    cogs = request.args.get('cogs')
-    sales_price = request.args.get('sales_price')
-    price_model = request.args.get('price_model')
-    qty_sold = request.args.get('qty_sold')
-    est_unique_buyers = request.args.get('est_unique_buyers')
 
-    tup = (name, customer_id, customer_id, name, category, cogs, sales_price, price_model, qty_sold, est_unique_buyers)
-    query = """BEGIN TRANSACTION; IF NOT EXISTS (SELECT name FROM dbo.product_list WHERE name = ? AND customer_id = ?)
-                            INSERT INTO dbo.product_list (customer_id,name,category,cogs,sales_price,price_model,qty_sold,est_unique_buyers) VALUES (?,?,?,?,?,?,?,?);commit;"""
-
-    execute(query, False, tup)
-    last_modified(session['user'])
-
-    return query
-
-
-@app.route('/removeProduct/<pid>')
-@login_required
-def removeProduct(pid):
-    query = "DELETE FROM dbo.product_list WHERE p_id=? and customer_id=?"
-    tup = (pid, session['user'])
-
-    execute(query, False, tup)
-    return redirect(url_for('home'))
-
-
-@app.route('/load_product_list', methods=['GET', 'POST'])
-@login_required
-def load_product_list():
-    query = "SELECT p_id, name, category FROM dbo.product_list WHERE customer_id = " + str(session['user'])
-
-    results = sql_to_df(query)
-    results = results.to_json(orient='records')
-
-
-    return results
-
-
-@app.route('/product_submit', methods=['POST'])
-def product_submit():
-
-    # if request.method == 'POST':
-    POST_complexity = request.form['complexity']
-    POST_price = request.form['price']
-    POST_product_or_service = request.form['product_or_service']
-    POST_frequency_of_use = request.form['frequency_of_use']
-    POST_frequency_of_purchase = request.form['frequency_of_purchase']
-    POST_value_prop = request.form['value_prop']
-    POST_warranties_or_guarantee = request.form['warranties_or_guarantee']
-    POST_warranties_or_guarantee_freeform = clean(request.form['warranties_or_guarantee_freeform'])
-    POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace("'", "")
-    POST_warranties_or_guarantee_freeform = POST_warranties_or_guarantee_freeform.replace('"', "")
-    POST_num_skus = request.form['num_skus']
-    POST_level_of_customization = request.form['level_of_customization']
-    POST_pid = str(request.form['p_id'])
-    tup = (POST_complexity, POST_price, POST_product_or_service, POST_frequency_of_use, POST_frequency_of_purchase, POST_value_prop, POST_warranties_or_guarantee, POST_warranties_or_guarantee_freeform, POST_num_skus, POST_level_of_customization, POST_pid)
-    query = """UPDATE dbo.product_list
-                SET complexity = ?, price = ?, product_or_service = ?, frequency_of_use = ?, frequency_of_purchase = ?, value_prop = ?, warranties_or_guarantee = ?, warranty_guarantee_freeform = ?, num_skus = ?, level_of_customization = ?
-                WHERE p_id = ?;commit;"""
-
-    execute(query, False, tup)
-    last_modified(str(session['user']))
-
-    test_query(query, tup)
-
-    return "success"
 
 @app.route('/competitors/company/audience/product/product_2/salescycle', methods=['GET', 'POST'])
 @login_required
 def salescycle():
-    return render_template('intake/salescycle.html')
+
+    form = forms.SalesCycle()
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        IntakeService.salescycle(form.data, session['user'])
+        return redirect(url_for('nice'))
+
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='salescycle',
+                                next_page='nice',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash'))
 
 
 
@@ -505,84 +252,45 @@ def salescycle():
 @app.route('/nice', methods=['POST', 'GET'])
 @login_required
 def nice():
-    d = request.form
-    d = d.to_dict()
-    for key, value in d.items():
-        if value != "":
-            if key[:9] == "awareness":
-                stage = "awareness"
-                
-            elif key[:10] == "evaluation":
-                stage = "evaluation"
-                
-            elif key[:10] == "conversion":
-                stage = "conversion"
-                
-            elif key[:9] == "retention":
-                stage = "retention"
-                
-            elif key[:8] == "referral":
-                stage = "referral"
-            tup = (session['user'], value, session['user'], value)
-            query = """IF NOT EXISTS (SELECT tactic from dbo.%s WHERE customer_id = ? AND tactic = ?)
-            INSERT INTO dbo.%s (customer_id, tactic) values (?, ?);commit;""" % (stage, stage)
-
-            test_query(query, tup)
-            execute(query, False, tup)
-
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        return redirect(url_for('splash', next_step='goals'))
-
-
-
-
+    return redirect(url_for('splash', next_step='goals'))
 
 
 
 #############intake/2###############
 
-@app.route('/goals')
+@app.route('/goals', methods=['GET', 'POST'])
 @login_required
 def goals():
-    me = User(session['user'])
-    page = 'goals'
-    hide_1 = me.hide(page, 1, 'biz_model')
+
+    form = forms.Goals()
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        IntakeService.goals(form.data, session['user'])
+        return redirect(url_for('history'))
+
+    return ViewFuncs.view_page(user=session['user'],
+                                user_name=session['user_name'],
+                                form=form,
+                                view_page='goals',
+                                next_page='history',
+                                coming_home=request.args.get('coming_home'),
+                                splash=request.args.get('splash'))
 
 
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        return render_template('intake/2/goals.html', hide_1=hide_1)
+
 
 @app.route('/history', methods=['GET','POST'])
 @login_required
 def history():
-    if request.form:
-        POST_goal = clean(request.form['goal'])
-        POST_current_avg = clean(request.form['current_avg'])
-        POST_target_avg = clean(request.form['target_avg'])
-        POST_timeframe = clean(request.form['timeframe'])
+    form = forms.History()
 
-        if is_started('goals', session['user']):
-            tup = (session['user'],POST_goal, POST_current_avg, POST_target_avg, POST_timeframe, session['user'])
-            query = """UPDATE dbo.goals
-                        SET customer_id = ?, goal = ?, current_avg = ?, target_avg = ?, timeframe = ?
-                        WHERE customer_id = ?;commit;"""
-        else:              
-            tup = (session['user'], POST_goal, POST_current_avg, POST_target_avg, POST_timeframe)
-            query = "INSERT INTO dbo.goals (customer_id, goal,current_avg,target_avg,timeframe) VALUES (?,?,?,?,?);commit;"
-
-        execute(query, False, tup)
-        last_modified(str(session['user']))
-
-        test_query(query, tup)
-
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        return render_template('intake/2/history.html')
+    return ViewFuncs.view_page(user=session['user'],
+                            user_name=session['user_name'],
+                            form=form,
+                            view_page='history',
+                            next_page='past',
+                            coming_home=request.args.get('coming_home'),
+                            splash=request.args.get('splash'))
 
 
 
@@ -757,25 +465,16 @@ def load_past_inputs():
     page = page.replace("/", " ")
     *first, page = page.split()
 
-    if page == "audience":
-        if request.args.get('persona_id'):
-            persona_id = request.args.get('persona_id')
-            session['current_audience_id'] = persona_id
-        else:
-            persona_id = session['first_id']
-            session['current_audience_id'] = persona_id
-    else:
-        persona_id = "0"
+    result = ViewFuncs.past_inputs(page, session['user'], view_id=request.args.get('view_id'))
 
-    try:
-        result = past_inputs(page, session['user'], persona_id)
+    if len(result) > 0:
         result = result.to_json(orient='records')
         return result
+    else:
+        return 'nah, not this time'
 
-    except AttributeError:
-        return 'nah'
-    except KeyError:
-        return 'nah'
+
+
 
 
 

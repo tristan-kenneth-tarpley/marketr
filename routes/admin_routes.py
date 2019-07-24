@@ -32,7 +32,7 @@ def admin_login():
 
 
 		if sha256_crypt.verify(POST_PASSWORD, pw):
-			session['logged_in'] = True
+			session['logged_in'] = False
 			session['admin'] = int(uid)
 			session['admin_first'] = admin_first
 			session['admin_last'] = admin_last
@@ -190,10 +190,11 @@ def admin_availability():
 
 
 @app.route('/admin')
-@login_required
+@manager_required
 def admin():
     results = sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
-    return render_template('admin_view/admin_index.html', sub=False, results=results, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
+    page = AdminViewModel('owner', 'home')
+    return render_template('admin_view/admin_index.html', page=page, sub=False, results=results, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
 
 
 @app.route('/personnel', methods=['POST', 'GET'])
@@ -204,8 +205,86 @@ def personnel():
 	if error:
 		flash(error)
 	
-	page = Admin_View('owner', 'personnel')
+	page = AdminViewModel('owner', 'personnel')
 	return render_template('layouts/admin_layout.html', page=page, sub=True, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
+
+
+@app.route('/customers', methods=['GET', 'POST'])
+@owner_required
+def customers():
+		
+	error = request.args.get('error')
+	if error:
+		flash(error)
+
+	form = forms.AddRep()
+	page = AdminViewModel('owner', 'customers')
+	return ViewFuncs.view_admin(
+								page=page,
+								owner=session['owner_logged_in'],
+								admin=session['admin_logged_in'],
+								manager=session['manager_logged_in'],
+								form=form
+								)
+
+@app.route('/customers/<customer_id>/add_rep', methods=['POST'])
+def add_rep(customer_id):
+
+	form = forms.AddRep()
+	if form.validate_on_submit() and request.method == 'post':
+		print(form.data)
+
+	return customer_id
+
+@app.route('/get_admins')
+@owner_required
+def get_admins():
+	query = "select (first_name + ' ' + last_name) as name from admins"
+	data, cursor = execute(query, True, ())
+
+	data = cursor.fetchall()
+	return_data = []
+
+	for row in data:
+		return_data.append({'get_admins': row[0]})
+	cursor.close()
+	return json.dumps(return_data)
+
+
+@app.route('/account_reps/<customer_id>', methods=['GET'])
+@owner_required
+def account_reps(customer_id):
+	ar_query = """
+		select
+			(a.first_name + ' ' + a.last_name) as name,
+			a.id,
+			ar.customer_id,
+			cb.company_name
+
+		from admins as a
+
+		left join customer_account_reps as ar
+		on ar.admin_id = a.id
+
+		left join customer_basic as cb
+		on cb.id = ar.customer_id
+	"""
+
+	data, cursor = execute(ar_query, True, ())
+	data = cursor.fetchall()
+
+	reps = {}
+	i = 0
+	while i < len(data):
+		reps[i] = {
+			'name': data[i][0],
+			'admin_id': data[i][1],
+			'customer_id': data[i][2],
+			'company_name': data[i][3]
+		}
+		i+=1
+
+	return json.dumps(reps)
 
 
 @app.route('/admin/change_password/<a_id>', methods=['POST'])
@@ -300,8 +379,6 @@ def update_admin(a_id):
 	execute(query, False, tup)
 
 	return redirect(url_for('personnel'))
-
-
 
 
 

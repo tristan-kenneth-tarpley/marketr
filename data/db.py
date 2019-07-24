@@ -39,6 +39,7 @@ def execute(query, returned, tup, commit=False):
 	db = init_db()
 
 	cursor = db.cursor()
+	cursor.commit()
 	debug_query = query.replace("?", "%s")
 	# debug_query = query % tup
 	retry_flag = True

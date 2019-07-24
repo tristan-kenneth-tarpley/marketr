@@ -2,17 +2,61 @@
 {% from "macros/_macros.html" import form_open, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
 
 {% block content %}
-<div class="container">
-	<div class="col-lg-3">
+<div style="margin-top: 2%;" class="container-fluid row">
+	<div class="col-lg-7">
+		<h3>Colors</h3><hr>
+		<div class="row">
+			<div class="square blue col-lg-6">
+				<h1>#62cde0</h1>
+			</div>
+			<div class="square orange col-lg-6">
+				<h1>#ca7d66</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<h3>Buttons</h3><hr>
+				<button class="btn btn-primary">Primary button</button>
+				<button class="btn btn-secondary">Secondary button</button>
+				<button class="btn btn-neutral">Tertiary button</button>
+				<button class="btn btn-outline-primary">Outline button&mdash;primary</button>
+				<button class="btn btn-outline-secondary">Outline button&mdash;secondary</button>
+				<a href="#" class="">Standard link</a>
+			</div>
+		</div>
 	</div>
-	<div class="col-lg-9">
-		<form class="form" method="POST" action="form_test">
-			{{ form.csrf_token }}
-			{{ render_field(form.email, class="form-control") }}
-			{{ render_field(form.password, class="form-control") }}
-			<input type="submit" class="btn btn-primary">
-		</form>
+	<div class="col-lg-1"></div>
+	<div class="col-lg-4">
+		<h3>Typography</h3><hr>
+		<p><strong>primary-font: "Montserrat"</strong></p>
+		<p><strong>secondary-font: "Montserrat", "Helvetica Neue"</strong></p>
+		<p class="font-alt">alt-font: "Pacifico", sans-serif;</p>
+		<div class="row row_cancel">
+			<h1>H1: Lorem ipsum</h1>
+			<h2>H2: Lorem ipsum</h2>
+			<h3>H3: Lorem ipsum</h3>
+			<h4>H4: Lorem ipsum dolor sit amet.</h4>
+			<h5>H5: Lorem ipsum dolor sit amet.</h5>
+		</div>
+		<div class="row row_cancel">
+			<h6>H6: Lorem ipsum dolor sit amet.</h6>
+		</div>
+		<div class="row row_cancel">
+			<p>P: Lorem ipsum dolor sit amet.</p>
+		</div>
+		<div class="row row_cancel">
+			<p><strong>P bold: Lorem ipsum dolor sit amet.</strong></p>
+		</div>
+		<div class="row row_cancel">
+			<label>Label: Lorem ipsum dolor sit amet.</label>
+		</div>
+		<div class="row row_cancel">
+			<label><strong>Label bold: Lorem ipsum dolor sit amet.</strong></label>
+		</div>
 	</div>
-
 </div>
 {% endblock %}
+
+
+
+

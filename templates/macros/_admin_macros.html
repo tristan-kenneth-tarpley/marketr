@@ -1,3 +1,56 @@
+{% macro render_page(page, data, a_reps=None, form=None) %}
+
+	{% if page == 'personnel' %}
+		{{ personnel(data) }}
+	{% elif page == 'customers' %}
+		{{ customers(data, a_reps=a_reps, form=form) }}
+	{% endif %}
+
+{% endmacro %}
+
+
+
+<!-- blocks -->
+{% macro render_field(field, currency=False, website=False) %}
+
+<div class="form-group">
+	{% if currency %}
+	<div class="input-group">
+	  <div class="input-group-prepend">
+	    <span class="input-group-text">$</span>
+	  </div>
+	{% endif %}
+	{% if website %}
+	<div class="input-group col-12">
+      <div class="input-group-prepend">
+        <span class="input-group-text">https://</span>
+      </div>
+	{% endif %}
+
+		{{ field(**kwargs)|safe }}
+
+	{% if website %}
+	</div>
+	{% endif %}
+
+	{% if currency %}
+	  <div class="input-group-append">
+	    <span class="input-group-text">.00</span>
+	  </div>
+	</div>
+	{% endif %}
+		{% if field.errors %}
+			<ul class="errors text-danger">
+			{% for error in field.errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+		</dd>
+</div>
+
+{% endmacro %}
+
 {% macro admin_sidebar(stage, owner, admin, manager) %}
 
 <div class="sidebar" data-color="orange">
@@ -21,6 +74,12 @@
 		        <p>Manage personnel</p>
 		      </a>
 		    </li>
+		    <li class="{{ 0 | check_active(stage) }}">
+		      <a href="/customers">
+		        <i class="now-ui-icons design_app"></i>
+		        <p>Customers</p>
+		      </a>
+		    </li>
 		{% endif %}
 	  	{% if admin %}
 		    <li class="{{ 0 | check_active(stage) }}">
@@ -40,15 +99,8 @@
 
 
 
-{% macro render_page(page, data) %}
 
-	{% if page == 'personnel' %}
-	{{ personnel(data) }}
-	{% endif %}
-
-{% endmacro %}
-
-
+{# personnel page #}
 
 {% macro personnel(data, error=None) %}
 
@@ -181,7 +233,7 @@
 			</div>
 
             <div class="dropdown" style="text-align: right;">
-              <button type="button" class="btn btn-round btn-default dropdown-toggle btn-simple btn-icon no-caret" data-toggle="dropdown">
+              <button type="button" class="btn btn-round btn-outline dropdown-toggle btn-simple btn-icon no-caret" data-toggle="dropdown">
                 <i class="now-ui-icons loader_gear"></i>
               </button>
               <div class="dropdown-menu dropdown-menu-right">
@@ -224,6 +276,115 @@
 
 	{% endfor %}
 </div>
+
+{% endmacro %}
+
+
+
+
+
+
+{# customers page #}
+
+
+{% macro customers(data, a_reps=None, error=None, form=None) %}
+
+	<table id="display" style="width:100%;" class="table table-striped">
+      <thead>
+        <tr>
+          <th style="cursor:pointer;"></th>
+          <th style="cursor:pointer;">Company Name</th>
+          <th style="cursor:pointer;">Primary Contact</th>
+          <th style="cursor:pointer;">Email</th>
+          <th style="cursor:pointer;">Account Mgr.</th>
+        </tr>
+      </thead>
+      <tbody>
+		{% for row in data %}
+			<tr>
+				{% set id = data[row]['customer_id'] %}
+				{% set primary_contact = data[row]['name'] %}
+				{% set email = data[row]['email'] %}
+				{% set company_name = data[row]['company_name'] %}
+				{% set account_rep = data[row]['account_rep'] %}
+				{% set admin_id = data[row]['admin_id'] %}
+				
+
+				<td style="color: white;text-transform: uppercase;font-weight:bold;">
+			        <button type="button" class="btn btn-icon btn-round btn-primary" id="account_reps" data-toggle="modal" data-target="#customer_info_{{id}}">
+			          <i class="now-ui-icons users_single-02"></i>
+			        </button>
+
+					<div class="modal fade" id="customer_info_{{id}}" tabindex="-1" role="dialog" aria-labelledby="customer_info_{{id}}" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body" style="color:var(--body-copy);">
+									<h6>{{ company_name }} reps</h6>
+									<div class="separator"></div>
+									<ul id="current_reps">
+									</ul>
+									<form action="/customers/{{id}}/add_rep" method="POST">
+
+										<div class="form-group">
+											{{ render_field(form.rep_name, id="get_admins") }}
+										</div>
+										
+										{% set route = '/get_admins' %}
+										<script type="text/javascript">
+											var options = {
+											  url: "{{route}}",
+											  getValue: "{{ route | remove_first_char }}",
+											  list: {	
+											    match: {
+											      enabled: true
+											    }
+											  },
+											  theme: "square"
+											};
+											$("#get_admins").easyAutocomplete(options);
+										</script>
+
+										<input type="submit" value="add" class="btn btn-primary">
+
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+				<td>{{ company_name }}</td>
+				<td>{{ primary_contact }}</td>
+				<td>{{ email }}</td>
+				<td>{{ account_rep }}</td>
+			</tr>
+		{% endfor %}
+        
+      </tbody>
+    </table>
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" defer></script>
+    <script>
+
+	$(document).ready( function () {
+	    $('#display').DataTable({
+	      "order": [[ 0, "asc" ]]
+	    });
+
+	    $(".dataTables_filter input").addClass("form-control")
+	    $(".dataTables_filter input").unwrap()
+	    $(".dataTables_filter input").parent().addClass("searcher")
+	    $(".dataTables_filter input").attr("placeholder", "Type company name...");
+	    $('.searcher').contents().eq(0).remove()
+	    $(".searcher").addClass("input-group")
+	    $(".searcher").addClass("no-border")
+	    $(".searcher").append("<div class='input-group-append'><div class='input-group-text'><i class='now-ui-icons ui-1_zoom-bold'></i></div></div>")
+
+	} );
+	</script>
 
 {% endmacro %}
 
@@ -279,8 +440,17 @@
 			</div>
 			<div class="form-group">
 				<label>Phone</label>
-				<input type="number" name="phone" class="form-control" placeholder="5555555555">
+				<input type="number" name="phone" id="phone{{id}}" class="form-control" placeholder="5555555555">
 			</div>
+
+			<script>
+			var cleave = new Cleave('#phone{{id}}', {
+			    delimiter: '-',
+			    blocks: [3, 3],
+			    uppercase: true
+			});
+			</script>
+
 			<div class="form-group">
 				<label>Position</label>
 				<input type="number" name="position" class="form-control" placeholder="***">

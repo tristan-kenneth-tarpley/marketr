@@ -9,7 +9,21 @@ import math
 
 
 def intake_page_map():
-    pages = ['competitors', 'company', 'audience', 'product', 'product_2', 'salescycle', 'goals', 'history', 'platforms', 'past', 'home']
+    pages = {
+            0: 'begin',
+            1: 'competitors',
+            2: 'company',
+            3: 'audience',
+            4: 'product',
+            5: 'product_2',
+            6: 'salescycle',
+            7: 'goals',
+            8: 'history',
+            9: 'platforms',
+            10: 'past',
+            11: 'home'
+            }
+
     return pages
 
 
@@ -131,60 +145,7 @@ def load_last_page(user):
     data = int(data[0][0])
     data = int(data/(len(pages)-1))
     cursor.close()
-
     return pages[data]
-
-
-
-
-def past_inputs(page, user, persona_id):
-    intake_pages = ['begin', 'competitors', 'company', 'competitors', 'audience', 'product', 'product_2', 'salescycle', 'goals', 'history', 'platforms', 'past', 'creative']
-    if page in intake_pages:
-        if page == 'begin':
-            query = "SELECT first_name, last_name, company_name, revenue, employees, zip, stage, website FROM dbo.customer_basic WHERE ID = %s" % (user,)
-            result = sql_to_df(query)
-        elif page == 'salescycle':
-            awareness = sql_to_df("select * from dbo.awareness WHERE customer_id=%d" % (user,))
-            awareness.insert(loc=0, column='stage', value='awareness')
-
-            evaluation = sql_to_df("select * from dbo.evaluation WHERE customer_id=%d" % (user,))
-            evaluation.insert(loc=0, column='stage', value='evaluation')
-
-            conversion = sql_to_df("select * from dbo.conversion WHERE customer_id=%d" % (user,))
-            conversion.insert(loc=0, column='stage', value='conversion')
-
-            retention = sql_to_df("select * from dbo.retention WHERE customer_id=%d" % (user,))
-            retention.insert(loc=0, column='stage', value='retention')
-
-            referral = sql_to_df("select * from dbo.referral WHERE customer_id=%d" % (user,))
-            referral.insert(loc=0, column='stage', value='referral')
-            stages = [awareness, evaluation, conversion, retention, referral]
-
-            result = pd.concat(stages)
-
-        
-        elif page == 'audience':
-            query = "SELECT * FROM dbo.audience WHERE customer_id = %s and audience_id = %s" % (user, persona_id)
-            result = sql_to_df(query)
-
-
-        elif page == 'product_2':
-            query = "SELECT * FROM dbo.product_list WHERE customer_id = %d" % (user,)
-            result = sql_to_df(query)
-        elif page == 'past':
-            query = "SELECT history_freeform FROM dbo.history WHERE customer_id = %d" % (user,)
-            result = sql_to_df(query)
-        elif page == 'creative':
-            result = 'nah'
-        elif page == 'splash':
-            result = 'nah'
-        else:
-            query = "SELECT * FROM dbo.%s WHERE customer_id = %d" % (page, user)
-            result = sql_to_df(query)
-    else:
-        result = 'nah'
-
-    return result
 
 
 

@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 from routes.core_routes import *
 from helpers.UserService import *
-from helpers.ViewModels import ViewFuncs, IntakeViewModel, Admin_View
+from helpers.ViewModels import *
 from helpers.LoginHandlers import *
 import helpers.forms as forms
 from routes.intake_routes import *

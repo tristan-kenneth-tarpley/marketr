@@ -7,17 +7,19 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from helpers.LoginHandlers import *
 
+
+@app.route('/mockup')
+@login_required
+def mockup():
+    return render_template('sandbox.html')
+
+
 @app.route('/testing')
 @login_required
 def testing():
     view = request.args.get('view')
     page = Page(session['user'], view, session['user_name'])
     return render_template('layouts/intake_layout.html', page=page)
-
-
-app.config.from_pyfile('config.cfg')
-mail = Mail(app)
-s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 
 @app.route('/forgot')
@@ -69,159 +71,82 @@ def update_password():
 
 
 
-
-
-@app.route('/confirm_email/<token>')
-def confirm_email(token):
-    email = s.loads(token, salt='email-confirm', max_age=3600)
-
-    tup = (email,)
-    query = "UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = ?;commit;"
-    execute(query, False, tup)
-    # return query
-    return render_template("login.html", conf=True)
-
-
-@app.route('/create_user', methods=['POST'])
-def create_user():
-    POST_USERNAME = clean(request.form['username'])
-    POST_PASSWORD = clean(request.form['password'])
-    password = sha256_crypt.encrypt(str(POST_PASSWORD))
-
-    ts = time.time()
-    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-
-    first_tup = (POST_USERNAME,)
-    first_query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
-    data, cursor = execute(first_query, True, first_tup)
-    data = cursor.fetchone()
-    if data == None:
-
-        token = s.dumps(POST_USERNAME, salt="email-confirm")
-        msg = Message('Confirm Email', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
-        link = url_for('confirm_email', token=token, _external=True)
-
-        msg.body = "Your link is: %s" % (link,)
-
-        mail.send(msg)
-
-        tup = (POST_USERNAME, password, str(st), str(st))
-        query = """INSERT INTO dbo.customer_basic (
-                                        email,
-                                        password,
-                                        account_created,
-                                        last_modified,
-                                        email_confirmed)
-                    VALUES (?,
-                            ?,
-                            ?,
-                            ?,
-                            0); commit;"""
-
-        execute(query, False, tup)
-        return redirect(url_for("splash", next_step="begin"))
-    else:
-        error = "Account already exists with email. Please try again."
-        print(error)
-        return render_template('create.html', error=error)
-
-        
-@app.route('/login_page', methods=['GET'])
-def login_page():
-    return render_template('login.html')
-
-
-@app.route('/login', methods=['POST'])
-def customer_login():
-    POST_USERNAME = clean(request.form['username'])
-    POST_PASSWORD = clean(request.form['password'])
     
-    try:   
-        tup = (POST_USERNAME,)
-        query = "SELECT email, password, ID, email_confirmed, first_name, last_name FROM dbo.customer_basic WHERE email = ?"
-        data, cursor = execute(query, True, tup)
-        data = cursor.fetchall()
-        cursor.close()
-        try:
-            pw = data[0][1]
-            uid = data[0][2]
-            email_confirmed = data[0][3]
-            first_name = data[0][4]
-            last_name = data[0][5]
-        except:
-            error = "Invalid credentials. Try again."
-            return render_template("login.html", error = error)  
 
-        if sha256_crypt.verify(POST_PASSWORD, pw):
-            if email_confirmed == 1:
-                session['logged_in'] = True
-                session['user'] = int(uid)
-                session['user_name'] = "%s %s" % (first_name, last_name)
-                session.permanent = True
-                session.remember = True
+@app.route('/login', methods=['GET', 'POST'])
+def customer_login():
 
-                first_query = sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
+    form = forms.CustomerLogin()
 
-                if first_query['first_name'][0] == None:
-                    me = User(session['user'])
-                    return redirect(url_for('begin'))
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        loginResult, action = UserService.customer_login(form.email.data, form.password.data)
+        return UserService.routeLogin(loginResult, action, form=form)
 
-                else:
-                    me = User(session['user'])
-                    step = load_last_page(session['user'])
-                    if step == "product":
-                        return redirect(url_for("product", redirect=True))
-                    if step == "audience":
-                        return redirect(url_for("audience", redirect=True))
-                    elif step == "home":
-                        return redirect(url_for('home'))
-                    else:
-                        return redirect(url_for(step))
-            else:
-                tup = ("begin",)
-                query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
-                data, cursor = execute(query, True, tup)
-                heading, paragraph = cursor.fetchone()
-                heading = heading.replace("`", "'")
-                paragraph = paragraph.replace("`", "'")
-                return render_template('intake/splash.html', next_step='begin', heading=heading, paragraph=paragraph)
+    elif request.method == 'GET':
+        session['logged_in'] = False
 
-        else:
-            error = "Invalid credentials. Try again."
-            return render_template("login.html", error = error)  
-
-    except Exception as e:
-    # except AssertionError:
-        error = "Invalid credentials. Try again!"
-        return render_template("login.html", error = error)  
-        
+    return render_template('login.html', form=form)
 
 
 
 @app.route("/logout")
 @login_required
 def logout():
+
     session['logged_in'] = False
     session.clear()
+
     if request.args.get('admin'):
         return redirect(url_for('admin_login_view'))
     else:
         return redirect(url_for('index'))
 
 
-@app.route('/new')
+@app.route('/new', methods=['POST', 'GET'])
 def new():
-    return render_template('create.html')
+    form = forms.CreateCustomer()
 
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        result = UserService.CreateCustomer(form.email.data, form.password.data, form=form, app=app)
+        if result:
+            return redirect(url_for("splash", next_step="begin"))
+        else:
+            return render_template('new.html', form=form, error=error)
+
+    elif request.method == 'GET':
+        session['logged_in'] = False
+        
+    return render_template('new.html', form=form)
+
+
+
+@app.route('/confirm_email/<token>')
+def confirm_email(token):
+    s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    email = s.loads(token, salt='email-confirm', max_age=3600)
+    tup = (email,)
+    query = "UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = ?"
+    execute(query, False, tup, commit=True)
+    form = forms.CustomerLogin()
+    return render_template("login.html", conf=True, form=form)
 
 
 
 @app.route('/availability', methods=['GET'])
 def availability():
-    result = sql_to_df('select email from dbo.customer_basic')
-    result = result.to_json(orient='records')
+    email = request.args.get('email')
+    tup = (email,)
+    query = """ SELECT email FROM customer_basic WHERE email = ? """
 
-    return result
+    data, cursor = execute(query, True, tup)
+
+    data = cursor.fetchall()
+    cursor.close()
+
+    if data == []:
+        return 'True'
+    else:
+        return 'False'
 
 
 

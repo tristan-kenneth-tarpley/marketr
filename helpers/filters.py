@@ -26,10 +26,12 @@ def tiles_to_array(copy):
 		return [copy]
 
 def layout(element):
-	same_row = ['100char_limit_max', '30char_limit_max', 'integer', 'currency']
+	same_row = ['100char_limit_max', '30char_limit_max', 'integer', 'currency', 'website']
 
 	if element in same_row:
 		return True
+	else:
+		return False
 
 def is_even(num):
 	if num % 2 == 0:
@@ -77,7 +79,12 @@ def perc_array(p):
 def call_macro(ref):
 	return 'hi'
 
-
+def customPages(page):
+	names = ['salescycle', 'history', 'platforms']
+	if page in names:
+		return True
+	else:
+		return False
 
 
 app.jinja_env.filters['remove_first_char'] = remove_first_char
@@ -91,7 +98,7 @@ app.jinja_env.filters['form_route_map'] = form_route_map
 app.jinja_env.filters['splash_page'] = splash_page
 app.jinja_env.filters['tiles'] = tiles
 app.jinja_env.filters['perc_array'] = perc_array
-app.jinja_env.filters['call_macro'] = call_macro
+app.jinja_env.filters['customPages'] = customPages
 
 
 

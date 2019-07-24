@@ -87,7 +87,7 @@
                       <div style="margin-bottom: 5%;" class="product_prev_container">
                       {% if names_and_ids != False %}
                       {% for name, id in names_and_ids %}
-                        <div class='col-lg-3 col-md-3 col-sm-3 persona product_container'>
+                        <div id="past_container" class='col-lg-3 col-md-3 col-sm-3'>
                           {% if request.args.get('home') %}
                             <a class="dyn_link" href="{{ url_for('audience', persona_id = id, home=True, redirect=False) }}" id="{{ id }}">
                           {% else %}

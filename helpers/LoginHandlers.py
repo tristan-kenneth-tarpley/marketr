@@ -5,7 +5,7 @@ from flask import session, redirect, url_for
 def owner_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if session['owner_logged_in']:
+        if 'owner_logged_in' in session:
             return f(*args, **kwargs)
         else:
             return redirect(url_for('logout', admin=True))
@@ -15,7 +15,7 @@ def owner_required(f):
 def admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if session['admin_logged_in']:
+        if 'admin_logged_in' in session:
             return f(*args, **kwargs)
         else:
             return redirect(url_for('logout', admin=True))
@@ -25,7 +25,7 @@ def admin_required(f):
 def manager_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if session['manager_logged_in'] == True:
+        if 'manager_logged_in' in session:
             return f(*args, **kwargs)
         else:
             return redirect(url_for('logout', admin=True))
@@ -38,6 +38,6 @@ def login_required(f):
 		if 'logged_in' in session:
 			return f(*args, **kwargs)
 		else:
-			return redirect(url_for('login_page'))
+			return redirect(url_for('login'))
 
 	return wrap

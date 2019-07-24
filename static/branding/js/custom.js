@@ -342,7 +342,7 @@
             text: "We use cookies to ensure you get the best experience on our website, if you continue to browse you'll be acconsent with our",
             scroll: false,
             expireDays: 30,
-            link: "policy.html"
+            link: "privacy"
         });
       });
     }
