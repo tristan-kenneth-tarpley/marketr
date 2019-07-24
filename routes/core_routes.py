@@ -111,6 +111,7 @@ def new():
         if result:
             return redirect(url_for("splash", next_step="begin"))
         else:
+            error = "something went wrong."
             return render_template('new.html', form=form, error=error)
 
     elif request.method == 'GET':
@@ -156,28 +157,23 @@ def availability():
 
 
 
-
-
-
-
-
-@app.route('/delete_asset', methods=['GET'])
-@login_required
-def delete_asset():
-    if request.method == 'GET':
-        file_path = request.args.get('file_path')
-        tup = (file_path, session['user'])
-        query = "DELETE FROM dbo.assets WHERE file_path = ? AND customer_id = ?;commit;"
-        execute(query, False, tup)
-        if os.path.exists(file_path):
-            # name = server_path.rsplit('/', 1)[-1]
-            print(file_path)
-            os.remove(file_path)
-        else:
-            name = 'does not exist'
-            print(file_path)
-            print(name)
-        return redirect(url_for('creative'))
+# @app.route('/delete_asset', methods=['GET'])
+# @login_required
+# def delete_asset():
+#     if request.method == 'GET':
+#         file_path = request.args.get('file_path')
+#         tup = (file_path, session['user'])
+#         query = "DELETE FROM dbo.assets WHERE file_path = ? AND customer_id = ?;commit;"
+#         execute(query, False, tup)
+#         if os.path.exists(file_path):
+#             # name = server_path.rsplit('/', 1)[-1]
+#             print(file_path)
+#             os.remove(file_path)
+#         else:
+#             name = 'does not exist'
+#             print(file_path)
+#             print(name)
+#         return redirect(url_for('creative'))
 
 
 

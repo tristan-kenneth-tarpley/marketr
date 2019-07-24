@@ -8,23 +8,7 @@ import math
 
 
 
-def intake_page_map():
-    pages = {
-            0: 'begin',
-            1: 'competitors',
-            2: 'company',
-            3: 'audience',
-            4: 'product',
-            5: 'product_2',
-            6: 'salescycle',
-            7: 'goals',
-            8: 'history',
-            9: 'platforms',
-            10: 'past',
-            11: 'home'
-            }
 
-    return pages
 
 
 def test_query(query, tup):
@@ -137,15 +121,7 @@ def perc_complete(page, user):
     query = """UPDATE dbo.customer_basic SET perc_complete = ? WHERE id = ?;commit;"""
     execute(query, False, tup)
 
-def load_last_page(user):
-    pages = intake_page_map()
-    tup = (user,)
-    data, cursor = execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
-    data = cursor.fetchall()
-    data = int(data[0][0])
-    data = int(data/(len(pages)-1))
-    cursor.close()
-    return pages[data]
+
 
 
 

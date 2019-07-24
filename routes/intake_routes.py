@@ -59,11 +59,11 @@ def splash():
 @login_required
 def begin():    
     form = forms.Profile()
-    
+    service = IntakeService(session['user'], 'begin')
     # if request.method == 'POST':
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         # return json.dumps(form.data)
-        IntakeService.begin(form.data, session['user'])
+        service.begin(form.data)
         return redirect(url_for('competitors'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -80,9 +80,10 @@ def begin():
 @login_required
 def competitors():
     form = forms.Competitors()
+    service = IntakeService(session['user'], 'competitors')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.competitors(form.data, session['user'])
+        service.competitors(form.data)
         return redirect(url_for('company'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -99,9 +100,10 @@ def competitors():
 @login_required
 def company():
     form = forms.Company()
+    service = IntakeService(session['user'], 'company')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.company(form.data, session['user'])
+        service.company(form.data)
         return redirect(url_for('audience'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -120,17 +122,18 @@ def company():
 @login_required
 def audience():
     form = forms.Audience()
+    service = IntakeService(session['user'], 'audience')
 
     if 'view_id' not in request.args:
-        view_id = IntakeService.get_persona(session['user'])
+        view_id = service.get_persona()
         return redirect(url_for('audience', view_id=view_id, splash=False))
 
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.audience(form.data, session['user'], request.args.get('view_id'))
+        service.audience(form.data, request.args.get('view_id'))
   
         if request.form['submit_button'] == '+ save and add another audience':
-            next_id = IntakeService.get_persona(session['user'])
+            next_id = service.get_persona()
             return redirect(url_for('audience', view_id=next_id, splash=False))
         else:
             return redirect(url_for('product'))
@@ -149,7 +152,6 @@ def audience():
 @app.route('/container', methods=['GET'])
 @login_required
 def container():
-    print(request.args.get('page'))
     container = ContainerViewModel(page=request.args.get('page'), user=session['user'])
     return_data = container.GetData()
 
@@ -161,9 +163,10 @@ def container():
 @login_required
 def product():
     form = forms.Product()
+    service = IntakeService(session['user'], 'product')
     
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.product(form.data, session['user'])
+        service.product(form.data)
         return redirect(url_for('product_2'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -203,16 +206,17 @@ def branch_data():
 @login_required
 def product_2():
     form = forms.Product_2()
+    service = IntakeService(session['user'], 'product_2')
 
     if 'view_id' not in request.args:
-        view_id = IntakeService.get_product(session['user'])
+        view_id = service.get_product(request.args.get('view_id'))
         return redirect(url_for('product_2', view_id=view_id, splash=False))
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.product_2(form.data, session['user'], request.args.get('view_id'))
+        service.product_2(form.data, request.args.get('view_id'))
         
         if request.form['submit_button'] == 'update next product':
-            next_id = IntakeService.get_product(session['user'], request.args.get('view_id'))
+            next_id = service.get_product(request.args.get('view_id'))
             return redirect(url_for('product_2', view_id=next_id, splash=False))
         else:
             return redirect(url_for('salescycle'))
@@ -233,9 +237,10 @@ def product_2():
 def salescycle():
 
     form = forms.SalesCycle()
+    service = IntakeService(session['user'], 'salescycle')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.salescycle(form.data, session['user'])
+        service.salescycle(form.data)
         return redirect(url_for('nice'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -263,9 +268,10 @@ def nice():
 def goals():
 
     form = forms.Goals()
+    service = IntakeService(session['user'], 'goals')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        IntakeService.goals(form.data, session['user'])
+        service.goals(form.data)
         return redirect(url_for('history'))
 
     return ViewFuncs.view_page(user=session['user'],

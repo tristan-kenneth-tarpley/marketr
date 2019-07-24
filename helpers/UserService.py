@@ -3,14 +3,42 @@ import data.db as db
 import time
 import datetime
 import zipcodes
-import helpers.helpers as helpers
 import json
 from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-from helpers.LoginHandlers import *
 
+
+def intake_page_map():
+    pages = {
+            0: 'begin',
+            1: 'competitors',
+            2: 'company',
+            3: 'audience',
+            4: 'product',
+            5: 'product_2',
+            6: 'salescycle',
+            7: 'goals',
+            8: 'history',
+            9: 'platforms',
+            10: 'past'
+            }
+
+    return pages
+
+def encrypt_password(password):
+	return sha256_crypt.encrypt(str(password))
+
+def load_last_page(user):
+    pages = intake_page_map()
+    tup = (user,)
+    data, cursor = db.execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
+    data = cursor.fetchall()
+    data = int(data[0][0])
+    data = int(data/(len(pages)-1))
+    cursor.close()
+    return pages[data]
 
 def get_args_from_form(data):
 	vals = []
@@ -25,25 +53,23 @@ def get_args_from_form(data):
 
 	return vals, keys
 
-def Table(name):
-	tup = (name,)
-	query = """select column_name
-				from INFORMATION_SCHEMA.columns
-				where table_name = ?"""
-	data, cursor = execute(query, True, tup)
-	columns = cursor.fetchall()
-	cursor.close()
+# def Table(name):
+# 	tup = (name,)
+# 	query = """select column_name
+# 				from INFORMATION_SCHEMA.columns
+# 				where table_name = ?"""
+# 	data, cursor = db.execute(query, True, tup)
+# 	columns = cursor.fetchall()
+# 	cursor.close()
 
-	col_list = []
-	for item in columns:
-		col_list.append(item[0])
+# 	col_list = []
+# 	for item in columns:
+# 		col_list.append(item[0])
 
-	return (col_list)
+# 	return (col_list)
 
 
 
-def encrypt_password(password):
-	return sha256_crypt.encrypt(str(password))
 
 
 
@@ -161,16 +187,6 @@ class DBActions:
 		self.keys = keys
 		self.vals = vals
 		self.table = table
-
-	def last_modified(self):
-		ts = time.time()
-		st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-		tup = (st, user)
-		query = """UPDATE dbo.customer_basic
-	                SET last_modified = ?
-	                WHERE dbo.customer_basic.id = ?"""
-
-		execute(query, False, tup)
 
 
 	def delete(self, condition=None, ownership=True):
@@ -303,7 +319,7 @@ class UserService:
 					if first_query['first_name'][0] == None:
 						return True, 'begin'
 					else:
-						step = helpers.load_last_page(session['user'])
+						step = load_last_page(session['user'])
 						return True, step
 				else:
 					tup = ("begin",)
@@ -335,12 +351,45 @@ class UserService:
 		return json.loads(dumps)
 
 
-class IntakeService(UserService):
 
-	def get_persona(user):
+def last_modified(id):
+	ts = time.time()
+	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+	
+	tup = (st, id)
+	query = """UPDATE dbo.customer_basic
+				SET last_modified = ?
+				WHERE dbo.customer_basic.id = ?"""
+
+	db.execute(query, False, tup, commit=True)
+
+class IntakeService:
+
+	def __init__(self, id, page):
+		self.id = id
+		self.page = page
+		last_modified(id)
+
+	def perc_complete(self):
+		page_dict = intake_page_map()
+		page_list = list(page_dict.values())
+
+		perc = (page_list.index(self.page) + 1) * 10
+		if self.page != 'salescycle':
+			tup = (self.id, perc, self.page)
+		else: 
+			tup = (self.id, perc, 'awareness')
+			# come back
 		query = """
-					EXEC init_audience @customer_id = %s;
-					""" % (user,)
+				EXEC update_perc_complete @user = ?, @perc = ?, @page = ?
+				"""
+
+		db.execute(query, False, tup, commit=True)
+
+	def get_persona(self):
+		query = """
+				EXEC init_audience @customer_id = %s;
+				""" % (self.id,)
 
 		result, cursor = db.execute(query, True, ())
 		result = cursor.fetchone()
@@ -348,12 +397,12 @@ class IntakeService(UserService):
 
 		return str(result[0])
 
-	def get_product(user, view_id=None):
+	def get_product(self, view_id):
 
 		if view_id != None:
-			tup = (user, view_id)
+			tup = (self.id, view_id)
 		else:
-			tup = (user, 0)
+			tup = (self.id, 0)
 
 		query = """
 				EXEC init_product @customer_id = ?, @view_id = ?;
@@ -365,15 +414,19 @@ class IntakeService(UserService):
 
 		return str(result[0])
 
-	def audience(data, user, persona_id):
+	def audience(self, data, persona_id):
+		self.perc_complete()
+
 		vals, keys = get_args_from_form(data)
-		db_actions = DBActions(table='audience', keys=keys, vals=vals, owner_id=user)
+		db_actions = DBActions(table='audience', keys=keys, vals=vals, owner_id=self.id)
 		query = db_actions.update()
-		query += " WHERE audience_id = %s AND customer_id = %s" % (persona_id, user)
+		query += " WHERE audience_id = %s AND customer_id = %s" % (persona_id, self.id)
 		# print(query)
 		db.execute(query, False, tuple(vals), commit=True)
 
-	def begin(data, user):
+	def begin(self, data):
+		self.perc_complete()
+
 		vals, keys = get_args_from_form(data)
 
 		try:
@@ -391,49 +444,54 @@ class IntakeService(UserService):
 		new_keys = ['city', 'state']
 		keys += new_keys
 
-		dbactions = DBActions(owner_id=user, table='customer_basic', keys=keys, vals=vals)
+		dbactions = DBActions(owner_id=self.id, table='customer_basic', keys=keys, vals=vals)
 		query = dbactions.update()
+		query += " WHERE id = %s" % (self.id,)
+
+		db.execute(query, False, vals, commit=True)
+
+
+	def competitors(self, data):
+		self.perc_complete()
+		vals, keys = get_args_from_form(data)
+
+		dbactions = DBActions(owner_id=self.id, table='competitors', keys=keys, vals=vals)
+		query = dbactions.insert_conditional('not exists', table='competitors')
+		query += ' WHERE customer_id = %s' % (self.id)
+		vals = vals + vals
 
 		print(query)
 
 		db.execute(query, False, vals, commit=True)
 
-
-	def competitors(data, user, **fields):
+	def company(self, data):
+		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
-		dbactions = DBActions(owner_id=user, table='competitors', keys=keys, vals=vals)
-		query = dbactions.insert_conditional('not exists', table='competitors')
-		vals = vals + vals
-
-		db.execute(query, False, vals, commit=True)
-
-	def company(data, user):
-		vals, keys = get_args_from_form(data)
-
-		dbactions = DBActions(owner_id=user, table='company', keys=keys, vals=vals)
+		dbactions = DBActions(owner_id=self.id, table='company', keys=keys, vals=vals)
 
 		query = dbactions.insert_conditional('not exists', table='company')
 		vals = vals + vals
 
 		db.execute(query, False, vals, commit=True)
 
-	def product(data, user):
+	def product(self, data):
+		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 		product_list = data['product']
 
 		del vals[-1]
 		del keys[-1]
 
-		dbactions = DBActions(owner_id=user, table='product', keys=keys, vals=vals)
+		dbactions = DBActions(owner_id=self.id, table='product', keys=keys, vals=vals)
 		query = dbactions.insert_conditional('not exists', table='product')
 		vals += vals
 		db.execute(query, False, tuple(vals), commit=True)
 
 		for p in product_list:
 			p_val, p_key = get_args_from_form(p)
-			p_db = DBActions(owner_id=user, table='product_list', keys=p_key, vals=p_val)
-			conditional_statement = """SELECT * FROM product_list WHERE name = '%s' and customer_id = %s""" % (p_val[0],user)
+			p_db = DBActions(owner_id=self.id, table='product_list', keys=p_key, vals=p_val)
+			conditional_statement = """SELECT * FROM product_list WHERE name = '%s' and customer_id = %s""" % (p_val[0],self.id)
 			p_query = p_db.insert_conditional('not exists', table='product_list', conditional_statement=conditional_statement)
 
 			p_val += p_val
@@ -441,16 +499,18 @@ class IntakeService(UserService):
 
 			db.execute(p_query, False, tuple(p_val), commit=True)
 
-	def product_2(data, user, view_id):
+	def product_2(self, data, view_id):
+		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
-		dbactions = DBActions(owner_id=user, table='product_list', keys=keys, vals=vals)
+		dbactions = DBActions(owner_id=self.id, table='product_list', keys=keys, vals=vals)
 		query = dbactions.update()
-		query += " WHERE customer_id = %s AND p_id = %s" % (user, view_id)
+		query += " WHERE customer_id = %s AND p_id = %s" % (self.id, view_id)
 
 		db.execute(query, False, tuple(vals), commit=True)
 
-	def salescycle(data, user):
+	def salescycle(self, data):
+		self.perc_complete()
 
 		def Merge(dict1, dict2):
 			del dict1['csrf_token']
@@ -500,17 +560,18 @@ class IntakeService(UserService):
 				else:
 					vals += "(?,?)"
 
-				stage_tup.extend([user, v]) 
+				stage_tup.extend([self.id, v]) 
 
 				counter += 1
 			else:
 				query = base_query + vals
 				db.execute(query, False, tuple(stage_tup), commit=True)
 
-	def goals(data, user):
+	def goals(self, data):
+		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
-		dbactions = DBActions(owner_id=user, table='goals', keys=keys, vals=vals)
+		dbactions = DBActions(owner_id=self.id, table='goals', keys=keys, vals=vals)
 
 		query = dbactions.insert_conditional('not exists', table='goals')
 		vals = vals + vals

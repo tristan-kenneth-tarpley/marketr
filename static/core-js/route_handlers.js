@@ -124,8 +124,9 @@ const handle_past_inputs = class {
 				console.log(this.data)
 			}
 
+			let methods = new InputMethods;
+
 			const loop_it = data => {
-				let methods = new InputMethods
 				Object.keys(data[0]).forEach(function(key) {
 					let param = new URLSearchParams(window.location.search)	
 					methods.populate_inputs(data, key)
