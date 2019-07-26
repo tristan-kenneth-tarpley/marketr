@@ -22,7 +22,8 @@ def intake_page_map():
             7: 'goals',
             8: 'history',
             9: 'platforms',
-            10: 'past'
+            10: 'past',
+			11: 'home'
             }
 
     return pages
@@ -31,14 +32,14 @@ def encrypt_password(password):
 	return sha256_crypt.encrypt(str(password))
 
 def load_last_page(user):
-    pages = intake_page_map()
-    tup = (user,)
-    data, cursor = db.execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
-    data = cursor.fetchall()
-    data = int(data[0][0])
-    data = int(data/(len(pages)-1))
-    cursor.close()
-    return pages[data]
+	pages = intake_page_map()
+	tup = (user,)
+	data, cursor = db.execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
+	data = cursor.fetchall()
+	data = int(data[0][0]) / 10
+	# keys = list(pages.keys())
+	cursor.close()
+	return pages[data]
 
 def get_args_from_form(data):
 	vals = []
@@ -288,7 +289,9 @@ class UserService:
 
 				return render_template('intake/splash.html', next_step='begin', heading=heading, paragraph=paragraph)
 			else:
+				# return action
 				return redirect(url_for(action))
+
 		elif result == False:
 			return render_template('login.html', form=form, error=action)
 
@@ -471,6 +474,7 @@ class IntakeService:
 		dbactions = DBActions(owner_id=self.id, table='company', keys=keys, vals=vals)
 
 		query = dbactions.insert_conditional('not exists', table='company')
+		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
 
 		db.execute(query, False, vals, commit=True)
@@ -485,6 +489,7 @@ class IntakeService:
 
 		dbactions = DBActions(owner_id=self.id, table='product', keys=keys, vals=vals)
 		query = dbactions.insert_conditional('not exists', table='product')
+		query += ' WHERE customer_id = %s' % (self.id)
 		vals += vals
 		db.execute(query, False, tuple(vals), commit=True)
 
@@ -574,9 +579,53 @@ class IntakeService:
 		dbactions = DBActions(owner_id=self.id, table='goals', keys=keys, vals=vals)
 
 		query = dbactions.insert_conditional('not exists', table='goals')
+		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
 
 		db.execute(query, False, vals, commit=True)
+
+	def history(self, data):
+		self.perc_complete()
+		
+		vals, keys = get_args_from_form(data)
+
+		dbactions = DBActions(owner_id=self.id, table='history', keys=keys, vals=vals)
+
+		query = dbactions.insert_conditional('not exists', table='history')
+		query += ' WHERE customer_id = %s' % (self.id)
+		vals = vals + vals
+
+		db.execute(query, False, vals, commit=True)
+
+	def platforms(self, data):
+		self.perc_complete()
+		for i in range(int(data.get("platform_length"))):
+
+			keys = ['platform_name', 'currently_using', 'results']
+			vals = [data.get('platform[' + str(i) + ']'),
+					data.get('currently_using[' + str(i) + ']'),
+					data.get('results[' + str(i) + ']')]
+
+			dbactions = DBActions(owner_id=self.id, table='platforms', keys=keys, vals=vals)
+			conditional_statement = "SELECT platform_name FROM platforms WHERE customer_id = %s AND platform_name = '%s'" % (self.id, data.get('platform[' + str(i) + ']'),)
+			query = dbactions.insert_conditional('not exists', table='platforms', conditional_statement=conditional_statement)
+			query += " WHERE customer_id = %s and platform_name = '%s'" % (self.id, data.get('platform[' + str(i) + ']'))
+			vals += vals
+			db.execute(query, False, vals, commit=True)
+
+	def past(self, data):
+		self.perc_complete()
+		vals, keys = get_args_from_form(data)
+
+		dbactions = DBActions(owner_id=self.id, table='past', keys=keys, vals=vals)
+		query = dbactions.insert_conditional('not exists', table='past')
+		query += " WHERE customer_id = %s" % (self.id,)
+		vals += vals
+
+		db.execute(query, False, vals, commit=True)
+
+
+
 
 
 

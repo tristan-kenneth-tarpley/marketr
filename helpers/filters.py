@@ -80,7 +80,7 @@ def call_macro(ref):
 	return 'hi'
 
 def customPages(page):
-	names = ['salescycle', 'history', 'platforms']
+	names = ['salescycle', 'history', 'platforms', 'past']
 	if page in names:
 		return True
 	else:

@@ -60,10 +60,9 @@ def splash():
 def begin():    
     form = forms.Profile()
     service = IntakeService(session['user'], 'begin')
-    # if request.method == 'POST':
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        # return json.dumps(form.data)
-        service.begin(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.begin(form.data)
         return redirect(url_for('competitors'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -83,7 +82,8 @@ def competitors():
     service = IntakeService(session['user'], 'competitors')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.competitors(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.competitors(form.data)
         return redirect(url_for('company'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -103,7 +103,8 @@ def company():
     service = IntakeService(session['user'], 'company')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.company(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.company(form.data)
         return redirect(url_for('audience'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -130,7 +131,8 @@ def audience():
 
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.audience(form.data, request.args.get('view_id'))
+        if request.form['submit_button'] != 'skip':
+            service.audience(form.data, request.args.get('view_id'))
   
         if request.form['submit_button'] == '+ save and add another audience':
             next_id = service.get_persona()
@@ -166,7 +168,8 @@ def product():
     service = IntakeService(session['user'], 'product')
     
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.product(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.product(form.data)
         return redirect(url_for('product_2'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -213,7 +216,8 @@ def product_2():
         return redirect(url_for('product_2', view_id=view_id, splash=False))
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.product_2(form.data, request.args.get('view_id'))
+        if request.form['submit_button'] != 'skip':
+            service.product_2(form.data, request.args.get('view_id'))
         
         if request.form['submit_button'] == 'update next product':
             next_id = service.get_product(request.args.get('view_id'))
@@ -240,7 +244,8 @@ def salescycle():
     service = IntakeService(session['user'], 'salescycle')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.salescycle(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.salescycle(form.data)
         return redirect(url_for('nice'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -271,7 +276,8 @@ def goals():
     service = IntakeService(session['user'], 'goals')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        service.goals(form.data)
+        if request.form['submit_button'] != 'skip':
+            service.goals(form.data)
         return redirect(url_for('history'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -289,171 +295,116 @@ def goals():
 @login_required
 def history():
     form = forms.History()
+    service = IntakeService(session['user'], 'history')
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        if request.form['submit_button'] != 'skip':
+            service.history(form.data)
+        return redirect(url_for('platforms'))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],
                             form=form,
                             view_page='history',
+                            next_page='platforms',
+                            coming_home=request.args.get('coming_home'),
+                            splash=request.args.get('splash'))
+
+@app.route('/history/platforms', methods=['GET', 'POST'])
+@login_required
+def platforms():
+    form = forms.Platforms()
+    service = IntakeService(session['user'], 'platforms')
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        if request.form['submit_button'] != 'skip':
+            service.platforms(request.form)
+        return redirect(url_for('past'))
+
+    return ViewFuncs.view_page(user=session['user'],
+                            user_name=session['user_name'],
+                            form=form,
+                            view_page='platforms',
                             next_page='past',
+                            coming_home=request.args.get('coming_home'),
+                            splash=request.args.get('splash'))
+
+@app.route('/get_platforms', methods=['GET'])
+@login_required
+def get_platforms():
+    tup = (session['user'],)
+    query = """
+            SELECT facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube
+                FROM history
+                WHERE customer_id = ?
+            """
+    data, cursor = execute(query, True, tup)
+    data = cursor.fetchone()
+    cursor.close()
+    return json.dumps(list(data))
+
+
+
+@app.route('/history/platforms/past', methods=['GET','POST'])
+@login_required
+def past():
+    form = forms.Past()
+    service = IntakeService(session['user'], 'past')
+
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        if request.form['submit_button'] != 'skip':
+            service.past(form.data)
+        return redirect(url_for('home'))
+
+    return ViewFuncs.view_page(user=session['user'],
+                            user_name=session['user_name'],
+                            form=form,
+                            view_page='past',
+                            next_page='home',
                             coming_home=request.args.get('coming_home'),
                             splash=request.args.get('splash'))
 
 
 
 
-@app.route('/history/platforms', methods=['GET','POST'])
-@login_required
-def platforms():
-    if request.form:
-        POST_facebook = clean(request.form['facebook'])
-        POST_google = clean(request.form['google'])
-        POST_bing = clean(request.form['bing'])
-        POST_twitter = clean(request.form['twitter'])
-        POST_instagram = clean(request.form['instagram'])
-        POST_yelp = clean(request.form['yelp'])
-        POST_linkedin = clean(request.form['linkedin'])
-        POST_amazon = clean(request.form['amazon'])
-        POST_snapchat = clean(request.form['snapchat'])
-        POST_youtube = clean(request.form['youtube'])
-        POST_none = clean(request.form['none'])
+# photos = UploadSet('photos', IMAGES)
+# filepath = 'static/uploads/img'
 
-        if is_started('history', session['user']):
-            tup = (session['user'], POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, POST_none)
-            query = """ UPDATE dbo.history
-                        SET customer_id = ?, facebook = ?, google = ?, bing = ?, twitter = ?, instagram = ?, yelp = ?, linkedin = ?, amazon = ?, snapchat = ?, youtube = ?, none = ?
-                        ;commit;"""
-        else:
-            tup = (POST_facebook, POST_google, POST_bing, POST_twitter, POST_instagram, POST_yelp, POST_linkedin, POST_amazon, POST_snapchat, POST_youtube, session['user'], POST_none)
-            query = "INSERT INTO dbo.history (facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube, customer_id, none) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);commit;"
-        
-        execute(query, False, tup)
-        last_modified(str(session['user']))
+# app.config['UPLOADED_PHOTOS_DEST'] = filepath
+# configure_uploads(app, photos)
 
-
-    platforms = []
-    query = "SELECT facebook, google, bing, twitter, instagram, yelp, linkedin, amazon, snapchat, youtube FROM dbo.history WHERE customer_id = ?"
-    tup = (session['user'],)
-    data, cursor = execute(query, True, tup)
-    data = cursor.fetchall()
-
-    for data in data:
-        for val in data:
-            if val != "":
-                platforms.append(val)
-
-    cursor.close()
-
-    if request.args.get('coming_home'):
-        return render_template('intake/2/platforms.html', platforms=platforms, home=True)
-    else:
-        return render_template('intake/2/platforms.html', platforms=platforms)
-
-
-
-
-# @app.route('/load_history', methods=['GET'])
+# @app.route('/creative', methods=['GET', 'POST'])
 # @login_required
-# def load_history():
-#     results = sql_to_df("SELECT * FROM dbo.history WHERE customer_id = " + str(session['user']))
-#     results = results.to_json(orient='split')
-#     return results
+# def creative():
+#     user_tup = (session['user'],)
+#     next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
+#     data, cursor = execute(next_query, True, user_tup)
+#     data = cursor.fetchall()
+#     cursor.close()
+#     if len(data) > 0:
+#         data = data
+#     else:
+#         data = None
 
-@app.route('/history/platforms/past', methods=['GET','POST'])
-@login_required
-def past():
-    if request.form:
+#     if request.method == 'POST' and 'photo' in request.files:
+#         filename = photos.save(request.files['photo'])
+#         path = filepath + "/" + filename
+#         tup = (session['user'], filename, session['user'], filename, "photo", path)
+#         query = """IF NOT EXISTS (SELECT asset_name from dbo.assets WHERE customer_id = ? and asset_name = ?)
+#                         INSERT INTO dbo.assets(customer_id,
+#                                     asset_name,
+#                                     asset_type, 
+#                                     file_path)
+#                         VALUES (?, ?, ?, ?);commit;"""
+#         execute(query, False, tup)
 
-        length = int(request.form['length'])
+#         next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
+#         data, cursor = execute(next_query, True, user_tup)
+#         data = cursor.fetchall()
 
-        i=1
-        while i <= length:
+#         return render_template('intake/creative.html', images=data)
 
-            platform = request.form['platform[' + str(i) + ']']
-            currently_using = request.form['currently_using[' + str(i) + ']']
-            results = request.form['results[' + str(i) + ']']
-                       
-            tup = (platform, session['user'], session['user'], platform, currently_using, results, currently_using, results)
-            query = """IF NOT EXISTS (select platform_name from dbo.platforms WHERE platform_name = ? and customer_id = ?) 
-                            INSERT INTO dbo.platforms (customer_id, platform_name, currently_using, results) VALUES (?,?,?,?);
-                        ELSE
-                            UPDATE dbo.platforms
-                                SET currently_using = ?, results = ?;
-                        commit;"""
-
-            # print(test_query(query, tup))
-            if results != "" and currently_using != "":    
-                execute(query, False, tup)
-
-            i += 1
-
-        tup = (request.form['spend'], session['user'])
-
-        query = "UPDATE dbo.history SET digital_spend = ? WHERE customer_id = ?;commit;"
-
-        execute(query, False, tup)
-
-
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        return render_template('intake/2/past.html')
-
-@app.route('/history/platforms/past/done', methods=['GET', 'POST'])
-@login_required
-def history_freeform():
-    POST_history_freeform = clean(request.form['history_freeform'])
-    tup = (POST_history_freeform, session['user'])
-    query = "UPDATE dbo.history SET history_freeform = ? WHERE customer_id = ?;commit"
-
-    execute(query, False, tup)
-    last_modified(str(session['user']))
-
-
-    if request.args.get('coming_home'):
-        return redirect(url_for('home'))
-    else:
-        return redirect(url_for('creative'))
-
-
-
-photos = UploadSet('photos', IMAGES)
-filepath = 'static/uploads/img'
-
-app.config['UPLOADED_PHOTOS_DEST'] = filepath
-configure_uploads(app, photos)
-
-@app.route('/creative', methods=['GET', 'POST'])
-@login_required
-def creative():
-    user_tup = (session['user'],)
-    next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
-    data, cursor = execute(next_query, True, user_tup)
-    data = cursor.fetchall()
-    cursor.close()
-    if len(data) > 0:
-        data = data
-    else:
-        data = None
-
-    if request.method == 'POST' and 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        path = filepath + "/" + filename
-        tup = (session['user'], filename, session['user'], filename, "photo", path)
-        query = """IF NOT EXISTS (SELECT asset_name from dbo.assets WHERE customer_id = ? and asset_name = ?)
-                        INSERT INTO dbo.assets(customer_id,
-                                    asset_name,
-                                    asset_type, 
-                                    file_path)
-                        VALUES (?, ?, ?, ?);commit;"""
-        execute(query, False, tup)
-
-        next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
-        data, cursor = execute(next_query, True, user_tup)
-        data = cursor.fetchall()
-
-        return render_template('intake/creative.html', images=data)
-
-    return render_template('intake/creative.html', images=data)
+#     return render_template('intake/creative.html', images=data)
 
 
 

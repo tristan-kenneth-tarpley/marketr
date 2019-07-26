@@ -37,6 +37,22 @@ const InitFuncs = class {
 				return input_clicked
 			})
 
+
+			$('.platform_row img').click(function(){				
+				let input = $(this).parent().find('.img_input'),
+					siblings = $(this).siblings(),
+					face = $(this),
+					active = 'platform_row_img_active'
+
+				siblings.removeClass(active)
+				if (!face.hasClass(active)) {
+					input.val($(this).index())
+				} else {
+					input.val("")
+				}
+				face.toggleClass(active)
+			})
+
 			$('.hover_box').click(function(){
 				var input_clicked = false
 				var in_box = $(this).find("input")
@@ -225,39 +241,7 @@ const InitFuncs = class {
 	} // end personnel
 
 	platforms(){
-
-		$('.platform_row img').click(function(){
-			$(this).addClass('platform_row_img_active')
-			$(this).siblings().removeClass('platform_row_img_active')
-			$(this).parent().find('.img_input').val($(this).index())
-		})
-		$('.hover_box').click(function(){
-			if($(this).hasClass('hb_many')){
-				$(this).toggleClass('hover_box_selected')
-			} else {
-				$(this).toggleClass('hover_box_selected')
-				$(this).siblings().removeClass('hover_box_selected')
-				$(this).parent().siblings().children().removeClass('hover_box_selected')
-			}
-
-			var test = $(this).find("h6")
-			var text = test[0]['textContent']
-
-			if ($(this).hasClass('hb_many')){
-				var nearest_input = $(this).find('.hidden_input');
-			} else if ($(this).hasClass('multi_row')){
-				var nearest_input = $(this).parentsUntil('.grandparent').find('.hidden_input')
-			} else {
-				var nearest_input = $(this).parent().find('.hidden_input');
-			}
-
-			if ($(this).hasClass('hover_box_selected')){	
-				nearest_input.val(text)
-			} else {
-				nearest_input.val("")
-			}
-		})
-
+		get_platforms()
 	} // end platforms
 
 	products(i){
@@ -433,12 +417,12 @@ const PageViewController = class {
 		this.url_path = url_path
 		this.params = params
 		this.noValLoad = ['/home',
-								'/',
-								'/new',
-								'/admin',
-								'/admin/branch',
-								'class',
-								'splash']
+							'/',
+							'/new',
+							'/admin',
+							'/admin/branch',
+							'class',
+							'splash']
 		this.intake = [
 						'/begin',
 						'/competitors',
@@ -458,47 +442,65 @@ const PageViewController = class {
 
 	run() {
 
-		const init = new InitFuncs()
 
 		if (this.intake.includes(this.url_path)){
-			init.allIntake(this.params, this.url_path, this.noValLoad, this.debug, this.helpTimer)
-		}
 
-		switch (PageMap(this.url_path)) {
-			case 'audience':
-				init.container('audience')
-			case 'company':
-				setTimeout(() => {
-					init.company()
-				}, 1000)
-				break
-			case 'salescycle':
-				init.salescycle()
-				break
-			case '/create':
-				init_creative()
-				break
-			case 'customers':
-				init.customers()
-				break
-			case 'product':
-				init.products()
-				break
-			case 'product_2':
-				init.container('product_2')
-				break
-			case 'new':
-				init.create_account()
-				break
-			case 'personnel':
-				init.personnel()	
-				break
-			case 'platforms':
-				init.platforms()	
-				break
-			case 'admin':
-				init.company_view()	
-				break			
+			const run_page = (resolve, reject) => {
+				const init = new InitFuncs()
+				switch (PageMap(this.url_path)) {
+					case 'audience':
+						init.container('audience')
+						break
+					case 'company':
+						setTimeout(() => {
+							init.company()
+						}, 1000)
+						break
+					case 'salescycle':
+						init.salescycle()
+						break
+					case '/create':
+						init_creative()
+						break
+					case 'product':
+						init.products()
+						break
+					case 'product_2':
+						init.container('product_2')
+						break
+					case 'platforms':
+						init.platforms()
+						break		
+				}
+				resolve(init)	
+			}
+
+			const set_page = () => new Promise((resolve, reject) => {
+				return run_page(resolve)
+			})
+
+			set_page()
+				.then(resolve => {
+					setTimeout(()=> {
+						resolve.allIntake(this.params, this.url_path, this.noValLoad, this.debug, this.helpTimer)
+					}, 1000)		
+				})
+
+		} else {
+			switch(PageMap(this.url_path)) {
+				case 'admin':
+					init.company_view()
+					break
+				case 'new':i
+					init.create_account()
+					break
+				case 'personnel':
+					init.personnel()	
+					break
+				case 'customers':
+					init.customers()
+					break
+			}
 		}
 	}
 }

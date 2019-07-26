@@ -193,6 +193,12 @@ class History(FlaskForm):
                                                           ], default='n/a')
 
 
+class Platforms(FlaskForm):
+    test = HiddenField('test')
+
+class Past(FlaskForm):
+    freeform = TextAreaField('freeform')
+
 
 class AddRep(FlaskForm):
     rep_name = StringField('rep_name')

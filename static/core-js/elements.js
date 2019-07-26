@@ -29,8 +29,6 @@ const container_item = (name, id, page) => {
 }
 
 const product_cell = (type, name) => {
-
-
 	switch (type) {
 		case 'input':
 			return input
@@ -38,4 +36,37 @@ const product_cell = (type, name) => {
 		case 'dropdown':
 			break
 	}
+}
+
+
+const platform_row = (name, index) => {
+	const el = `<div class="row platform_row">
+					<div class='col-lg-2 col-sm-12 col-12'>
+						<h5 style="text-align:center;" class="title"><span class="platform_img">${name}</span></h5>
+						<input style="display:none;" type='text' value='${name}' name='platform[${index}]'>
+					</div>
+					<div style="text-align:center;" class='col-lg-4 col-md-4 col-sm-6 col-6'>
+						<h6>Still using?</h6><br>
+						<div class="container row col-12">
+							<div class='hover_box col-lg-5 col-md-5'>
+								<h6>yes</h6>
+							</div>
+							&nbsp;
+							<div class='hover_box col-lg-5 col-md-5'>
+								<h6>no</h6>
+							</div>
+							<input type="text" name="currently_using[${index}]" class="hidden_input hidden">
+						</div>
+					</div>
+					<div class='col-lg-6 col-md-6 col-6'>
+						<h6>How are the results?</h6>
+						<br>
+						<img src='/static/assets/img/frown.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/neutral.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/smile.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/grin.png' class='col-lg-2 col-5'>
+						<input type='text' style='display:none;' class='img_input' name='results[${index}]'>
+					</div>
+				</div>`
+	return el
 }

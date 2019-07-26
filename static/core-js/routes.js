@@ -36,7 +36,7 @@ const get_account_availability = email => {
 
 const get_container = title => {
 	$.get('/container', {page: title}, function(data){
-		$("#container_hide").remove()
+		$("#load_hide").remove()
 		container_handler(data, title)
 	})
 }
@@ -47,8 +47,9 @@ const get_branch_data = () => {
 	})
 }
 
-
-
-
-
-
+const get_platforms = () => {
+	$.get('/get_platforms', function(data){
+		$("#load_hide").remove()
+		platforms_handler(JSON.parse(data))
+	})
+}

@@ -210,7 +210,7 @@ class ViewFuncs:
 				query = "SELECT * FROM dbo.product_list WHERE customer_id = %d and p_id = %s" % (user,view_id)
 				result = sql_to_df(query)
 			elif page == 'past':
-				query = "SELECT history_freeform FROM dbo.history WHERE customer_id = %d" % (user,)
+				query = "SELECT freeform FROM dbo.past WHERE customer_id = %d" % (user,)
 				result = sql_to_df(query)
 			elif page == 'creative':
 				result = 'nah'

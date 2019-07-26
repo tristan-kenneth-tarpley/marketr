@@ -230,7 +230,7 @@ const container_handler = (data, title) => {
 		let name = data[key]['name']
 		
 		let item;
-		if (name != null) {
+		if (name != null && name != "") {
 			item = container_item(name, id, title)
 		} else {
 			item = container_item('still working...', id, title)
@@ -302,6 +302,18 @@ const branch_data_handler = data => {
 	map.build_form()
 }
 
+const platforms_handler = data => {
+	let x = 0
+	for (let i = 0; i < data.length; i++){
+		if (data[i] != ""){
+			let row = platform_row(data[i], x)
+			x++
+			$('.platforms_container').append(row)
+		}
+	}
+	let length = $(".platform_row").length
+	$('#platform_length').val(length)
+}
 
 
 

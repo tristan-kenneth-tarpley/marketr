@@ -1,79 +1,25 @@
-{% from "macros/_macros.html" import form_open, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
+{% from "macros/_macros.html" import form_open, open_tile, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
 
-{% set col_len = "col-lg-2 col-md-2 img_container" %}
 
 <p><em>Select all that apply</em></p>
+
 <div class="row row_cancel">
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Facebook.png">
-    <h6 class="hidden">facebook</h6>
-    {{ render_field(form.facebook, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/GoogleAds.png">
-    <h6 class="hidden">google</h6>
-    {{ render_field(form.google, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Bing.png">
-    <h6 class="hidden">bing</h6>
-    {{ render_field(form.bing, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/twitter.png">
-    <h6 class="hidden">twitter</h6>
-    {{ render_field(form.twitter, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Yelp.png">
-    <h6 class="hidden">yelp</h6>
-    {{ render_field(form.yelp, class="hidden_input") }}
-  </div>
+  {{ open_tile(path="/static/assets/img/Facebook.png", name="facebook", formField=form.facebook) }}
+  {{ open_tile(path="/static/assets/img/GoogleAds.png", name="google", formField=form.google) }}
+  {{ open_tile(path="/static/assets/img/Bing.png", name="bing", formField=form.bing) }}
+  {{ open_tile(path="/static/assets/img/twitter.png", name="twitter", formField=form.twitter) }}
+  {{ open_tile(path="/static/assets/img/Yelp.png", name="yelp", formField=form.yelp) }}
 </div>
+
 <div class="row row_cancel">
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Instagram.png">
-    <h6 class="hidden">instagram</h6>
-    {{ render_field(form.instagram, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/LinkedIn.png">
-    <h6 class="hidden">linkedin</h6>
-    {{ render_field(form.linkedin, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Amazon.png">
-    <h6 class="hidden">amazon</h6>
-    {{ render_field(form.amazon, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/Snapchat.png">
-    <h6 class="hidden">snapchat</h6>
-    {{ render_field(form.snapchat, class="hidden_input") }}
-  </div>
-
-  <div class="{{ col_len }} hb_many   hover_box">
-    <img src="/static/assets/img/YouTube.png">
-    <h6 class="hidden">youtube</h6>
-    {{ render_field(form.youtube, class="hidden_input") }}
-  </div>
+   {{ open_tile(path="/static/assets/img/Instagram.png", name="instagram", formField=form.instagram) }}
+   {{ open_tile(path="/static/assets/img/LinkedIn.png", name="linkedin", formField=form.linkedin) }}
+   {{ open_tile(path="/static/assets/img/Amazon.png", name="amazon", formField=form.amazon) }}
+   {{ open_tile(path="/static/assets/img/Snapchat.png", name="snapchat", formField=form.snapchat) }}
+   {{ open_tile(path="/static/assets/img/YouTube.png", name="youtube", formField=form.youtube) }}
 </div>
 <div class="row">
-  <div class="{{ col_len }} hb_many   hover_box">
-    <br>
-    <h6><none></h6>
-    <p>Haven't tried any yet</p>
-    <br>
-    {{ render_field(form.none, class="hidden_input") }}
-  </div>
+  {{ open_tile(name="Haven't tried any yet", formField=form.none) }}
 </div>
 
 <div class="row">
@@ -86,6 +32,7 @@
   </div>
   <div class="col"></div>
 </div>
+
 
 
 

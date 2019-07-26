@@ -80,7 +80,13 @@
 	  		<p><strong>INSTRUCTIONS:</strong>   Type out each touchpoint/activity your company uses in the various stages and hit <Enter> to add another.   Please ONLY add your <span style='text-decoration: underline;'>existing</span> touchpoints for each step in the buying process, don't sugar coat it with things you <em>want</em> to start doing, but haven't gotten around to yet.</p>"| safe %}
 	  	{% elif page.title == 'history' %}
 	  		{% set open_h2 = "Let's see what you've trying or have tried before"%}
-	  		{% set open_p = "To realize a better future, we must first understand our past..."%}
+			{% set open_p = "To realize a better future, we must first understand our past..."%}
+		{% elif page.title == 'platforms' %}
+			{% set open_h2 = "Nice!  And what was your experience like?" %}
+			{% set open_p = "Tell us more about the paid marketing platforms you're currently using or have used in the past." %}
+		{% elif page.title == 'past' %}
+			{% set open_h2 = "Tell us as much as you can about your past performance." %}
+			{% set open_p = "Marketr uses sophisticated logic to figure out how effective prior campaigns were.  This data will be invaluable in diagnosing marketing opportunities and prescribing options forward." %}
 		{% endif %}
 	{% endif %}
 
@@ -314,14 +320,33 @@
 			};
 			$("#{{name}}").easyAutocomplete(options);
 		</script>
-
 	{% endif %}
-
-
 {% endmacro %}
 
 
 
+{% macro open_tile(path=None, name=None, formField=None) %}
+
+	{% set col_len = "col-lg-2 col-md-2 img_container" %}
+	<div class="table-responsive hover_box hb_many {{ col_len }}">
+		<table class="table">
+			<thead>
+				<tr>
+					<th style="text-align:center;">
+						{% if path != None %}
+							<img src="{{path}}">
+							<h6 class="hidden">{{name}}</h6>
+						{% else %}
+							<p>{{ name }}</p>
+						{% endif %}
+						{{ render_field(formField, class="hidden_input") }}
+					</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+{% endmacro %}
 
 
 {% macro tiles(h6, p, type, name, file_path, sub_name, form) %}
@@ -511,7 +536,7 @@
 <!-- core build -->
 
 {% macro form_body(questions, form, title=None) %}
-	{% if questions != None %}
+	{% if questions != None and questions != {} %}
 		{% for question in questions %}
 			{% set target = questions[question]['q_id'] %}
 			{% set label = questions[question]['label'] %}
@@ -560,15 +585,10 @@
 				{% endif %}
 
 			{% else %}
-
 				{{ open_row() }}
-
 					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=False) }}
-
 				{{ close_row() }}
-
 			{% endif %}
-
 		{% endfor %}
 	{% else %}
 		{{ include(form, title) }}

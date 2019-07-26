@@ -38,7 +38,7 @@
 										{% if _container == 1 %}
 
 											<div id="append_container"></div>
-											<div class="col-lg-6 col-md-6 col-sm-12" id="container_hide">
+											<div class="col-lg-6 col-md-6 col-sm-12" id="load_hide">
 												<div id="loading">
 											        <div class="load-circle"><span class="one"></span></div>
 											    </div>
@@ -55,6 +55,7 @@
 								</div>
 							</div>
 							<div class="onward">
+								<input type="submit" name="submit_button" class="btn btn-neutral" value="skip">
 								{% if page.title == 'audience' %}
 									<input type="submit" name="submit_button" class="btn btn-outline-primary btn-lg" value="+ save and add another audience">
 								{% elif page.title == 'product_2' %}
