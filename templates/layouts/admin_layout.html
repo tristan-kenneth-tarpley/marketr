@@ -1,4 +1,4 @@
-å{% extends "/layouts/layout.html" %}
+{% extends "/layouts/layout.html" %}
 {% from "macros/_admin_macros.html" import admin_sidebar, render_page %}
 
 
@@ -32,7 +32,7 @@
 							  {% endif %}
 							{% endwith %}
 
-							{{ render_page(page.page, page.data, a_reps=page.a_reps, form=form) }}
+							{{ render_page(page) }}
 
 						{% endif %}
 					{% endblock %}

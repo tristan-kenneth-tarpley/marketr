@@ -1,9 +1,9 @@
-{% macro render_page(page, data, a_reps=None, form=None) %}
 
-	{% if page == 'personnel' %}
-		{{ personnel(data) }}
-	{% elif page == 'customers' %}
-		{{ customers(data, a_reps=a_reps, form=form) }}
+{% macro render_page(page) %}
+	{% if page.page == 'personnel' %}
+		{{ personnel(page) }}
+	{% elif page.page == 'customers' %}
+		{{ customers(page) }}
 	{% endif %}
 
 {% endmacro %}
@@ -74,18 +74,18 @@
 		        <p>Manage personnel</p>
 		      </a>
 		    </li>
-		    <li class="{{ 0 | check_active(stage) }}">
-		      <a href="/customers">
-		        <i class="now-ui-icons design_app"></i>
-		        <p>Customers</p>
-		      </a>
-		    </li>
 		{% endif %}
 	  	{% if admin %}
 		    <li class="{{ 0 | check_active(stage) }}">
 		      <a href="/personnel">
 		        <i class="now-ui-icons design_app"></i>
 		        <p>Rocks</p>
+		      </a>
+		    </li>
+		    <li class="{{ 0 | check_active(stage) }}">
+		      <a href="/customers">
+		        <i class="now-ui-icons design_app"></i>
+		        <p>Customers</p>
 		      </a>
 		    </li>
 		{% endif %}
@@ -102,7 +102,7 @@
 
 {# personnel page #}
 
-{% macro personnel(data, error=None) %}
+{% macro personnel(page) %}
 
 <h6>Personnel</h6>
 
@@ -118,7 +118,7 @@
  </nav>
 
 <div class="row">
-	{% for data in data %}
+	{% for data in page.data %}
 		{% set first_name = data[0] %}
 		{% set last_name = data[1] %}
 		{% set email = data[2] %}
@@ -172,8 +172,10 @@
 			        <p>Are you sure you want to remove this user?</p>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
-			        <a class="btn btn-primary" href="/admin/remove/{{id}}">Yes, I'm sure</a>
+					<form action="/admin/remove?a_id={{id}}" method="POST">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancel</button>
+						<button type="submit" class="btn btn-primary" id="remove_user">Yes, I'm sure</button>
+					</form>
 			      </div>
 			    </div>
 			  </div>
@@ -211,7 +213,7 @@
 							<label>Position</label>
 							<input type="text" name="position" class="form-control" value="{{ position }}">
 						</div>
-						{% if permissions != 'owner' %}
+						{% if page.permissions != 'owner' %}
 						<div class="form-group">
 						{% else %}
 						<div class="form-group hidden">
@@ -247,7 +249,7 @@
 
 		        
 
-				{% if permissions != 'owner' %}
+				{% if page.permissions != 'owner' %}
 
 					<button type="button" class="btn btn-neutral text-danger" data-toggle="modal" data-target="#remove_user_{{id}}">
 			          <strong>remove user</strong>
@@ -287,7 +289,7 @@
 {# customers page #}
 
 
-{% macro customers(data, a_reps=None, error=None, form=None) %}
+{% macro customers(page) %}
 
 	<table id="display" style="width:100%;" class="table table-striped">
       <thead>
@@ -298,69 +300,87 @@
           <th style="cursor:pointer;">Email</th>
           <th style="cursor:pointer;">Account Mgr.</th>
         </tr>
-      </thead>
+	  </thead>
+	  
       <tbody>
-		{% for row in data %}
+		{% for row in page.data %}
+				{% set data = page.data %}
 			<tr>
 				{% set id = data[row]['customer_id'] %}
 				{% set primary_contact = data[row]['name'] %}
 				{% set email = data[row]['email'] %}
 				{% set company_name = data[row]['company_name'] %}
-				{% set account_rep = data[row]['account_rep'] %}
+				{% set account_rep = data[row]['mgr'] %}
 				{% set admin_id = data[row]['admin_id'] %}
 				
 
 				<td style="color: white;text-transform: uppercase;font-weight:bold;">
-			        <button type="button" class="btn btn-icon btn-round btn-primary" id="account_reps" data-toggle="modal" data-target="#customer_info_{{id}}">
-			          <i class="now-ui-icons users_single-02"></i>
-			        </button>
+					{% if page.permission_level == 'owner' %}
+						<button type="button" class="btn btn-icon btn-round btn-primary" id="account_reps" data-toggle="modal" data-target="#customer_info_{{id}}">
+							<i class="now-ui-icons users_single-02"></i>
+						</button>
 
-					<div class="modal fade" id="customer_info_{{id}}" tabindex="-1" role="dialog" aria-labelledby="customer_info_{{id}}" aria-hidden="true">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-								<div class="modal-body" style="color:var(--body-copy);">
-									<h6>{{ company_name }} reps</h6>
-									<div class="separator"></div>
-									<ul id="current_reps">
-									</ul>
-									<form action="/customers/{{id}}/add_rep" method="POST">
+						<div class="modal fade" id="customer_info_{{id}}" tabindex="-1" role="dialog" aria-labelledby="customer_info_{{id}}" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body" style="color:var(--body-copy);">
+										<h6>{{ company_name }} reps</h6>
+										<div class="separator"></div>
+										<ul id="current_reps">
+										</ul>
+										<form action="/customers/{{id}}/add_rep" method="POST">
+											<div class="row">
+												
+												<div class="col-lg-2"></div>
+												<div class="col-lg-8 col-md-8 col-sm-12">
+													<p class="text-danger">FRAGILE: only submit if you are making changes.</p>
+													<p class="text-danger">If you do submit, make sure to select acct. manager.</p>
+													<h6 class="center_it">Select Acct. Mgr.</h6>
+													{% for i in range(page.admins | length) %}
+														<div class="form-group">
+															<input  name="account_mgr"
+																	type="radio"
+																	value="{{page.admins[i]['id']}}">
+															<label for="account_mgr">{{page.admins[i]['name']}}</label>
+														</div>
+													{% endfor %}
 
-										<div class="form-group">
-											{{ render_field(form.rep_name, id="get_admins") }}
-										</div>
-										
-										{% set route = '/get_admins' %}
-										<script type="text/javascript">
-											var options = {
-											  url: "{{route}}",
-											  getValue: "{{ route | remove_first_char }}",
-											  list: {	
-											    match: {
-											      enabled: true
-											    }
-											  },
-											  theme: "square"
-											};
-											$("#get_admins").easyAutocomplete(options);
-										</script>
+													<div class="separator"></div>
 
-										<input type="submit" value="add" class="btn btn-primary">
+													<h6 class="center_it">Who else do you want on the account?</h6>
 
-									</form>
+													{% for i in range(page.admins | length) %}
+														<div class="form-group">
+															<input  value="{{page.admins[i]['id']}}"
+																	name="add_admin[{{loop.index-1}}]"
+																	type="checkbox">
+
+															<label for="test">{{page.admins[i]['name']}}</label>
+														</div>
+													{% endfor %}
+												</div>
+												<div class="col-lg-2"></div>
+											</div>
+											<div style="text-align:center;" class="container">
+												<input type="submit" value="add" class="btn btn-primary">
+											</div>
+
+										</form>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					{% endif %}
 				</td>
-				<td>{{ company_name }}</td>
+				<td><a href="/customers/{{id}}">{{ company_name }}</a></td>
 				<td>{{ primary_contact }}</td>
 				<td>{{ email }}</td>
-				<td>{{ account_rep }}</td>
+				<td>{{ account_rep if account_rep | not_none else "" }}</td>
 			</tr>
 		{% endfor %}
         
@@ -389,6 +409,8 @@
 {% endmacro %}
 
 
+
+
 {% macro form_modal(copy=None, header=None, action=None, name=None, id='0') %}
 
 <div class="modal fade" id="{{ name }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -408,6 +430,8 @@
 </div>
 
 {% endmacro %}
+
+
 
 {% macro create_form(form, name, id='0') %}
 
@@ -443,17 +467,9 @@
 				<input type="number" name="phone" id="phone{{id}}" class="form-control" placeholder="5555555555">
 			</div>
 
-			<script>
-			var cleave = new Cleave('#phone{{id}}', {
-			    delimiter: '-',
-			    blocks: [3, 3],
-			    uppercase: true
-			});
-			</script>
-
 			<div class="form-group">
 				<label>Position</label>
-				<input type="number" name="position" class="form-control" placeholder="***">
+				<input type="text" name="position" class="form-control" placeholder="***">
 			</div>
 			<div class="form-group">
 				<label>Permissions</label>

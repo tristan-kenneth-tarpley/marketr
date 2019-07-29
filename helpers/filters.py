@@ -86,6 +86,12 @@ def customPages(page):
 	else:
 		return False
 
+def not_none(input):
+	if input != None:
+		return True
+	else:
+		return False
+
 
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active
@@ -99,6 +105,7 @@ app.jinja_env.filters['splash_page'] = splash_page
 app.jinja_env.filters['tiles'] = tiles
 app.jinja_env.filters['perc_array'] = perc_array
 app.jinja_env.filters['customPages'] = customPages
+app.jinja_env.filters['not_none'] = not_none
 
 
 

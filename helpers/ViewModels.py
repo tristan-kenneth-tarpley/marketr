@@ -1,10 +1,12 @@
 from flask import render_template, redirect, url_for
-from data.db import *
+from data.db import execute, sql_to_df
 import time
 import datetime
 import zipcodes
 from bleach import clean
+import pandas as pd
 from helpers.UserService import UserService
+from helpers.AdminService import AdminService
 
 
 class SplashViewModel:
@@ -22,7 +24,7 @@ class SplashViewModel:
 		self.paragraph = paragraph.replace("`", "'")
 		cursor.close()
 
-	def splashes():
+	def splashes(self,):
 		return ['begin', 'competitors', 'company', 'audience', 'product', 'salescycle', 'history']
 
 
@@ -107,43 +109,46 @@ class IntakeViewModel:
 
 
 class AdminViewModel:
-	def __init__(self, permission_level, page):
+	def __init__(self,
+				permission_level: str,
+				page: str,
+				user=None,
+				admin=None) -> None:
+
 		self.permission_level = permission_level
 		self.page = page
+		self.admin_service = AdminService()
+		self.admin = admin
+		self.admins = self.admin_service.get_admins()
+		self.switch(page)()
 
-		if page == 'personnel':
-			tup = ()
-			query = 'SELECT first_name, last_name, email, permissions, id, position, phone_num FROM dbo.admins'
-			data, cursor = execute(query, True, tup)
-			data = data.fetchall()
-			cursor.close()
-			self.data = data
+	def switch(self, case: str) -> None:
+		switcher = {
+			"personnel": self.personnel,
+			"customers": self.customers,
+			"home": self.home,
+			"acct_mgmt": self.acct_mgmt
+		}
+		return switcher[case]
+	
+	def acct_mgmt(self, customer_id):
+		self.test = 'hi'
 
-		elif page == 'customers':
-			query = """
-				select
-					concat(cb.first_name, ' ', cb.last_name) as name,
-					cb.email,
-					cb.company_name,
-					cb.id
+	def personnel(self) -> None:
+		self.data = self.admin_service.get_admin_info()
 
-				from dbo.customer_basic as cb
-			"""
-			data, cursor = execute(query, True, ())
-			data = data.fetchall()
+	def customers(self) -> None:
+		if self.permission_level != "owner":
+			conditional = " WHERE admin_id = %s" % (self.admin,)
+		else:
+			conditional = None
+			
+		self.data = self.admin_service.get_customers(conditional=conditional)
 
-			if len(data) > 1:
-				columns = ['name', 'email', 'company_name', 'customer_id']
-				return_data = UserService.parseCursor(data, columns)
+	def home(self) -> None:
+		query = sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + self.admin + "' ORDER BY company_name ASC")
+		self.data = query
 
-			self.data = return_data
-			cursor.close()
-
-
-		elif page == 'home':
-			tup = ()
-			query = sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
-			self.data = query
 
 
 
@@ -170,6 +175,7 @@ class ViewFuncs:
 		return render_template('layouts/admin_layout.html', page=page, sub=True, owner=owner, admin=admin, manager=manager, form=form)
 
 	def ValidSubmission(form=None, method=None):
+		print(form.csrf_token.data)
 		if method == 'POST' and form.validate_on_submit():
 			return True
 		else:

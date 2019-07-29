@@ -179,10 +179,11 @@ const admin_availability_handler = (data) => {
 
 const account_reps_handler = (data) => {
 	data = JSON.parse(data)
-	Object.keys(data).forEach(function(key){
-		let rep = rep_name(data[key].name)
-		$('#current_reps').append(rep)
-	})
+	console.log(data)
+	// Object.keys(data).forEach(function(key){
+	// 	let rep = rep_name(data[key].name)
+	// 	$('#current_reps').append(rep)
+	// })
 }
 
 

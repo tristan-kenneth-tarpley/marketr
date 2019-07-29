@@ -487,11 +487,12 @@ const PageViewController = class {
 				})
 
 		} else {
+			const init = new InitFuncs()
 			switch(PageMap(this.url_path)) {
 				case 'admin':
 					init.company_view()
 					break
-				case 'new':i
+				case 'new':
 					init.create_account()
 					break
 				case 'personnel':

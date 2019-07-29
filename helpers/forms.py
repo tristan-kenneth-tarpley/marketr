@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList
+from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList, BooleanField
 
 class CustomerLogin(FlaskForm):
     email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
@@ -192,7 +192,6 @@ class History(FlaskForm):
                                                           ('$100,000+', '$100,000+'),
                                                           ], default='n/a')
 
-
 class Platforms(FlaskForm):
     test = HiddenField('test')
 
@@ -200,7 +199,12 @@ class Past(FlaskForm):
     freeform = TextAreaField('freeform')
 
 
+
+# admin forms
+
+class AdminLogin(FlaskForm):
+    email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
+    password = PasswordField('password', validators=[validators.InputRequired()])
+
 class AddRep(FlaskForm):
-    rep_name = StringField('rep_name')
-
-
+    rep_name = BooleanField()

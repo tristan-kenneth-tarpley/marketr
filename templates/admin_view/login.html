@@ -1,4 +1,5 @@
 {% extends "layouts/login_layout.html" %}
+{% from "/macros/_macros.html" import render_field %}
 
 {% block title %}
 <title>Market(r) - Admin Login</title>
@@ -9,7 +10,7 @@
 {% block form %}  
 
 <form method="post" action="{{ url_for('admin_login') }}">
-
+    {{ form.csrf_token }}
     <div class="authSeparator">
       <hr>
 
@@ -17,13 +18,11 @@
 
     <fieldset>
       <div class="fieldCont">
-        <input placeholder="Your e-mail address" required="required" type="email" name="username" id="user_email">
-        <!-- <label class="over">Your e-mail address</label> -->
+        {{ render_field(form.email, placeholder="Your e-mail address") }}
       </div>
 
       <div class="fieldCont last">
-        <input autocomplete="off" placeholder="password" required="required" type="password" name="password" id="user_password">
-        <!-- <label class="over">Password</label> -->
+        {{ render_field(form.password, placeholder="password", id="user_password") }}
       </div>
     </fieldset>
 

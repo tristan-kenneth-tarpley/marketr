@@ -7,21 +7,6 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from helpers.LoginHandlers import *
 
-
-@app.route('/mockup')
-@login_required
-def mockup():
-    return render_template('sandbox.html')
-
-
-@app.route('/testing')
-@login_required
-def testing():
-    view = request.args.get('view')
-    page = Page(session['user'], view, session['user_name'])
-    return render_template('layouts/intake_layout.html', page=page)
-
-
 @app.route('/forgot')
 def forgot():
     return render_template('forgot.html', send=True)
@@ -96,8 +81,9 @@ def logout():
     session['logged_in'] = False
     session.clear()
 
-    if request.args.get('admin'):
-        return redirect(url_for('admin_login_view'))
+    if request.args.get('admin') != None:
+        if request.args.get('admin'):
+            return redirect(url_for('admin_login'))
     else:
         return redirect(url_for('index'))
 
