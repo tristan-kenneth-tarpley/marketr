@@ -1,0 +1,144 @@
+{% from "macros/_macros.html" import render_field %}
+{% macro todo(page) %}
+    {% macro view_tasks(page) %}
+        {% for task in range(page.tasks | length) %}
+
+            {% set index = task | string %}
+            {% set title = page.tasks[index]['task_title'] %}
+            {% set completed = page.tasks[index]['complete_binary'] %}
+            
+            {% if completed == 0 %}
+                {% set status = False %}
+            {% elif completed == 1 %}
+                {% set status = True %}
+            {% endif %}
+
+            {{ tr(title=title, completed=status) }}
+
+        {% endfor %}
+    {% endmacro %}
+    {% macro tr(title=None, completed=False) %}
+        <tr class="editable_task" style="line-height: 5em;">
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input task_complete" type="checkbox" {{ 'checked' if completed == True else '' }}>
+                        <span class="form-check-sign"></span>
+                    </label>
+                </div>
+            </td>
+            <td class="task_title text-left">
+                {{ title | clean_chars }}
+            </td>
+            <td class="td-actions text-right">
+                {#<button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                    <i class="now-ui-icons ui-2_settings-90"></i>
+                </button>#}
+                <button type="button" id="remove_task" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                    <i class="now-ui-icons ui-1_simple-remove"></i>
+                </button>
+            </td>
+        </tr>
+    {% endmacro %}
+
+    {% macro new_task_modal(page) %}
+  
+            <div class="modal fade" id="task_modal" aria-labelledby="exampleModalLabel" aria-hidden="true" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Task title</strong></p>
+                            {{ render_field(page.task_form.title, id="task_input", class="form-control") }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-neutral" data-dismiss="modal">Close</button>
+                            <button type="button" id="add_task" data-dismiss="modal" class="btn btn-primary">Add task</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    {% endmacro %}
+
+    <div class="card card-tasks todo">
+        <div class="card-header">
+            <h5 class="card-category">Tasks</h5>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#task_modal" id="new_task">New task</button>
+            {{ new_task_modal(page) }}
+        </div>
+        <div class="card-body" style="padding-top: 0;">
+            <div class="table-full-width table-responsive">
+                <table class="table">
+                    <tbody id="task_body">
+                        {{view_tasks(page)}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+
+{% macro messages(page) %}
+
+    {% macro view_message(from=None, copy=None, date=None) %}
+        <div class="chat_label">
+            <p><strong>{{ date }}</strong></p>
+        </div>
+        <div class="chat_box {{ 'chat-helper' if from == 'helper' else 'chat-user' }}">
+            {{ copy | clean_chars }}
+        </div>
+    {% endmacro %}
+
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-category">Make sure to respond promptly!</h5>
+            <h4 class="card-title">Messages</h4>
+        </div>
+        <div class="card-body">
+            <div class="chat">
+                {% for message in range(page.messages | length) %}
+                    {% set index = message | string %}
+                    {% set message_string = page.messages[index]['message_string'] %}
+                    {% set admin_id = page.messages[index]['admin_id'] %}
+                    {% set date = page.messages[index]['timestamp'] %}
+
+                    {% if page.view_type == 'admin' %}
+                        {% if page.messages[index]['from'] == 'admin' %}
+                            {% set from = 'user' %}
+                        {% else %}
+                            {% set from = 'helper' %}
+                        {% endif %}
+                    {% else %}
+                        {% if page.messages[index]['from'] == 'customer' %}
+                            {% set from = 'user' %}
+                        {% else %}
+                            {% set from = 'helper' %}
+                        {% endif %}
+                    {% endif %}
+
+                    {{ view_message(from=from, copy=message_string, date=date) }}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="input-group chat-section">
+                <input class="chat_bar form-control" id="msg" placeholder="Market(r)">
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <button id="send_msg" class="btn btn-icon btn-fab btn-round btn-primary send_button"><i class="now-ui-icons ui-1_send"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

@@ -1,0 +1,178 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta itemprop="name" content="Market(r)">
+    <meta itemprop="description" content="Replacing ad agencies with data science.">
+    <meta property="og:title" content="Market(r)">
+    <meta property="og:description" content="Replacing ad agencies with data science.">
+    <meta property="og:site_name" content="Market(r)">
+    <meta property="og:type" content="website">
+	   <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0001, minimum-scale=1.0001, user-scalable=no">
+    <link rel="stylesheet" media="screen" href="/static/branding/style/login.css">
+    <link rel="stylesheet" media="screen" href="/static/assets/css/styles.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139164161-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-139164161-3');
+    </script>
+    <style type="text/css">
+
+        #loading {
+          position: absolute;
+          width: 50px;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          height: 50px;
+          background: transparent;
+          z-index: 99999;
+          margin: 20% auto;
+        }
+
+        .load-circle {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+        .load-circle span {
+          display: inline-block;
+          width: 64px;
+          height: 64px;
+        }
+        .load-circle span:after {
+          content: " ";
+          display: block;
+          width: 46px;
+          height: 46px;
+          margin: 1px;
+          border-radius: 50%;
+          border: 5px solid #62cde0;
+          border-color: #62cde0 transparent #62cde0 transparent;
+          animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+
+        @keyframes lds-dual-ring {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        
+
+        #hovers {
+            transition-duration: .5s;
+            background-color:#62cde0;
+            border-radius: 100px;
+            border: 3px solid transparent;
+        }
+        #hovers:hover {
+            opacity: .7;
+        }
+        .buttonCont {
+            background-color: transparent !important;
+        }
+        .notices {
+            width: 100%;
+            vertical-align: middle;
+            text-align: center;
+            margin-top: 2%;
+        }
+        .notices h1 {
+            font-size: 120%;
+        }
+        .home_container a {
+            position: absolute;
+            left: 95%;
+            font-size: 40px;
+            color: black;
+            opacity: .3;
+            transition-duration: .2s;
+        }
+        .home_container a:hover {
+            opacity: .2;
+            text-decoration: none;
+        }
+        .fieldCont input {
+            transition-duration: .3s;
+        }
+        .fieldCont input::placeholder {
+            opacity: .6;
+            text-transform: uppercase;
+            font-size: 105%;
+            position: absolute;
+            top: 0;
+            font-weight: bold;
+        }
+        .fieldCont input:focus {     
+              border-color: #62cde0;
+              box-shadow: 0 0 5px 1px rgba(0,188,255,.25);
+              outline: none;
+        }
+    </style>
+
+    {% block title %}{% endblock %}
+  </head>
+  <body>
+        <div id="body-cont">
+            <div class="home_container">
+                <a href="/" class="button btn back_home">x</a>
+            </div>
+
+            <div id="loading">
+                <div class="load-circle"><span class="one"></span></div>
+            </div>
+
+            <main>
+                <div id="content-ready" style="visibility:hidden;">
+                    <div class="mCont">
+                      <div class="notices">
+                        {% if conf %}
+                            <h1>Your email is confirmed! Login again to begin.</h1>
+                        {% endif %}
+                        {% if reset %}
+                            <h1>Your password has been reset. Login again to begin.</h1>
+                        {% endif %}
+                        {% if error %}
+                            <h1>{{ error }}</h1>
+                        {% endif %}
+                        </div>
+                      <div class="signIn formHeading">{% block header %}{% endblock %}</div>
+
+                            {% block form %}
+
+                        {% endblock %}
+                        <div class="otherLinks">
+                        {% block otherLinks%}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+    </body>
+
+<script src="/static/branding/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript"></script>
+  <script src="/static/core-js/helpers.js"></script>
+  <script src="/static/core-js/elements.js"></script>
+  <script src="/static/core-js/eventhandlers.js"></script>
+  <script src="/static/core-js/route_handlers.js"></script>
+  <script src="/static/core-js/routes.js"></script>
+  <script src="/static/core-js/controller.js"></script>
+  <script type="text/javascript">
+$(window).on("load", function() {
+    $("#loading").fadeOut("fast");
+    setTimeout(function(){
+        $('#content-ready').css('visibility', 'visible')
+    }, 300)
+});
+</script>
+</html>

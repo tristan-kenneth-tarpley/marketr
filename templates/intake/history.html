@@ -1,0 +1,40 @@
+{% from "macros/_macros.html" import form_open, open_tile, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
+
+
+<p><em>Select all that apply</em></p>
+
+<div class="row row_cancel">
+  {{ open_tile(path="/static/assets/img/Facebook.png", name="facebook", formField=form.facebook) }}
+  {{ open_tile(path="/static/assets/img/GoogleAds.png", name="google", formField=form.google) }}
+  {{ open_tile(path="/static/assets/img/Bing.png", name="bing", formField=form.bing) }}
+  {{ open_tile(path="/static/assets/img/twitter.png", name="twitter", formField=form.twitter) }}
+  {{ open_tile(path="/static/assets/img/Yelp.png", name="yelp", formField=form.yelp) }}
+</div>
+
+<div class="row row_cancel">
+   {{ open_tile(path="/static/assets/img/Instagram.png", name="instagram", formField=form.instagram) }}
+   {{ open_tile(path="/static/assets/img/LinkedIn.png", name="linkedin", formField=form.linkedin) }}
+   {{ open_tile(path="/static/assets/img/Amazon.png", name="amazon", formField=form.amazon) }}
+   {{ open_tile(path="/static/assets/img/Snapchat.png", name="snapchat", formField=form.snapchat) }}
+   {{ open_tile(path="/static/assets/img/YouTube.png", name="youtube", formField=form.youtube) }}
+</div>
+<div class="row">
+  {{ open_tile(name="Haven't tried any yet", formField=form.none) }}
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <p style="text-align: center;"><strong>What is your average digital ad spend every month?</strong></p>
+  </div>
+  <div class="col"></div>
+  <div class="col">
+      {{ render_field(form.digital_spend, class="margin_auto form-control") }}
+  </div>
+  <div class="col"></div>
+</div>
+
+
+
+
+
+

@@ -1,0 +1,73 @@
+{% extends "layouts/layout.html" %}
+{% from "macros/_macros.html" import form_open, breadcrumb, left_nav, form_body, container, product_table, intro_copy %}
+
+{% block title %}
+<title>Market(r) - {{ page.title | capitalize }}</title>
+{% endblock %}
+
+{% if not page.title | customPages %}
+	{% set _container = page.questions['0']['container_binary'] %}
+{% endif %} 
+
+{% block content %}
+
+	{{ left_nav(page.stage, True) }}
+	{% include "/topbar/topbar-customer.html" %}
+
+	<div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="row row_cancel">
+			<div class="col-md-12">
+				<div class="card" style="padding: 5%;">
+					<div id="loading">
+				        <div class="load-circle"><span class="one"></span></div>
+				    </div>
+				    <div id="content-ready" style="visibility:hidden;">
+						{{ form_open(page.title, request.args.get('home'), form, view_id=request.args.get('view_id')) }}
+							<div class="card-header">
+									{{ breadcrumb(page.title, page.stage, page.title) }}
+								<div class="yellow_border">						
+									{{ intro_copy(1, page) }}
+									{{ intro_copy(2, page) }}
+								</div>
+							</div>
+		                    <div class="">
+								<div class="card-body all-icons">
+									<div class="container-fluid">
+										{% if _container == 1 %}
+
+											<div id="append_container"></div>
+											<div class="col-lg-6 col-md-6 col-sm-12" id="load_hide">
+												<div id="loading">
+											        <div class="load-circle"><span class="one"></span></div>
+											    </div>
+											</div>
+
+										{% endif %}
+
+										{{ form_body(page.questions, form, title=page.title) }}
+
+										{% if page.title == 'product' %}
+											{{ product_table(form) }}
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="onward">
+								<input type="submit" name="submit_button" class="btn btn-neutral" value="skip">
+								{% if page.title == 'audience' %}
+									<input type="submit" name="submit_button" class="btn btn-outline-primary btn-lg" value="+ save and add another audience">
+								{% elif page.title == 'product_2' %}
+									<input type="submit" name="submit_button" class="btn btn-outline-primary btn-lg" value="update next product">
+								{% endif %}
+								<input type="submit" class="btn btn-secondary btn-lg" name="submit_button" value="Save and continue">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

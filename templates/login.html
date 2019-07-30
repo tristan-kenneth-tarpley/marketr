@@ -1,4 +1,5 @@
-{% extends "login_layout.html" %}
+{% extends "layouts/login_layout.html" %}
+{% from "macros/_macros.html" import render_field %}
 
 {% block title %}
 <title>Market(r) - Login</title>
@@ -8,8 +9,8 @@
 
 {% block form %}  
 
-  <form class="new_user" id="new_user" action="{{ url_for('customer_login') }}" accept-charset="UTF-8" method="post">
-
+  <form class="new_user" id="new_user" action="{{ url_for('customer_login') }}" accept-charset="UTF-8" method="POST">
+    {{ form.csrf_token }}
     <div class="authSeparator">
       <hr>
 
@@ -17,13 +18,10 @@
 
     <fieldset>
       <div class="fieldCont">
-        <input placeholder="Your e-mail address" required="required" type="email" name="username" id="user_email">
-        <!-- <label class="over">Your e-mail address</label> -->
+        {{ render_field(form.email, placeholder="email") }}
       </div>
-
       <div class="fieldCont last">
-        <input autocomplete="off" placeholder="password" required="required" type="password" name="password" id="user_password">
-        <!-- <label class="over">Password</label> -->
+        {{ render_field(form.password, placeholder="password") }} 
       </div>
     </fieldset>
 

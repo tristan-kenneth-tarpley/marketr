@@ -1,0 +1,51 @@
+:root {
+
+	/* colors */
+  --primary: #62cde0; 
+  --secondary: #ca7d66;
+  --body-copy: rgb(87,102,126);
+  --panel-bg: #ebecf1;
+  --label-color: rgba(87,102,126, .9);
+
+  /* chat */
+  --client-chat: rgb(206, 214, 223);
+  --admin-chat: var(--primary);
+  --label_margin: -30px;
+
+  	/* buttons */
+  --btn-primary: #ca7d66;
+  --btn-secondary: #62cde0;
+  --btn-outline-thickness: 2px;
+  --btn-outline-padding: 10px 22px;
+
+	/* fonts */
+  --primary-font: "Montserrat", sans-serif !important;
+  --secondary-font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --alt-font: "Pacifico", sans-serif;
+
+  	/* nav styles */
+  --left-nav: #000E19;
+  --top-nav-gradient: linear-gradient(to right, #a2e1ed 0%, var(--primary) 60%, #28b4cd 100%);
+  --webkit-top-nav-gradient: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788));
+
+		/* breadcrumb */
+		--breacrumb-active: #57667E;
+		--breadcrumb-not-active: var(--secondary);
+
+  	/* padding & layout control */
+  --row-padding: 3%;
+  --inset-padding: 10%;
+
+  	/* input controls */
+  --input-color: rgba(0,0,0,.7);
+  --input-color-focus: #2c2c2c;
+  --input-border-color: #e5e5e5;
+  --input-border-color-focus: var(--secondary);
+  --input-border-weight: 1px;
+
+
+	/* box shadows */
+  --inset-box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
+  --sm-box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
+  --md-box-shadow: 0 4px 6px 0 hsla(0,0%,0%,0.2);
+}

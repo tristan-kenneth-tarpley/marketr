@@ -1,0 +1,57 @@
+{% extends "/layouts/layout.html" %}
+{% from "macros/_admin_macros.html" import admin_sidebar, render_page %}
+
+
+{% block title %}
+<title>
+	Market(r) - Admin
+</title>
+{% endblock %}
+{% block content %}
+	<div class="main-panel">
+		{{ admin_sidebar('test', owner, admin, manager) }}
+		{% include "/topbar/topbar-admin.html" %}
+		<div class="panel-header panel-header-sm">
+		</div>
+		<div class="content">
+			<div class="append_to">
+
+
+				<div class="card">
+					<style>
+						.card {
+							padding: 5%;
+						}
+					</style>
+
+					<div id="loading">
+						<div class="load-circle"><span class="one"></span></div>
+					</div>
+
+					<div id="content-ready" style="visibility: hidden;">
+						<div class="container-fluid">
+						{% block admin_content %}
+							{% if sub %}
+								
+								{% with messages = get_flashed_messages() %}
+								{% if messages %}
+									<ul class=flashes>
+									{% for message in messages %}
+									<p>{{ message }}</p>
+									{% endfor %}
+									</ul>
+								{% endif %}
+								{% endwith %}
+
+								{{ render_page(page) }}
+
+							{% endif %}
+					{% endblock %}
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

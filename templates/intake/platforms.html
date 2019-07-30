@@ -1,0 +1,14 @@
+{% from "macros/_macros.html" import form_open, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
+
+<div class="col" id="load_hide">
+  <div id="loading">
+    <div class="load-circle"><span class="one"></span></div>
+  </div>
+</div>
+
+
+<div class="platforms_container">
+  {{ form.test }}
+  <input type="number" class="hidden" name="platform_length" id="platform_length">
+</div>
+

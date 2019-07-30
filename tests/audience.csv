@@ -1,0 +1,47 @@
+label,answer_id,page_id,order_on_page,score_weight_factor_0-10,Why_are_you_asking_binary,why_label,What_does_this mean_binary,what_label,Required_binary,prereq_tag_combo_id_binary,prereq_tag_combo_id_needed,label_p,horizontal_separator_binary
+,,4,1,0,0,,0,,0,0,,Think of a GREAT customer.  Use them as a model for this first persona and describe them by answering the following questions.  ,0
+"Let's give this audience persona a name. Each of your audiences can have different names. Remember that this isn't supposed to be ALL of your customers—rather, a specific group of customers. You'll have a chance to add others at the end!",a0021,4,2,,,,0,,0,0,0,,0
+Gender (select all that apply),a0022,4,3,1,0,,0,,0,0,,,0
+Target Age Groups (select all that apply),a0023,4,4,1,0,,0,,0,0,,,0
+"In what city, state, US county, or country are they mostly located?",a0024,4,5,1,0,,0,,0,0,,,0
+How big is the company they work for?  ,a0025,4,6,1,0,,0,,0,2,"tag0008
+tag0009
+tag0010
+tag0011
+tag0012
+tag0013
+tag0014",,0
+,,4,7,1,0,,0,,0,0,,,1
+Time for the fun part!  Quickly answer each question with how you would describe this person to a friend:,,4,8,1,0,,0,,0,0,,,0
+FORMALITY,a0026,4,9,1,0,,0,,0,0,,How formally would you speak with this person?,0
+WHO ARE THEY BUYING THIS FOR?,a0027,4,10,1,0,,0,,0,0,,For themselves or for their team or someone else?,0
+TECH SAVVY,a0028,4,11,1,0,,0,,0,0,,How comfortable is this person with new technologies and programs?,0
+DECISION-MAKING AUTHORITY,a0029,4,12,1,0,,0,,0,2,"tag0008
+tag0009
+tag0010
+tag0011
+tag0012
+tag0013
+tag0014","How far removed is this person from making ""Buy"" decisions?",0
+DETAIL ORIENTED VS. BIG PICTURE,a0030,4,13,1,0,,0,,0,2,"tag0008
+tag0009
+tag0010
+tag0011
+tag0012
+tag0013
+tag0014","Is this person ""in the weeds"" or stays at the 30,000 foot level?",0
+DRIVING MOTIVE,a0031,4,14,1,0,,0,,0,2,"tag0008
+tag0009
+tag0010
+tag0011
+tag0012
+tag0013
+tag0014",What is the primary motivator behind this purchase?,0
+Why will your target audience most likely buy from you? (select one),a0032,4,15,1,0,,0,,0,0,,,0
+,,4,16,,0,,0,,0,0,,,1
+How does your target buyer feel right BEFORE they buy your product/service? ,a0033,4,17,3,0,,0,,0,0,,"(select all that apply, or if none fit, then describe in the available text box in the follow-up question)",0
+Tell us more about that. Describe in terms of a common user story why they are buying your product (emphasize what they're feeling).,a0034,4,18,3,0,,0,,0,0,,,0
+,,4,19,,0,,0,,0,0,,,1
+How does your target buyer feel right AFTER they buy your product/service? ,a0035,4,20,3,0,,0,,0,0,,"(select all that apply, or if none fit, then describe in the available text box in the follow-up question)",0
+Tell us more about that. Describe in terms of a common user story of what they do and how they feel after purchasing/using your product/service. (emphasize what they're feeling).,a0036,4,21,3,0,,0,,0,0,,,0
+,,,,,,,,,,,,,0

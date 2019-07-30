@@ -1,0 +1,46 @@
+{% extends "layouts/login_layout.html" %}
+{% from "macros/_macros.html" import render_field %}
+{% block title %}
+<title>Market(r) - Create Account</title>
+{% endblock%}
+
+
+{% block header %}
+<h2>Let's get started.</h2>
+<div class="authSeparator">
+<hr>
+</div>
+<p>You'll want to set aside about 20 minutes right now for us to build your marketing plan. Don't worry&mdash;your progress will be saved as you go through. You can always log back in and finish at another time.</p><br>
+<p>At the end, we'll have all of the information we need to grow your business beyond your wildest expectations.</p>
+{% endblock%}
+
+{% block form %}
+
+    <form class="new_user" id="new_user" action="{{ url_for('new') }}" accept-charset="UTF-8" method="post">
+    {{ form.csrf_token }}
+      <fieldset>
+        
+        <div class="fieldCont">
+              {{ render_field(form.email, placeholder="email", id="new_email") }}
+        </div>
+        <div class="fieldCont">
+              {{ render_field(form.password, placeholder="password") }} 
+        </div>
+        <div class="fieldCont last">
+              {{ render_field(form.confirm, placeholder="confirm password") }} 
+        </div>
+
+      </fieldset>
+
+      <div class="formActions">
+        <div class="buttonCont">
+          <input id="hovers" class="submit_button" type="submit" name="commit" value="Let's go" data-disable-with="Log in" disabled>
+        </div>
+      </div>
+    </form>
+
+{% endblock %}
+
+{% block otherLinks %}
+<a href="/login">Customer Login</a>
+{% endblock %}

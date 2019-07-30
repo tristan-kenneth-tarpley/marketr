@@ -1,14 +1,19 @@
 import pandas as pd
 import pyodbc
 import time
+from passlib.hash import sha256_crypt
+from app import *
 
-server = 'tarpley.database.windows.net'
-database = 'marketr'
-username = 'tristan'
-password = 'Fiverrtemp!'
-driver= '{ODBC Driver 13 for SQL Server}'
+app.config.from_pyfile('config.cfg')
 
-connStr = 'DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password
+DB_SERVER = app.config['DB_SERVER']
+DATABASE = app.config['DATABASE']
+USERNAME = app.config['USERNAME']
+DB_PASSWORD = app.config['DB_PASSWORD']
+DRIVER= app.config['DB_DRIVER']
+
+connStr = 'DRIVER='+DRIVER+';SERVER='+DB_SERVER+';PORT=1433;DATABASE='+DATABASE+';UID='+USERNAME+';PWD='+ DB_PASSWORD
+
 
 def init_db():
 	try:
@@ -29,11 +34,12 @@ def init_db():
 	    		time.sleep(1)
 
 
-def execute(query, returned, tup):
+def execute(query, returned, tup, commit=False):
 
 	db = init_db()
 
 	cursor = db.cursor()
+	cursor.commit()
 	debug_query = query.replace("?", "%s")
 	# debug_query = query % tup
 	retry_flag = True
@@ -58,6 +64,11 @@ def execute(query, returned, tup):
 			retry_count = retry_count + 1
 			time.sleep(1)
 
+	if commit == True:
+		db.commit()
+
+		
+
 def sql_to_df(x):
 	retry_flag = True
 	retry_count = 0
@@ -75,6 +86,9 @@ def sql_to_df(x):
 
 
 
+		
+
+	# def update_password(oldpassword, newpassword)
 
 
 

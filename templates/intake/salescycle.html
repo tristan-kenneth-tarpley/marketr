@@ -1,291 +1,169 @@
-{% extends "layout.html" %}
-{% from "_macros.html" import form_open %}
-
-
-{% block title %}
-<title>
-  Market(r) - Sales Cycle
-</title>
-{% endblock %}
+{% from "macros/_macros.html" import form_open, text_input, breadcrumb, left_nav, form_body, popout, create_element, autocomplete, render_field %}
 
 
 
-{% block content %}
-  {% with company="active" %}
-    {% include "/sidebar/sidebar-intake.html" %}
-  {% endwith %}
-  {% include "/topbar/topbar-customer.html" %}
-      <!-- End Navbar -->
-      <div class="panel-header panel-header-sm">
-      </div>
-      <div class="content">
-        <div class="append_to">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card" style="padding: 5%;">
-                <div class="sub_menu">
-                  <div class="step">
-                    <a href="/competitors" class="step_name">Competitors</a>
-                  </div>
-                  <div class="step ">
-                    <a href="/competitors/company" class="step_name ">Company</a>
-                  </div>
-                  <div class="step">
-                    <a href="/competitors/company/audience" class="step_name">Audience</a>
-                  </div>
-                  <div class="step">
-                    <a href="/competitors/company/audience/product" class="step_name">Product</a>
-                  </div>
-                  <div class="step step_active">
-                    <a href="/competitors/company/audience/product/product_2/salescycle" class="step_name sub_active">Sales Cycle</a>
-                  </div>
-                </div><br><br>
-                <div class="card-header">
-                 {{ form_open('nice', request.args.get('home')) }}
-                    <div class="row yellow_border row_cancel">
-                      <h6 class="title">Finally, let's map out the...</h6>
-                      <h2 class="blue_header">Customer Journey Through the Sales Cycle</h2>
-                      <p>Below are the 5 stages of the common buying process: Awareness, Evaluation, Conversion, Retention, and Referral.  These are universal steps whether we're talking about a food truck, an online shoe store, or a service-based consulting business.</p>
-                      <p><strong>INSTRUCTIONS:</strong>   Type out each touchpoint/activity your company uses in the various stages and hit <Enter> to add another.   Please ONLY add your <span style="text-decoration: underline;">existing</span> touchpoints for each step in the buying process, don't sugar coat it with things you <em>want</em> to start doing, but haven't gotten around to yet.  </p>
-                      <br>
-                    </div>
-
-
-                  <div class="reveal_container">
-                    <a class="reveal_button continue">Let's do this</a>
-                  </div>
-
-                  <div class="reveal">  
-
-
-
-                    <h2>AWARENESS</h2>
-                    <div class="row cycle_container">
-                      <div class="awareness stage_container col-lg-7 col-md-7 col-sm-12">
-                        <p>How do your customers become aware about your products & services?</p>
-                        <div class="left_stage">
-                          <input type="text" class="first" placeholder="<add an item>" name="awareness_1">
-                          <input placeholder="<add an item>" type="text" name="awareness_2">
-                          <input placeholder="<add an item>" type="text" name="awareness_3">
-                          <input placeholder="<add an item>" type="text" name="awareness_4">
-                          <input placeholder="<add an item>" type="text" name="awareness_5">
-                          <input placeholder="<add an item>" type="text" name="awareness_6">
-                        </div>
-                        <div class="right_stage">
-                          <input placeholder="<add an item>" type="text" name="awareness_7">
-                          <input placeholder="<add an item>" type="text" name="awareness_8">
-                          <input placeholder="<add an item>" type="text" name="awareness_9">
-                          <input placeholder="<add an item>" type="text" name="awareness_10">
-                          <input placeholder="<add an item>" type="text" name="awareness_11">
-                          <input class="last" placeholder="<add an item>" type="text" name="12">
-                        </div>
-                         
-                      </div>
-                      <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
-                        <div class="left_suggest">
-                          <ul>
-                            <li>Website</li>
-                            <li>Physical storefront</li>
-                            <li>Amazon</li>
-                            <li>Google shopping</li>
-                            <li>Etsy</li>
-                            <li>Articles</li>
-                            <li>eBook</li>
-                            <li>TV ads</li>
-                            <li>Radio ads</li>
-                            <li>Podcast ads</li>
-                            <li>Online ads</li>
-                          </ul>
-                        </div>
-                        <div class="right_suggest">
-                          <ul>
-                            <li>Shelf-space in other stores</li>
-                            <li>Tradeshows</li>
-                            <li>How-to-videos</li>
-                            <li>Cross promotion</li>
-                            <li>Referrals / word-of-mouth</li>
-                            <li>Signage (incl. billboards)</li>
-                            <li>Direct mailers</li>
-                            <li>Email newsletter</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h2>EVALUATION</h2>
-                    <div class="row cycle_container">
-                      <div class="evaluation stage_container col-lg-7 col-md-7 col-sm-12">
-                        <p>How do you help your customers better understand and evaluate your offerings?</p>
-                        <div class="left_stage">
-                          <input placeholder="<add an item>" class="first" placeholder="<add an item>"  type="text" name="evaluation_1">
-                          <input placeholder="<add an item>" type="text" name="evaluation_2">
-                          <input placeholder="<add an item>" type="text" name="evaluation_3">
-                          <input placeholder="<add an item>" type="text" name="evaluation_4">
-                          <input placeholder="<add an item>" type="text" name="evaluation_5">
-                          <input placeholder="<add an item>" type="text" name="evaluation_6">
-                        </div>
-                        <div class="right_stage">
-                          <input placeholder="<add an item>" type="text" name="evaluation_7">
-                          <input placeholder="<add an item>" type="text" name="evaluation_8">
-                          <input placeholder="<add an item>" type="text" name="evaluation_9">
-                          <input placeholder="<add an item>" type="text" name="evaluation_10">
-                          <input placeholder="<add an item>" type="text" name="evaluation_11">
-                          <input class="last" placeholder="<add an item>" type="text" name="12">
-                        </div>
-                         
-                      </div>
-                      <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
-                        <div class="left_suggest">
-                          <ul>
-                            <li>Competitive comparison</li>
-                            <li>Feature list</li>
-                            <li>Data sheet</li>
-                            <li>Case study</li>
-                            <li>Testimonials</li>
-                            <li>Webinar</li>
-                            <li>Online reviews</li>
-                            <li>FAQ</li>
-                            <li>Samples</li>
-                            <li>Demo video</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h2>CONVERSION</h2>
-                    <div class="row cycle_container">
-                      <div class="conversion stage_container col-lg-7 col-md-7 col-sm-12">
-                        <p>How do you make it easier for your customers to buy from you?</p>
-                        <div class="left_stage">
-                          <input class="first" placeholder="<add an item>"  type="text" name="conversion_1">
-                          <input placeholder="<add an item>" type="text" name="conversion_2">
-                          <input placeholder="<add an item>" type="text" name="conversion_3">
-                          <input placeholder="<add an item>" type="text" name="conversion_4">
-                          <input placeholder="<add an item>" type="text" name="conversion_5">
-                          <input placeholder="<add an item>" type="text" name="conversion_6">
-                        </div>
-                        <div class="right_stage">
-                          <input placeholder="<add an item>" type="text" name="conversion_7">
-                          <input placeholder="<add an item>" type="text" name="conversion_8">
-                          <input placeholder="<add an item>" type="text" name="conversion_9">
-                          <input placeholder="<add an item>" type="text" name="conversion_10">
-                          <input placeholder="<add an item>" type="text" name="conversion_11">
-                          <input class="last" placeholder="<add an item>" type="text" name="12">
-                        </div>
-                         
-                      </div>
-                      <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
-                        <div class="left_suggest">
-                          <ul>
-                            <li>Free Trial</li>
-                            <li>Pricing page</li>
-                            <li>Live demo</li>
-                            <li>Consultation</li>
-                            <li>Estimate / quote</li>
-                            <li>Coupon</li>
-                            <li>Call-to-action</li>
-                            <li>Re-targeting</li>
-                            <li>Sales call follow-up</li>
-                            <li>"Drip" email campaign</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h2>RETENTION</h2>
-                    <div class="row cycle_container">
-                      <div class="retention stage_container col-lg-7 col-md-7 col-sm-12">
-                        <p>How do you engage previous customers to buy again?</p>
-                        <div class="left_stage">
-                          <input class="first" placeholder="<add an item>"  type="text" name="retention_1">
-                          <input placeholder="<add an item>" type="text" name="retention_2">
-                          <input placeholder="<add an item>" type="text" name="retention_3">
-                          <input placeholder="<add an item>" type="text" name="retention_4">
-                          <input placeholder="<add an item>" type="text" name="retention_5">
-                          <input placeholder="<add an item>" type="text" name="retention_6">
-                        </div>
-                        <div class="right_stage">
-                          <input placeholder="<add an item>" type="text" name="retention_7">
-                          <input placeholder="<add an item>" type="text" name="retention_8">
-                          <input placeholder="<add an item>" type="text" name="retention_9">
-                          <input placeholder="<add an item>" type="text" name="retention_10">
-                          <input placeholder="<add an item>" type="text" name="retention_11">
-                          <input class="last" placeholder="<add an item>" type="text" name="retention_12">
-                        </div>
-                         
-                      </div>
-                      <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
-                        <div class="left_suggest">
-                          <ul>
-                            <li>Packaging</li>
-                            <li>Email follow-up</li>
-                            <li>Coupons</li>
-                            <li>Subscription</li>
-                            <li>Easy re-order</li>
-                            <li>Birthday gifts</li>
-                            <li>New product notices</li>
-                            <li>Re-targeting online ads</li>
-                          </ul>
-                        </div>
-                        <div class="right_suggest">
-                          <ul>
-                            <li>Cross-promotion / nurture campaigns</li>
-                            <li>Perk milestones for subscription anniversaries</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h2>REFERRAL</h2>
-                    <div class="row cycle_container">
-                      <div class="referral stage_container col-lg-7 col-md-7 col-sm-12">
-                        <p>How do you make it easier for customers to talk about and recommend to others?</p>
-                        <div class="left_stage">
-                          <input class="first" placeholder="<add an item>"  type="text" name="referral_1">
-                          <input placeholder="<add an item>" type="text" name="referral_2">
-                          <input placeholder="<add an item>" type="text" name="referral_3">
-                          <input placeholder="<add an item>" type="text" name="referral_4">
-                          <input placeholder="<add an item>" type="text" name="referral_5">
-                          <input placeholder="<add an item>" type="text" name="referral_6">
-                        </div>
-                        <div class="right_stage">
-                          <input placeholder="<add an item>" type="text" name="referral_7">
-                          <input placeholder="<add an item>" type="text" name="referral_8">
-                          <input placeholder="<add an item>" type="text" name="referral_9">
-                          <input placeholder="<add an item>" type="text" name="referral_10">
-                          <input placeholder="<add an item>" type="text" name="referral_11">
-                          <input class="last" placeholder="<add an item>" type="text" name="referral_12">
-                        </div>
-                         
-                      </div>
-                      <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
-                        <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
-                        <div class="left_suggest">
-                          <li>Packaging</li>
-                          <li>Social sharing incentive</li>
-                          <li>Shareable coupons</li>
-                          <li>Referral incentive</li>
-                          <li>Testimonial / Reviews</li>
-                          <li>User generated content</li>
-                        </div>
-                      </div>
-                    </div>
-                
-
-                  <div class="onward">                
-                    <input type="submit" class="continue">
-                  </div>
-                </div>
-                </form>
-
-            </div>
-          </div>
-        </div> <!--end row-->
-      </div>
+<h2>AWARENESS</h2>
+<div class="row cycle_container">
+  <div class="awareness stage_container col-lg-7 col-md-7 col-sm-12">
+    <p>How do your customers become aware about your products & services?</p>
+    <div class="left_stage">
+      {{ render_field(form.awareness_left, class='stage_containers awareness', placeholder='<add an item>') }}
     </div>
+    <div class="right_stage">
+      {{ render_field(form.awareness_right, class='stage_containers awareness', placeholder='<add an item>') }}
+    </div>
+     
+  </div>
+  <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
+    <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
+    <div class="left_suggest">
+      <ul>
+        <li>Website</li>
+        <li>Physical storefront</li>
+        <li>Amazon</li>
+        <li>Google shopping</li>
+        <li>Etsy</li>
+        <li>Articles</li>
+        <li>eBook</li>
+        <li>TV ads</li>
+        <li>Radio ads</li>
+        <li>Podcast ads</li>
+        <li>Online ads</li>
+      </ul>
+    </div>
+    <div class="right_suggest">
+      <ul>
+        <li>Shelf-space in other stores</li>
+        <li>Tradeshows</li>
+        <li>How-to-videos</li>
+        <li>Cross promotion</li>
+        <li>Referrals / word-of-mouth</li>
+        <li>Signage (incl. billboards)</li>
+        <li>Direct mailers</li>
+        <li>Email newsletter</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-{% endblock %}
+<h2>EVALUATION</h2>
+<div class="row cycle_container">
+  <div class="evaluation stage_container col-lg-7 col-md-7 col-sm-12">
+    <p>How do you help your customers better understand and evaluate your offerings?</p>
+    <div class="left_stage">
+      {{ render_field(form.evaluation_left, class='stage_containers evaluation', placeholder='<add an item>') }}
+    </div>
+    <div class="right_stage">
+      {{ render_field(form.evaluation_right, class='stage_containers evaluation', placeholder='<add an item>') }}
+    </div>
+     
+  </div>
+  <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
+    <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
+    <div class="left_suggest">
+      <ul>
+        <li>Competitive comparison</li>
+        <li>Feature list</li>
+        <li>Data sheet</li>
+        <li>Case study</li>
+        <li>Testimonials</li>
+        <li>Webinar</li>
+        <li>Online reviews</li>
+        <li>FAQ</li>
+        <li>Samples</li>
+        <li>Demo video</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>CONVERSION</h2>
+<div class="row cycle_container">
+  <div class="conversion stage_container col-lg-7 col-md-7 col-sm-12">
+    <p>How do you make it easier for your customers to buy from you?</p>
+    <div class="left_stage">
+      {{ render_field(form.conversion_left, class='stage_containers conversion', placeholder='<add an item>') }}
+    </div>
+    <div class="right_stage">
+      {{ render_field(form.conversion_right, class='stage_containers conversion', placeholder='<add an item>') }}
+    </div>
+     
+  </div>
+  <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
+    <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
+    <div class="left_suggest">
+      <ul>
+        <li>Free Trial</li>
+        <li>Pricing page</li>
+        <li>Live demo</li>
+        <li>Consultation</li>
+        <li>Estimate / quote</li>
+        <li>Coupon</li>
+        <li>Call-to-action</li>
+        <li>Re-targeting</li>
+        <li>Sales call follow-up</li>
+        <li>"Drip" email campaign</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>RETENTION</h2>
+<div class="row cycle_container">
+  <div class="retention stage_container col-lg-7 col-md-7 col-sm-12">
+    <p>How do you engage previous customers to buy again?</p>
+    <div class="left_stage">
+      {{ render_field(form.retention_left, class='stage_containers retention', placeholder='<add an item>') }}
+    </div>
+    <div class="right_stage">
+      {{ render_field(form.retention_right, class='stage_containers retention', placeholder='<add an item>') }}
+    </div>
+     
+  </div>
+  <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
+    <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
+    <div class="left_suggest">
+      <ul>
+        <li>Packaging</li>
+        <li>Email follow-up</li>
+        <li>Coupons</li>
+        <li>Subscription</li>
+        <li>Easy re-order</li>
+        <li>Birthday gifts</li>
+        <li>New product notices</li>
+        <li>Re-targeting online ads</li>
+      </ul>
+    </div>
+    <div class="right_suggest">
+      <ul>
+        <li>Cross-promotion / nurture campaigns</li>
+        <li>Perk milestones for subscription anniversaries</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>REFERRAL</h2>
+<div class="row cycle_container">
+  <div class="referral stage_container col-lg-7 col-md-7 col-sm-12">
+    <p>How do you make it easier for customers to talk about and recommend to others?</p>
+    <div class="left_stage">
+      {{ render_field(form.referral_left, class='stage_containers referral', placeholder='<add an item>') }}
+    </div>
+    <div class="right_stage">
+      {{ render_field(form.referral_right, class='stage_containers referral', placeholder='<add an item>') }}
+    </div>
+     
+  </div>
+  <div class="suggestions_container col-lg-5 col-md-5 col-sm-12">
+    <h6 style="text-decoration:underline;">Common Examples</h6><br><br>
+    <div class="left_suggest">
+      <li>Packaging</li>
+      <li>Social sharing incentive</li>
+      <li>Shareable coupons</li>
+      <li>Referral incentive</li>
+      <li>Testimonial / Reviews</li>
+      <li>User generated content</li>
+    </div>
+  </div>
+</div>
