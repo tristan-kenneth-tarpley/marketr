@@ -4,8 +4,8 @@ import json
 from helpers import forms
 import data.db as db
 import helpers.helpers as helpers
-from helpers.LoginHandlers import admin_required, owner_required, manager_required
-from helpers.AdminService import AdminService, AdminActions
+from helpers.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
+from helpers.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from helpers.ViewModels import ViewFuncs, AdminViewModel
 import hashlib
 from bleach import clean
@@ -19,8 +19,6 @@ def admin_login():
 
 	form = forms.AdminLogin()
 
-	print(form.csrf_token)
-
 	if ViewFuncs.ValidSubmission(form=form, method=request.method):
 		service = AdminService()
 		return service.login(form.email.data, form.password.data, form=form)
@@ -33,46 +31,6 @@ def admin_login():
 	return render_template("admin_view/login.html", form=form)  
 
 
-
-# @app.route('/admin/branch', methods=['GET', 'POST'])
-# @admin_required
-# def branch():
-
-#     if request.method == 'POST':
-#         branch_trigger = str(request.form['branch_trigger'])
-#         branch_trigger_val = str(request.form['branch_trigger_val'])
-#         branch_action = str(request.form['branch_action'])
-#         affected_page = str(request.form['affected_page'])
-#         mask_val = str(request.form['mask_val'])
-#         default_mask = str(request.form['default_mask'])
-#         hide_val = request.form['hide_val']
-#         ind = request.form['ind']
-
-#         cursor = db.cursor()
-#         if branch_action == "hide":
-#             tup = (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
-#             query = """INSERT INTO dbo.branches
-#                         (branch_trigger, branch_action, affected_page, hide_val, ind, branch_trigger_val)
-#                         VALUES (?,?,?,?,?,?);commit;"""
-#             db.execute(query, False, tup)
-
-#         elif branch_action == "mask":
-#             tup = (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
-#             query = """INSERT INTO dbo.branches
-#                         (branch_trigger, branch_action, affected_page, mask_val, default_mask, ind, branch_trigger_val)
-#                         VALUES (?,?,?,?,?,?,?);commit;"""
-#             db.execute(query, False, tup)
-#         else:
-#             return False
-
-#     branch_tup = ('affected_page',)
-#     branches = "SELECT ind, ?, branch_action, branch_trigger_val FROM dbo.branches ORDER BY affected_page ASC"
-#     branches, cursor = db.db.execute(branches, True, branch_tup)
-#     branches = cursor.fetchall()
-
-#     cursor.close()
-
-#     return render_template('admin_view/branch.html', branches=branches)
 
 @app.route('/admin/<customer_id>')
 @admin_required
@@ -193,23 +151,51 @@ def customers():
 
 @app.route('/customers/<customer_id>', methods=['POST', 'GET'])
 @admin_required
+
 def acct_mgmt(customer_id):
 	service = AdminService()
 	validity = service.validate_view(session['admin'], customer_id)
 
-	if validity == True:
-		return "You can see it!"
-		# page = AdminViewModel(session['permissions'], 'acct_mgmt', admin=session['admin'])
+	if validity == True or session['owner_logged_in'] == True:		
+		session['account_rep'] = True
+		page = AdminViewModel(
+			session['permissions'],
+			'acct_mgmt',
+			admin=session['admin'],
+			user=customer_id,
+			view="dashboard"
+		)
+
+		return ViewFuncs.view_admin(
+			page=page,
+			owner=session['owner_logged_in'],
+			admin=session['admin_logged_in'],
+			manager=session['manager_logged_in'],
+			form=None
+		)
 	else:
+		session['account_rep'] = False
 		return "You don't have permissions!"
 
-	return str(page.test)
+
+
+
+
+
+
+
+
+
 
 @app.route('/customers/<customer_id>/add_rep', methods=['POST'])
 def add_rep(customer_id):
 	actions = AdminActions(session['admin'], debug=False)
 	actions.add_rep(request.form, customer_id)
 	return redirect(url_for('customers'))
+
+
+
+
 
 
 

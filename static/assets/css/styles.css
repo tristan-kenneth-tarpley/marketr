@@ -4865,3 +4865,136 @@ ul#product {
 
 
 
+/* chat */
+.chat_container:first-of-type {
+  margin: 0 0 10% 0;
+}
+.chat_container:not(:first-of-type) {
+  margin: 10% 0;
+}
+
+.chat_box {
+  width: 90%;
+  margin: 12% auto;
+  background: #00bfb6;
+  padding: 4%;
+  text-align: left;
+  border-radius: 15px;
+  position: relative;
+}
+.chat-helper {
+  background: var(--client-chat);
+  color: var(--body-copy);
+}
+.chat-helper:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 10px solid var(--client-chat);
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--client-chat);
+  border-bottom: 10px solid transparent;
+  left: 19px;
+  bottom: -19px;
+}
+
+.chat-user {
+  background: var(--admin-chat);
+  color: white;
+}
+.chat_label {
+  text-align:center;
+  padding: 0;
+}
+.chat_label:not(:first-of-type) {
+  margin: var(--label_margin);
+}
+.chat_label:first-of-type {
+  margin-bottom: var(--label_margin);
+}
+@media only screen and (max-width: 1220px) {
+  .chat_label:not(:first-of-type) {
+    margin: 0 -20px -20px;
+  }
+  .chat_label:first-of-type {
+    margin-bottom: -20px;
+  }
+}
+@media only screen and (max-width: 1150px) {
+  .chat_box {
+    width: 100%;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .chat_label:not(:first-of-type) {
+    margin: -20px -20px -50px;
+  }
+  .chat_label:first-of-type {
+    margin-bottom: -50px;
+  }
+  .chat_box {
+    width: 90%;
+  }
+  .chat {
+    height: 600px;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .chat_label:not(:first-of-type) {
+    margin: -20px -20px -20px;
+  }
+  .chat_label:first-of-type {
+    margin-bottom: -20px;
+  }
+  .chat_box {
+    width: 90%;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .chat_label:not(:first-of-type) {
+    margin: 0px -20px -5px;
+  }
+  .chat_label:first-of-type {
+    margin-bottom: -20px;
+  }
+  .chat_box {
+    width: 90%;
+  }
+}
+
+.chat-user:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 10px solid var(--admin-chat);
+  border-top: 10px solid var(--admin-chat);
+  border-bottom: 10px solid transparent;
+  right: 19px;
+  bottom: -19px;
+}
+
+.chat_bar {
+  padding: 2%;
+}
+
+.chat {
+  height: 300px;
+}
+.todo {
+  height: 500px;
+}
+.chat,
+.todo {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.task_title {
+  transition-duration: .3s;
+  cursor: pointer;
+}
+.task_title:hover {
+  opacity: .7;
+}

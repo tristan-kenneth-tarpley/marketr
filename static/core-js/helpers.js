@@ -55,5 +55,13 @@ const PageMap = (route) => {
 		"/create": "create"
 	}
 
-	return map[route]
+	function hasNumber(myString) {
+		return /\d/.test(myString);
+	}
+	
+	if (route.substring(0, 10) == "/customers" && hasNumber(route)){
+		return 'customers'
+	} else {
+		return map[route]
+	}
 }

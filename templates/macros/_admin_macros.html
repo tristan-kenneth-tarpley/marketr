@@ -1,9 +1,13 @@
+{% from "macros/dashboard_macros.html" import todo, messages %}
+
 
 {% macro render_page(page) %}
 	{% if page.page == 'personnel' %}
 		{{ personnel(page) }}
 	{% elif page.page == 'customers' %}
 		{{ customers(page) }}
+	{% elif page.page == 'acct_mgmt' %}
+		{{ customer_level(page) }}
 	{% endif %}
 
 {% endmacro %}
@@ -491,9 +495,100 @@
 
 
 
+{% macro breadcrumb(page, view) %}
+
+
+	{% macro formulate_row(link, title=None, view=view) %}
+
+		{% if name == view %}
+			{% set classList = "active" %}
+		{% endif %}
+
+	    <li class="breadcrumb-item {{ classList }}" aria-current="page">
+	    	<a href="{{ url_for(link) }}">
+				{{ title }}
+	    	</a>
+	    </li>
+
+	{% endmacro %}
+
+
+	<nav aria-label="breadcrumb" role="navigation">
+		<ol class="breadcrumb">
+			{{ formulate_row("home", title="dashboard") }}
+			{{ formulate_row("home", title="customer profile", view="intake") }}
+		</ol>
+	</nav>
+
+
+{% endmacro %}
+
+
+
+{# customer level view #}
+{% macro customer_level(page) %}
+
+
+	{% macro shell(header=None, body=None, footer=None) %}
+	<div class="card">
+		<div class="card-header">
+			{{ header if header }}
+		</div>
+		<div class="card-body">
+			{{ body if body }}
+		</div>
+		<div class="card-footer">
+			{{ footer if footer }}
+		</div>
+	</div>
+	{% endmacro %}
+
+
+	{# dashboard layout#}
+	{% macro dashboard(page) %}
+
+
+		{{ breadcrumb(page, "dashboard") }}
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-12 col-12">	
+				{{ todo(page) }}
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-12 col-12">	
+				{{ messages(page) }}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12">
+				{{ shell() }}	
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12">	
+				{{ shell() }}	
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12">	
+				{{ shell() }}	
+			</div>
+		</div>
+	{% endmacro %}
+
+
+
+
+	{% macro intake(page) %}
+		<h1>This is the intake view.</h1>
+	{% endmacro %}
 
 
 
 
 
+
+
+	{# page controller #}
+	{% if page.view == "dashboard" %}
+		{{ dashboard(page)}}
+	{% elif page.view == "intake" %}
+		{{ intake(page) }}
+	{% endif %}
+{% endmacro %}
 

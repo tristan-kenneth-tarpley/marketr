@@ -6,8 +6,8 @@ import zipcodes
 from bleach import clean
 import pandas as pd
 from helpers.UserService import UserService
-from helpers.AdminService import AdminService
-
+from helpers.AdminService import AdminService, AdminUserService, MessagingService, TaskService
+import helpers.forms as forms
 
 class SplashViewModel:
 	def __init__(self, prev_step=None, next_step=None, redirect=None):
@@ -113,12 +113,16 @@ class AdminViewModel:
 				permission_level: str,
 				page: str,
 				user=None,
-				admin=None) -> None:
+				admin=None,
+				view=None) -> None:
 
 		self.permission_level = permission_level
 		self.page = page
 		self.admin_service = AdminService()
 		self.admin = admin
+		self.view = view
+		self.user = user
+		self.view_type = 'admin'
 		self.admins = self.admin_service.get_admins()
 		self.switch(page)()
 
@@ -131,8 +135,11 @@ class AdminViewModel:
 		}
 		return switcher[case]
 	
-	def acct_mgmt(self, customer_id):
-		self.test = 'hi'
+	def acct_mgmt(self):
+		service = AdminUserService(self.user, self.admin)
+		self.messages = service.messaging.get_messages()
+		self.tasks = service.tasks.get_tasks()
+		self.task_form = forms.TaskForm()
 
 	def personnel(self) -> None:
 		self.data = self.admin_service.get_admin_info()

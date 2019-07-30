@@ -10,7 +10,7 @@ from flask_mail import Mail, Message
 from helpers.UserService import UserService, encrypt_password
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
-
+from helpers.SharedService import MessagingService, TaskService
 
 class AdminService:
     def __init__(self):
@@ -31,6 +31,7 @@ class AdminService:
 
             if sha256_crypt.verify(password, pw):
                 session['logged_in'] = False
+                session['customer'] = False
                 session['admin'] = int(uid)
                 session['admin_first'] = admin_first
                 session['admin_last'] = admin_last
@@ -53,7 +54,7 @@ class AdminService:
 
                 session.permanent = True
                 session.remember = True
-                return redirect(url_for('admin'))
+                return redirect(url_for('customers'))
 
             else:
                 error = "Invalid credentials. Try again!"
@@ -126,7 +127,7 @@ class AdminService:
             
         if conditional != None:
             query += conditional
-        print(query)
+            
         data, cursor = db.execute(query, True, ())
         data = cursor.fetchall()
         cursor.close()
@@ -173,8 +174,24 @@ class AdminActions(object):
                     db.execute(rep_query, False, rep_tup, commit=True)
                 else:
                     print(rep_query)
-        
-        
-        
-        
+
+
+
+
+class AdminUserService(object):
+    def __init__(self, customer_id: int = None, admin_id: int = None) -> None:
+        self.customer_id = customer_id
+        self.admin_id = admin_id
+
+        self.messaging = MessagingService(
+            customer_id=self.customer_id,
+            admin_id=self.admin_id
+        )
+        self.tasks = TaskService(
+            customer_id=self.customer_id,
+            admin_id=self.admin_id
+        )
+
+
+
 

@@ -1,15 +1,32 @@
-from app import *
-from helpers.helpers import *
-from helpers.classes import *
+from app import app, session
+from flask import request, render_template, redirect, url_for, flash
+import helpers.helpers as helpers
 import hashlib
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-from helpers.LoginHandlers import *
+from helpers.UserService import UserService
+from helpers.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required
+from helpers.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
+from helpers.SharedService import MessagingService, TaskService
+from helpers.ViewModels import ViewFuncs, AdminViewModel
+import hashlib
+from data.db import execute, sql_to_df
+from bleach import clean
+from flask_mail import Mail, Message
+from passlib.hash import sha256_crypt
+import helpers.forms as forms
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
 @app.route('/forgot')
 def forgot():
     return render_template('forgot.html', send=True)
+
+
+app.config.from_pyfile('config.cfg')
+mail = Mail(app)
+s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
 
 @app.route('/forgot/reset', methods=['GET', 'POST'])
 def reset():
@@ -243,7 +260,7 @@ def home():
     audience_query = "SELECT * from dbo.audience where customer_id = %d" % (session['user'],)
     
     audience = sql_to_df(audience_query)
-    ages_before_after = clean_audience(session['user'])
+    ages_before_after = helpers.clean_audience(session['user'])
 
     # products
     prod_query = "SELECT quantity, segment_1, segment_2, segment_3, segment_4, segment_5, segment_6, segment_7, segment_8, segment_9, segment_10, source_1, source_2, source_3, source_4, source_freeform from dbo.product where customer_id = ?"
@@ -316,65 +333,60 @@ def home():
 
 
 
-# CLIENT_SECRETS_FILE = "client_secret.json"
 
-# # This OAuth 2.0 access scope allows for full read/write access to the
-# # authenticated user's account and requires requests to use an SSL connection.
-# SCOPES = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
-# API_SERVICE_NAME = 'ads'
-# API_VERSION = 'v2'
+# core actions
 
-# import string
-# import random
-# def id_generator(size=43, chars=string.ascii_uppercase + string.digits):
-#     return ''.join(random.choice(chars) for _ in range(size))
+@app.route('/api/add_task', methods=['POST'])
+@admin_required
+@account_rep_required
+def add_task():
+    tasks = TaskService(
+        request.form.get('customer_id'),
+        admin_id = session.get('admin'),
+        user = 'customer' if session['customer'] == True else 'admin'
+    )
+    tasks.post_task(
+        request.form.get('task')
+    )
+    return 'added'
 
-# redirect_uri = 'https://127.0.0.1:5000/google_test'
+@app.route('/api/send_message', methods=['POST'])
+@admin_required
+@account_rep_required
+def messages():
+    messaging = MessagingService(
+        request.form.get('customer_id'),
+        admin_id = session.get('admin'),
+        user = 'customer' if session['customer'] == True else 'admin'
+    )
+    messaging.post_message(request.form.get('msg'))
 
+    return 'sent'
 
-# # Initialize the flow using the client ID and secret downloaded earlier.
-# flow = OAuth2WebServerFlow(client_id='612075856877-1epe8u6omk3i15hg00aorip67ath8hsb.apps.googleusercontent.com',
-#                        client_secret='PummnRa1jDQ4SgI0L3weY3k1',
-#                        scope=SCOPES,
-#                        redirect_uri=redirect_uri,
-#                        access_type='offline')
+@app.route('/api/complete_task', methods=['POST'])
+@admin_required
+@account_rep_required
+def complete_task():
+    tasks = TaskService(
+        request.form.get('customer_id'),
+        admin_id = session.get('admin'),
+        user = 'customer' if session['customer'] == True else 'admin'
+    )
+    tasks.complete_task(
+        request.form.get('task')
+    )
+    return 'completed'
 
-# @app.route('/auth', methods=['GET', 'POST'])
-# def oauth2callback():
-    
-#     auth_uri = flow.step1_get_authorize_url()
-
-#     return redirect(auth_uri)
-
-# import pprint
-
-# @app.route('/google_test', methods=['GET', 'POST'])
-# def google_test():
-
-#     # flow = OAuth2WebServerFlow(client_id='612075856877-1epe8u6omk3i15hg00aorip67ath8hsb.apps.googleusercontent.com',
-#                        # client_secret='PummnRa1jDQ4SgI0L3weY3k1',
-#                        # scope=SCOPES,
-#                        # redirect_uri=redirect_uri)
-
-#     code = request.args.get('code')
-
-#     credentials = flow.step2_exchange(code)
-#     pprint.pprint(credentials.__dict__)
-#     img = credentials.__dict__['id_token']['picture']
-
-#     http = httplib2.Http()
-#     http = credentials.authorize(http)
-
-    
-
-
-#     return f"""<img src='{img}'><p>{string}</p>"""
-
-
-
-
-
-
-
-
-
+@app.route('/api/remove_task', methods=['POST'])
+@admin_required
+@account_rep_required
+def remove_task():
+    tasks = TaskService(
+        request.form.get('customer_id'),
+        admin_id = session.get('admin'),
+        user = 'customer' if session['customer'] == True else 'admin'
+    )
+    tasks.remove_task(
+        request.form.get('task')
+    )
+    return 'completed'

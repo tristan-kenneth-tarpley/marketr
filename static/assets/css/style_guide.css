@@ -7,6 +7,11 @@
   --panel-bg: #ebecf1;
   --label-color: rgba(87,102,126, .9);
 
+  /* chat */
+  --client-chat: rgb(206, 214, 223);
+  --admin-chat: var(--primary);
+  --label_margin: -30px;
+
   	/* buttons */
   --btn-primary: #ca7d66;
   --btn-secondary: #62cde0;

@@ -37,20 +37,8 @@
 <body>
 	{% block content %}{% endblock %}
 
-	<script src="/static/assets/js/core/popper.min.js" defer></script>
-	<script src="/static/assets/js/core/bootstrap.min.js" defer></script>
-	<script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js" defer></script>
-	<script src="/static/assets/js/plugins/chartjs.min.js" defer></script>
-	<script src="/static/assets/js/plugins/bootstrap-notify.js" defer></script>
-	<script src="/static/assets/js/now-ui-dashboard.min.js?v=1.1.0" type="text/javascript" defer></script>
-	<script src="/static/assets/demo/demo.js" defer></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-	<script src="/static/core-js/helpers.js"></script>
-	<script src="/static/core-js/elements.js"></script>
-	<script src="/static/core-js/eventhandlers.js"></script>
-	<script src="/static/core-js/route_handlers.js"></script>
-	<script src="/static/core-js/routes.js"></script>
-	<script src="/static/core-js/controller.js"></script>
+	{% include "layouts/imports/imports.html" %}
+
 	{% block js %}{% endblock %}
 	
 </body>

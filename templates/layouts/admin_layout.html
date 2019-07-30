@@ -16,26 +16,39 @@
 		<div class="content">
 			<div class="append_to">
 
-				<div class="card" style="padding: 5%;">
 
+				<div class="card">
+					<style>
+						.card {
+							padding: 5%;
+						}
+					</style>
 
-					{% block admin_content %}
-						{% if sub %}
-							
-							{% with messages = get_flashed_messages() %}
-							  {% if messages %}
-							    <ul class=flashes>
-							    {% for message in messages %}
-							      <p>{{ message }}</p>
-							    {% endfor %}
-							    </ul>
-							  {% endif %}
-							{% endwith %}
+					<div id="loading">
+						<div class="load-circle"><span class="one"></span></div>
+					</div>
 
-							{{ render_page(page) }}
+					<div id="content-ready" style="visibility: hidden;">
+						<div class="container-fluid">
+						{% block admin_content %}
+							{% if sub %}
+								
+								{% with messages = get_flashed_messages() %}
+								{% if messages %}
+									<ul class=flashes>
+									{% for message in messages %}
+									<p>{{ message }}</p>
+									{% endfor %}
+									</ul>
+								{% endif %}
+								{% endwith %}
 
-						{% endif %}
+								{{ render_page(page) }}
+
+							{% endif %}
 					{% endblock %}
+						</div>
+					</div>
 
 				</div>
 			</div>

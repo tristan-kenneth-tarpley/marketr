@@ -1,25 +1,3 @@
-// come back to this later
-function init_creative(){
-	$('.delete_asset.x').click(function(){
-		$(this).parent().parent().addClass('hidden')
-		$(this).parent().parent().siblings().removeClass("hidden")
-	})
-
-	$('.confirmed').click(function(){
-		var path = $(this).parent().siblings().find('img').attr('src')
-		args = {file_path: path}
-		$(this).parentsUntil('.files_row').remove()
-		$.get('/delete_asset', args, function(data){
-		})
-	})
-	$('.delete_asset.unconfirmed').click(function(){
-		$(this).parent().siblings().removeClass('hidden')
-		$(this).parent().addClass('hidden')
-	})
-}
-
-
-
 const InitFuncs = class {
 
 	container(title){
@@ -488,6 +466,14 @@ const PageViewController = class {
 
 		} else {
 			const init = new InitFuncs()
+
+			const view_model = new CoreViewModels(this.url_path)
+
+			const dashboard = () => {
+				view_model.tasks()
+				view_model.messages()
+			}
+			
 			switch(PageMap(this.url_path)) {
 				case 'admin':
 					init.company_view()
@@ -500,6 +486,7 @@ const PageViewController = class {
 					break
 				case 'customers':
 					init.customers()
+					dashboard()
 					break
 			}
 		}

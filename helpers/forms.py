@@ -208,3 +208,6 @@ class AdminLogin(FlaskForm):
 
 class AddRep(FlaskForm):
     rep_name = BooleanField()
+
+class TaskForm(FlaskForm):
+    title = StringField('task title', validators=[validators.InputRequired()])

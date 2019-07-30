@@ -312,6 +312,7 @@ class UserService:
 			if sha256_crypt.verify(password, pw):
 				if email_confirmed == 1:
 					session['logged_in'] = True
+					session['customer'] = True
 					session['user'] = int(uid)
 					session['user_name'] = "%s %s" % (first_name, last_name)
 					session.permanent = True

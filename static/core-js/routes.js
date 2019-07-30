@@ -23,14 +23,12 @@ const get_account_reps = id => {
 
 const get_account_availability = email => {
 	$.get('/availability', {email: email}, function(data){
-
 		let available = get_account_availability_handler(data)
 		if (available == false) {
 			$('.submit_button').attr('disabled', true)
 		} else {
 			$('.submit_button').attr('disabled', false)
 		}
-
 	})
 } 
 
