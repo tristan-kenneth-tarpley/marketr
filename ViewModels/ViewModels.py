@@ -3,7 +3,6 @@ import data.db as db
 import time
 import datetime
 import zipcodes
-from bleach import clean
 import pandas as pd
 from services.UserService import UserService
 from services.SharedService import CoreService, InsightsService
@@ -14,8 +13,7 @@ import itertools
 
 class SplashViewModel:
 	def __init__(self, next_step=None):
-		self.next_step = clean(next_step)
-		self.redirect = clean(redirect)
+		self.next_step = next_step
 
 	def splashes(self):
 		return ['begin', 'competitors', 'company', 'audience', 'product', 'salescycle', 'history']
