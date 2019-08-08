@@ -13,8 +13,7 @@ import json
 import itertools
 
 class SplashViewModel:
-	def __init__(self, next_step=None, redirect=None):
-
+	def __init__(self, next_step=None):
 		self.next_step = clean(next_step)
 		self.redirect = clean(redirect)
 
