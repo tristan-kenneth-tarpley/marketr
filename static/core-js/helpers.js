@@ -20,7 +20,7 @@ const smilesMapper = (name) => {
 	let map = {
 		"bing": "Bing.png",
 		"google": "GoogleAds.png",
-		"linkedin": "Linkedin.png",
+		"linkedin": "LinkedIn.png",
 		"instagram": "Instagram.png",
 		"amazon": "Amazon.png",
 		"twitter": "twitter.png",
