@@ -178,7 +178,6 @@ const CoreViewModels = class {
     
 
 	tasks() {
-        $('.todo').scrollTop($(".todo")[0].scrollHeight);
         $("#add_task").click(() => {
             const tasks = new TaskService(this.url_path)
             tasks.add()
@@ -204,7 +203,6 @@ const CoreViewModels = class {
     }
 
     messages() {
-        $('.chat').scrollTop($(".chat")[0].scrollHeight);
         $("#send_msg").click(() => {
             const messagingService = new MessagingService(this.url_path)
             const msg = $("#msg").val()
