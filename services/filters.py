@@ -87,7 +87,7 @@ def customPages(page):
 		return False
 
 def not_none(input):
-	if input != None:
+	if input != None and input != "":
 		return True
 	else:
 		return False

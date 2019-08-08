@@ -1,17 +1,20 @@
-from app import app, session
+from app import app, session, FlaskForm
 from flask import request, render_template, redirect, url_for, flash
+from flask_uploads import UploadSet, configure_uploads, DATA
 import json
-from helpers import forms
+from services import forms
 import data.db as db
-import helpers.helpers as helpers
-from helpers.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
-from helpers.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
-from helpers.ViewModels import ViewFuncs, AdminViewModel
+import pandas as pd
+import services.helpers as helpers
+from services.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
+from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
+from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, AdminViewFuncs
 import hashlib
 from bleach import clean
 from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+from services.GoogleService import google_ads
 
 
 @app.route('/admin_login', methods=['POST', 'GET'])
@@ -149,40 +152,72 @@ def customers():
 								form=form
 								)
 
+
+
+
 @app.route('/customers/<customer_id>', methods=['POST', 'GET'])
 @admin_required
-
 def acct_mgmt(customer_id):
-	service = AdminService()
-	validity = service.validate_view(session['admin'], customer_id)
+	csv_form = forms.CSVForm()
+	insight_form = forms.InsightForm()
 
-	if validity == True or session['owner_logged_in'] == True:		
+	vf = AdminViewFuncs(customer_id)
+	if vf.ValidView():
 		session['account_rep'] = True
-		page = AdminViewModel(
-			session['permissions'],
-			'acct_mgmt',
-			admin=session['admin'],
-			user=customer_id,
-			view="dashboard"
-		)
 
-		return ViewFuncs.view_admin(
-			page=page,
-			owner=session['owner_logged_in'],
-			admin=session['admin_logged_in'],
-			manager=session['manager_logged_in'],
-			form=None
-		)
+		if request.method == 'POST':
+			if request.form['submit_button'] == 'submit csv' and csv_form.validate_on_submit():
+				ads = google_ads(
+					df=pd.read_csv(csv_form.csv.data.stream),
+					start_range=request.form['start_date'],
+					end_range=request.form['end_date']
+				)
+				ads.save(customer_id)
+				return redirect(url_for('acct_mgmt', customer_id=customer_id))
+
+			elif request.form['submit_button'] == 'submit insight' and insight_form.validate_on_submit():
+				service = AdminActions(customer_id, session['admin'])
+				service.send_insight(insight_form.body.data)
+				return redirect(url_for('acct_mgmt', customer_id=customer_id))
+
+		elif request.method == 'GET':
+			page = AdminViewModel(
+				session['permissions'],
+				'acct_mgmt',
+				admin=session['admin'],
+				user=customer_id,
+				view="dashboard"
+			)
+
+			return ViewFuncs.view_admin(
+				page=page,
+				owner=session['owner_logged_in'],
+				admin=session['admin_logged_in'],
+				manager=session['manager_logged_in'],
+				csv_form=csv_form,
+				insight_form=insight_form,
+				form=None
+			)
 	else:
 		session['account_rep'] = False
 		return "You don't have permissions!"
 
 
-
-
-
-
-
+@app.route('/customers/<customer_id>/profile', methods=['GET'])
+@admin_required
+def customer_profile_view_admin(customer_id):
+	vf = AdminViewFuncs(customer_id)
+	if vf.ValidView():
+		view_model = CustomerDataViewModel(customer_id=customer_id, init=True, admin=True)
+		return render_template(
+			'layouts/home_layout.html',
+			owner=session['owner_logged_in'],
+			admin=session['admin_logged_in'],
+			manager=session['manager_logged_in'],
+			page=view_model
+		)
+	else:
+		return 'You do not have permission to view this client.'
 
 
 

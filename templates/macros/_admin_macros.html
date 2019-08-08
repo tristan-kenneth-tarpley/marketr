@@ -1,13 +1,13 @@
 {% from "macros/dashboard_macros.html" import todo, messages %}
 
 
-{% macro render_page(page) %}
+{% macro render_page(page, csv_form=None, insight_form=None) %}
 	{% if page.page == 'personnel' %}
 		{{ personnel(page) }}
 	{% elif page.page == 'customers' %}
 		{{ customers(page) }}
 	{% elif page.page == 'acct_mgmt' %}
-		{{ customer_level(page) }}
+		{{ customer_level(page, csv_form=csv_form, insight_form=insight_form) }}
 	{% endif %}
 
 {% endmacro %}
@@ -495,17 +495,17 @@
 
 
 
-{% macro breadcrumb(page, view) %}
+{% macro admin_breadcrumb(page, view=None, profile_view=False) %}
 
 
-	{% macro formulate_row(link, title=None, view=view) %}
+	{% macro formulate_row(link, title=None, view=view, customer_id=None) %}
 
-		{% if name == view %}
+		{% if view == title %}
 			{% set classList = "active" %}
 		{% endif %}
 
 	    <li class="breadcrumb-item {{ classList }}" aria-current="page">
-	    	<a href="{{ url_for(link) }}">
+	    	<a href="{{ url_for(link, customer_id=customer_id) }}">
 				{{ title }}
 	    	</a>
 	    </li>
@@ -515,18 +515,87 @@
 
 	<nav aria-label="breadcrumb" role="navigation">
 		<ol class="breadcrumb">
-			{{ formulate_row("home", title="dashboard") }}
-			{{ formulate_row("home", title="customer profile", view="intake") }}
+			{% set customer_id = page.user if not profile_view else page.data['core']['customer_id'] %}
+			{{ formulate_row("acct_mgmt", title="dashboard", view=view, customer_id=customer_id) }}
+			{{ formulate_row("customer_profile_view_admin", title="customer profile", view=view, customer_id=customer_id) }}
 		</ol>
 	</nav>
 
 
 {% endmacro %}
 
+{% macro csv(page, form=None) %}
+
+<div class="card">
+	<div class="card-header">
+		<h5 class="card-category">Upload CSV</h5>
+	</div>
+	<div class="card-body">
+		<form method=POST enctype="multipart/form-data" action="{{url_for('acct_mgmt', customer_id=page.user)}}">
+			{{ form.csrf_token }}
+			<h5>Upload Google Ads data for previous Sunday to Sunday</h5>
+			<div class="form-group">
+				<label>Start date: </label>
+				<br>
+				{{ render_field(form.start_date, class="form-control") }}
+			</div>
+			<div class="form-group">
+				<label>End date: </label>
+				<br>
+				{{ render_field(form.end_date, class="form-control") }}
+			</div>
+				
+
+			<div style="text-align:left;" class="btn btn-secondary">
+				<span>Upload csv:</span>
+				{{ form.csv(class="form-control-file")}}
+			</div>
+			<input value="submit csv" name="submit_button" class="btn btn-primary" type="submit">
+		</form>
+	</div>
+	<div class="card-footer">
+
+	</div>
+</div>
+
+{% endmacro %}
+{% macro insights(page, form=None) %}
+
+	<div class="card">
+		<div class="card-header">
+			<h5 class="card-category">Send your insights to {{ page.customer_name }}</h5>
+		</div>
+		<div class="card-body">
+			<form method=POST enctype="multipart/form-data" action="{{url_for('acct_mgmt', customer_id=page.user)}}">
+				{{ form.csrf_token }}
+				{{ render_field(form.body, class="form-control") }}
+				<input class="btn btn-primary" type="submit" name="submit_button" value="submit insight">
+			</form>
+		</div>
+		<div class="card-footer past_insights">
+			{% for insight in page.insights %}
+
+				{% if loop.index == 1 %}
+					<h6>The last insight you sent to {{page.customer_name}} was on {{page.insights[insight]['time']}}</h6>
+					<br><br>
+					<label>Past insights:</label>
+					<br><br>
+				{% endif %}
+
+				<div class="card">
+					<p><strong>{{ page.insights[insight]['time'] }}</strong></p>
+					<p>{{ page.insights[insight]['body'] }}</p>
+				</div>
+		
+			{% endfor %}
+		</div>
+	</div>
+
+{% endmacro %}
 
 
 {# customer level view #}
-{% macro customer_level(page) %}
+{% macro customer_level(page, csv_form=None, insight_form=None) %}
 
 
 	{% macro shell(header=None, body=None, footer=None) %}
@@ -545,28 +614,29 @@
 
 
 	{# dashboard layout#}
-	{% macro dashboard(page) %}
+	{% macro dashboard(page, csv_form=None, insight_form=None) %}
 
 
-		{{ breadcrumb(page, "dashboard") }}
+		{{ admin_breadcrumb(page, view="dashboard") }}
+		<h4>{{ page.customer_name }}</h4>
+
 		<div class="row">
 			<div class="col-lg-6 col-md-6 col-sm-12 col-12">	
-				{{ todo(page) }}
+				<div class="card">
+					{{ todo(page) }}
+				</div>
 			</div>
-			<div class="col-lg-6 col-md-6 col-sm-12 col-12">	
-				{{ messages(page) }}
+			<div class="col-lg-6 col-md-6 col-sm-12 col-12">
+				{{ messages(page.messages, page=page) }}
 			</div>
 		</div>
 
 		<div class="row">
-			<div class="col-lg-4 col-md-4 col-sm-12 col-12">
-				{{ shell() }}	
+			<div class="col">
+				{{ csv(page, form=csv_form) }}	
 			</div>
-			<div class="col-lg-4 col-md-4 col-sm-12 col-12">	
-				{{ shell() }}	
-			</div>
-			<div class="col-lg-4 col-md-4 col-sm-12 col-12">	
-				{{ shell() }}	
+			<div class="col">	
+				{{ insights(page, form=insight_form) }}	
 			</div>
 		</div>
 	{% endmacro %}
@@ -586,7 +656,7 @@
 
 	{# page controller #}
 	{% if page.view == "dashboard" %}
-		{{ dashboard(page)}}
+		{{ dashboard(page, csv_form=csv_form, insight_form=insight_form)}}
 	{% elif page.view == "intake" %}
 		{{ intake(page) }}
 	{% endif %}

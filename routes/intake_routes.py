@@ -1,10 +1,14 @@
-from app import *
-from routes.core_routes import *
-from helpers.helpers import *
-from helpers.classes import *
+from app import app, session, FlaskForm
+from flask import request, render_template, redirect, url_for, flash
+import services.helpers as helpers
 from flask import jsonify
 from bleach import clean
 import json
+import data.db as db
+from services.UserService import IntakeService, UserService
+from ViewModels.ViewModels import SplashViewModel, ViewFuncs, ContainerViewModel
+from services.LoginHandlers import login_required
+import services.forms as forms
 
 
 @app.route('/areas', methods=['GET'])
@@ -30,7 +34,7 @@ def get_first_audience(user):
     try:
         tup = (session['user'],)
         query = "SELECT persona_name, audience_id FROM dbo.audience WHERE customer_id = ?"
-        names_and_ids, cursor = execute(query, True, tup)
+        names_and_ids, cursor = db.execute(query, True, tup)
         names_and_ids = cursor.fetchall()
         first_id = names_and_ids[0][1]
         session['first_id'] = first_id
@@ -45,11 +49,13 @@ def get_first_audience(user):
 @app.route('/splash', methods=['POST', 'GET'])
 def splash():
 
-    splash_page = SplashViewModel(next_step=request.args.get('next_step'))
+    splash_page = SplashViewModel(
+        next_step=request.args.get('next_step')
+    )
+    splash_page.compile_splash()
 
     return render_template('intake/splash.html',
                             redirect=splash_page.redirect,
-                            prev_step=splash_page.prev_step,
                             next_step=splash_page.next_step,
                             heading=splash_page.heading,
                             paragraph=splash_page.paragraph)
@@ -63,6 +69,9 @@ def begin():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
+        else:
+            service.skip()
+
         return redirect(url_for('competitors'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -84,6 +93,8 @@ def competitors():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.competitors(form.data)
+        else:
+            service.skip()
         return redirect(url_for('company'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -105,6 +116,8 @@ def company():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.company(form.data)
+        else:
+            service.skip()
         return redirect(url_for('audience'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -133,6 +146,8 @@ def audience():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.audience(form.data, request.args.get('view_id'))
+        else:
+            service.skip()
   
         if request.form['submit_button'] == '+ save and add another audience':
             next_id = service.get_persona()
@@ -170,6 +185,8 @@ def product():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.product(form.data)
+        else:
+            service.skip()
         return redirect(url_for('product_2'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -192,7 +209,7 @@ def branch_data():
 
             WHERE co.customer_id = %s
             """ % (session['user'],)
-    data,cursor = execute(query, True, ())
+    data,cursor = db.execute(query, True, ())
     data = cursor.fetchone()
     cursor.close()
 
@@ -218,6 +235,8 @@ def product_2():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.product_2(form.data, request.args.get('view_id'))
+        else:
+            service.skip()
         
         if request.form['submit_button'] == 'update next product':
             next_id = service.get_product(request.args.get('view_id'))
@@ -246,6 +265,8 @@ def salescycle():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.salescycle(form.data)
+        else:
+            service.skip()
         return redirect(url_for('nice'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -278,6 +299,8 @@ def goals():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.goals(form.data)
+        else:
+            service.skip()
         return redirect(url_for('history'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -300,6 +323,8 @@ def history():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.history(form.data)
+        else:
+            service.skip()
         return redirect(url_for('platforms'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -319,6 +344,8 @@ def platforms():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.platforms(request.form)
+        else:
+            service.skip()
         return redirect(url_for('past'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -338,7 +365,7 @@ def get_platforms():
                 FROM history
                 WHERE customer_id = ?
             """
-    data, cursor = execute(query, True, tup)
+    data, cursor = db.execute(query, True, tup)
     data = cursor.fetchone()
     cursor.close()
     return json.dumps(list(data))
@@ -354,6 +381,8 @@ def past():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.past(form.data)
+        else:
+            service.skip()
         return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -378,7 +407,7 @@ def past():
 # def creative():
 #     user_tup = (session['user'],)
 #     next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
-#     data, cursor = execute(next_query, True, user_tup)
+#     data, cursor = db.execute(next_query, True, user_tup)
 #     data = cursor.fetchall()
 #     cursor.close()
 #     if len(data) > 0:
@@ -396,10 +425,10 @@ def past():
 #                                     asset_type, 
 #                                     file_path)
 #                         VALUES (?, ?, ?, ?);commit;"""
-#         execute(query, False, tup)
+#         db.execute(query, False, tup)
 
 #         next_query = "SELECT file_path FROM dbo.assets WHERE customer_id = ?"
-#         data, cursor = execute(next_query, True, user_tup)
+#         data, cursor = db.execute(next_query, True, user_tup)
 #         data = cursor.fetchall()
 
 #         return render_template('intake/creative.html', images=data)
@@ -421,6 +450,7 @@ def load_past_inputs():
     page = request.args.get('page')
     page = page.replace("/", " ")
     *first, page = page.split()
+    del first
 
     result = ViewFuncs.past_inputs(page, session['user'], view_id=request.args.get('view_id'))
 

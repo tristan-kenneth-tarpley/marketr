@@ -73,19 +73,24 @@ const platform_row = (name, index) => {
 
 
 const chat_box = (copy, time, date) => {
-	const el = `<div class="chat_label">
-					<p><strong>${date} ${time}</strong></p>
+	
+	const el = `
+				<div class="message_container">
+					<div class="chat_label">
+						<p><strong>${date} ${time}</strong></p>
+					</div>
+					<div class="chat_box chat-user">
+						${copy}
+					</div>
 				</div>
-				<div class="chat_box chat-user">
-					${copy}
-				</div>`
+				`
 	return el
 }
 
 
 const taskView = title => {
 	const el = `
-			<tr style="line-height: 5em;">
+			<tr class="editable_task">
 				<td>
 					<div class="form-check">
 						<label class="form-check-label">

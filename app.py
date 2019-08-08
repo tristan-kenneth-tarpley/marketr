@@ -11,26 +11,22 @@ from functools import wraps
 
 app = Flask(__name__)
 
-from routes.core_routes import *
-from helpers.UserService import *
-from helpers.ViewModels import *
-from helpers.LoginHandlers import *
-import helpers.forms as forms
+# from helpers.UserService import *
+# from helpers.ViewModels import *
+# from helpers.LoginHandlers import *
+import services.forms as forms
+from routes.branding_routes import *
 from routes.intake_routes import *
 from routes.admin_routes import *
-from helpers.helpers import *
-import helpers.analysis as an
-from routes.branding_routes import *
-from helpers.filters import *
-from passlib.hash import sha256_crypt
-
+from routes.core_routes import *
+from services.filters import *
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', first=4, second=0,third=4), 404
 
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error(e):
     return render_template('error.html', first=5, second=0,third=0), 500
 
 if __name__ == '__main__':

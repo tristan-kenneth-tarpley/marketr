@@ -1,5 +1,7 @@
 from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList, BooleanField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList, BooleanField, DateField
+from wtforms.fields.html5 import DateField as htmldate
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class CustomerLogin(FlaskForm):
     email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
@@ -22,6 +24,7 @@ class Profile(FlaskForm):
     zip = StringField('zip', validators=[validators.Length(max=5, min=5)])
     stage = HiddenField('stage')
     employees = StringField('employees')
+    website = StringField('website')
 
 class Competitors(FlaskForm):
     industry = StringField('industry', validators=[validators.InputRequired()])
@@ -211,3 +214,11 @@ class AddRep(FlaskForm):
 
 class TaskForm(FlaskForm):
     title = StringField('task title', validators=[validators.InputRequired()])
+
+class CSVForm(FlaskForm):
+    start_date = htmldate('start date', validators=[validators.InputRequired()])
+    end_date = htmldate('end date', validators=[validators.InputRequired()])
+    csv = FileField('csv', validators=[FileRequired(), FileAllowed(['csv'], 'Please make sure the csv format is correct!')])
+
+class InsightForm(FlaskForm):
+    body = TextAreaField('body', validators=[validators.InputRequired()])

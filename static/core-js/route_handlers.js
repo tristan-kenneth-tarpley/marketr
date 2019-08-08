@@ -234,7 +234,7 @@ const container_handler = (data, title) => {
 		if (name != null && name != "") {
 			item = container_item(name, id, title)
 		} else {
-			item = container_item('still working...', id, title)
+			item = container_item('Unfinished work', id, title)
 		}
 		$("#append_container").append(item)
 	})

@@ -7,10 +7,10 @@ import json
 from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
-from helpers.UserService import UserService, encrypt_password
+from services.UserService import UserService, encrypt_password
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
-from helpers.SharedService import MessagingService, TaskService
+from services.SharedService import MessagingService, TaskService
 
 class AdminService:
     def __init__(self):
@@ -105,6 +105,12 @@ class AdminService:
         cursor.close()
 
         return data
+
+    def get_customer_name(self, customer_id):
+        query = """select company_name from customer_basic where id = ?"""
+        data, cursor = db.execute(query, True, (customer_id,))
+        data = cursor.fetchone()
+        return data[0]
     
     def validate_view(self, admin_id, customer_id) -> bool:
         validate_tup = (admin_id, customer_id)
@@ -144,12 +150,15 @@ class AdminService:
 
 
 
+
+
         
 
 
 class AdminActions(object):
-    def __init__(self, id: str, debug: bool = False) -> None:
+    def __init__(self, id: str, admin_id: int, debug: bool = False) -> None:
         self.id = id
+        self.admin_id = admin_id
         self.debug = debug
 
     def add_rep(self, form, customer_id):
@@ -174,6 +183,20 @@ class AdminActions(object):
                     db.execute(rep_query, False, rep_tup, commit=True)
                 else:
                     print(rep_query)
+    
+    def send_insight(self, insight, admin_id=None):
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        query = """
+                EXEC add_insight
+                    @customer_id = ?,
+                    @admin_id = ?,
+                    @body = ?,
+                    @time = ?
+                """
+        tup = (self.id, self.admin_id, insight, st)
+        db.execute(query, False, tup, commit=True)
+        #come back
 
 
 

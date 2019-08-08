@@ -1,17 +1,29 @@
 from functools import wraps
 from flask import session, redirect, url_for
 from app import *
+from services.UserService import load_last_page
 
 def account_rep_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if 'account_rep' in session and session['account_rep'] == True:
+        if 'account_rep' in session and session['account_rep'] == True or 'customer' in session and session['customer'] == True:
             return f(*args, **kwargs)
         else:
             return "YOU CAN'T GO HERE"
     
     return wrap
 
+def onboarding_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'onboarding_complete' in session and session['onboarding_complete'] == True:
+            return f(*args, **kwargs)
+        elif 'onboarding_complete' in session and session['onboarding_complete'] == False:
+            page = load_last_page(session['user'])
+            return redirect(url_for(page))
+
+    return wrap
+    
 def owner_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):

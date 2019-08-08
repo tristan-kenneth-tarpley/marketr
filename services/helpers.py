@@ -9,8 +9,6 @@ import math
 
 
 
-
-
 def test_query(query, tup):
     test_query = query.replace("?", "%s")
     test_query = test_query % tup

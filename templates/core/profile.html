@@ -1,0 +1,507 @@
+{% set company_name = page.data['core']['company_name'] %}
+{% set core = page.data['core'] %}
+{% set products = page.data['products'] %}
+
+{% macro one() %}
+	<ul>
+		<li>Industry: {{core['industry']|safe}}</li>
+		<li>{{ core['city'] }}, {{ core['state'] }}</li>
+		<li>Stage: {{ core['stage'] }}</li>
+	</ul>
+	<h6>Profile owner:</h6>
+	<ul>
+		<li>{{ core['first_name'] }} {{ core['last_name'] }}</li>
+		<li>{{ core['email'] }}</li>
+	</ul>
+{% endmacro %}
+
+{% macro two() %}
+
+	<p>A {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p><br><br>
+
+	<div class="row percentages">
+		<div class="col-md-1"></div>
+		<div class="card col-md-2 col-sm-4 center_it">
+			<div class="">
+				<br>
+				<h6 class="title">Storefront</h6>
+				<p>(physical store, kiosk, truck, etc.)</p>
+			</div>
+			<p class="meter">
+				{{ core['storefront_perc'] if core['storefront_perc'] != "" else "0" }}%
+				<span class="perc_width"></span>
+			</p>
+		</div>
+		<div class="card col-md-2 col-sm-4 center_it">
+			<div class="">
+				<br>
+				<h6 class="title">Direct</h6>
+				<p>(phone, mailers, email, etc.)</p>
+			</div>
+			<p class="meter">
+				{{ core['direct_perc'] if core['direct_perc'] != "" else "0" }}%
+				<span class="perc_width"></span>
+			</p>
+		</div>
+		<div class="card col-md-2 col-sm-4 center_it">
+			<div class="">
+				<br>
+				<h6 class="title">Online</h6>
+				<p>(eCommerce, Saas, blog, online ads, blog, etc)</p>
+			</div>
+			<p class="meter">
+				{{ core['online_perc'] if core['online_perc'] != "" else "0" }}%
+				<span class="perc_width"></span>
+			</p>
+		</div>
+		<div class="card col-md-2 col-sm-4 center_it">
+			<div class="">
+				<br>
+				<h6 class="title">Tradeshows</h6>
+				<p></p>
+			</div>
+			<p class="meter">
+				{{ core['tradeshows_perc'] if core['tradeshows_perc'] != "" else "0" }}%
+				<span class="perc_width"></span>
+			</p>
+		</div>
+		<div class="card col-md-2 col-sm-4 center_it">
+			<div class="">
+				<br>
+				<h6 class="title">Other</h6>
+				<p></p>
+			</div>
+			<p class="meter">
+				{{ core['other_perc'] if core['other_perc'] != "" else "0" }}%
+				<span class="perc_width"></span>
+			</p>
+		</div>
+	</div>
+	<h6>Additional notes:</h6>
+	<p class="truncate inset">{{ core['rev_channel_freeform'] }}</p>
+{% endmacro %}
+
+
+
+{% macro four() %}
+
+	<p><em>{{core['comp_1_name']}}</em> who is a <em>{{ core['comp_1_type']}}</em> competitor
+	<a href="{{core['comp_1_site']}}" target="_blank">Visit website</a></p>
+	
+	<br>
+	<p><em>{{core['comp_2_name']}}</em> who is a <em>{{core['comp_2_type']}}</em> competitor
+	<a href="{{core['comp_2_site']}}" target="_blank">Visit website</a></p>
+
+{% endmacro %}
+
+{% macro five() %}
+
+{% for index in page.data['audiences'] %}
+	{% set state = page.data['audiences'][index] %}
+	{% if state['persona_name'] and state['persona_name'] != "" %}	
+		<h6>Audience name: {{ state['persona_name']}}</h6><br>
+
+		<table class="table table-borderless table-responsive">
+			<thead>
+				<th>Demographic</th>
+				<th>Personality</th>
+				<th>Purchasing Habits</th>
+			</thead>
+			<tbody>
+				<td>
+					<ul>	
+						{% if state['gender'] == 'both' %}
+							<li>{{state['gender']}} genders</li>
+						{% else %}
+							<li>{{state['gender']}}</li>
+						{% endif %}
+
+						<li>Target ages:
+							{% set ages = [
+								state['age_group_1'],
+								state['age_group_2'],
+								state['age_group_3'],
+								state['age_group_4'],
+								state['age_group_5'],
+								state['age_group_6'],
+								state['age_group_7'],
+								state['age_group_8']
+							]%}
+							<ul>
+								{{ multi_val_iterator(ages) }}
+							</ul>
+						</li>
+						<li>{{state['location'] if state['location'] | length }}</li>
+					</ul>
+				</td>
+				<td>
+					<ul>
+						{% if state['formality']%}
+							<li>{{state['formality']}}</li>
+						{% endif %}
+						{% if state['tech_savvy']%}
+							<li>{{state['tech_savvy']}}</li>
+						{% endif %}
+						{% if state['detail-oriented']%}
+							<li>{{state['detail-oriented']}}</li>
+						{% endif %}
+					</ul>
+				</td>
+				<td>
+					<ul>
+						{% if state['buying_for'] %}
+							<li>{{state['buying_for']}}</li>
+						{% endif %}
+						{% if state['decision_making'] %}
+						<	li>{{state['decision_making']}}</li>
+						{% endif %}
+						{% if state['motive'] %}
+							<li>{{state['motive']}}</li>
+						{% endif %}
+						{% if state['why'] %}
+							<li>{{state['why']}}</li>
+						{% endif %}
+						<li>Feeling Before:
+							{% set before = [
+								state['before_1'],
+								state['before_2'],
+								state['before_3'],
+								state['before_4'],
+								state['before_5'],
+								state['before_6'],
+								state['before_7'],
+								state['before_8'],
+								state['before_9'],
+								state['before_10'],
+							]%}
+							<ul>
+								{{ multi_val_iterator(before) }}
+							</ul>
+						</li>
+						<li>Feeling After:
+							{% set after = [
+								state['after_1'],
+								state['after_2'],
+								state['after_3'],
+								state['after_4'],
+								state['after_5'],
+								state['after_6'],
+								state['after_7'],
+								state['after_8'],
+								state['after_9'],
+								state['after_10']	
+							]%}
+							<ul>
+								{{ multi_val_iterator(after) }}
+							</ul>
+						</li>
+					</ul>
+				</td>
+			</tbody>
+		</table>
+	{% endif %}
+{% endfor %}
+
+{% endmacro %}
+
+{% macro six() %}
+	<p>{{ company_name}} offers {{ core['quantity'] }} products / services.</p><br><br>
+	<a href="{{ core['link'] }}">Visit website</a>
+	<br>
+	<br>
+	<h6>Offerings are segmented in the marketplace by:</h6>
+	{% set segments = [
+		core['segment_1'],
+		core['segment_2'],
+		core['segment_3'],
+		core['segment_4'],
+		core['segment_5'],
+		core['segment_6'],
+		core['segment_7'],
+		core['segment_8'],
+		core['segment_9'],
+		core['segment_10'],
+	]%}
+	<ul>
+		{{ multi_val_iterator(segments) }}
+	</ul>
+
+	<h6>And sourced via:</h6>
+	{% set sources = [
+		'source_1',
+		'source_2',
+		'source_3',
+		'source_4'
+	]%}
+	<ul>
+		{{ multi_val_iterator(sources) }}
+	</ul>
+	
+	<h6>Additional sourcing info:</h6>
+	<p class="truncate">{{ core['source_freeform'] }}</p>
+	<br>
+	<div class="center_it">
+		<h6>Offering Details</h6>
+	</div>
+
+	<table id="products" class="table-striped table table-borderless table-responsive">
+		<thead>
+			<th>Product Name</th>
+			<th>Category</th>
+			<th>COGS</th>
+			<th>Sale Price</th>
+			<th>Qty Sold Last 12 mos.</th>
+			<th>Estimated Unique Buyers</th>
+		</thead>
+		<tbody>
+		{% for index in page.data['products'] %}
+		{% set state = page.data['products'][index] %}
+			{% if state['name'] | not_none %}
+				<tr>
+					<td><strong>{{ state['name'] if state['name'] | not_none else "" }}</strong></td>
+					<td>{{ state['category'] if state['category'] | not_none else "" }}</td>
+					<td>{{ "$" + state['cogs'] if state['cogs'] | not_none else "" }}</td>
+					<td>{{ "$" + state['sales_price'] if state['sales_price'] | not_none else "" }}</td>
+					<td>{{ state['qty_sold'] if state['qty_sold'] | not_none else "" }}</td>
+					<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] | not_none else "" }}</td>
+				</tr>	
+			{% endif %}
+		{% endfor %}
+		</tbody>
+	</table>
+
+	<div class="separator"></div>
+
+	<div class="edit">
+		<a href="{{url_for('product_2', home=True)}}" class="edit btn-primary btn">
+			<i class="now-ui-icons ui-2_settings-90"></i>
+		</a>
+	</div>
+		<br>
+	<div class="center_it">
+		<h6>Offering Detailed Analysis</h6>
+	</div>
+
+	<table class="table table-responsive table-borderless table-striped">
+		<thead>
+			<th> </th>
+			{% for product in products %}
+				{% set state = products[product] %}
+				<th>{{ state['name'] }}</th>
+			{% endfor %}
+		</thead>
+		<tbody>
+			<tr>
+				<th>Complexity</th>
+				{{ product_val_iterator(page.data['products'], 'complexity') }}
+			</tr>
+			<tr>
+				<th>Price</th>
+				{{ product_val_iterator(page.data['products'], 'price') }}
+			</tr>
+			<tr>
+				<th>Frequency of Use</th>
+				{{ product_val_iterator(page.data['products'], 'frequency_of_use') }}
+			</tr>
+			<tr>
+				<th>Frequency of Purchase</th>
+				{{ product_val_iterator(page.data['products'], 'frequency_of_purchase') }}
+			</tr>
+			<tr>
+				<th>Value Prop</th>
+				{{ product_val_iterator(page.data['products'], 'value_prop') }}
+			</tr>
+			<tr>
+				<th>Warranties or Guarantee</th>
+				{{ product_val_iterator(page.data['products'], 'warranties_or_guarantee') }}
+			</tr>
+			<tr>
+				<th>Low or High # of skus</th>
+				{{ product_val_iterator(page.data['products'], 'num_skus') }}
+			</tr>
+			<tr>
+				<th>Level of Customization</th>
+				{{ product_val_iterator(page.data['products'], 'level_of_customization') }}
+			</tr>
+		</tbody>
+	</table>
+
+{% endmacro %}
+
+{% macro seven() %}
+
+	<div class="row">
+		<div class="col-1"></div>
+		<div class="card home_stages col-2">
+			<div class="container-fluid center_it">
+				<h6>Awareness</h6>
+			</div>
+			<div class="container-fluid">
+				<ul>
+					{% for value in page.data['salescycle']['awareness'] %}
+						<li>{{value}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>&nbsp;
+		<div class="card home_stages col-2">
+			<div class="container-fluid center_it">
+				<h6>Evaluation</h6>
+			</div>
+			<div class="container-fluid">
+				<ul>
+					{% for value in page.data['salescycle']['evaluation'] %}
+						<li>{{value}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>&nbsp;
+		<div class="card home_stages col-2">
+			<div class="container-fluid center_it">
+				<h6>Conversion</h6>
+			</div>
+			<div class="container-fluid">
+				<ul>
+					{% for value in page.data['salescycle']['conversion'] %}
+						<li>{{value}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>&nbsp;
+		<div class="card home_stages col-2">
+			<div class="container-fluid center_it">
+				<h6>Retention</h6>
+			</div>
+			<div class="container-fluid">
+				<ul>
+					{% for value in page.data['salescycle']['retention'] %}
+						<li>{{value}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>&nbsp;
+		<div class="card home_stages col-2">
+			<div class="container-fluid center_it">
+				<h6>Referral</h6>
+			</div>
+			<div class="container-fluid">
+				<ul>
+					{% for value in page.data['salescycle']['referral'] %}
+						<li>{{value}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+{% endmacro %}
+
+{% macro eight() %}
+<p>Average monthly spend across all platforms</p>
+<h5 class="title blue_header">{{ core['digital_spend']}}</h5>
+<div class="divider"></div>
+<div class="row">
+	<div class="col-1"></div>
+	<div class="col-3">
+		<h6>Platform Name</h6>
+	</div>
+	<div class="col-3">
+		<h6>Results</h6>
+	</div>
+	<div class="col-3">
+		<h6>Still using?</h6>
+	</div>
+</div>
+
+{% for index in page.data['platforms'] %}
+	{% set state = page.data['platforms'][index] %}
+	<div class="row">
+		<div class="col-1"></div>
+		<div class="col-3">
+			<h6>
+				<span class="platform_img">
+					{{ state['platform_name']}}
+				</span>
+			</h6>
+		</div>
+		<div class="col-3 results_img">
+			<span>
+				{{ state['results'] }}
+			</span>
+		</div>
+		
+		{% if state['currently_using'] == 'yes' %}
+		<div class="col-2 center_it alert alert-success">
+			ACTIVE
+		</div>
+		{% elif state['currently_using'] == 'no' %}
+		<div class="col-2 center_it alert alert-secondary">
+			INACTIVE
+		</div>
+		{% endif %}
+	</div>
+{% endfor %}
+
+<h6>Additional notes</h6>
+<p class="inset truncate">{{ core['history_freeform']}}</p>
+{% endmacro %}
+
+
+
+{{ section(
+	link="begin",
+	title=company_name,
+	body=one(),
+	hash="profile_information",
+	admin=page.admin
+) }}
+{{ section(
+	link="company",
+	title="Company Info",
+	body=two(),
+	hash="company",
+	admin=page.admin
+) }}
+{{ section(
+	link="goals",
+	title="Marketing Goal",
+	body=goals(page),
+	hash="goal",
+	admin=page.admin
+) }}
+{{ section(
+	link="competitors",
+	title="Top Competitors",
+	body=four(),
+	hash="competitors",
+	admin=page.admin
+) }}
+{{ section(
+	link="audience",
+	title="Customer Personas",
+	body=five(),
+	hash="audience",
+	admin=page.admin
+) }}
+{{ section(
+	link="product",
+	title="Product / Service Offering",
+	body=six(),
+	hash="products",
+	admin=page.admin
+) }}
+{{ section(
+	link="salescycle",
+	title="Sales Cycle",
+	body=seven(),
+	hash="salescycle",
+	admin=page.admin
+) }}
+{{ section(
+	link="platforms",
+	title="Advertising Platforms",
+	body=eight(),
+	hash="platforms",
+	admin=page.admin
+) }}
+

@@ -1,0 +1,38 @@
+
+{% from "macros/dashboard_macros.html" import goals, insights, ads_performance %}
+{% set company_name = page.data['core']['company_name'] %}
+
+
+
+{{ section(
+	link=None,
+	title=company_name,
+	body=todo(page, admin=False),
+	hash="to_do",
+	admin=page.admin
+) }}
+
+{{ section(
+	link="goals",
+	title="Marketing Goal",
+	body=goals(page),
+	hash="goal",
+	admin=page.admin
+) }}
+
+{{ section(
+    link=None,
+    title="Insights",
+    body=insights(page),
+    hash="insights",
+    admin=page.admin
+) }}
+
+{{ section(
+    link=None,
+    title="Ad Campaign Performance",
+    body=ads_performance(page),
+    hash="ads_performance",
+    admin=page.admin
+) }}
+

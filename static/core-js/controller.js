@@ -466,13 +466,7 @@ const PageViewController = class {
 
 		} else {
 			const init = new InitFuncs()
-
 			const view_model = new CoreViewModels(this.url_path)
-
-			const dashboard = () => {
-				view_model.tasks()
-				view_model.messages()
-			}
 			
 			switch(PageMap(this.url_path)) {
 				case 'admin':
@@ -485,8 +479,14 @@ const PageViewController = class {
 					init.personnel()	
 					break
 				case 'customers':
-					init.customers()
-					dashboard()
+					view_model.tasks()
+					view_model.messages()
+					view_model.dashboard()
+					break
+				case 'home':
+					view_model.dashboard()
+					view_model.messages()
+					view_model.tabs()
 					break
 			}
 		}

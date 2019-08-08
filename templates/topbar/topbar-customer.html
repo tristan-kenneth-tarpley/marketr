@@ -12,7 +12,7 @@
         <p>Do you want to return home or save your changes?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Stay here</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Stay here</button>
         <a class="btn btn-primary" href="/home">Return home</a>
       </div>
     </div>
@@ -51,15 +51,15 @@
           </div>
         </form> -->
         {% if request.args.get('home') %}
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm_home">
-          Return home
-        </button>
-        {% else %}
-        <div class="need_help hidden">
-          <span id="xx">x</span><br>
-          <h6 class="title">Feeling a bit overwhelmed? Get help from a marketing expert!</h6><br><br>
-          <a class="continue" href="/">Schedule a call</a>
-        </div>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm_home">
+            Return home
+          </button>
+          {% else %}
+          <div class="need_help hidden">
+            <span id="xx">x</span><br>
+            <h6 class="title">Feeling a bit overwhelmed? Get help from a marketing expert!</h6><br><br>
+            <a class="continue" href="/">Schedule a call</a>
+          </div>
         {% endif %}
         
         

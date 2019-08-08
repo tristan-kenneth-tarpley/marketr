@@ -37,7 +37,10 @@ def load_last_page(user):
 	data, cursor = db.execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
 	data = cursor.fetchall()
 	data = int(data[0][0]) / 10
-	# keys = list(pages.keys())
+	if data < 11:
+		session['onboarding_complete'] = False
+	else:
+		session['onboarding_complete'] = True
 	cursor.close()
 	return pages[data]
 
@@ -282,7 +285,8 @@ class UserService:
 			if action == 'verify_email':
 				tup = ("begin",)
 				query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
-				data, cursor = execute(query, True, tup)
+				data, cursor = db.execute(query, True, tup)
+				del data
 				heading, paragraph = cursor.fetchone()
 				heading = heading.replace("`", "'")
 				paragraph = paragraph.replace("`", "'")
@@ -317,6 +321,11 @@ class UserService:
 					session['user_name'] = "%s %s" % (first_name, last_name)
 					session.permanent = True
 					session.remember = True
+
+					ts = time.time()
+					st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+					last_logged_in = """UPDATE customer_basic SET last_logged_in = ? WHERE id = ?"""
+					db.execute(last_logged_in, False, (st, int(uid)), commit=True)
 
 					first_query = db.sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
 
@@ -354,6 +363,9 @@ class UserService:
 
 		return json.loads(dumps)
 
+	def remove_product(product_name):
+		print(product_name)
+
 
 
 def last_modified(id):
@@ -389,6 +401,9 @@ class IntakeService:
 				"""
 
 		db.execute(query, False, tup, commit=True)
+	
+	def skip(self):
+		self.perc_complete()
 
 	def get_persona(self):
 		query = """
@@ -463,8 +478,6 @@ class IntakeService:
 		query = dbactions.insert_conditional('not exists', table='competitors')
 		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
-
-		print(query)
 
 		db.execute(query, False, vals, commit=True)
 

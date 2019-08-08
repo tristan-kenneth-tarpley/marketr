@@ -11,18 +11,17 @@ const MessagingService = class {
 
     update_messages (msg) {
         let chat = chat_box(msg, this.get_time(), this.get_date())
-        $('.chat').append(chat)
-        $('.chat').scrollTop($(".chat")[0].scrollHeight);
+        $('.chat').prepend(chat)
         $('#msg').val("")
     }
 
     get_time () {
         let d = new Date()
-        return d.toLocaleTimeString()
+        return d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
     }
     get_date () {
         let d = new Date()
-        return d.toDateString()
+        return d.toDateString().substring(4)
     }
 
     send(msg) {

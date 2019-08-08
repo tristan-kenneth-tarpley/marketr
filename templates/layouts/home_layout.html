@@ -1,0 +1,67 @@
+{% extends "layouts/layout.html" %}
+{% from "macros/_macros.html" import form_open, breadcrumb, left_nav, form_body, container, product_table, intro_copy %}
+{% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
+{% from "macros/dashboard_macros.html" import todo, messages, goals %}
+{% from "macros/_admin_macros.html" import admin_sidebar, admin_breadcrumb %}
+
+{% block title %}
+<title>Market(r) - Home</title>
+{% endblock %}
+
+{% block content %}
+{% if page.admin %}<div class="main-panel">{% endif%}
+	{% if not page.admin %}
+		{% with plan="active" %}
+			{% include "/core/navbar/sidebar.html" %}
+		{% endwith %}
+		{% include "/core/navbar/topbar.html" %}
+	{% else %}
+		{{ admin_sidebar('test', owner, admin, manager) }}
+		{% include "/topbar/topbar-admin.html" %}
+	{% endif %}
+	<style type="text/css">
+		.card {
+			padding: 3%;
+			/*border-top: 6px solid #62cde0;*/
+		}
+	</style>
+
+	<div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="append_to">
+			<div class="container-fluid">
+				<div class="card">
+					
+					{% if not page.admin %}
+						{{ tab_bar(page) }}
+					{% else %}
+						{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
+					{% endif %}
+
+					<div class="tab-content">
+						<div class="tab-pane active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+							{% with page=page %}
+								{% include "core/profile.html" %}
+							{% endwith %}
+						</div>
+						<div class="tab-pane" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
+							{% with page=page %}
+								{% include "core/campaigns.html" %}
+							{% endwith %}
+						</div>
+						<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+							{% with page=page %}
+								{% include "core/messages.html" %}
+							{% endwith %}
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+{% if page.admin %}</div>{% endif %}
+
+{% endblock %}

@@ -1,11 +1,16 @@
 {% from "macros/_macros.html" import render_field %}
-{% macro todo(page) %}
-    {% macro view_tasks(page) %}
+
+{% macro goals(page) %}
+	<p>{{ page.data['core']['company_name'] }}'s primary marketing goal is to improve {{page.data['core']['goal']}} from {{page.data['core']['current_avg'] }} to {{ page.data['core']['target_avg'] }} within {{ page.data['core']['timeframe'] }}</p>
+{% endmacro %}
+
+{% macro todo(page, admin=True) %}
+    {% macro view_tasks(page, admin=True) %}
         {% for task in range(page.tasks | length) %}
 
-            {% set index = task | string %}
-            {% set title = page.tasks[index]['task_title'] %}
-            {% set completed = page.tasks[index]['complete_binary'] %}
+            {% set message = task | string %}
+            {% set title = page.tasks[message]['task_title'] %}
+            {% set completed = page.tasks[message]['complete_binary'] %}
             
             {% if completed == 0 %}
                 {% set status = False %}
@@ -13,12 +18,12 @@
                 {% set status = True %}
             {% endif %}
 
-            {{ tr(title=title, completed=status) }}
+            {{ tr(title=title, completed=status, admin=admin) }}
 
         {% endfor %}
     {% endmacro %}
-    {% macro tr(title=None, completed=False) %}
-        <tr class="editable_task" style="line-height: 5em;">
+    {% macro tr(title=None, completed=False, admin=True) %}
+        <tr class="editable_task">
             <td>
                 <div class="form-check">
                     <label class="form-check-label">
@@ -28,22 +33,24 @@
                 </div>
             </td>
             <td class="task_title text-left">
-                {{ title | clean_chars }}
+                <p id="task_title">{{ title | clean_chars }}</p>
             </td>
             <td class="td-actions text-right">
                 {#<button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
                     <i class="now-ui-icons ui-2_settings-90"></i>
                 </button>#}
-                <button type="button" id="remove_task" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
-                    <i class="now-ui-icons ui-1_simple-remove"></i>
-                </button>
+                {% if admin %}
+                    <button type="button" id="remove_task" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                    </button>
+                {% endif %}
             </td>
         </tr>
     {% endmacro %}
 
     {% macro new_task_modal(page) %}
   
-            <div class="modal fade" id="task_modal" aria-labelledby="exampleModalLabel" aria-hidden="true" tabindex="-1" role="dialog">
+            <div class="modal fade" id="task_modal" aria-labelledby="exampleModalLabel" aria-hidden="true" tabmessage="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -66,17 +73,26 @@
 
     {% endmacro %}
 
-    <div class="card card-tasks todo">
+    <div class="card-tasks todo">
         <div class="card-header">
-            <h5 class="card-category">Tasks</h5>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#task_modal" id="new_task">New task</button>
-            {{ new_task_modal(page) }}
+            <h5 class="card-category">To-Do List</h5>
+            {% if not admin %}
+            <p>To improve your Marketr score complete the bold To-Do List items below</p>
+            {% endif %}
+            {% if admin %}
+                <button class="btn btn-primary" data-toggle="modal" data-target="#task_modal" id="new_task">New task</button>
+                {{ new_task_modal(page) }}
+            {% endif %}
         </div>
         <div class="card-body" style="padding-top: 0;">
             <div class="table-full-width table-responsive">
                 <table class="table">
                     <tbody id="task_body">
-                        {{view_tasks(page)}}
+                        {% if page.tasks %}
+                            %{{view_tasks(page, admin=admin)}}
+                        {% else %}
+                            <h4>No tasks yet! Your Marketer will assign you tasks here to help you with your Market(r) score.</h4>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -87,13 +103,14 @@
 
 
 
-{% macro messages(page) %}
+{% macro messages(msg_list, page=None) %}
+
 
     {% macro view_message(from=None, copy=None, date=None) %}
         <div class="chat_label">
             <p><strong>{{ date }}</strong></p>
         </div>
-        <div class="chat_box {{ 'chat-helper' if from == 'helper' else 'chat-user' }}">
+        <div class="chat_box {{ from }}">
             {{ copy | clean_chars }}
         </div>
     {% endmacro %}
@@ -106,28 +123,36 @@
         </div>
         <div class="card-body">
             <div class="chat">
-                {% for message in range(page.messages | length) %}
-                    {% set index = message | string %}
-                    {% set message_string = page.messages[index]['message_string'] %}
-                    {% set admin_id = page.messages[index]['admin_id'] %}
-                    {% set date = page.messages[index]['timestamp'] %}
+                <div>
+                    {% if msg_list %}
+                        {% for message in range(msg_list | length) %}
+                            
+                            {% set index = message | string %}
+                            {% set message_string = msg_list[index]['message_string'] %}
+                            {% set admin_id = msg_list[index]['admin_id'] %}
+                            {% set date = msg_list[index]['timestamp'] %}
 
-                    {% if page.view_type == 'admin' %}
-                        {% if page.messages[index]['from'] == 'admin' %}
-                            {% set from = 'user' %}
-                        {% else %}
-                            {% set from = 'helper' %}
-                        {% endif %}
+                            {% if page.admin %}
+                                {% if msg_list[index]['from'] == 'admin' %}
+                                    {% set from = "chat-user" %}
+                                {% else %}
+                                    {% set from = "chat-helper" %}
+                                {% endif %}
+                            {% else %}
+                                {% if msg_list[index]['from'] == 'admin' %}
+                                    {% set from = "chat-helper" %}
+                                {% else %}
+                                    {% set from = "chat-user" %}
+                                {% endif %}
+                            {% endif %}
+                            <div class="message_container">
+                                {{ view_message(from=from, copy=message_string, date=date) }}
+                            </div>
+                        {% endfor %}
                     {% else %}
-                        {% if page.messages[index]['from'] == 'customer' %}
-                            {% set from = 'user' %}
-                        {% else %}
-                            {% set from = 'helper' %}
-                        {% endif %}
+                        <h4>No messages yet! Send a message to your marketer to introduce yourself!</h4>
                     {% endif %}
-
-                    {{ view_message(from=from, copy=message_string, date=date) }}
-                {% endfor %}
+                </div>
             </div>
         </div>
         <div class="card-footer">
@@ -140,5 +165,114 @@
                 </div>
             </div>
         </div>
+    </div>
+{% endmacro %}
+
+
+{% macro insights(page) %}
+<div class="row">
+    {% if page.data['insights'] %}
+        {% for insight in page.data['insights'] %}
+                <div class="card col">
+                    <label>{{ page.data['insights'][insight]['time'] }}</label>
+                    <p>{{ page.data['insights'][insight]['body'] }}</p>
+                </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro ads_performance(page) %}
+
+    {% macro overview(page) %}
+        {% macro shell(page, spend=True) %}
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    {% if spend %}
+                        <h5>Total Spend: ${{ page.data['google']['0']['agg_cost'] | round(2) }}</h5>
+                    {% else %}
+                        <h5>Interaction Rate: {{ page.data['google']['0']['agg_ctr'] | round }}%</h5>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row sub_metrics">
+                <div class="col-lg-6 col-sm-12">
+                    <h5><strong>n/a</strong></h5>
+                    <p class="small_p">Prior week</h6>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <h5>
+                        <i class="now-ui-icons arrows-1_minimal-up"></i>
+                        <strong>n/a</strong>
+                    </h5>
+                    <p class="small_p">Since Prior week</p>
+                </div>
+            </div>
+            
+        {% endmacro %}
+        <div class="col-lg-6 col-sm-12">
+            <div class="metrics_container metrics_container-primary">
+                {{ shell(page) }}    
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <div class="metrics_container metrics_container-secondary">
+                {{ shell(page, spend=False) }}    
+            </div>
+        </div>
+
+    {% endmacro %}
+
+    {% macro ad_display(page, best=True) %}
+        {% set base = page.data['google']['0'] %}
+        {% macro google_preview(page) %}
+            <div class="google_ad_preview_container">
+                <h5>{{ page.data['google']['0']['best_headline_1'] }} | {{ page.data['google']['0']['best_headline_2'] }}</h5>
+                <p class="website"><span>Ad</span> www.website.com</p>
+                <p>{{ page.data['google']['0']['best_description'] }}</p>
+            </div>
+        {% endmacro %}
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h5>{{ "Best Performing Ad" if best else "Worst Performing Ad" }}</h5>
+                <div class="metrics_container metrics_container-tertiary">
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+                            <h6>Interaction rate: {{ base['best_ctr'] if best else base['worst_ctr'] | round }}</h6>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 card">
+                {{ google_preview(page) }}
+            </div>
+        </div>
+    {% endmacro %}
+    
+    <div class="row">
+        {% if page.data['google'] %}
+            <div class="col-lg-12">
+                <div class="row">
+                    {{ overview(page) }}
+                </div>
+                <div class="separator"></div>
+            </div>
+            <div class="col-lg-12">
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        {{ ad_display(page, best=True) }}
+                    </div>
+                    <div class="col-lg-6">
+                        {{ ad_display(page, best=False) }}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-lg-12">
+                <h4>No data yet! After 7 days of active campaigns, your campaigns will show here.</h4>
+            </div>
+        {% endif %}
     </div>
 {% endmacro %}

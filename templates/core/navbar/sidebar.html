@@ -1,46 +1,47 @@
 
-{% block sidebar %}
 <div class="sidebar" data-color="orange">
-<!--
-Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
--->
 	<div class="logo">
 	  <a href="https://marketr.life" class="simple-text logo-normal">
 	    <img src="/static/assets/img/marketrwhite.png">
 	  </a>
 	</div>
-	<div class="sidebar-wrapper">
-	  <ul class="nav">
-	    <li class="{{ plan }}">
-	      <a href="/home?page=plan">
-	        <i class="now-ui-icons design_app"></i>
-	        <p>Marketing Plan</p>
-	      </a>
+	<div class="sidebar-wrapper tab-content">
+		<div id="profile-nav">
+			<ul class="nav">
+				<li class="{{ plan }}">
+				<a href="/home?page=plan">
+					<i class="now-ui-icons design_app"></i>
+					<p>Market(r) Profile</p>
+				</a>
 
-	      {% if plan=='active' %}
+				{% if plan=='active' %}
 
-	      	<ul class="sub_nav nav">
-	      		<li><a class="profile_information" href="#profile_information">Profile Information</a></li>
-	      		<li><a class="company" href="#company">Company Information</a></li>
-	      		<li><a class="goal" href="#goal">Goals</a></li>
-	      		<li><a class="competitors" href="#competitors">Competitors</a></li>
-	      		<li><a class="audience" href="#audience">Target Market</a></li>
-	      		<li><a class="products" href="#products">Products</a></li>
-	      		<li><a class="salescycle" href="#salescycle">Sales Cycle</a></li>
-	      		<li><a class="platforms" href="#platforms">Platforms</a></li>
-	      	</ul>
+					<ul class="sub_nav nav">
+						<li><a class="targeted profile_information" href="#profile_information">Profile Information</a></li>
+						<li><a class="company" href="#company">Company Information</a></li>
+						<li><a class="goal" href="#goal">Goals</a></li>
+						<li><a class="competitors" href="#competitors">Competitors</a></li>
+						<li><a class="audience" href="#audience">Target Market</a></li>
+						<li><a class="products" href="#products">Products</a></li>
+						<li><a class="salescycle" href="#salescycle">Sales Cycle</a></li>
+						<li><a class="platforms" href="#platforms">Platforms</a></li>
+					</ul>
 
-	      {% endif %}
-	    </li>
+				{% endif %}
+				</li>
+			</ul>
+		</div>
+		<div id="campaigns-nav" class="hidden">
+			<ul class="nav">
+				<li class="{{ Next_Steps }}">
+					<a href="#">
+						<i class="now-ui-icons business_bulb-63"></i>
+						<p>Next Steps</p>
+					</a>
+				</li>
+			</ul>
+		</div>
 
-	    <li class="{{ Next_Steps }}">
-	      <a href="#">
-	        <i class="now-ui-icons business_bulb-63"></i>
-	        <p>Next Steps</p>
-	      </a>
-	    </li>
 
-	  </ul>
 	</div>
 </div>
-{% endblock %}

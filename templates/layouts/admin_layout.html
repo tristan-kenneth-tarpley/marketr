@@ -7,10 +7,13 @@
 	Market(r) - Admin
 </title>
 {% endblock %}
+
 {% block content %}
 	<div class="main-panel">
+
 		{{ admin_sidebar('test', owner, admin, manager) }}
 		{% include "/topbar/topbar-admin.html" %}
+		
 		<div class="panel-header panel-header-sm">
 		</div>
 		<div class="content">
@@ -34,16 +37,15 @@
 							{% if sub %}
 								
 								{% with messages = get_flashed_messages() %}
-								{% if messages %}
-									<ul class=flashes>
-									{% for message in messages %}
-									<p>{{ message }}</p>
-									{% endfor %}
-									</ul>
-								{% endif %}
+									{% if messages %}
+										<ul class=flashes>
+										{% for message in messages %}
+										<p>{{ message }}</p>
+										{% endfor %}
+										</ul>
+									{% endif %}
 								{% endwith %}
-
-								{{ render_page(page) }}
+								{{ render_page(page, csv_form=csv_form, insight_form=insight_form) }}
 
 							{% endif %}
 					{% endblock %}
