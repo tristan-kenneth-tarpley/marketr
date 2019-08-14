@@ -467,7 +467,19 @@ const PageViewController = class {
 		} else {
 			const init = new InitFuncs()
 			const view_model = new CoreViewModels(this.url_path)
-			
+
+			view_model.notifications()
+
+			switch(this.url_path.slice(15)) {
+				case 'profile':
+					view_model.score()
+					break
+			}
+
+			if (this.url_path.slice(15) == 'profile' || this.url_path.slice(1,5) =='home') {
+				view_model.score()
+			}
+						
 			switch(PageMap(this.url_path)) {
 				case 'admin':
 					init.company_view()
@@ -503,22 +515,18 @@ const PageViewController = class {
 
 
 $(document).ready(() => {
-
 	const params = new URLSearchParams(window.location.search)
-
 	const config = {
 		debug: true,
-		helpTimer: 1000000,
+		helpTimer: 30000,
 	}
-
 	const VC = new PageViewController(
-									config.debug,
-									window.location.pathname,
-									new URLSearchParams(window.location.search),
-									config.helpTimer);
-
+		config.debug,
+		window.location.pathname,
+		new URLSearchParams(window.location.search),
+		config.helpTimer
+	);
 	VC.run()
-
 })
 
 

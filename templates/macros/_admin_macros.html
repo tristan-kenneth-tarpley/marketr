@@ -1,13 +1,13 @@
 {% from "macros/dashboard_macros.html" import todo, messages %}
 
 
-{% macro render_page(page, csv_form=None, insight_form=None) %}
+{% macro render_page(page, csv_form=None, ab_form=ab_form, insight_form=None) %}
 	{% if page.page == 'personnel' %}
 		{{ personnel(page) }}
 	{% elif page.page == 'customers' %}
 		{{ customers(page) }}
 	{% elif page.page == 'acct_mgmt' %}
-		{{ customer_level(page, csv_form=csv_form, insight_form=insight_form) }}
+		{{ customer_level(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form) }}
 	{% endif %}
 
 {% endmacro %}
@@ -525,7 +525,6 @@
 {% endmacro %}
 
 {% macro csv(page, form=None) %}
-
 <div class="card">
 	<div class="card-header">
 		<h5 class="card-category">Upload CSV</h5>
@@ -557,7 +556,6 @@
 
 	</div>
 </div>
-
 {% endmacro %}
 {% macro insights(page, form=None) %}
 
@@ -592,10 +590,42 @@
 	</div>
 
 {% endmacro %}
+{% macro ab_testing(page, form=None) %}
+<div class="card">
+	<div class="card-header">
+		<h5 class="card-category">Upload A/B Test Data</h5>
+	</div>
+	<div class="card-body">
+		<form method=POST enctype="multipart/form-data" action="{{url_for('acct_mgmt', customer_id=page.user)}}">
+			{{ form.csrf_token }}
+			<h5>Upload AB Test data for previous Sunday to Sunday</h5>
+			<div class="form-group">
+				<label>Start date: </label>
+				<br>
+				{{ render_field(form.start_date, class="form-control") }}
+			</div>
+			<div class="form-group">
+				<label>End date: </label>
+				<br>
+				{{ render_field(form.end_date, class="form-control") }}
+			</div>
+				
 
+			<div style="text-align:left;" class="btn btn-secondary">
+				<span>Upload csv:</span>
+				{{ form.csv(class="form-control-file")}}
+			</div>
+			<input value="submit ab test" name="submit_button" class="btn btn-primary" type="submit">
+		</form>
+	</div>
+	<div class="card-footer">
+
+	</div>
+</div>
+{% endmacro %}
 
 {# customer level view #}
-{% macro customer_level(page, csv_form=None, insight_form=None) %}
+{% macro customer_level(page, csv_form=None, ab_form=None, insight_form=None) %}
 
 
 	{% macro shell(header=None, body=None, footer=None) %}
@@ -614,7 +644,7 @@
 
 
 	{# dashboard layout#}
-	{% macro dashboard(page, csv_form=None, insight_form=None) %}
+	{% macro dashboard(page, csv_form=None, ab_form=ab_form, insight_form=None) %}
 
 
 		{{ admin_breadcrumb(page, view="dashboard") }}
@@ -639,6 +669,11 @@
 				{{ insights(page, form=insight_form) }}	
 			</div>
 		</div>
+		<div class="row">
+			<div class="col">
+				{{ ab_testing(page, form=ab_form) }}	
+			</div>
+		</div>
 	{% endmacro %}
 
 
@@ -656,7 +691,7 @@
 
 	{# page controller #}
 	{% if page.view == "dashboard" %}
-		{{ dashboard(page, csv_form=csv_form, insight_form=insight_form)}}
+		{{ dashboard(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form)}}
 	{% elif page.view == "intake" %}
 		{{ intake(page) }}
 	{% endif %}

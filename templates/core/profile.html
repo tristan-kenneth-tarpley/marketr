@@ -100,7 +100,6 @@
 	{% set state = page.data['audiences'][index] %}
 	{% if state['persona_name'] and state['persona_name'] != "" %}	
 		<h6>Audience name: {{ state['persona_name']}}</h6><br>
-
 		<table class="table table-borderless table-responsive">
 			<thead>
 				<th>Demographic</th>
@@ -228,17 +227,18 @@
 
 	<h6>And sourced via:</h6>
 	{% set sources = [
-		'source_1',
-		'source_2',
-		'source_3',
-		'source_4'
+		core['source_1'],
+		core['source_2'],
+		core['source_3'],
+		core['source_4']
 	]%}
 	<ul>
 		{{ multi_val_iterator(sources) }}
 	</ul>
-	
-	<h6>Additional sourcing info:</h6>
-	<p class="truncate">{{ core['source_freeform'] }}</p>
+	{% if core['source_freeform'] != "" %}
+		<h6>Additional sourcing info:</h6>
+		<p class="truncate">{{ core['source_freeform'] }}</p>
+	{% endif %}
 	<br>
 	<div class="center_it">
 		<h6>Offering Details</h6>
@@ -271,12 +271,13 @@
 	</table>
 
 	<div class="separator"></div>
-
-	<div class="edit">
-		<a href="{{url_for('product_2', home=True)}}" class="edit btn-primary btn">
-			<i class="now-ui-icons ui-2_settings-90"></i>
-		</a>
-	</div>
+	{% if not admin %}
+		<div class="edit">
+			<a href="{{url_for('product_2', home=True)}}" class="edit btn-primary btn">
+				<i class="now-ui-icons ui-2_settings-90"></i>
+			</a>
+		</div>
+	{% endif %}
 		<br>
 	<div class="center_it">
 		<h6>Offering Detailed Analysis</h6>
@@ -446,15 +447,42 @@
 <p class="inset truncate">{{ core['history_freeform']}}</p>
 {% endmacro %}
 
+{% macro score() %}
+<div class="row">
+	<div class="col-lg-7 col-sm-12">
+		<h5>Market(r)<br>Score</h5>
+	</div>
+	<div class="col-lg-5 col-sm-12" style="text-align:center;">
+		<h1><span id="marketr-score">000</span></h1>
+		<label id="marketr-score-quality">...</label>
+	</div>
+	<span id="marketr-score"></span>
+</div>
+<div class="row">
+	<div class="col">
+		<label><strong>How to improve:</strong></label>
+		<p>> Complete profile / bolded To-Do-List items</p>
+	</div>
+</div>
+{% endmacro %}
 
 
-{{ section(
-	link="begin",
-	title=company_name,
-	body=one(),
-	hash="profile_information",
-	admin=page.admin
-) }}
+<div class="row">
+	<div class="col-lg-8 col-sm-12">
+		{{ section(
+			link="begin",
+			title=company_name,
+			body=one(),
+			hash="profile_information",
+			admin=page.admin
+		) }}
+	</div>
+	<div class="col-lg-4 col-sm-12">
+		<div class="card" style="padding: 3%;">
+			{{ score() }}
+		</div>
+	</div>
+</div>
 {{ section(
 	link="company",
 	title="Company Info",

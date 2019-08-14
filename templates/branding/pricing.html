@@ -1,0 +1,20 @@
+{% extends "layouts/branding_layout.html" %}
+{% from "macros/_branding_macros.html" import pricing %}
+{% block content %}
+    <section class="page-title-lg bg-cover bg-fixed bg-no-repeat bg-center" style="background-image: url(static/assets/img/psych.jpg);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <h1 class="white-color text-center">Price</h1>
+                </div>
+                <div class="col-12">
+                    <ol class="breadcrumb white justify-content-center">
+                        <li><a href="/">Home</a></li>
+                        <li class="active">Price</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{ pricing() }}
+{% endblock%}

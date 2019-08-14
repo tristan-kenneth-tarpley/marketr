@@ -110,3 +110,24 @@ const taskView = title => {
 			</tr>`
 	return el
 }
+
+const notificationEl = (type, copy, admin) => {
+	let link;
+	if (admin == false){
+		switch(type){
+			case 'message':
+				link = "/home?view=messages"
+				break
+			case 'task':
+				link = "/home?view=campaigns"
+				break
+			case 'insight':
+				link = "/home?view=campaigns#insights"
+				break
+		}
+	} else {
+		link = "#"
+	}
+	const el = `<a href="${link}" class="notification dropdown-item text-warning">New ${type}: ${copy}</a>`
+	return el
+}

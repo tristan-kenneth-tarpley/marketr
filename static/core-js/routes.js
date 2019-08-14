@@ -51,3 +51,4 @@ const get_platforms = () => {
 		platforms_handler(JSON.parse(data))
 	})
 }
+

@@ -2,13 +2,14 @@ from app import app, session, FlaskForm
 from flask import request, render_template, redirect, url_for, flash
 import services.helpers as helpers
 import hashlib
+import json
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from services.UserService import UserService
 from services.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required, onboarding_required
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
-from services.SharedService import MessagingService, TaskService
+from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel
 import hashlib
 from data.db import execute, sql_to_df
@@ -154,30 +155,7 @@ def availability():
         return 'False'
 
 
-
-########home page###########
-
-
-
-
-
-# @app.route('/delete_asset', methods=['GET'])
-# @login_required
-# def delete_asset():
-#     if request.method == 'GET':
-#         file_path = request.args.get('file_path')
-#         tup = (file_path, session['user'])
-#         query = "DELETE FROM dbo.assets WHERE file_path = ? AND customer_id = ?;commit;"
-#         execute(query, False, tup)
-#         if os.path.exists(file_path):
-#             # name = server_path.rsplit('/', 1)[-1]
-#             print(file_path)
-#             os.remove(file_path)
-#         else:
-#             name = 'does not exist'
-#             print(file_path)
-#             print(name)
-#         return redirect(url_for('creative'))
+# home actions
 
 
 
@@ -242,7 +220,7 @@ def complete_task():
         user = 'customer' if session['customer'] == True else 'admin'
     )
     tasks.complete_task(
-        request.form.get('task')
+        request.args.get('task')
     )
     return 'completed'
 
@@ -259,3 +237,17 @@ def remove_task():
         request.form.get('task')
     )
     return 'completed'
+
+@app.route('/api/marketr_score', methods=['GET'])
+@login_required
+def marketr_score():
+    user = session['user'] if session['customer'] == True else request.args.get('customer_id')
+    score = ScoreService(user)
+    return score.get()
+
+@app.route('/api/notifications', methods=['GET'])
+@login_required
+def notifications():
+    user = session['user'] if session['customer'] == True else request.args.get('customer_id')
+    notifications = NotificationsService(user)
+    return json.dumps(notifications.get())

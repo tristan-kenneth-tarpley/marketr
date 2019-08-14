@@ -1,3 +1,18 @@
+{% macro notifications() %}
+<li id="notification_list" class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<i class="now-ui-icons ui-1_bell-53"></i>
+		<span style="font-size: 150%;" class="notification_count"></span>
+		<p>
+		<span class="d-lg-none d-md-block">Notifications</span>
+		</p>
+	</a>
+	<div class="dropdown-menu dropdown-menu-right" id="notifications" aria-labelledby="navbarDropdownMenuLink">
+		
+	</div>
+</li>
+{% endmacro %}
+
 <!-- blocks -->
 {% macro render_field(field, currency=False, website=False) %}
 

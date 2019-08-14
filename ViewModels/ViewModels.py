@@ -316,6 +316,10 @@ class CustomerDataViewModel:
 		data = self.core_service.get_google()
 		return data
 
+	def compile_tests(self) -> dict:
+		data = self.core_service.get_tests()
+		return data
+
 	def compile_insights(self) -> dict:
 		insights_service = InsightsService(self.customer_id, self.admin)
 		return insights_service.fetch()
@@ -330,7 +334,7 @@ class CustomerDataViewModel:
 		salescycle = self.compile_salescycle()
 		google = self.compile_google()
 		insights = self.compile_insights()
-
+		tests = self.compile_tests()
 		return_data = {
 			'core': core,
 			'products': products,
@@ -340,7 +344,8 @@ class CustomerDataViewModel:
 			'tasks': self.tasks,
 			'salescycle': salescycle,
 			'google': google,
-			'insights': insights
+			'insights': insights,
+			'tests': tests
 		}
 
 		self.data = return_data
@@ -364,7 +369,7 @@ class ViewFuncs:
 		else:
 			return render_template("layouts/intake_layout.html", page=page, form=form)
 
-	def view_admin(page=None, owner=False, admin=False, manager=False, form=None, csv_form=None, insight_form=None):
+	def view_admin(page=None, owner=False, admin=False, manager=False, form=None, csv_form=None, ab_form=None, insight_form=None):
 		return render_template(
 			'layouts/admin_layout.html',
 			page=page,
@@ -373,6 +378,7 @@ class ViewFuncs:
 			manager=manager,
 			form=form,
 			csv_form=csv_form,
+			ab_form=ab_form,
 			insight_form=insight_form
 		)
 

@@ -1,14 +1,47 @@
+{% macro locked(type="ads") %}
+    <div class="locked_parent">
+        <div class="row locked_container">
+            <div class="col-lg-4 col-sm-12">
+                <button class="btn btn-lg btn-outline-secondary">
+                    {{"Yes, manage my ads!" if type == 'ads' else "Yes, A/B test for me!"}}
+                    <i class='fa fa-unlock'></i>
+                </button>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                {% if type == 'ads' %}
+                    <h3>Marketr can only report on managed spend. Let us manage your ads. <strong>Up to $500/month for free!</strong></h3>
+                {% else %}
+                    <h3>Let Market(r) manage your A/B tests so you don't have to worry about it. We'll even do <strong>one A/B test per month for free!</strong></h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
 {% macro tab_bar(page) %}
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="tab-link nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+            <a class="tab-link nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">
+                Profile 
+            </a>
         </li>
         <li class="nav-item">
-            <a class="tab-link nav-link" id="campaigns-tab" data-toggle="tab" href="#campaigns" role="tab" aria-controls="campaigns" aria-selected="false">Campaigns</a>
+            <a class="tab-link nav-link" id="campaigns-tab" data-toggle="tab" href="#campaigns" role="tab" aria-controls="campaigns" aria-selected="false">
+                Campaigns
+                <span class="notification_count tab_and_insight_count">
+                    
+                </span>
+            </a>
         </li>
         <li class="nav-item">
-            <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>
+            <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">
+                Messages
+                <span class="notification_count message_count">
+                    
+                </span>
+            </a>
         </li>
     </ul>
 
@@ -26,7 +59,7 @@
                     </a>
                 </div>
             {% endif %}
-            <h3>{{ title }}</h3>
+            <h3>{{ title | safe }}</h3>
         </div>
         <div class="card">
             <div class="container">

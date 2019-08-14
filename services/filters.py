@@ -92,6 +92,9 @@ def not_none(input):
 	else:
 		return False
 
+def get_first_five(input):
+	return input[:4]
+
 
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active
@@ -106,6 +109,7 @@ app.jinja_env.filters['tiles'] = tiles
 app.jinja_env.filters['perc_array'] = perc_array
 app.jinja_env.filters['customPages'] = customPages
 app.jinja_env.filters['not_none'] = not_none
+app.jinja_env.filters['get_first_five'] = get_first_five
 
 
 

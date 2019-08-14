@@ -10,7 +10,7 @@
 			<ul class="nav">
 				<li class="{{ plan }}">
 				<a href="/home?page=plan">
-					<i class="now-ui-icons design_app"></i>
+					<i class="now-ui-icons business_badge"></i>
 					<p>Market(r) Profile</p>
 				</a>
 
@@ -31,13 +31,32 @@
 				</li>
 			</ul>
 		</div>
-		<div id="campaigns-nav" class="hidden">
+		<div id="campaigns-nav" class="hidden">		
 			<ul class="nav">
-				<li class="{{ Next_Steps }}">
-					<a href="#">
-						<i class="now-ui-icons business_bulb-63"></i>
-						<p>Next Steps</p>
-					</a>
+				<li class="{{ plan }}">
+					<a href="/home?page=plan">
+						<i class="now-ui-icons business_chart-pie-36"></i>
+						<p>Campaigns</p>
+					</a>	
+					<ul class="sub_nav nav">
+						<li><a class="targeted profile_information" href="#to_do">To Do</a></li>
+						<li><a class="goal" href="#goal">Goal</a></li>
+						<li><a class="insights" href="#insights">Insights</a></li>
+						<li><a class="ads_performance" href="#ads_performance">Ad performance</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div id="messages-nav" class="hidden">		
+			<ul class="nav">
+				<li class="{{ plan }}">
+					<a href="/home?page=plan">
+						<i class="now-ui-icons ui-2_chat-round"></i>
+						<p>Messages</p>
+					</a>	
+					<ul class="sub_nav nav">
+						<li><a class="targeted profile_information" href="#to_do">Messages</a></li>
+					</ul>
 				</li>
 			</ul>
 		</div>

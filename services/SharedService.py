@@ -10,7 +10,25 @@ from flask_mail import Mail, Message
 from services.UserService import UserService, encrypt_password
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
+import math
+import pandas as pd
 
+class NotificationsService:
+    def __init__(self, customer_id, prev_log_in=None):
+        self.customer_id = customer_id
+        self.prev_log_in = prev_log_in
+
+    def get(self) -> dict:
+        query = f"""exec fetch_notifications @customer_id = {self.customer_id}"""
+        data, cursor = db.execute(query, True, ())
+        data = cursor.fetchall()
+        columns = [
+            'message_string',
+            'task_title',
+            'insight_body'
+        ]
+        return_data = UserService.parseCursor(data, columns)
+        return return_data
 
 class CoreService:
     def __init__(self, customer_id):
@@ -82,7 +100,7 @@ class CoreService:
 
     def get_google(self, user='customer'):
         query = """SELECT * FROM customer_ads_display(?)"""
-        data, cursor = db.execute(query, True, (self.customer_id))
+        data, cursor = db.execute(query, True, (self.customer_id,))
         data = cursor.fetchall()
         columns = [
             'agg_ctr',
@@ -99,6 +117,16 @@ class CoreService:
         return_data = UserService.parseCursor(data, columns)
 
         return return_data
+
+    def get_tests(self):
+        query = """SELECT * FROM get_tests(?)"""
+        data, cursor = db.execute(query, True, (self.customer_id,))
+        data = cursor.fetchall()
+        columns = [
+            'views', 'conversion', 'variant', 'best_worst_binary', 'hypothesis'
+        ]
+        return_data = UserService.parseCursor(data, columns)
+        return return_data
     
 
 
@@ -110,7 +138,6 @@ class MessagingService:
         self.user = user
 
     def get_messages(self) -> dict:
-        print(self.customer_id)
         query = """SELECT * FROM get_messages(?)"""
         result, cursor = db.execute(query, True, (self.customer_id))
         columns = ['message_string', 'admin_id', 'customer_id', 'from', 'timestamp']
@@ -192,3 +219,33 @@ class InsightsService:
             return_data = UserService.parseCursor(null_list, columns)
         
         return return_data
+
+class ScoreService:
+    def __init__(self, customer_id: int):
+        self.customer_id = customer_id
+        self.spread = 550
+        self.min_score = 200
+        
+    def pop_suffix(self, string):
+        if string[-1].isdigit() and not string[-2].isdigit():
+            return string[:-2]
+        elif string[-2].isdigit():
+            return string[:-3]
+        else:
+            return string
+        
+    def aggregate(self):
+        df = db.sql_to_df(f'exec prep_marketr_score @customer_id = {self.customer_id}')
+        return df
+        
+    def clean(self):
+        df = self.aggregate()
+        df['html_name'] = df['html_name'].apply(self.pop_suffix)
+        df.drop_duplicates(subset ="html_name", keep = 'first', inplace=True)
+        
+        self.total_possible = df.score_weight_factor.sum()
+        self.sum_completed = df[df.answer != ''].score_weight_factor.sum()
+        
+    def get(self):
+        self.clean()
+        return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))

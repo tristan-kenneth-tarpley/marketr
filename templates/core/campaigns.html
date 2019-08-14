@@ -1,5 +1,6 @@
 
-{% from "macros/dashboard_macros.html" import goals, insights, ads_performance %}
+{% from "macros/dashboard_macros.html" import goals, insights, ads_performance, test_performance %}
+{% from "macros/home_macros.html" import locked %}
 {% set company_name = page.data['core']['company_name'] %}
 
 
@@ -27,12 +28,32 @@
     hash="insights",
     admin=page.admin
 ) }}
-
+{{ section(
+    link=None,
+    title="Ad Campaign Performance <i class='fa fa-lock'></i>",
+    body=locked(type="ads"),
+    hash="insights",
+    admin=page.admin
+) }}
 {{ section(
     link=None,
     title="Ad Campaign Performance",
     body=ads_performance(page),
     hash="ads_performance",
+    admin=page.admin
+) }}
+{{ section(
+    link=None,
+    title="A/B Testing <i class='fa fa-lock'></i>",
+    body=locked(type="testing"),
+    hash="insights",
+    admin=page.admin
+) }}
+{{ section(
+    link=None,
+    title="A/B Testing Performance",
+    body=test_performance(page),
+    hash="tests",
     admin=page.admin
 ) }}
 

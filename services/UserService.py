@@ -302,7 +302,7 @@ class UserService:
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
-			query = "SELECT email, password, ID, email_confirmed, first_name, last_name FROM dbo.customer_basic WHERE email = ?"
+			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in FROM dbo.customer_basic WHERE email = ?"
 			data, cursor = db.execute(query, True, tup)
 			data = cursor.fetchall()
 			cursor.close()
@@ -315,6 +315,7 @@ class UserService:
 
 			if sha256_crypt.verify(password, pw):
 				if email_confirmed == 1:
+					session['prev_log_in'] = data[0][6]
 					session['logged_in'] = True
 					session['customer'] = True
 					session['user'] = int(uid)

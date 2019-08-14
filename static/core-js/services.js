@@ -1,3 +1,99 @@
+const NotificationsService = class {
+    constructor(url_path, admin=false) {
+        this.url_path = url_path
+        this.admin = admin
+    }
+
+    update(notifications) {
+        let data = JSON.parse(notifications)
+        let messages = []
+        let tasks_and_insights = []
+        Object.keys(data).forEach(key=> {
+            let notification;
+            let type;
+            if (data[key].message_string != null){
+                type = 'message'
+                notification = data[key].message_string
+                messages.push('message')
+            } else if (data[key].task_title != null) {
+                type = 'task'
+                notification = data[key].task_title
+                tasks_and_insights.push('task')
+            } else if (data[key].insight_body != null) {
+                type = 'insight'
+                notification = data[key].insight_body
+                tasks_and_insights.push('insight')
+            }
+
+            const row = notificationEl(type, notification, this.admin)
+            $("#notifications").append(row)
+        })
+        $(".notification_count").text(Object.keys(data).length)
+        $(".tab_and_insight_count").text(tasks_and_insights.length)
+        $(".message_count").text(messages.length)
+    }
+
+    get() {
+        if (this.admin == false) {
+            $.get('/api/notifications', data=>{
+                this.update(data)
+            })
+        } else {
+            $.get(`/api/notifications`, {
+                customer_id: this.url_path.slice(11, 14)
+            }, data=>{
+                this.update(data)
+            })
+        }
+    }
+}
+
+const ScoreService = class {
+    constructor(url_path, admin=false) {
+        this.url_path = url_path
+        this.admin = admin
+    }
+
+    update(data) {
+        let condition_class;
+        let condition;
+        $("#marketr-score").text(data)
+        if (parseInt(data) < 390) {
+            condition_class = 'score-very_weak'
+            condition = 'very weak'
+        } else if (parseInt(data) > 390 && parseInt(data) < 510) {
+            condition_class = 'score-weak'
+            condition = 'weak'
+        } else if (parseInt(data) > 510 && parseInt(data) < 580) {
+            condition_class = 'score-moderate'
+            condition = 'moderate'
+        } else if (parseInt(data) > 580 && parseInt(data) < 680) {
+            condition_class = 'score-good'
+            condition = 'good'
+        } else if (parseInt(data) > 680) {
+            condition_class = 'score-excellent'
+            condition = 'excellent'
+        }
+
+        $("#marketr-score").addClass(condition_class)
+        $("#marketr-score-quality").text(condition)
+    }
+
+    get() {
+        if (this.admin == false) {
+            $.get('/api/marketr_score', data=>{
+                this.update(data)
+            })
+        } else {
+            $.get(`/api/marketr_score`, {
+                customer_id: this.url_path.slice(11, 14)
+            }, data=>{
+                this.update(data)
+            })
+        }
+    }
+}
+
 
 const MessagingService = class {
     constructor(url_path) {

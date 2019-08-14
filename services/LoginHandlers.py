@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import session, redirect, url_for
-from app import *
+from app import app
 from services.UserService import load_last_page
 
 def account_rep_required(f):

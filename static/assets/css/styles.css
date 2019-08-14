@@ -5102,3 +5102,71 @@ ul#product {
   height: 300px;
   overflow-y: scroll;
 }
+
+.score-very_weak {
+  color: #8b0000;
+}
+.score-weak {
+  color: #ff5751;
+}
+.score-moderate {
+  color: #ff8351;
+}
+.score-good {
+  color: #9acd32;
+}
+.score-excellent {
+  color: #18ce0f;
+}
+
+#marketr-score {
+  font-size: 2.5vw;
+}
+@media only screen and (max-width: 990px) {
+  #marketr-score {
+    font-size: 4.5vw;
+  }
+}
+@media only screen and (max-width: 700px) {
+  #marketr-score {
+    font-size: 6vw;
+  }
+}
+
+#notifications {
+  width: 300px;
+}
+.notification {
+  white-space: pre-wrap;
+}
+
+.notification_count {
+  background-color: #ff5751;
+  color: white;
+  padding: 2% 4%;
+  position: relative;
+  left: 10%;
+  border-radius: 5px;
+}
+
+.message_count,
+.tab_and_insight_count {
+  background-color: white;
+  color: var(--secondary);
+  border: 2px solid var(--secondary);
+}
+
+.locked_parent {
+  background-image: url("/static/assets/img/dashboard.png");
+  background-size: cover;
+}
+.locked_container {
+  background: rgba(0,0,0,.8);
+  padding: 5% 5% 3%;
+}
+.locked_container h3 {
+  color: white;
+}
+.locked_container button {
+  background-color: white;
+}

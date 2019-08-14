@@ -220,5 +220,10 @@ class CSVForm(FlaskForm):
     end_date = htmldate('end date', validators=[validators.InputRequired()])
     csv = FileField('csv', validators=[FileRequired(), FileAllowed(['csv'], 'Please make sure the csv format is correct!')])
 
+class ABForm(FlaskForm):
+    start_date = htmldate('start date', validators=[validators.InputRequired()])
+    end_date = htmldate('end date', validators=[validators.InputRequired()])
+    csv = FileField('csv', validators=[FileRequired(), FileAllowed(['csv'], 'Please make sure the csv format is correct!')])
+    
 class InsightForm(FlaskForm):
     body = TextAreaField('body', validators=[validators.InputRequired()])

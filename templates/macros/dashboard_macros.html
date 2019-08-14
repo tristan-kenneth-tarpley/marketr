@@ -89,7 +89,7 @@
                 <table class="table">
                     <tbody id="task_body">
                         {% if page.tasks %}
-                            %{{view_tasks(page, admin=admin)}}
+                            {{view_tasks(page, admin=admin)}}
                         {% else %}
                             <h4>No tasks yet! Your Marketer will assign you tasks here to help you with your Market(r) score.</h4>
                         {% endif %}
@@ -182,46 +182,102 @@
 </div>
 {% endmacro %}
 
-{% macro ads_performance(page) %}
 
-    {% macro overview(page) %}
-        {% macro shell(page, spend=True) %}
-            <div class="row">
-                <div class="col-lg-6 col-sm-12">
-                    {% if spend %}
-                        <h5>Total Spend: ${{ page.data['google']['0']['agg_cost'] | round(2) }}</h5>
+{% macro overview(page) %}
+    {% macro shell(page, spend=True) %}
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                {% if spend %}
+                    <h5>Total Spend: ${{ page.data['google']['0']['agg_cost'] | round(2) }}</h5>
+                {% else %}
+                    <h5>Interaction Rate: {{ page.data['google']['0']['agg_ctr'] | round }}%</h5>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row sub_metrics">
+            <div class="col-lg-6 col-sm-12">
+                <h5><strong>n/a</strong></h5>
+                <p class="small_p">Prior week</h6>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <h5>
+                    <i class="now-ui-icons arrows-1_minimal-up"></i>
+                    <strong>n/a</strong>
+                </h5>
+                <p class="small_p">Since Prior week</p>
+            </div>
+        </div>
+        
+    {% endmacro %}
+    <div class="col-lg-6 col-sm-12">
+        <div class="metrics_container metrics_container-primary">
+            {{ shell(page) }}    
+        </div>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        <div class="metrics_container metrics_container-secondary">
+            {{ shell(page, spend=False) }}    
+        </div>
+    </div>
+
+{% endmacro %}
+
+{% macro test_performance(page) %}
+    {% for test in page.data['tests']%}
+        {% set index = test %}
+        {% set current = page.data['tests'][index] %}
+        {% if loop.index % 2 != 0 %}
+        <h2>Hypothesis: {{current['hypothesis']}}</h2>
+        {% endif %}
+
+        <div class="row">
+            {% if loop.index % 2 == 0 and current['best_worst_binary'] == 0 %}
+            <div class="col-lg-6 col-sm-12">
+                <h4>Worst Performing Variant</h4>
+                <div class="metrics_container metrics_container-tertiary">
+                    <h6>Conversion: {{ current['conversion'] }}%</h6><br>
+                    <h6>Views: {{ current['views'] }}</h6>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <h4>Variant</h4>
+                <div class="metrics_container metrics_container-tertiary">
+                    {% if current['variant'] | get_first_five == 'http' %}
+                        <img src="{{current['variant']}}">
                     {% else %}
-                        <h5>Interaction Rate: {{ page.data['google']['0']['agg_ctr'] | round }}%</h5>
+                        <h4>{{current['variant'] | get_first_five}}</h4>
                     {% endif %}
                 </div>
             </div>
-            <div class="row sub_metrics">
-                <div class="col-lg-6 col-sm-12">
-                    <h5><strong>n/a</strong></h5>
-                    <p class="small_p">Prior week</h6>
-                </div>
-                <div class="col-lg-6 col-sm-12">
-                    <h5>
-                        <i class="now-ui-icons arrows-1_minimal-up"></i>
-                        <strong>n/a</strong>
-                    </h5>
-                    <p class="small_p">Since Prior week</p>
+            {% else %}
+            <div class="col-lg-6 col-sm-12">
+                <h4>Best Performing Variant</h4>
+                <div class="metrics_container metrics_container-tertiary">
+                    <h6>Conversion: {{ current['conversion'] }}%</h6><br>
+                    <h6>Views: {{ current['views'] }}</h6>
                 </div>
             </div>
-            
-        {% endmacro %}
-        <div class="col-lg-6 col-sm-12">
-            <div class="metrics_container metrics_container-primary">
-                {{ shell(page) }}    
+            <div class="col-lg-6 col-sm-12">
+                <h4>Variant</h4>
+                <div class="metrics_container metrics_container-tertiary">
+                    {% if current['variant'] | get_first_five == 'http' %}
+                        <img src="{{current['variant']}}">
+                    {% else %}
+                        <h4>{{current['variant'] | get_first_five}}</h4>
+                    {% endif %}
+                </div>
             </div>
+            {% endif %}
         </div>
-        <div class="col-lg-6 col-sm-12">
-            <div class="metrics_container metrics_container-secondary">
-                {{ shell(page, spend=False) }}    
-            </div>
-        </div>
+    {% endfor %}
+    <div class="row">
+        
+    </div>
+{% endmacro %}
 
-    {% endmacro %}
+
+{% macro ads_performance(page) %}
+
 
     {% macro ad_display(page, best=True) %}
         {% set base = page.data['google']['0'] %}
@@ -239,7 +295,7 @@
                 <div class="metrics_container metrics_container-tertiary">
                     <div class="row">
                         <div class="col-lg-12 col-sm-12">
-                            <h6>Interaction rate: {{ base['best_ctr'] if best else base['worst_ctr'] | round }}</h6>
+                            <h6>Interaction rate: {{ base['best_ctr'] | round | string + "%" if best else base['worst_ctr'] | round | string + "%" }}</h6>
                         </div> 
                     </div>
                 </div>
@@ -253,6 +309,7 @@
     <div class="row">
         {% if page.data['google'] %}
             <div class="col-lg-12">
+                <h2>Google Ads</h2>
                 <div class="row">
                     {{ overview(page) }}
                 </div>

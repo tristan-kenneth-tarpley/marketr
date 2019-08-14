@@ -15,6 +15,7 @@ from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from services.GoogleService import google_ads
+from services.ABTestService import ab_test
 
 
 @app.route('/admin_login', methods=['POST', 'GET'])
@@ -159,6 +160,7 @@ def customers():
 @admin_required
 def acct_mgmt(customer_id):
 	csv_form = forms.CSVForm()
+	ab_form = forms.ABForm()
 	insight_form = forms.InsightForm()
 
 	vf = AdminViewFuncs(customer_id)
@@ -180,6 +182,15 @@ def acct_mgmt(customer_id):
 				service.send_insight(insight_form.body.data)
 				return redirect(url_for('acct_mgmt', customer_id=customer_id))
 
+			elif request.form['submit_button'] == 'submit ab test' and ab_form.validate_on_submit():
+				ab = ab_test(
+					df = pd.read_csv(ab_form.csv.data.stream),
+					start_range=request.form['start_date'],
+					end_range=request.form['end_date']
+				)
+				ab.save(customer_id)
+				return redirect(url_for('acct_mgmt', customer_id=customer_id))
+
 		elif request.method == 'GET':
 			page = AdminViewModel(
 				session['permissions'],
@@ -195,6 +206,7 @@ def acct_mgmt(customer_id):
 				admin=session['admin_logged_in'],
 				manager=session['manager_logged_in'],
 				csv_form=csv_form,
+				ab_form=ab_form,
 				insight_form=insight_form,
 				form=None
 			)

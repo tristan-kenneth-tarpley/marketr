@@ -1,7 +1,12 @@
 const CoreViewModels = class {
 
 	constructor(url_path) {
-		this.url_path = url_path
+        this.url_path = url_path
+        if (this.url_path.slice(1,10) == 'customers') {
+            this.admin = true
+        } else {
+            this.admin = false
+        }
     }
 
     left_nav_update(e) {
@@ -173,7 +178,22 @@ const CoreViewModels = class {
                 });
             });
         })
-        
+    }
+
+    score() {
+        const score = new ScoreService(this.url_path, this.admin)
+        score.get()
+    }
+
+    notifications() {
+        const notifications = new NotificationsService(this.url_path, this.admin)
+        notifications.get()
+
+        $("#notification_list").click(()=>{
+            if ($(".notification_count").text() != "") {
+                $(".notification_count").remove()
+            }
+        })
     }
     
 
@@ -203,10 +223,21 @@ const CoreViewModels = class {
     }
 
     messages() {
-        $("#send_msg").click(() => {
+        const send_message = () => {
             const messagingService = new MessagingService(this.url_path)
             const msg = $("#msg").val()
             messagingService.send(msg)  
+        }
+
+        $("#send_msg").click(() => {
+            send_message()
+        })
+
+        $('#msg').keydown(event=>{
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13' && $("#msg").is(":focus")){
+                send_message()
+            }
         })
     }
 }

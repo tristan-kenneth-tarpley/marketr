@@ -1,5 +1,5 @@
 {% extends "layouts/branding_layout.html" %}
-
+{% from "macros/_branding_macros.html" import pricing %}
 {% block content %}
 <!-- Main -->
 <main>
@@ -799,113 +799,9 @@
         </div>
     </section>
     <!-- end testimonials -->
-    <!--  priceing -->
-    <section id="price" class="section gray-bg">
-        <div class="container">
-            <!-- section title -->
-            <div class="row justify-content-center sm-m-25px-b m-45px-b">
-                <div class="col-lg-8 col-md-10">
-                    <div class="section-title text-center">
-                        <h2>Pricing</h2>
-                        <p>Mombo is a HTML5 template based on Sass and Bootstrap 4 with modern and creative multipurpose design you can use it as a startups.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- end section title -->
-            <div class="row align-items-center">
-                <!-- price table -->
-                <div class="col-md-6 col-lg-3 m-15px-tb">
-                    <div class="price-table">
-                        <div class="pt-head">
-                            <h5><span>$</span>49</h5>
-                        </div>
-                        <div class="pt-body">
-                            <h4>Basic Package</h4>
-                            <ul class="list-type-02">
-                                <li><i class="fas fa-check"></i> Drag & Drop Builder</li>
-                                <li><i class="fas fa-check"></i> 1,000s of Templates Ready</li>
-                                <li><i class="fas fa-check"></i> Blog Tools</li>
-                                <li><i class="fas fa-check"></i> eCommerce Store</li>
-                                <li><i class="fas fa-check"></i> 30+ Webmaster Tools</li>
-                            </ul>
-                        </div>
-                        <div class="pt-footer">
-                            <a class="m-btn m-btn-theme m-btn-round" href="#">Sign Up</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end price table -->
-                <!-- price table -->
-                <div class="col-md-6 col-lg-3 m-15px-tb">
-                    <div class="price-table">
-                        <div class="pt-head">
-                            <h5><span>$</span>49</h5>
-                        </div>
-                        <div class="pt-body">
-                            <h4>Basic Package</h4>
-                            <ul class="list-type-02">
-                                <li><i class="fas fa-check"></i> Drag & Drop Builder</li>
-                                <li><i class="fas fa-check"></i> 1,000s of Templates Ready</li>
-                                <li><i class="fas fa-check"></i> Blog Tools</li>
-                                <li><i class="fas fa-check"></i> eCommerce Store</li>
-                                <li><i class="fas fa-check"></i> 30+ Webmaster Tools</li>
-                            </ul>
-                        </div>
-                        <div class="pt-footer">
-                            <a class="m-btn m-btn-theme m-btn-round" href="#">Sign Up</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end price table -->
-                <!-- price table -->
-                <div class="col-md-6 col-lg-3 m-15px-tb">
-                    <div class="price-table active">
-                        <div class="pt-head">
-                            <label class="msg">popular choice</label>
-                            <h5><span>$</span>49</h5>
-                        </div>
-                        <div class="pt-body">
-                            <h4>Basic Package</h4>
-                            <ul class="list-type-02">
-                                <li><i class="fas fa-check"></i> Drag & Drop Builder</li>
-                                <li><i class="fas fa-check"></i> 1,000s of Templates Ready</li>
-                                <li><i class="fas fa-check"></i> Blog Tools</li>
-                                <li><i class="fas fa-check"></i> eCommerce Store</li>
-                                <li><i class="fas fa-check"></i> 30+ Webmaster Tools</li>
-                            </ul>
-                        </div>
-                        <div class="pt-footer">
-                            <a class="m-btn m-btn-theme2nd m-btn-round" href="#">Sign Up</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end price table -->
-                <!-- price table -->
-                <div class="col-md-6 col-lg-3 m-15px-tb">
-                    <div class="price-table">
-                        <div class="pt-head">
-                            <h5><span>$</span>49</h5>
-                        </div>
-                        <div class="pt-body">
-                            <h4>Basic Package</h4>
-                            <ul class="list-type-02">
-                                <li><i class="fas fa-check"></i> Drag & Drop Builder</li>
-                                <li><i class="fas fa-check"></i> 1,000s of Templates Ready</li>
-                                <li><i class="fas fa-check"></i> Blog Tools</li>
-                                <li><i class="fas fa-check"></i> eCommerce Store</li>
-                                <li><i class="fas fa-check"></i> 30+ Webmaster Tools</li>
-                            </ul>
-                        </div>
-                        <div class="pt-footer">
-                            <a class="m-btn m-btn-theme m-btn-round" href="#">Sign Up</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- end price table -->
-            </div>
-        </div>
-    </section>
-    <!-- end priceing -->
+    <!--  pricing -->
+    {{ pricing() }}
+    <!-- end pricing -->
     <!--  blog -->
 <!--     <section id="blog" class="section">
         <div class="container"> -->
