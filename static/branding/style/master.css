@@ -71,6 +71,25 @@ Table of contents
   transition: ease-in-out all 0.55s;
   text-align: center;
 }
+.m-btn-outline {
+  display: inline-block;
+  border: 2px solid white !important;
+  color: white;
+  line-height: inherit;
+  border-radius: 0;
+  width: auto;
+  padding: 10px 25px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  -moz-transition: ease-in-out all 0.55s;
+  -o-transition: ease-in-out all 0.55s;
+  -webkit-transition: ease-in-out all 0.55s;
+  transition: ease-in-out all 0.55s;
+  text-align: center;
+  background: transparent;
+}
 .m-btn.m-link {
   padding-right: 0;
   padding-left: 0;
