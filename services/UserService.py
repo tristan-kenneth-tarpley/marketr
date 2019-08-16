@@ -581,11 +581,11 @@ class IntakeService:
 					vals += "(?,?)"
 
 				stage_tup.extend([self.id, v]) 
-
 				counter += 1
 			else:
 				query = base_query + vals
-				db.execute(query, False, tuple(stage_tup), commit=True)
+				if vals:
+					db.execute(query, False, tuple(stage_tup), commit=True)
 
 	def goals(self, data):
 		self.perc_complete()
