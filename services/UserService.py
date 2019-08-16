@@ -8,6 +8,7 @@ from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+from app import app
 
 
 def intake_page_map():
@@ -369,6 +370,8 @@ class UserService:
 
 
 
+
+
 def last_modified(id):
 	ts = time.time()
 	st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -379,6 +382,36 @@ def last_modified(id):
 				WHERE dbo.customer_basic.id = ?"""
 
 	db.execute(query, False, tup, commit=True)
+
+class EmailService:
+	def __init__(self):
+		app.config.from_pyfile('config.cfg')
+		self.mail = Mail(app)
+		self.s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+	def send_email_reset(self, supplied_email):
+		query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
+		tup = (supplied_email,)
+		data, cursor = db.execute(query, True, tup)
+
+		data = data.fetchone()
+		cursor.close()
+
+		token = self.s.dumps(supplied_email, salt="password-reset")
+		msg = Message('Reset Password', sender='no-reply@marketr.life', recipients=[supplied_email])
+		link = url_for('update_password', token=token, _external=True)
+		msg.body = "Your password reset link is: %s" % (link,)
+		self.mail.send(msg)
+
+	def update_password(self, supplied_password, token=None):
+		email = self.s.loads(token, salt='password-reset', max_age=3600)
+		password = encrypt_password(supplied_password)
+
+		tup = (password, email)
+		query = "UPDATE dbo.customer_basic SET password = ? WHERE email = ?"
+
+		db.execute(query, False, tup, commit=True)
+
 
 class IntakeService:
 

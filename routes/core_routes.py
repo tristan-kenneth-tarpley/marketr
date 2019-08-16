@@ -6,7 +6,7 @@ import json
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-from services.UserService import UserService
+from services.UserService import UserService, EmailService
 from services.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required, onboarding_required
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService
@@ -19,60 +19,34 @@ from passlib.hash import sha256_crypt
 import services.forms as forms
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 
-@app.route('/forgot')
+@app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
-    return render_template('forgot.html', send=True)
+    form = forms.ForgotPassword()
 
-
-app.config.from_pyfile('config.cfg')
-mail = Mail(app)
-s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-
-
-@app.route('/forgot/reset', methods=['GET', 'POST'])
-def reset():
-    POST_USERNAME = clean(request.form['username'])
-    query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
-    tup = (POST_USERNAME,)
-    data, cursor = execute(query, True, tup)
-
-    data = data.fetchone()
-    cursor.close()
-
-    if data != None and request.method=='POST':
-        token = s.dumps(POST_USERNAME, salt="password-reset")
-        msg = Message('Reset Password', sender='no-reply@marketr.life', recipients=[POST_USERNAME])
-        link = url_for('forgot_password', token=token, _external=True)
-        msg.body = "Your password reset link is: %s" % (link,)
-        mail.send(msg)
-        message_sent = "Your password reset link has been sent. If there is an account associated with that email, you should see it any moment."
-    else:
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        email = EmailService()
+        email.send_email_reset(form.email.data)
         message_sent = "Your password reset link has been sent! If there is an account associated with that email, you should see it any moment."
+        return render_template('forgot.html', form=form, send=True, message_sent=message_sent)
 
-    return render_template('forgot.html', send=True, message_sent=message_sent)
+    elif request.method == 'GET':
+        session['logged_in'] = False
 
-
-@app.route('/forgot_password/<token>')
-def forgot_password(token):
-    # email = s.loads(token, salt='password-reset', max_age=3600)
-    return render_template("forgot.html", token=token, send=False, conf=False, reset=False)
+    return render_template('forgot.html', form=form, send=True)
 
 
-@app.route('/forgot_password/update_password', methods=['POST', 'GET'])
-def update_password():
 
-    token = request.args.get('token')
-    email = s.loads(token, salt='password-reset', max_age=3600)
-    POST_password = clean(request.form['password'])
-    password = sha256_crypt.encrypt(POST_password)
+@app.route('/forgot_password/<token>', methods=['GET', 'POST'])
+def update_password(token):
+    form = forms.UpdatePassword()
 
-    tup = (password, email)
-    query = "UPDATE dbo.customer_basic SET password = ? WHERE email = ?;commit;"
-
-    execute(query, False, tup)
-
-    return render_template('login.html', reset=True)
-
+    if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        email = EmailService()
+        email.update_password(form.password.data, token=token)
+        return redirect(url_for('customer_login', conf=True))
+    
+    #email = s.loads(token, salt='password-reset', max_age=3600)
+    return render_template("change_pass.html", pass_step=True, form=form, token=token, send=False, conf=False, reset=False)
 
 
     
@@ -96,10 +70,8 @@ def customer_login():
 @app.route("/logout")
 @login_required
 def logout():
-
     session['logged_in'] = False
     session.clear()
-
     if request.args.get('admin') != None:
         if request.args.get('admin'):
             return redirect(url_for('admin_login'))
@@ -110,7 +82,6 @@ def logout():
 @app.route('/new', methods=['POST', 'GET'])
 def new():
     form = forms.CreateCustomer()
-
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         result = UserService.CreateCustomer(form.email.data, form.password.data, form=form, app=app)
         if result:
@@ -118,10 +89,8 @@ def new():
         else:
             error = "something went wrong."
             return render_template('new.html', form=form, error=error)
-
     elif request.method == 'GET':
         session['logged_in'] = False
-        
     return render_template('new.html', form=form)
 
 

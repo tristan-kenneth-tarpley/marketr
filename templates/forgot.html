@@ -1,71 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Forgot Password</title>
-</head>
-<body>
-{% if send %}
-<form action="{{ url_for('reset') }}" method="POST">
-	<div class="login">
-		<div class="login-screen">
-			<div class="app-title">
-				<h1>Login</h1>
-			</div>
+{% extends "layouts/login_layout.html" %}
+{% from "macros/_macros.html" import render_field %}
 
+{% block title %}
+<title>Market(r) - Forgot Password</title>
+{% endblock %}
 
-			<div class="login-form">
-				{% if message_sent %}
-				{{message_sent}}
-				{% endif %}
-				<div class="control-group">
-					<label class="login-field-icon fui-user" for="login-name">Enter the email you used to set up your account</label>
-					<input type="text" class="login-field" value="" placeholder="email" name="username">
-				</div>
- 
-                <input type="submit" value="Reset password" class="btn btn-primary btn-large btn-block" >
-			    <br>
-			</div>
-			<div class="create">
-				<a href="/login_page">Return to login</a>
-			</div>
+{%block header %}
+	<h2>Forget your password? No biggie.</h2>
+{% endblock %}
 
-			<div class="create">
-				<a href="/new">Create new account</a>
-			</div>
+{% block form %}  
 
+	<form action="{{ url_for('forgot') }}" method="POST">
+		{{ form.csrf_token }}
+		<div class="authSeparator">
+			<hr>
 		</div>
-	</div>
-</form>
-{% else %}
-<form action="{{ url_for('update_password', token=token) }}" method="POST">
-	<div class="login">
-		<div class="login-screen">
-			<div class="app-title">
-				<h1>Set New Password</h1>
-			</div>
 
+		{% if message_sent %}
+			{{message_sent}}<br><br>
+		{% endif %}	
 
-			<div class="login-form">
-				<div class="control-group">
-					<label class="login-field-icon fui-user" for="login-name">Enter your new password</label>
-					<input type="password" class="login-field" value="" placeholder="password" name="password">
-				</div>
- 
-                <input type="submit" value="Reset password" class="btn btn-primary btn-large btn-block" >
-			    <br>
+		<fieldset>
+			<div class="fieldCont">
+			{{ render_field(form.email, placeholder="enter your email") }}
 			</div>
-			<div class="create">
-				<a href="/login_page">Return to login</a>
+		</fieldset>
+	
+		<div class="formActions">
+			<div class="buttonCont">
+			<input id="hovers" type="submit" name="commit" value="Send password reset" data-disable-with="Log in">
 			</div>
-
-			<div class="create">
-				<a href="/new">Create new account</a>
-			</div>
-
 		</div>
-	</div>
-</form>
-{% endif %}
+	</form>
+
+
+{% endblock %}
+
+{% block otherLinks %}
+<a href="/login">Return to login</a>
+<a href="/new">Sign Up</a>
+{% endblock %}
 <style type="text/css">
 * {
 box-sizing: border-box;

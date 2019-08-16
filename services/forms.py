@@ -7,6 +7,11 @@ class CustomerLogin(FlaskForm):
     email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
     password = PasswordField('password', validators=[validators.InputRequired()])
 
+class ForgotPassword(FlaskForm):
+    email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
+
+class UpdatePassword(FlaskForm):
+    password = PasswordField('password', validators=[validators.InputRequired()])
 
 class CreateCustomer(FlaskForm):
     email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
