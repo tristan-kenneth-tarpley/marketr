@@ -3916,12 +3916,24 @@ h6 {
 /*------------------
 *   Tab style 01
 -------------------*/
-.tab-style-1 .nav {
-  border-bottom: 1px solid #ddd;
+
+.tab-style-1 ul {
+  background-color: #62cde0;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-radius: 5px;
+  display: block;
 }
 @media (max-width: 767px) {
   .tab-style-1 .nav {
     margin-bottom: 15px;
+    
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .tab-style-1 .nav {
+    width: 100%;
+    display: inline-block;
   }
 }
 .tab-style-1 .nav-item {
@@ -3951,8 +3963,13 @@ h6 {
   transition: ease-in-out all 0.55s;
 }
 .tab-style-1 .nav-item a.active {
-  color: #62cde0;
+  color: white;
+  border-bottom: 1px solid white;
 }
+.tab-style-1 .nav-item a:not(.active) {
+  opacity: .6;
+}
+
 .tab-style-1 .nav-item a.active:after {
   width: 100%;
 }
@@ -3979,6 +3996,12 @@ h6 {
   margin-bottom: 15px;
   border: none;
 }
+@media (max-width: 767px) {
+  .tab-style-2 .nav {
+    
+  }
+}
+
 .tab-style-2 .nav .nav-item {
   margin-right: 18px;
 }

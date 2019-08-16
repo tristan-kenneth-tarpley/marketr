@@ -75,7 +75,7 @@ const ScoreService = class {
             condition = 'excellent'
         }
 
-        $("#marketr-score").addClass(condition_class)
+        $(".score_container").addClass(condition_class)
         $("#marketr-score-quality").text(condition)
     }
 

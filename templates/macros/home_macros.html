@@ -54,12 +54,12 @@
         <div class="container-responsive target_container">
             {% if not admin and link != None %}
                 <div class="edit">
-                    <a href="{{url_for(link, home=True, splash=False)}}" class="edit btn-primary btn">
+                    <a href="{{url_for(link, home=True, splash=False)}}" class="edit btn-neutral btn">
                         <i class="now-ui-icons ui-2_settings-90"></i>
                     </a>
                 </div>
             {% endif %}
-            <h3>{{ title | safe }}</h3>
+            <h5>{{ title | safe }}</h5>
         </div>
         <div class="card">
             <div class="container">
@@ -75,8 +75,8 @@
 {% macro multi_val_iterator(iterable) %}
     {% for i in range(iterable | length) %}
         {% if iterable[i] and iterable[i] != "" %}
-            <li>{{iterable[i]}}</li>
-        {% endif %}
+            {{iterable[i]}}{{", " if loop.index != iterable | length }}
+        {% endif %}        
     {% endfor %}
 {% endmacro %}
 

@@ -17,7 +17,7 @@
 
 {% macro two() %}
 
-	<p>A {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p><br><br>
+	<p>{{core['company_name']}} is a {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p><br><br>
 
 	<div class="row percentages">
 		<div class="col-md-1"></div>
@@ -77,8 +77,10 @@
 			</p>
 		</div>
 	</div>
-	<h6>Additional notes:</h6>
-	<p class="truncate inset">{{ core['rev_channel_freeform'] }}</p>
+	{% if core['rev_channel_freeform'] %}
+		<p>Additional notes:</p>
+		<p class="truncate inset">{{ core['rev_channel_freeform'] }}</p>
+	{% endif %}
 {% endmacro %}
 
 
@@ -99,9 +101,9 @@
 {% for index in page.data['audiences'] %}
 	{% set state = page.data['audiences'][index] %}
 	{% if state['persona_name'] and state['persona_name'] != "" %}	
-		<h6>Audience name: {{ state['persona_name']}}</h6><br>
-		<table class="table table-borderless table-responsive">
-			<thead>
+		<h5>Audience name: {{ state['persona_name']}}</h5>
+		<table class="table table-responsive profile_table">
+			<thead style="text-align:center;">
 				<th>Demographic</th>
 				<th>Personality</th>
 				<th>Purchasing Habits</th>
@@ -109,11 +111,13 @@
 			<tbody>
 				<td>
 					<ul>	
-						{% if state['gender'] == 'both' %}
-							<li>{{state['gender']}} genders</li>
-						{% else %}
-							<li>{{state['gender']}}</li>
-						{% endif %}
+						<li> Targets 
+							{% if state['gender'] == 'All' %}
+								{{state['gender'] | lower}} genders
+							{% else %}
+								{{state['gender']}}
+							{% endif %}
+						</li>
 
 						<li>Target ages:
 							{% set ages = [
@@ -149,16 +153,16 @@
 				<td>
 					<ul>
 						{% if state['buying_for'] %}
-							<li>{{state['buying_for']}}</li>
+							<li>They buy for {{state['buying_for']}}</li>
 						{% endif %}
 						{% if state['decision_making'] %}
-							<li>{{state['decision_making']}}</li>
+							<li>They are {{"the" if state['decision_making'] == 'Ultimate decision maker' }} {{state['decision_making']}}</li>
 						{% endif %}
 						{% if state['motive'] %}
-							<li>{{state['motive']}}</li>
+							<li>They buy to {{state['motive']}}</li>
 						{% endif %}
 						{% if state['why'] %}
-							<li>{{state['why']}}</li>
+							<li>They buy because {{state['why']}}</li>
 						{% endif %}
 						<li>Feeling Before:
 							{% set before = [
@@ -235,8 +239,8 @@
 	<ul>
 		{{ multi_val_iterator(sources) }}
 	</ul>
-	{% if core['source_freeform'] != "" %}
-		<h6>Additional sourcing info:</h6>
+	{% if core['source_freeform'] %}
+		<p>Additional sourcing info:</p>
 		<p class="truncate">{{ core['source_freeform'] }}</p>
 	{% endif %}
 	<br>
@@ -462,17 +466,19 @@
 		{% endif %}
 	</div>
 {% endfor %}
-
-<h6>Additional notes</h6>
-<p class="inset truncate">{{ core['history_freeform']}}</p>
+	{% if core['history_freeform'] %}
+		<p>Additional notes</p>
+		<p class="inset truncate">{{ core['history_freeform']}}</p>
+	{% endif %}
 {% endmacro %}
 
 {% macro score() %}
 <div class="row">
 	<div class="col-lg-7 col-sm-12">
 		<h5>Market(r)<br>Score</h5>
+		<a href="#">What does this mean?</a>
 	</div>
-	<div class="col-lg-5 col-sm-12" style="text-align:center;">
+	<div class="col-lg-5 col-sm-12 score_container" style="text-align:center;">
 		<h1><span id="marketr-score">000</span></h1>
 		<label id="marketr-score-quality">...</label>
 	</div>
@@ -498,7 +504,7 @@
 		) }}
 	</div>
 	<div class="col-lg-4 col-sm-12">
-		<div class="card" style="padding: 3%;">
+		<div class="card" style="padding: 8%;">
 			{{ score() }}
 		</div>
 	</div>

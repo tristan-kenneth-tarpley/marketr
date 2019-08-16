@@ -1,7 +1,18 @@
 {% from "macros/_macros.html" import render_field %}
 
 {% macro goals(page) %}
-	<p>{{ page.data['core']['company_name'] }}'s primary marketing goal is to improve {{page.data['core']['goal']}} from {{page.data['core']['current_avg'] }} to {{ page.data['core']['target_avg'] }} within {{ page.data['core']['timeframe'] }}</p>
+    <p><strong>Our primary marketing goal is to improve {{page.data['core']['goal'] | lower }}:</strong></p>
+    <div class="row goal_container">
+        <div class="col-lg-4 col-sm-12">
+            <h5>From: {{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{page.data['core']['current_avg'] }}/mo</strong></h5>
+        </div> 
+        <div class="col-lg-4 col-sm-12">
+            <h5>To: {{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{ page.data['core']['target_avg'] }}/mo</strong></h5>   
+        </div>
+        <div class="col-lg-4 col-sm-12">
+            <h5>Within: <strong>{{ page.data['core']['timeframe'] }}{{'s' if page.data['core']['timeframe'] == '2yr' }}</strong></h5>   
+        </div>
+    </div>
 {% endmacro %}
 
 {% macro todo(page, admin=True) %}
