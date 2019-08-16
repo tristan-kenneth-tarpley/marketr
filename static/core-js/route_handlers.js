@@ -236,7 +236,7 @@ const container_handler = (data, title) => {
 		} else {
 			item = container_item('Still working...', id, title)
 		}
-		if ($("#append_container").length > 1) {
+		if ($("#append_container").length >= 1) {
 			$("#append_container").append(item)
 		}
 			
