@@ -236,7 +236,7 @@ def customer_profile_view_admin(customer_id):
 
 @app.route('/customers/<customer_id>/add_rep', methods=['POST'])
 def add_rep(customer_id):
-	actions = AdminActions(session['admin'], debug=False)
+	actions = AdminActions(customer_id, session['admin'], debug=False)
 	actions.add_rep(request.form, customer_id)
 	return redirect(url_for('customers'))
 
