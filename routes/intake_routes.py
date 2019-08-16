@@ -55,7 +55,6 @@ def splash():
     splash_page.compile_splash()
 
     return render_template('intake/splash.html',
-                            redirect=splash_page.redirect,
                             next_step=splash_page.next_step,
                             heading=splash_page.heading,
                             paragraph=splash_page.paragraph)
