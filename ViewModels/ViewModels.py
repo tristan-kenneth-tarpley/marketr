@@ -303,11 +303,11 @@ class CustomerDataViewModel:
 	def compile_salescycle(self) -> dict:
 		data = self.core_service.get_salescycle()
 		return_data = {
-			'awareness': data[0].split("^"),
-			'evaluation': data[1].split("^"),
-			'conversion': data[2].split("^"),
-			'retention': data[3].split("^"),
-			'referral': data[4].split("^")
+			'awareness': data[0].split("^") if data[0] else None,
+			'evaluation': data[1].split("^") if data[1] else None,
+			'conversion': data[2].split("^") if data[2] else None,
+			'retention': data[3].split("^") if data[3] else None,
+			'referral': data[4].split("^") if data[4] else None
 		}
 
 		return return_data
