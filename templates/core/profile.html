@@ -339,9 +339,13 @@
 			</div>
 			<div class="container-fluid">
 				<ul>
-					{% for value in page.data['salescycle']['awareness'] %}
-						<li>{{value}}</li>
-					{% endfor %}
+					{% if page.data['salescycle']['awareness'] %}
+						{% for value in page.data['salescycle']['awareness'] %}
+							<li>{{value}}</li>
+						{% endfor %}
+					{% else %}
+						<li>No data for awareness yet</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>&nbsp;
@@ -351,9 +355,13 @@
 			</div>
 			<div class="container-fluid">
 				<ul>
-					{% for value in page.data['salescycle']['evaluation'] %}
-						<li>{{value}}</li>
-					{% endfor %}
+					{% if page.data['salescycle']['evaluation'] %}
+						{% for value in page.data['salescycle']['evaluation'] %}
+							<li>{{value}}</li>
+						{% endfor %}
+					{% else %}
+						<li>No data for evaluation yet</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>&nbsp;
@@ -363,9 +371,13 @@
 			</div>
 			<div class="container-fluid">
 				<ul>
-					{% for value in page.data['salescycle']['conversion'] %}
-						<li>{{value}}</li>
-					{% endfor %}
+					{% if page.data['salescycle']['conversion'] %}
+						{% for value in page.data['salescycle']['conversion'] %}
+							<li>{{value}}</li>
+						{% endfor %}
+					{% else %}
+						<li>No data for conversion yet</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>&nbsp;
@@ -375,9 +387,13 @@
 			</div>
 			<div class="container-fluid">
 				<ul>
-					{% for value in page.data['salescycle']['retention'] %}
-						<li>{{value}}</li>
-					{% endfor %}
+					{% if page.data['salescycle']['retention'] %}
+						{% for value in page.data['salescycle']['retention'] %}
+							<li>{{value}}</li>
+						{% endfor %}
+					{% else %}
+						<li>No data for retention yet</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>&nbsp;
@@ -387,9 +403,13 @@
 			</div>
 			<div class="container-fluid">
 				<ul>
-					{% for value in page.data['salescycle']['referral'] %}
-						<li>{{value}}</li>
-					{% endfor %}
+					{% if page.data['salescycle']['referral'] %}
+						{% for value in page.data['salescycle']['referral'] %}
+							<li>{{value}}</li>
+						{% endfor %}
+					{% else %}
+						<li>No data for referral yet</li>
+					{% endif %}
 				</ul>
 			</div>
 		</div>
