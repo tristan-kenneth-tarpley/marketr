@@ -517,8 +517,8 @@ const PageViewController = class {
 $(document).ready(() => {
 	const params = new URLSearchParams(window.location.search)
 	const config = {
-		debug: true,
-		helpTimer: 30000,
+		debug: false,
+		helpTimer: 100000,
 	}
 	const VC = new PageViewController(
 		config.debug,

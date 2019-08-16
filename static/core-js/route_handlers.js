@@ -234,9 +234,12 @@ const container_handler = (data, title) => {
 		if (name != null && name != "") {
 			item = container_item(name, id, title)
 		} else {
-			item = container_item('Unfinished work', id, title)
+			item = container_item('Still working...', id, title)
 		}
-		$("#append_container").append(item)
+		if ($("#append_container").length > 0) {
+			$("#append_container").append(item)
+		}
+			
 	})
 
 	const params = new URLSearchParams(window.location.search)

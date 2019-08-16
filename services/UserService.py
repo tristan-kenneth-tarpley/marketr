@@ -271,7 +271,7 @@ class UserService:
 			msg = Message('Confirm Email', sender='no-reply@marketr.life', recipients=[email])
 			link = url_for('confirm_email', token=token, _external=True)
 
-			msg.body = "Your link is: %s" % (link,)
+			msg.body = "Thanks for joining Market(r)! Click on this link to complete your registration: %s" % (link,)
 
 			mail.send(msg)
 
