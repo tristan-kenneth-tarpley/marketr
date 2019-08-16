@@ -159,20 +159,14 @@
 
     </body>
 
-<script src="/static/branding/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript"></script>
-  <script src="/static/core-js/helpers.js"></script>
-  <script src="/static/core-js/elements.js"></script>
-  <script src="/static/core-js/eventhandlers.js"></script>
-  <script src="/static/core-js/route_handlers.js"></script>
-  <script src="/static/core-js/routes.js"></script>
-  <script src="/static/core-js/controller.js"></script>
+  <script src="/static/branding/js/jquery-3.2.1.min.js"></script>
+  {% include "layouts/imports/imports.html" %}
   <script type="text/javascript">
-$(window).on("load", function() {
-    $("#loading").fadeOut("fast");
-    setTimeout(function(){
-        $('#content-ready').css('visibility', 'visible')
-    }, 300)
-});
+  $(window).on("load", function() {
+      $("#loading").fadeOut("fast");
+      setTimeout(function(){
+          $('#content-ready').css('visibility', 'visible')
+      }, 300)
+  });
 </script>
 </html>
