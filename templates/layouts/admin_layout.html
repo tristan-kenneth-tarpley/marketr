@@ -45,7 +45,14 @@
 										</ul>
 									{% endif %}
 								{% endwith %}
-								{{ render_page(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form) }}
+
+								{{ render_page(
+									page,
+									form=form,
+									csv_form=csv_form,
+									ab_form=ab_form,
+									insight_form=insight_form
+								) }}
 
 							{% endif %}
 					{% endblock %}

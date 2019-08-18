@@ -1,13 +1,17 @@
 {% from "macros/dashboard_macros.html" import todo, messages %}
 
 
-{% macro render_page(page, csv_form=None, ab_form=ab_form, insight_form=None) %}
+{% macro render_page(page, csv_form=None, ab_form=ab_form, insight_form=None, form=None) %}
 	{% if page.page == 'personnel' %}
 		{{ personnel(page) }}
 	{% elif page.page == 'customers' %}
 		{{ customers(page) }}
 	{% elif page.page == 'acct_mgmt' %}
 		{{ customer_level(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form) }}
+	{% elif page.page == 'tags' %}
+		{% with page = page, form = form %}
+			{% include "admin_view/tags.html" %}
+		{% endwith %}
 	{% endif %}
 
 {% endmacro %}
@@ -72,12 +76,18 @@
 		      </a>
 		    </li>
 	  	{% if owner %}
-		    <li class="{{ 0 | check_active(stage) }}">
-		      <a href="/personnel">
-		        <i class="now-ui-icons design_app"></i>
-		        <p>Manage personnel</p>
-		      </a>
-		    </li>
+			<li class="{{ 0 | check_active(stage) }}">
+				<a href="/personnel">
+				<i class="now-ui-icons design_app"></i>
+				<p>Manage personnel</p>
+				</a>
+			</li>
+			<li class="{{ 0 | check_active(stage) }}">
+				<a href="/tags">
+				<i class="now-ui-icons design_app"></i>
+				<p>tags</p>
+				</a>
+			</li>
 		{% endif %}
 	  	{% if admin %}
 		    <li class="{{ 0 | check_active(stage) }}">

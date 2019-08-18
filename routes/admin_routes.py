@@ -7,7 +7,7 @@ import data.db as db
 import pandas as pd
 import services.helpers as helpers
 from services.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
-from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
+from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService, TacticService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, AdminViewFuncs
 import hashlib
 from bleach import clean
@@ -138,6 +138,41 @@ def personnel():
 	
 	page = AdminViewModel(session['permissions'], 'personnel')
 	return render_template('layouts/admin_layout.html', page=page, sub=True, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
+
+
+@app.route('/tags', methods=['POST', 'GET'])
+@owner_required
+def tags():
+	form = forms.TagForm()
+	tag_id = request.args.get('tag_id') if request.args.get('tag_id') else 4
+	page = AdminViewModel(
+		session['permissions'],
+		'tags', tag_id=tag_id
+	)
+
+	if request.method == 'POST' and form.validate_on_submit():
+		if request.form.get('submit_button'): #if he's searching by id
+			pass
+		else: # if he's submitting the form
+			tactics = TacticService(tag_id=form.search.data)
+			tactics.add(form.data)
+			return redirect(
+				url_for(
+					'tags',
+					tag_id=str(int(form.search.data) + 1)
+				)
+			)
+
+		return redirect(url_for('tags', tag_id=form.search.data))
+
+
+	return ViewFuncs.view_admin(
+							page=page,
+							owner=session['owner_logged_in'],
+							admin=session['admin_logged_in'],
+							manager=session['manager_logged_in'],
+							form=form
+							)
 
 
 @app.route('/customers', methods=['GET', 'POST'])

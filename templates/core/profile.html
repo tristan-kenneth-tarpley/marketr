@@ -2,6 +2,19 @@
 {% set core = page.data['core'] %}
 {% set products = page.data['products'] %}
 
+
+
+{% macro google(headline=None, website=None, description=None) %}
+
+	<div class="google_ad_preview_container">
+		<h5>{{ headline }}</h5>
+		<p class="website"><span>Ad</span> {{ website }}</p>
+		<p>{{ description }}</p>
+	</div>
+
+{% endmacro %}
+
+
 {% macro one() %}
 	<ul>
 		<li>Industry: {{core['industry']|safe}}</li>
@@ -85,14 +98,52 @@
 
 
 
-{% macro four() %}
+{% macro competitors() %}
 
-	<p><em>{{core['comp_1_name']}}</em> who is a <em>{{ core['comp_1_type']}}</em> competitor
-	<a href="{{core['comp_1_site']}}" target="_blank">Visit website</a></p>
-	
-	<br>
-	<p><em>{{core['comp_2_name']}}</em> who is a <em>{{core['comp_2_type']}}</em> competitor
-	<a href="{{core['comp_2_site']}}" target="_blank">Visit website</a></p>
+	{% macro comp_metrics(pos=1) %}
+		{% set base = core['competitor_intro_1'] if pos == 1 else core['competitor_intro_2'] %}
+		<div class="row comp_metrics">
+			<div class="col-lg-3 comp_box">
+				<h5>Adwords Budget<br>
+				<strong>${{ base['budget'] }}/month</strong></h5>
+			</div>
+			<div class="col-lg-5 comp_box">
+				<h5>Recent Ads</h5>
+				{{ google(
+					headline=base['ads'][0]['title'],
+					website=base['ads'][0]['url'],
+					description=base['ads'][0]['body']
+				) }}
+				{{ google(
+					headline=base['ads'][1]['title'],
+					website=base['ads'][1]['url'],
+					description=base['ads'][1]['body']
+				) }}
+			</div>
+			<div class="col-lg-3 comp_box">
+				<h5>{{ base['clicks'] }} clicks</h5>
+			</div>
+		</div>
+	{% endmacro %}
+
+	{% macro comp_header(pos=1) %}
+		<div class="row">
+			<div class="col-lg-4 col-sm-12">
+				<h5>{{ core['comp_1_name'] if pos == 1 else core['comp_2_name'] }}</h5>
+				<a href="{{ core['comp_1_website'] if pos == 1 else core['comp_2_website'] }}" target="__blank">{{core['comp_1_website'] if pos == 1 else core['comp_2_website']}}</a>
+			</div>
+			<div class="col-lg-2 col-sm-12">
+				<p class="comp-badge">{{ core['comp_1_type'] if pos ==1 else core['comp_2_type'] }}</p>
+				<p>Competitor type</p>
+			</div>
+		</div>
+	{% endmacro %}
+
+
+	{{ comp_header() }}
+	{{ comp_metrics() }}
+	{{ comp_header(pos=2) }}
+	{{ comp_metrics(pos=2) }}
 
 {% endmacro %}
 
@@ -475,14 +526,13 @@
 {% macro score() %}
 <div class="row">
 	<div class="col-lg-7 col-sm-12">
-		<h5>Market(r)<br>Score</h5>
+		<h5><strong>Market(r)<br>Score</strong></h5>
 		<a href="#">What does this mean?</a>
 	</div>
 	<div class="col-lg-5 col-sm-12 score_container" style="text-align:center;">
 		<h1><span id="marketr-score">000</span></h1>
 		<label id="marketr-score-quality">...</label>
 	</div>
-	<span id="marketr-score"></span>
 </div>
 <div class="row">
 	<div class="col">
@@ -526,7 +576,7 @@
 {{ section(
 	link="competitors",
 	title="Top Competitors",
-	body=four(),
+	body=competitors(),
 	hash="competitors",
 	admin=page.admin
 ) }}
@@ -558,4 +608,6 @@
 	hash="platforms",
 	admin=page.admin
 ) }}
+
+
 

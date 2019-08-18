@@ -7,9 +7,10 @@ from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from services.UserService import UserService, EmailService
+from services.CompetitorService import CompetitorService
 from services.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required, onboarding_required
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
-from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService
+from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel
 import hashlib
 from data.db import execute, sql_to_df
@@ -127,6 +128,11 @@ def availability():
 # home actions
 
 
+@app.route('/customer_core', methods=['GET'])
+def customer_core():
+    service = CustomerDataViewModel(customer_id=request.args.get('customer_id'))
+    return_data = service.compile_core()
+    return json.dumps(return_data)
 
 
 @app.route('/home', methods=['GET', 'POST'])

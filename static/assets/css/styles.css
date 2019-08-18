@@ -5103,8 +5103,17 @@ ul#product {
   overflow-y: scroll;
 }
 .score_container {
-  border-radius: 10px;
+  border-radius: 5px;
+  box-shadow: var(--sm-box-shadow);
   padding: 2%;
+  height: 100%;
+}
+.score_container h1,
+#marketr-score {
+  margin: auto;
+}
+.score_container h1 {
+  margin-bottom: 0;
 }
 #marketr-score {
   color: white;
@@ -5195,4 +5204,41 @@ ul#product {
 
 .profile_table ul {
   list-style-type: none;
+}
+
+.comp-badge {
+  text-align:center;
+  background-color: #e93578;
+  color: white;
+  text-transform: uppercase;
+  border-radius: 50px;
+  padding: 2%;
+}
+.comp_box {
+  display: flex;
+  flex-direction: column;
+  padding: 3%;
+  border: 2px solid rgba(0,0,0,.1);
+  border-radius: 5px;
+}
+.comp_metrics {
+  margin: auto;
+}
+.comp_metrics:not(.google_ad_preview_container) h5{
+  text-align: center;
+  margin: auto;
+}
+
+.comp_metrics .google_ad_preview_container {
+  margin: 5% 0;
+}
+.comp_metrics .google_ad_preview_container h5 {
+  text-align:left;
+}
+
+.tag_form input {
+  display: inline-block;
+}
+.tag_container {
+  display: flex;
 }

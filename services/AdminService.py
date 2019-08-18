@@ -217,4 +217,39 @@ class AdminUserService(object):
 
 
 
+class TacticService(object):
+    def __init__(self, tag_id=None):
+        self.tag_id = tag_id
+    
+    def add(self, data):
+        for_query = {}
+        tup = []
+        for val in data:
+            if data[val] == True:
+                proc_tup = (data['search'], val)
+                query = """EXEC add_tactic_tag @tactic_id=?, @tag_val=?"""
+                db.execute(query, False, proc_tup, commit=True)
+                for_query.update([ (val, data[val]) ])
+                tup.append(val)
 
+    def count(self):
+        query = "SELECT count(tactic_id) FROM tactic_tags WHERE tactic_id = ?"
+        tup = (self.tag_id,)
+        data, cursor = db.execute(query, True, tup)
+        data = cursor.fetchone()
+        return str(data[0])
+
+    def meta(self):
+        query = 'SELECT tactic_id, title, description, image, category FROM tactics WHERE tactic_id = ?'
+        tup = (self.tag_id,)
+        data, cursor = db.execute(query, True, tup)
+        data = cursor.fetchall()
+        columns = [
+            'tactic_id',
+            'title',
+            'description',
+            'image',
+            'category'
+        ]
+        data = UserService.parseCursor(data, columns)
+        return data

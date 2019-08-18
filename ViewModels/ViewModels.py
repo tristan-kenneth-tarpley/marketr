@@ -6,7 +6,8 @@ import zipcodes
 import pandas as pd
 from services.UserService import UserService
 from services.SharedService import CoreService, InsightsService
-from services.AdminService import AdminService, AdminUserService, MessagingService, TaskService
+from services.AdminService import AdminService, AdminUserService, MessagingService, TaskService, TacticService
+from services.CompetitorService import CompetitorService
 import services.forms as forms
 import json
 import itertools
@@ -126,8 +127,10 @@ class AdminViewModel:
 				page: str,
 				user=None,
 				admin=None,
-				view=None) -> None:
+				view=None,
+				tag_id=None) -> None:
 
+		self.tag_id = tag_id
 		self.permission_level = permission_level
 		self.page = page
 		self.admin_service = AdminService()
@@ -143,10 +146,21 @@ class AdminViewModel:
 			"personnel": self.personnel,
 			"customers": self.customers,
 			"home": self.home,
-			"acct_mgmt": self.acct_mgmt
+			"acct_mgmt": self.acct_mgmt,
+			"tags": self.tags
 		}
 		return switcher[case]
 	
+	def tags(self):
+		tags = TacticService(tag_id=self.tag_id)
+		meta = tags.meta()
+		self.total_tags = tags.count()
+		self.tactic_id = meta['0']['tactic_id']
+		self.tactic_title = meta['0']['title']
+		self.tactic_description = meta['0']['description']
+		self.image = meta['0']['image']
+		self.category = meta['0']['category']
+
 	def acct_mgmt(self):
 		service = AdminUserService(self.user, self.admin)
 		self.messages = service.messaging.get_messages()
@@ -184,6 +198,7 @@ class CustomerDataViewModel:
 	
 	def compile_core(self) -> dict:
 		data = self.core_service.customer_core()
+
 		core_data = {}
 		columns = [
 			'customer_id', 'company_name',
@@ -214,6 +229,11 @@ class CustomerDataViewModel:
 
 		for i in range(len(data)):
 			core_data.update([(columns[i], data[i])])
+
+		competitors = CompetitorService()
+		
+		core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
+		core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
 
 		return core_data
 	
@@ -369,7 +389,7 @@ class ViewFuncs:
 		else:
 			return render_template("layouts/intake_layout.html", page=page, form=form)
 
-	def view_admin(page=None, owner=False, admin=False, manager=False, form=None, csv_form=None, ab_form=None, insight_form=None):
+	def view_admin(page=None, tag_id=None, owner=False, admin=False, manager=False, form=None, csv_form=None, ab_form=None, insight_form=None):
 		return render_template(
 			'layouts/admin_layout.html',
 			page=page,
@@ -379,7 +399,8 @@ class ViewFuncs:
 			form=form,
 			csv_form=csv_form,
 			ab_form=ab_form,
-			insight_form=insight_form
+			insight_form=insight_form,
+			tag_id=tag_id
 		)
 
 	def ValidSubmission(form=None, method=None):
