@@ -9,6 +9,10 @@ const CoreViewModels = class {
         }
     }
 
+    payments(){
+        
+    }
+
     left_nav_update(e) {
         let target = $(e.currentTarget)
         let id = target.attr('id')

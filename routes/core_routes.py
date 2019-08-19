@@ -11,6 +11,7 @@ from services.CompetitorService import CompetitorService
 from services.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required, onboarding_required
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService
+from services.PaymentsService import PaymentsService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel
 import hashlib
 from data.db import execute, sql_to_df
@@ -19,6 +20,9 @@ from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
 import services.forms as forms
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+import time
+import datetime
+
 
 @app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -45,9 +49,10 @@ def update_password(token):
         email = EmailService()
         email.update_password(form.password.data, token=token)
         return redirect(url_for('customer_login', conf=True))
-    
-    #email = s.loads(token, salt='password-reset', max_age=3600)
-    return render_template("change_pass.html", pass_step=True, form=form, token=token, send=False, conf=False, reset=False)
+    try:
+        return render_template("change_pass.html", pass_step=True, form=form, token=token, send=False, conf=False, reset=False)
+    except:
+        return redirect(url_for('customer_login', expired=True))
 
 
     
@@ -100,9 +105,7 @@ def new():
 def confirm_email(token):
     s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     email = s.loads(token, salt='email-confirm', max_age=3600)
-    tup = (email,)
-    query = "UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = ?"
-    execute(query, False, tup, commit=True)
+    UserService.confirm_customer(email, token)
     form = forms.CustomerLogin()
     return render_template("login.html", conf=True, form=form)
 
@@ -125,6 +128,53 @@ def availability():
         return 'False'
 
 
+# payments
+
+@app.route('/pricing')
+def pricing():
+    return render_template(
+		'branding/pricing.html',
+		logged_in = True if session.get('logged_in') == True else False,
+		home=True
+	)
+
+@app.route('/checkout/ab_testing', methods=['GET', 'POST'])
+def ab_checkout():
+    obj = PaymentsService()
+    obj.ab_plan()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="ab")
+    else:
+        return redirect(url_for('ab_checkout', session_id=obj.id))
+
+@app.route('/checkout/almost_free', methods=['GET', 'POST'])
+def free_checkout():
+    obj = PaymentsService()
+    obj.almost_free()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="free")
+    else:
+        return redirect(url_for('free_checkout', session_id=obj.id))
+
+@app.route('/checkout/paid_ads', methods=['GET', 'POST'])
+def ads_checkout():
+    obj = PaymentsService()
+    obj.paid_ads()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="ads")
+    else:
+        return redirect(url_for('ads_checkout', session_id=obj.id))
+    
+
+@app.route('/success')
+def success():
+    return 'success'
+
+@app.route('/cancel')
+def cancel():
+    return 'cancelled'
+
+
 # home actions
 
 
@@ -139,6 +189,11 @@ def customer_core():
 @login_required
 @onboarding_required
 def home():
+    if request.referrer == 'http://127.0.0.1:5000/history/platforms/past' or 'https://marketr.life/history/platforms/past':        
+        ts = time.time()
+        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        UserService.init_profile(st, session['user'])
+
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
     return render_template(
         'layouts/home_layout.html',

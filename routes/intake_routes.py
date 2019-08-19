@@ -7,6 +7,7 @@ import json
 import data.db as db
 from services.UserService import IntakeService, UserService
 from ViewModels.ViewModels import SplashViewModel, ViewFuncs, ContainerViewModel
+from services.SharedService import NotificationsService
 from services.LoginHandlers import login_required
 import services.forms as forms
 
@@ -65,6 +66,10 @@ def splash():
 def begin():    
     form = forms.Profile()
     service = IntakeService(session['user'], 'begin')
+    
+    notify = NotificationsService(session['user'])
+    notify.Tristan()
+
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
@@ -78,8 +83,9 @@ def begin():
                             form=form,
                             view_page='profile',
                             next_page='competitors',
-                            coming_home=request.args.get('coming_home'),
-                            splash=request.args.get('splash'))
+                            coming_home=request.args.get('home'),
+                            splash=request.args.get('splash'),
+                            onboarding_complete=session['onboarding_complete'])
 
 
 
@@ -101,8 +107,9 @@ def competitors():
                             form=form,
                             view_page='competitors',
                             next_page='company',
-                            coming_home=request.args.get('coming_home'),
-                            splash=request.args.get('splash'))
+                            coming_home=request.args.get('home'),
+                            splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 
 
@@ -124,8 +131,9 @@ def company():
                                 form=form,
                                 view_page='company',
                                 next_page='audience',
-                                coming_home=request.args.get('coming_home'),
-                                splash=request.args.get('splash'))
+                                coming_home=request.args.get('home'),
+                                splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 
 
@@ -160,8 +168,9 @@ def audience():
                                 form=form,
                                 view_page='audience',
                                 next_page='product',
-                                coming_home=request.args.get('coming_home'),
-                                splash=request.args.get('splash')
+                                coming_home=request.args.get('home'),
+                                splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete']
                             )
 
 
@@ -193,8 +202,9 @@ def product():
                                 form=form,
                                 view_page='product',
                                 next_page='product_2',
-                                coming_home=request.args.get('coming_home'),
-                                splash=request.args.get('splash'))
+                                coming_home=request.args.get('home'),
+                                splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 
 @app.route('/branch_data', methods=['GET'])
@@ -248,7 +258,8 @@ def product_2():
                                 form=form,
                                 view_page='product_2',
                                 next_page='salescycle',
-                                coming_home=request.args.get('coming_home'),
+                                coming_home=request.args.get('home'),
+                                onboarding_complete=session['onboarding_complete'],
                                 splash=request.args.get('splash'))
 
 
@@ -273,7 +284,8 @@ def salescycle():
                                 form=form,
                                 view_page='salescycle',
                                 next_page='nice',
-                                coming_home=request.args.get('coming_home'),
+                                coming_home=request.args.get('home'),
+                                onboarding_complete=session['onboarding_complete'],
                                 splash=request.args.get('splash'))
 
 
@@ -307,8 +319,9 @@ def goals():
                                 form=form,
                                 view_page='goals',
                                 next_page='history',
-                                coming_home=request.args.get('coming_home'),
-                                splash=request.args.get('splash'))
+                                coming_home=request.args.get('home'),
+                                splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 
 
@@ -331,8 +344,9 @@ def history():
                             form=form,
                             view_page='history',
                             next_page='platforms',
-                            coming_home=request.args.get('coming_home'),
-                            splash=request.args.get('splash'))
+                            coming_home=request.args.get('home'),
+                            splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 @app.route('/history/platforms', methods=['GET', 'POST'])
 @login_required
@@ -352,8 +366,9 @@ def platforms():
                             form=form,
                             view_page='platforms',
                             next_page='past',
-                            coming_home=request.args.get('coming_home'),
-                            splash=request.args.get('splash'))
+                            coming_home=request.args.get('home'),
+                            splash=request.args.get('splash'),
+                                onboarding_complete=session['onboarding_complete'])
 
 @app.route('/get_platforms', methods=['GET'])
 @login_required
@@ -378,19 +393,22 @@ def past():
     service = IntakeService(session['user'], 'past')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        if session['onboarding_complete'] == False:
+            init = True
         if request.form['submit_button'] != 'skip':
             service.past(form.data)
         else:
             service.skip()
-        return redirect(url_for('home'))
+        return redirect(url_for('home', init=init))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],
                             form=form,
                             view_page='past',
                             next_page='home',
-                            coming_home=request.args.get('coming_home'),
-                            splash=request.args.get('splash'))
+                            coming_home=request.args.get('home'),
+                            splash=request.args.get('splash'),
+                            onboarding_complete=session['onboarding_complete'])
 
 
 

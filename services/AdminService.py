@@ -33,6 +33,7 @@ class AdminService:
                 session['logged_in'] = False
                 session['customer'] = False
                 session['admin'] = int(uid)
+                session['email'] = data[0][0]
                 session['admin_first'] = admin_first
                 session['admin_last'] = admin_last
 

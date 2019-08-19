@@ -374,20 +374,21 @@ class CustomerDataViewModel:
 
 class ViewFuncs:
 
-	def view_page(user_name=None, user=None, form=None, view_page=None, next_page=None, coming_home=True, splash=False):
+
+	def view_page(user_name=None, user=None, form=None, view_page=None, next_page=None, coming_home=True, splash=False, onboarding_complete=False):
 
 		page = IntakeViewModel(user, user_name, title=view_page)
 		splashVM = SplashViewModel(next_step=view_page)
 		splashes = splashVM.splashes()
 
-		if view_page in splashes and splash == None:
+		print(coming_home)
+
+		if view_page in splashes and splash == None and coming_home == None:
 			return redirect(url_for('splash', next_step=view_page))
-		elif coming_home == True:
-			return redirect('/home')
 		elif view_page not in splashes or splash:
-			return render_template("layouts/intake_layout.html", page=page, form=form)
+			return render_template("layouts/intake_layout.html", onboarding_complete=onboarding_complete, page=page, form=form)
 		else:
-			return render_template("layouts/intake_layout.html", page=page, form=form)
+			return render_template("layouts/intake_layout.html", onboarding_complete=onboarding_complete, page=page, form=form)
 
 	def view_admin(page=None, tag_id=None, owner=False, admin=False, manager=False, form=None, csv_form=None, ab_form=None, insight_form=None):
 		return render_template(

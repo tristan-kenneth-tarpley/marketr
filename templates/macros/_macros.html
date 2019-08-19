@@ -140,7 +140,7 @@
 
 {% endmacro %}
 
-{% macro left_nav(stage, intake) %}
+{% macro left_nav(stage, intake, onboarding_complete) %}
 
 	{% if intake == True %}
 	
@@ -175,7 +175,15 @@
 			        <i class="now-ui-icons ui-1_bell-53"></i>
 			        <p>History</p>
 			      </a>
-			    </li>
+				</li>
+				{% if onboarding_complete == True %}
+			    <li class="{{ 3 | check_active(stage) }}">
+			      <a href="/home">
+			        <i class="now-ui-icons media-1_album"></i>
+			        <p>Home</p>
+			      </a>
+				</li>
+				{% endif %}
 			  </ul>
 			</div>
 		</div>

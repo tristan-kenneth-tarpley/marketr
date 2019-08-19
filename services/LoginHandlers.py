@@ -20,7 +20,7 @@ def onboarding_required(f):
             return f(*args, **kwargs)
         elif 'onboarding_complete' in session and session['onboarding_complete'] == False:
             page = load_last_page(session['user'])
-            return redirect(url_for(page))
+            return redirect(url_for(page, splash=True))
 
     return wrap
     

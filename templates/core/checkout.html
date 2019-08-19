@@ -1,0 +1,42 @@
+{% extends "layouts/layout.html" %}
+{% from "macros/_macros.html" import form_open, breadcrumb, left_nav, form_body, container, product_table, intro_copy %}
+{% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
+{% from "macros/dashboard_macros.html" import todo, messages, goals %}
+{% from "macros/_admin_macros.html" import admin_sidebar, admin_breadcrumb %}
+{% from "macros/_branding_macros.html" import pricing %}
+
+{% block title %}
+<title>Market(r) - Home</title>
+{% endblock %}
+
+{% block content %}
+{#{% if page.admin %}<div class="main-panel">{% endif%}#}
+	{#{% if not page.admin %}#}
+		{% with plan="active" %}
+			{% include "/core/navbar/sidebar.html" %}
+		{% endwith %}
+		{% include "/core/navbar/topbar.html" %}
+   {# {% endif %}#}
+    
+
+    <div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="append_to">
+			<div class="container-fluid">
+				<div class="card">
+					{% if plan == 'ads' %}
+
+					{% elif plan == 'free' %}
+
+					{% elif plan == 'ab' %}
+
+					{% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

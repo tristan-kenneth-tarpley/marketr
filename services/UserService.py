@@ -300,6 +300,16 @@ class UserService:
 		elif result == False:
 			return render_template('login.html', form=form, error=action)
 
+	def confirm_customer(email, token):
+		tup = (email,)
+		query = "UPDATE dbo.customer_basic SET email_confirmed = 1 WHERE email = ?"
+		db.execute(query, False, tup, commit=True)
+
+	def init_profile(time, user):
+		init_query = "EXEC init_profile @date = ?, @customer_id = ?"
+		db.execute(init_query, False, (time, user), commit=True)
+
+
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
@@ -319,6 +329,7 @@ class UserService:
 					session['prev_log_in'] = data[0][6]
 					session['logged_in'] = True
 					session['customer'] = True
+					session['email'] = data[0][0]
 					session['user'] = int(uid)
 					session['user_name'] = "%s %s" % (first_name, last_name)
 					session.permanent = True
@@ -332,6 +343,7 @@ class UserService:
 					first_query = db.sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
 
 					if first_query['first_name'][0] == None:
+						session['onboarding_complete'] = False
 						return True, 'begin'
 					else:
 						step = load_last_page(session['user'])
@@ -339,7 +351,7 @@ class UserService:
 				else:
 					tup = ("begin",)
 					query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
-					data, cursor = execute(query, True, tup)
+					data, cursor = db.execute(query, True, tup)
 					heading, paragraph = cursor.fetchone()
 					heading = heading.replace("`", "'")
 					paragraph = paragraph.replace("`", "'")
@@ -384,10 +396,17 @@ def last_modified(id):
 	db.execute(query, False, tup, commit=True)
 
 class EmailService:
-	def __init__(self):
+	def __init__(self, to: str=None):
 		app.config.from_pyfile('config.cfg')
 		self.mail = Mail(app)
 		self.s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+		self.sender = 'no-reply@marketr.life'
+		self.to = to
+
+	def send(self, subject=None, message=None):
+		msg = Message(subject, sender=self.sender, recipients=[self.to])
+		msg.body = message
+		self.mail.send(msg)
 
 	def send_email_reset(self, supplied_email):
 		query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
@@ -398,7 +417,7 @@ class EmailService:
 		cursor.close()
 
 		token = self.s.dumps(supplied_email, salt="password-reset")
-		msg = Message('Reset Password', sender='no-reply@marketr.life', recipients=[supplied_email])
+		msg = Message('Reset Password', sender=self.sender, recipients=[supplied_email])
 		link = url_for('update_password', token=token, _external=True)
 		msg.body = "Your password reset link is: %s" % (link,)
 		self.mail.send(msg)
@@ -429,7 +448,6 @@ class IntakeService:
 			tup = (self.id, perc, self.page)
 		else: 
 			tup = (self.id, perc, 'awareness')
-			# come back
 		query = """
 				EXEC update_perc_complete @user = ?, @perc = ?, @page = ?
 				"""
@@ -669,6 +687,7 @@ class IntakeService:
 		query = dbactions.insert_conditional('not exists', table='past')
 		query += " WHERE customer_id = %s" % (self.id,)
 		vals += vals
+		session['onboarding_complete'] = True
 
 		db.execute(query, False, vals, commit=True)
 

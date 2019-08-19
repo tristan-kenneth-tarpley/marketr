@@ -76,7 +76,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="/logout">Logout</a>
-                {% if page %}
+                {% if page and page.name != "None None" %}
                   <div class="input-group-text"><i class="fa fa-user-circle"></i>{{ page.name }}</div>
                 {% endif %}
             </div>

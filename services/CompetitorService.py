@@ -1,8 +1,10 @@
 import requests
+from app import app
 class CompetitorService:
     def __init__(self):
         self.init = True
-        self.spyfu = 'UV9UVYUQ'
+        app.config.from_pyfile('config.cfg')
+        self.spyfu = app.config['SPYFU']
 
     def intro(self, url):
         history_url = f'https://www.spyfu.com/apis/ad_history_api/domain_ad_history_json?d={url}&r=10&s=0&isUs=true&api_key={self.spyfu}'

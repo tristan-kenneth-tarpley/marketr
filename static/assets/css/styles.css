@@ -4926,7 +4926,7 @@ ul#product {
   border-top: 10px solid var(--client-chat);
   border-bottom: 10px solid transparent;
   border-radius: 0px 0px 0px 6px; 
-  left: 30px;
+  left: 40px;
   bottom: -19px;
 }
 
@@ -4970,7 +4970,7 @@ ul#product {
   border-top: 10px solid var(--admin-chat);
   border-bottom: 10px solid transparent;
   border-radius: 0px 0px 0px 6px;
-  right: 30px;
+  right: 40px;
   bottom: -19px;
 }
 
@@ -5199,13 +5199,22 @@ ul#product {
   vertical-align: top !important;
 }
 .profile_table li {
+  margin-top: 1%;
+  margin-left: -2%;
   color: rgba(0,0,0,.8);
 }
 
 .profile_table ul {
   list-style-type: none;
 }
-
+.profile-badge {
+  text-align:center;
+  background-color: var(--secondary);
+  color: white;
+  text-transform: uppercase;
+  border-radius: 50px;
+  padding: 3%;
+}
 .comp-badge {
   text-align:center;
   background-color: #e93578;
@@ -5241,4 +5250,27 @@ ul#product {
 }
 .tag_container {
   display: flex;
+}
+.number_header {
+  opacity: .5;
+  font-size: 200%;
+}
+
+#score_popover {
+  padding: 0;
+}
+
+.motivation_container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--secondary);
+  text-align:center;
+  z-index: 2;
+  display: none;
+}
+.motivation_container p {
+  color: white;
+  font-size: 110%;
 }

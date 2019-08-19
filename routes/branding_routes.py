@@ -9,12 +9,7 @@ def index():
 		home=True
 	)
 
-@app.route('/pricing')
-def pricing():
-	return render_template(
-		'branding/pricing.html',
-		logged_in = True if session.get('logged_in') == True else False
-	)
+
 
 @app.route('/privacy')
 def privacy():

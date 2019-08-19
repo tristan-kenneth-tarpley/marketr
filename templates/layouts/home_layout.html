@@ -32,31 +32,35 @@
 		<div class="append_to">
 			<div class="container-fluid">
 				<div class="card">
-					
-					{% if not page.admin %}
-						{{ tab_bar(page) }}
-					{% else %}
-						{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
-					{% endif %}
+					<div id="loading">
+							<div class="load-circle"><span class="one"></span></div>
+						</div>
+						<div id="content-ready" style="visibility:hidden;">
+						{% if not page.admin %}
+							{{ tab_bar(page) }}
+						{% else %}
+							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
+						{% endif %}
 
-					<div class="tab-content">
-						<div class="tab-pane active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-							{% with page=page %}
-								{% include "core/profile.html" %}
-							{% endwith %}
+						<div class="tab-content">
+							<div class="tab-pane active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+								{% with page=page %}
+									{% include "core/profile.html" %}
+								{% endwith %}
+							</div>
+							<div class="tab-pane" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
+								{% with page=page %}
+									{% include "core/campaigns.html" %}
+								{% endwith %}
+							</div>
+							<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+								{% with page=page %}
+									{% include "core/messages.html" %}
+								{% endwith %}
+							</div>
 						</div>
-						<div class="tab-pane" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
-							{% with page=page %}
-								{% include "core/campaigns.html" %}
-							{% endwith %}
-						</div>
-						<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-							{% with page=page %}
-								{% include "core/messages.html" %}
-							{% endwith %}
-						</div>
+
 					</div>
-
 				</div>
 
 			</div>

@@ -1,3 +1,30 @@
+const PaymentsService = class {
+    constructor() {
+        this.stripe = Stripe('pk_test_tpdQTF2hsjqmMJrVshKR24RR00BVP4B6qC');
+        let url_string = window.location.href,
+            url = new URL(url_string)
+        this.session_id = url.searchParams.get("session_id");
+
+        $("#checkout").click(e=>{
+            this.process()
+        })
+    }
+    process(){
+        this.stripe.redirectToCheckout({
+            // Make the id field from the Checkout Session creation API response
+            // available to this file, so you can provide it as parameter here
+            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+            sessionId: this.session_id
+        }).then((result) => {
+            console.log(result.error.message)
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer
+            // using `result.error.message`.
+        });
+    }
+}
+
+
 const NotificationsService = class {
     constructor(url_path, admin=false) {
         this.url_path = url_path

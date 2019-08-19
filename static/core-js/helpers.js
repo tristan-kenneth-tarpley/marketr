@@ -52,7 +52,8 @@ const PageMap = (route) => {
 		"/admin": "admin",
 		"/personnel": "personnel",
 		"/new": "new",
-		"/create": "create"
+		"/create": "create",
+		"/payments": "payments"
 	}
 
 	function hasNumber(myString) {

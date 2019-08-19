@@ -7,7 +7,7 @@ import json
 from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
-from services.UserService import UserService, encrypt_password
+from services.UserService import UserService, encrypt_password, EmailService
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
 import math
@@ -29,6 +29,37 @@ class NotificationsService:
         ]
         return_data = UserService.parseCursor(data, columns)
         return return_data
+
+    def ChatNotification(self, to):
+        mailman = EmailService(to=to)
+        subject = "You have a new message in Market(r)!"
+        message = "Login here to view the message: https://marketr.life/home?view=messages"
+
+        mailman.send(
+            subject=subject,
+            message=message
+        )
+
+    def Tristan(self):
+        mailman = EmailService(to='tristan@marketr.life')
+        subject = "Someone started their intake!"
+        message = f"customer_id = {self.customer_id}"
+
+        mailman.send(
+            subject=subject,
+            message=message
+        )
+
+
+    def TaskNotification(self, to):
+        mailman = EmailService(to=to)
+        subject = "You have a new assignment in Market(r)."
+        message = "Login here to view the message: https://marketr.life/home?view=campaigns"
+
+        mailman.send(
+            subject=subject,
+            message=message
+        )
 
 class CoreService:
     def __init__(self, customer_id):
@@ -154,13 +185,25 @@ class MessagingService:
                 (?, ?, ?, ?)
                 """
         db.execute(query, False, tup, commit=True)
+        if self.user == 'customer':
+            email = 'select top 1 email from customer_basic where id = ?'
+            data, cursor = db.execute(email, True, (self.customer_id,))
+        elif self.user == 'admin':
+            email = 'select top 1 email from admins where id = ?'
+            data, cursor = db.execute(email, True, (self.admin_id,))
+
+        email = cursor.fetchone()
+        email = email[0]
+        notification = NotificationsService(self.customer_id)
+        notification.ChatNotification(email)
 
 
 class TaskService:
     def __init__(self, customer_id: int = None, admin_id: int = None, user='customer') -> None:
         self.customer_id = customer_id
         self.admin_id = admin_id
-
+        self.user = user
+ 
     def get_tasks(self) -> dict:
         query = """SELECT * FROM get_tasks(?) ORDER BY created_date DESC"""
         result, cursor = db.execute(query, True, (self.customer_id))
@@ -179,6 +222,18 @@ class TaskService:
                     (?,?,?,?)
                 """
         db.execute(query, False, tup, commit=True)
+
+        if self.user == 'customer':
+            email = 'select top 1 email from customer_basic where id = ?'
+            data, cursor = db.execute(email, True, (self.customer_id,))
+        elif self.user == 'admin':
+            email = 'select top 1 email from admins where id = ?'
+            data, cursor = db.execute(email, True, (self.admin_id,))
+
+        email = cursor.fetchone()
+        email = email[0]
+        notification = NotificationsService(self.customer_id)
+        notification.TaskNotification(email)
 
     def complete_task(self, task):
         tup = (task, self.customer_id)

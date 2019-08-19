@@ -12,6 +12,9 @@
   {% if request.args.get('conf') %}
     <p>You're good to go! Login again.</p>
   {% endif %}
+  {% if request.args.get('expired')%}
+    <p>Your link is expired. Please try again. Just remember that it expires in 1 hour!</p>
+  {% endif %}
 
   <form class="new_user" id="new_user" action="{{ url_for('customer_login') }}" accept-charset="UTF-8" method="POST">
     {{ form.csrf_token }}
