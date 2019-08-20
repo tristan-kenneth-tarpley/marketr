@@ -22,7 +22,7 @@ class PaymentsService:
         stripe.api_key = self.sk
         customer = stripe.Customer.retrieve(self.customer_id)
         try:
-            current_plan = customer['subscriptions']['data']['items']['data']['plan']['product']
+            current_plan = customer['subscriptions']['data'][0]['items']['data'][0]['plan']['product']
         except:
             current_plan = None
 
