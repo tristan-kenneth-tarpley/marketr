@@ -8,6 +8,7 @@ import data.db as db
 from services.UserService import IntakeService, UserService
 from ViewModels.ViewModels import SplashViewModel, ViewFuncs, ContainerViewModel
 from services.SharedService import NotificationsService
+from services.PaymentsService import PaymentsService
 from services.LoginHandlers import login_required
 import services.forms as forms
 
@@ -71,6 +72,12 @@ def begin():
     notify.Tristan()
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
+        payments = PaymentsService(session['email'])
+        stripe_id = payments.create_customer(name = str(form.company_name.data))
+        if 'stripe_id' not in session:
+            session['stripe_id'] = stripe_id
+        UserService.UpdateStripeId(session['user'], session['stripe_id'])
+
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
         else:

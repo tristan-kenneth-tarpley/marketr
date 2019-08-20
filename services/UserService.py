@@ -37,7 +37,10 @@ def load_last_page(user):
 	tup = (user,)
 	data, cursor = db.execute('SELECT perc_complete FROM customer_basic WHERE id = ?', True, tup)
 	data = cursor.fetchall()
-	data = int(data[0][0]) / 10
+	try:
+		data = int(data[0][0]) / 10
+	except:
+		data = 0
 	if data < 11:
 		session['onboarding_complete'] = False
 	else:
@@ -242,6 +245,14 @@ class DBActions:
 
 class UserService:
 
+	def update_plan(customer_id, plan_id):
+		query = """UPDATE customer_basic SET current_plan = ? WHERE id = ?"""
+		db.execute(query, False, (plan_id, customer_id), commit=True)
+
+	def UpdateStripeId(customer_id, stripe_id):
+		query = "UPDATE customer_basic SET stripe_id = ? WHERE id = ?"
+		db.execute(query, False, (stripe_id, customer_id), commit=True)
+
 	def CreateCustomer(email, password, form=None, app=None):
 		password = encrypt_password(password)
 		ts = time.time()
@@ -313,7 +324,7 @@ class UserService:
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
-			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in FROM dbo.customer_basic WHERE email = ?"
+			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in, stripe_id FROM dbo.customer_basic WHERE email = ?"
 			data, cursor = db.execute(query, True, tup)
 			data = cursor.fetchall()
 			cursor.close()
@@ -331,6 +342,7 @@ class UserService:
 					session['customer'] = True
 					session['email'] = data[0][0]
 					session['user'] = int(uid)
+					session['stripe_id'] = data[0][7]
 					session['user_name'] = "%s %s" % (first_name, last_name)
 					session.permanent = True
 					session.remember = True

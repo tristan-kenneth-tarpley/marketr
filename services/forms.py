@@ -24,7 +24,7 @@ class CreateCustomer(FlaskForm):
 class Profile(FlaskForm):
     first_name = StringField('first_name', validators=[validators.InputRequired()])
     last_name = StringField('last_name', validators=[validators.InputRequired()])
-    company_name = StringField('company_name')
+    company_name = StringField('company_name', validators=[validators.InputRequired()])
     revenue = StringField('revenue', validators=[validators.InputRequired()])
     zip = StringField('zip', validators=[validators.Length(max=5, min=5)])
     stage = HiddenField('stage')

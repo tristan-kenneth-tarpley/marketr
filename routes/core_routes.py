@@ -138,9 +138,16 @@ def pricing():
 		home=True
 	)
 
+@app.route('/inspect')
+def inspect():
+    service = PaymentsService(None, customer_id='cus_Fee7FUpYrODymo')
+    customer = service.get_customer() 
+    return json.dumps(customer)
+
 @app.route('/checkout/ab_testing', methods=['GET', 'POST'])
+@login_required
 def ab_checkout():
-    obj = PaymentsService()
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
     obj.ab_plan()
     if request.args.get('session_id'):
         return render_template('core/checkout.html', plan="ab")
@@ -148,8 +155,9 @@ def ab_checkout():
         return redirect(url_for('ab_checkout', session_id=obj.id))
 
 @app.route('/checkout/almost_free', methods=['GET', 'POST'])
+@login_required
 def free_checkout():
-    obj = PaymentsService()
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
     obj.almost_free()
     if request.args.get('session_id'):
         return render_template('core/checkout.html', plan="free")
@@ -157,8 +165,9 @@ def free_checkout():
         return redirect(url_for('free_checkout', session_id=obj.id))
 
 @app.route('/checkout/paid_ads', methods=['GET', 'POST'])
+@login_required
 def ads_checkout():
-    obj = PaymentsService()
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
     obj.paid_ads()
     if request.args.get('session_id'):
         return render_template('core/checkout.html', plan="ads")
@@ -168,7 +177,13 @@ def ads_checkout():
 
 @app.route('/success')
 def success():
-    return 'success'
+    # get plan id
+    payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
+    plan_id = payments.get_plan()
+    # update db with plan id
+    UserService.update_plan(session['user'], plan_id)
+    # redirect to home
+    return redirect(url_for('home'))
 
 @app.route('/cancel')
 def cancel():

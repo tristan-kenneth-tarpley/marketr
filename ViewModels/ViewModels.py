@@ -204,7 +204,7 @@ class CustomerDataViewModel:
 			'customer_id', 'company_name',
 			'first_name', 'last_name',
 			'email', 'stage',
-			'city', 'state',
+			'city', 'state', 'current_plan',
 			'selling_to', 'biz_model',
 			'rev_channel_freeform', 'storefront_perc',
 			'direct_perc', 'online_perc',
