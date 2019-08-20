@@ -1,1 +1,19 @@
-{{ messages(page.data['messages'], page=page) }}
+
+
+<div class="row">    
+    <div class="col-lg-8 col-sm-12">
+        {{ messages(page.data['messages'], page=page) }}
+    </div>
+    <div class="col-lg-4 col-sm-12"> 
+        <div class="card" style="padding: 8%;">
+            {{ score() }}
+        </div>
+        {{ section(
+            link="goals",
+            title="Marketing Goal",
+            body=goals(page),
+            hash="goal",
+            admin=page.admin
+        ) }}
+    </div>
+</div>

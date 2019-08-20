@@ -1,25 +1,34 @@
 
 {% from "macros/dashboard_macros.html" import goals, insights, ads_performance, test_performance %}
 {% from "macros/home_macros.html" import locked %}
+
 {% set company_name = page.data['core']['company_name'] %}
 
 
+<div class="row">    
+    <div class="col-lg-8 col-sm-12">
+        {{ section(
+            link=None,
+            title=company_name,
+            body=todo(page, admin=False),
+            hash="to_do",
+            admin=page.admin
+        ) }}
+    </div>
+    <div class="col-lg-4 col-sm-12"> 
+        <div class="card" style="padding: 8%;">
+            {{ score() }}
+        </div>
+        {{ section(
+            link="goals",
+            title="Marketing Goal",
+            body=goals(page),
+            hash="goal",
+            admin=page.admin
+        ) }}
+    </div>
+</div>
 
-{{ section(
-	link=None,
-	title=company_name,
-	body=todo(page, admin=False),
-	hash="to_do",
-	admin=page.admin
-) }}
-
-{{ section(
-	link="goals",
-	title="Marketing Goal",
-	body=goals(page),
-	hash="goal",
-	admin=page.admin
-) }}
 
 {{ section(
     link=None,

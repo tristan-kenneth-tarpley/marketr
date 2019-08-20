@@ -173,16 +173,19 @@ def ads_checkout():
         return render_template('core/checkout.html', plan="ads")
     else:
         return redirect(url_for('ads_checkout', session_id=obj.id))
-    
+
 
 @app.route('/success')
 def success():
     # get plan id
+    email = session['email'] if session['logged_in'] else request.args.get('email')
+    customer_id = session['stripe_id'] if session['logged_in'] else request.args.get('stripe_id')
     payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
     plan_id = payments.get_plan()
     # update db with plan id
     UserService.update_plan(session['user'], plan_id)
     # redirect to home
+    # return plan_id
     return redirect(url_for('home'))
 
 @app.route('/cancel')

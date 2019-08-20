@@ -69,13 +69,13 @@ def begin():
     service = IntakeService(session['user'], 'begin')
     
     notify = NotificationsService(session['user'])
-    notify.Tristan()
+    # notify.Tristan()
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         payments = PaymentsService(session['email'])
         stripe_id = payments.create_customer(name = str(form.company_name.data))
-        if 'stripe_id' not in session:
-            session['stripe_id'] = stripe_id
+        session['stripe_id'] = stripe_id
+
         UserService.UpdateStripeId(session['user'], session['stripe_id'])
 
         if request.form['submit_button'] != 'skip':

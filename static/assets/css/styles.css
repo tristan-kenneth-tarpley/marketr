@@ -5221,14 +5221,18 @@ ul#product {
   color: white;
   text-transform: uppercase;
   border-radius: 50px;
-  padding: 2%;
+  padding: 1%;
 }
 .comp_box {
   display: flex;
   flex-direction: column;
-  padding: 3%;
+  padding: 2%;
   border: 2px solid rgba(0,0,0,.1);
   border-radius: 5px;
+}
+.comp_box-metrics {
+  margin: auto;
+  padding: 20% 1%;
 }
 .comp_metrics {
   margin: auto;

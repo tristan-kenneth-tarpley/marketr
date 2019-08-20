@@ -1,7 +1,7 @@
 {% extends "layouts/layout.html" %}
 {% from "macros/_macros.html" import form_open, breadcrumb, left_nav, form_body, container, product_table, intro_copy %}
 {% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
-{% from "macros/dashboard_macros.html" import todo, messages, goals %}
+{% from "macros/dashboard_macros.html" import todo, messages, goals, score %}
 {% from "macros/_admin_macros.html" import admin_sidebar, admin_breadcrumb %}
 
 {% block title %}
@@ -41,7 +41,7 @@
 						{% else %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
 						{% endif %}
-
+						
 						<div class="tab-content">
 							<div class="tab-pane active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 								{% with page=page %}

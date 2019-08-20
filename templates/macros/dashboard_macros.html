@@ -1,16 +1,19 @@
 {% from "macros/_macros.html" import render_field %}
 
+
+
+
 {% macro goals(page) %}
     <p><strong>Our primary marketing goal is to improve {{page.data['core']['goal'] | lower }}:</strong></p>
     <div class="row goal_container">
         <div class="col-lg-4 col-sm-12">
-            <h5>From: {{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{page.data['core']['current_avg'] }}/mo</strong></h5>
+            <h5>From:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{page.data['core']['current_avg'] }}/mo</strong></h5>
         </div> 
         <div class="col-lg-4 col-sm-12">
-            <h5>To: {{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{ page.data['core']['target_avg'] }}/mo</strong></h5>   
+            <h5>To:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{ page.data['core']['target_avg'] }}/mo</strong></h5>   
         </div>
         <div class="col-lg-4 col-sm-12">
-            <h5>Within: <strong>{{ page.data['core']['timeframe'] }}{{'s' if page.data['core']['timeframe'] == '2yr' }}</strong></h5>   
+            <h5>Within:<br><strong>{{ page.data['core']['timeframe'] }}{{'s' if page.data['core']['timeframe'] == '2yr' }}</strong></h5>   
         </div>
     </div>
 {% endmacro %}
@@ -112,7 +115,27 @@
 {% endmacro %}
 
 
-
+{% macro score() %}
+<div class="row">
+	<div class="col-lg-7 col-sm-12">
+		<h5><strong>Market(r)<br>Score</strong></h5>
+		<button type="button" id="score_popover" class="btn btn-neutral" data-container="body" data-toggle="popover" data-html="true" data-placement="left" title="<p>The Market(r) Score</p>" data-content="<p>Market(r) score is the credit score for your marketing.  It's a business model-dependent, weighted algorithm that analyzes the completion state of your market(r) profile compared to an achievable ideal state.</p><br>
+		<p>Reaching high Market(r) scores is a great way to ensure you have a healthy marketing core to grow sales from more effectively.</p>">
+			What does this mean?
+		</button>
+	</div>
+	<div class="col-lg-5 col-sm-12 score_container" style="text-align:center;">
+		<h1><span id="marketr-score">000</span></h1>
+		<label id="marketr-score-quality">...</label>
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		<label><strong>How to improve:</strong></label>
+		<p>> Complete profile / bolded To-Do-List items</p>
+	</div>
+</div>
+{% endmacro %}
 
 {% macro messages(msg_list, page=None) %}
 

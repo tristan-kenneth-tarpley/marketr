@@ -250,6 +250,8 @@ class UserService:
 		db.execute(query, False, (plan_id, customer_id), commit=True)
 
 	def UpdateStripeId(customer_id, stripe_id):
+		print("stripe_id: " + str(stripe_id))
+		print("customer_id: " + str(customer_id))
 		query = "UPDATE customer_basic SET stripe_id = ? WHERE id = ?"
 		db.execute(query, False, (stripe_id, customer_id), commit=True)
 
