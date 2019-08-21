@@ -1,6 +1,6 @@
-{% set company_name = page.data['core']['company_name'] %}
-{% set core = page.data['core'] %}
-{% set products = page.data['products'] %}
+{% set company_name = page.data['core']['core'][0]['company_name'] %}
+{% set core = page.data['core']['core'][0] %}
+{% set products = page.data['products']['products'] %}
 
 
 
@@ -177,9 +177,9 @@
 
 {% macro five() %}
 
-{% if page.data['audiences']['0'] %}
-	{% for index in page.data['audiences'] %}
-		{% set state = page.data['audiences'][index] %}
+{% if page.data['audiences']['audiences'] %}
+	{% for index in page.data['audiences']['audiences'] %}
+		{% set state = index %}
 		{% if state['persona_name'] and state['persona_name'] != "" %}	
 			<h5>Audience name: {{ state['persona_name']}}</h5>
 			<table class="table table-responsive profile_table">
@@ -299,7 +299,7 @@
 
 {% macro six() %}
 	{% if core['quantity'] %}
-		<p>{{ company_name}} offers {{ core['quantity'] }} products / services.</p><br><br>
+		<p>{{ company_name }} offers {{ core['quantity'] }} products / services.</p><br><br>
 		<a target="__blank" href="https://{{ core['link'] }}">Visit website</a>
 		<br>
 		<br>
@@ -349,16 +349,16 @@
 				<th>Estimated Unique Buyers</th>
 			</thead>
 			<tbody>
-			{% for index in page.data['products'] %}
-			{% set state = page.data['products'][index] %}
-				{% if state['name'] | not_none %}
+			{% for index in page.data['products']['products'] %}
+				{% set state = index %}
+				{% if state %}
 					<tr>
-						<td><strong>{{ state['name'] if state['name'] | not_none else "" }}</strong></td>
-						<td>{{ state['category'] if state['category'] | not_none else "" }}</td>
-						<td>{{ "$" + state['cogs'] if state['cogs'] | not_none else "" }}</td>
-						<td>{{ "$" + state['sales_price'] if state['sales_price'] | not_none else "" }}</td>
+						<td><strong>{{ state['name'] if state['name'] else "" }}</strong></td>
+						<td>{{ state['category'] if state['category'] else "" }}</td>
+						<td>{{ "$" + state['cogs'] if state['cogs'] else "" }}</td>
+						<td>{{ "$" + state['sales_price'] if state['sales_price'] else "" }}</td>
 						<td>{{ state['qty_sold'] if state['qty_sold'] | not_none else "" }}</td>
-						<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] | not_none else "" }}</td>
+						<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] else "" }}</td>
 					</tr>	
 				{% endif %}
 			{% endfor %}
@@ -383,42 +383,42 @@
 		<thead>
 			<th> </th>
 			{% for product in products %}
-				{% set state = products[product] %}
+				{% set state = product %}
 				<th>{{ state['name'] }}</th>
 			{% endfor %}
 		</thead>
 		<tbody>
-			<tr>
+			<tr> 
 				<th>Complexity</th>
-				{{ product_val_iterator(page.data['products'], 'complexity') }}
+				{{ product_val_iterator(products, 'complexity') }}
 			</tr>
 			<tr>
 				<th>Price</th>
-				{{ product_val_iterator(page.data['products'], 'price') }}
+				{{ product_val_iterator(products, 'price') }}
 			</tr>
 			<tr>
 				<th>Frequency of Use</th>
-				{{ product_val_iterator(page.data['products'], 'frequency_of_use') }}
+				{{ product_val_iterator(products, 'frequency_of_use') }}
 			</tr>
 			<tr>
 				<th>Frequency of Purchase</th>
-				{{ product_val_iterator(page.data['products'], 'frequency_of_purchase') }}
+				{{ product_val_iterator(products, 'frequency_of_purchase') }}
 			</tr>
 			<tr>
 				<th>Value Prop</th>
-				{{ product_val_iterator(page.data['products'], 'value_prop') }}
+				{{ product_val_iterator(products, 'value_prop') }}
 			</tr>
 			<tr>
 				<th>Warranties or Guarantee</th>
-				{{ product_val_iterator(page.data['products'], 'warranties_or_guarantee') }}
+				{{ product_val_iterator(products, 'warranties_or_guarantee') }}
 			</tr>
 			<tr>
 				<th>Low or High # of skus</th>
-				{{ product_val_iterator(page.data['products'], 'num_skus') }}
+				{{ product_val_iterator(products, 'num_skus') }}
 			</tr>
 			<tr>
 				<th>Level of Customization</th>
-				{{ product_val_iterator(page.data['products'], 'level_of_customization') }}
+				{{ product_val_iterator(products, 'level_of_customization') }}
 			</tr>
 		</tbody>
 	</table>
@@ -540,7 +540,7 @@
 {% endmacro %}
 
 {% macro eight() %}
-{% if page.data['platforms'] %}
+{% if page.data['platforms']['platforms'] %}
 	<p>Average monthly spend across all platforms</p>
 	<h5 class="title blue_header">{{ core['digital_spend']}}</h5>
 	<div class="divider"></div>
@@ -557,8 +557,8 @@
 		</div>
 	</div>
 
-	{% for index in page.data['platforms'] %}
-		{% set state = page.data['platforms'][index] %}
+	{% for index in page.data['platforms']['platforms'] %}
+		{% set state = index %}
 		<div class="row">
 			<div class="col-1"></div>
 			<div class="col-3">

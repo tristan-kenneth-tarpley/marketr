@@ -197,51 +197,60 @@ class CustomerDataViewModel:
 			self.compile_all()
 	
 	def compile_core(self) -> dict:
-		data = self.core_service.customer_core()
+		# data = self.core_service.customer_core()
 
-		core_data = {}
-		columns = [
-			'customer_id', 'company_name',
-			'first_name', 'last_name',
-			'email', 'stage',
-			'city', 'state', 'current_plan',
-			'selling_to', 'biz_model',
-			'rev_channel_freeform', 'storefront_perc',
-			'direct_perc', 'online_perc',
-			'tradeshows_perc', 'other_perc',
-			'industry', 'comp_1_name',
-			'comp_1_type', 'comp_1_website',
-			'comp_2_name', 'comp_2_type',
-			'comp_2_website', 'gen_description',
-			'quantity', 'link',
-			'segment_1', 'segment_2',
-			'segment_3', 'segment_4',
-			'segment_5', 'segment_6',
-			'segment_7', 'segment_8',
-			'segment_9', 'segment_10',
-			'source_1', 'source_2',
-			'source_3', 'source_4',
-			'source_freeform', 'goal',
-			'current_avg', 'target_avg',
-			'timeframe', 'digital_spend',
-			'history_freeform'
-		]
+		# core_data = {}
+		# columns = [
+		# 	'customer_id', 'company_name',
+		# 	'first_name', 'last_name',
+		# 	'email', 'stage',
+		# 	'city', 'state', 'current_plan',
+		# 	'selling_to', 'biz_model',
+		# 	'rev_channel_freeform', 'storefront_perc',
+		# 	'direct_perc', 'online_perc',
+		# 	'tradeshows_perc', 'other_perc',
+		# 	'industry', 'comp_1_name',
+		# 	'comp_1_type', 'comp_1_website',
+		# 	'comp_2_name', 'comp_2_type',
+		# 	'comp_2_website', 'gen_description',
+		# 	'quantity', 'link',
+		# 	'segment_1', 'segment_2',
+		# 	'segment_3', 'segment_4',
+		# 	'segment_5', 'segment_6',
+		# 	'segment_7', 'segment_8',
+		# 	'segment_9', 'segment_10',
+		# 	'source_1', 'source_2',
+		# 	'source_3', 'source_4',
+		# 	'source_freeform', 'goal',
+		# 	'current_avg', 'target_avg',
+		# 	'timeframe', 'digital_spend',
+		# 	'history_freeform'
+		# ]
 
-		for i in range(len(data)):
-			core_data.update([(columns[i], data[i])])
+		# for i in range(len(data)):
+		# 	core_data.update([(columns[i], data[i])])
+		query = "select * from compile_home_page(?)"
+		core_data, cursor = db.execute(query, True, (self.customer_id,))
+		core_data = cursor.fetchone()
+		return_dict = {}
+		for i in range(len(core_data)):
+			return_dict[i] = core_data[i]
 
-		competitors = CompetitorService()
-		try:
-			core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
-		except:
-			core_data['competitor_intro_1'] = ""
+		# for i in range(len(core_data)):
+		# 	return_dict.update([(core_data[i], core_data[i])])
+
+		# competitors = CompetitorService()
+		# try:
+		# 	core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
+		# except:
+		# 	core_data['competitor_intro_1'] = ""
 		
-		try:
-			core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
-		except:
-			core_data['competitor_intro_2'] = ""
+		# try:
+		# 	core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
+		# except:
+		# 	core_data['competitor_intro_2'] = ""
 
-		return core_data
+		return return_dict
 	
 	def compile_products(self) -> dict:
 		data = self.core_service.get_products()
@@ -361,26 +370,41 @@ class CustomerDataViewModel:
 
 	def compile_all(self) -> None:
 		core = self.compile_core()
-		products = self.compile_products()
-		audiences = self.compile_audience()
-		platforms = self.compile_platforms()
-		messages = self.compile_messages()
-		self.tasks = self.compile_tasks()
+		# core = self.compile_core()
+		# products = self.compile_products()
+		# audiences = self.compile_audience()
+		# platforms = self.compile_platforms()
+		# messages = self.compile_messages()
+		# self.tasks = self.compile_tasks()
 		salescycle = self.compile_salescycle()
-		google = self.compile_google()
+		# google = self.compile_google()
 		insights = self.compile_insights()
-		tests = self.compile_tests()
+		# tests = self.compile_tests()
+		# have everything but insights and salescycle
+		competitors = CompetitorService()
+		core_data = core
+		core_values = eval(core[0])
+
+		try:
+			core_values['core'][0].update([('competitor_intro_1', competitors.intro(core_values['core'][0].get('comp_1_website')))])
+		except:
+			core_values['core'][0].update([('competitor_intro_1', "")])
+		try:
+			core_values['core'][0].update([('competitor_intro_2', competitors.intro(core_values['core'][0].get('comp_2_website')))])
+		except:
+			core_values['core'][0].update([('competitor_intro_2', "")])
+
 		return_data = {
-			'core': core,
-			'products': products,
-			'audiences': audiences,
-			'platforms': platforms,
-			'messages': messages,
-			'tasks': self.tasks,
+			'core': core_values,
+			'products': eval(core_data[1]),
+			'audiences': eval(core_data[2]),
+			'platforms': eval(core_data[3]),
+			'messages': eval(core_data[4]),
+			'tasks': eval(core_data[5]),
 			'salescycle': salescycle,
-			'google': google,
+			'google': eval(core_data[6]),
 			'insights': insights,
-			'tests': tests
+			'tests': eval(core_data[7])
 		}
 
 		self.data = return_data

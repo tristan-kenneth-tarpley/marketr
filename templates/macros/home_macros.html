@@ -133,17 +133,17 @@
 
 
 {% macro multi_val_iterator(iterable) %}
-    {% for i in range(iterable | length) %}
-        {% if iterable[i] and iterable[i] != "" %}
-            {{iterable[i]}}{{", " if loop.index != iterable | length }}
-        {% endif %}        
+    {% for i in iterable %}
+        {% if i %}
+            <td>{{ i }},</td>
+        {% endif %}
     {% endfor %}
 {% endmacro %}
 
 {% macro product_val_iterator(iterable, key) %}
     {% for index in iterable %}
-        {% if iterable[index][key] %}
-            <td>{{ iterable[index][key] }}</td>
+        {% if index %}
+            <td>{{ index[key] }}</td>
         {% else %}
             <td>n/a</td>
         {% endif %}

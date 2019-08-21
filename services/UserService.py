@@ -43,11 +43,13 @@ def load_last_page(user):
 	except:
 		data = 0
 	if data < 3:
+		val = data
 		session['onboarding_complete'] = False
 	else:
+		val = 3
 		session['onboarding_complete'] = True
 	cursor.close()
-	return pages[data]
+	return pages[val]
 
 def get_args_from_form(data):
 	vals = []

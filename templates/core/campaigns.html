@@ -31,7 +31,7 @@
 
 
 
-{% if page.data['core']['current_plan'] %}
+{% if page.data['core']['core'][0]['current_plan'] %}
     {{ section(
         link=None,
         title="Insights",
@@ -49,9 +49,8 @@
     ) }}
 {% endif %}
 
-
 {# paid ads management or almost free #}
-{% if page.data['core']['current_plan'] == 'prod_FecATNfeTGFE5n' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
+{% if page.data['core']['core'][0]['current_plan'] == 'prod_FecATNfeTGFE5n' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
     {{ section(
         link=None,
         title="Ad Campaign Performance",
@@ -70,7 +69,7 @@
 {% endif %}
 
 {# ab testing or almost free #}
-{% if page.data['core']['current_plan'] == 'prod_Feck6uZdvfFOgj' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
+{% if page.data['core']['core'][0]['current_plan'] == 'prod_Feck6uZdvfFOgj' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
     {{ section(
         link=None,
         title="A/B Testing Performance",
