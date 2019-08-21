@@ -186,7 +186,7 @@ def success():
     UserService.update_plan(session['user'], plan_id)
     # redirect to home
     # return plan_id
-    return redirect(url_for('home'))
+    return redirect(url_for('home', view='campaigns'))
 
 @app.route('/cancel')
 def cancel():
