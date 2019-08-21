@@ -4,18 +4,29 @@
 
 
 {% macro goals(page) %}
-    <p><strong>Our primary marketing goal is to improve {{page.data['core']['goal'] | lower }}:</strong></p>
-    <div class="row goal_container">
-        <div class="col-lg-4 col-sm-12">
-            <h5>From:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{page.data['core']['current_avg'] }}/mo</strong></h5>
-        </div> 
-        <div class="col-lg-4 col-sm-12">
-            <h5>To:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{ page.data['core']['target_avg'] }}/mo</strong></h5>   
+    {% if page.data['core']['goal'] %}
+        <p><strong>Our primary marketing goal is to improve {{page.data['core']['goal'] | lower }}:</strong></p>
+        <div class="row goal_container">
+            <div class="col-lg-4 col-sm-12">
+                <h5>From:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{page.data['core']['current_avg'] }}/mo</strong></h5>
+            </div> 
+            <div class="col-lg-4 col-sm-12">
+                <h5>To:<br>{{ '$' if page.data['core']['goal'] == 'Revenue' }}<strong>{{ page.data['core']['target_avg'] }}/mo</strong></h5>   
+            </div>
+            <div class="col-lg-4 col-sm-12">
+                <h5>Within:<br><strong>{{ page.data['core']['timeframe'] }}{{'s' if page.data['core']['timeframe'] == '2yr' }}</strong></h5>   
+            </div>
         </div>
-        <div class="col-lg-4 col-sm-12">
-            <h5>Within:<br><strong>{{ page.data['core']['timeframe'] }}{{'s' if page.data['core']['timeframe'] == '2yr' }}</strong></h5>   
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <h5>Where are we headed?</h5>
+                <p>Establish the goal that would make an impact on your business to put everything else in perspective. </p>
+                <a href="{{url_for('goals')}}" class="btn btn-secondary">Complete now</a>
+                <img src="/static/assets/img/goals.png">
+            </div> 
         </div>
-    </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro todo(page, admin=True) %}
@@ -124,9 +135,14 @@
 			What does this mean?
 		</button>
 	</div>
-	<div class="col-lg-5 col-sm-12 score_container" style="text-align:center;">
-		<h1><span id="marketr-score">000</span></h1>
-		<label id="marketr-score-quality">...</label>
+    <div id="loading" class="score-loading">
+        <div class="load-circle"><span class="one"></span></div>
+    </div>
+	<div class="col-lg-5 col-sm-12 score_container" style="display: none; text-align:center;">
+        <div id="score-ready">
+            <h1><span class="marketr-score">000</span></h1>
+            <label class="marketr-score-quality">...</label>
+        </div>
 	</div>
 </div>
 <div class="row">
@@ -257,56 +273,59 @@
 {% endmacro %}
 
 {% macro test_performance(page) %}
-    {% for test in page.data['tests']%}
-        {% set index = test %}
-        {% set current = page.data['tests'][index] %}
-        {% if loop.index % 2 != 0 %}
-        <h2>Hypothesis: {{current['hypothesis']}}</h2>
-        {% endif %}
-
-        <div class="row">
-            {% if loop.index % 2 == 0 and current['best_worst_binary'] == 0 %}
-            <div class="col-lg-6 col-sm-12">
-                <h4>Worst Performing Variant</h4>
-                <div class="metrics_container metrics_container-tertiary">
-                    <h6>Conversion: {{ current['conversion'] }}%</h6><br>
-                    <h6>Views: {{ current['views'] }}</h6>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-12">
-                <h4>Variant</h4>
-                <div class="metrics_container metrics_container-tertiary">
-                    {% if current['variant'] | get_first_five == 'http' %}
-                        <img src="{{current['variant']}}">
-                    {% else %}
-                        <h4>{{current['variant'] | get_first_five}}</h4>
-                    {% endif %}
-                </div>
-            </div>
-            {% else %}
-            <div class="col-lg-6 col-sm-12">
-                <h4>Best Performing Variant</h4>
-                <div class="metrics_container metrics_container-tertiary">
-                    <h6>Conversion: {{ current['conversion'] }}%</h6><br>
-                    <h6>Views: {{ current['views'] }}</h6>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-12">
-                <h4>Variant</h4>
-                <div class="metrics_container metrics_container-tertiary">
-                    {% if current['variant'] | get_first_five == 'http' %}
-                        <img src="{{current['variant']}}">
-                    {% else %}
-                        <h4>{{current['variant'] | get_first_five}}</h4>
-                    {% endif %}
-                </div>
-            </div>
+    {% if page.data['tests'] %}
+        {% for test in page.data['tests']%}
+            {% set index = test %}
+            {% set current = page.data['tests'][index] %}
+            {% if loop.index % 2 != 0 %}
+            <h2>Hypothesis: {{current['hypothesis']}}</h2>
             {% endif %}
-        </div>
-    {% endfor %}
+
+            <div class="row">
+                {% if loop.index % 2 == 0 and current['best_worst_binary'] == 0 %}
+                <div class="col-lg-6 col-sm-12">
+                    <h4>Worst Performing Variant</h4>
+                    <div class="metrics_container metrics_container-tertiary">
+                        <h6>Conversion: {{ current['conversion'] }}%</h6><br>
+                        <h6>Views: {{ current['views'] }}</h6>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <h4>Variant</h4>
+                    <div class="metrics_container metrics_container-tertiary">
+                        {% if current['variant'] | get_first_five == 'http' %}
+                            <img src="{{current['variant']}}">
+                        {% else %}
+                            <h4>{{current['variant'] | get_first_five}}</h4>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-lg-6 col-sm-12">
+                    <h4>Best Performing Variant</h4>
+                    <div class="metrics_container metrics_container-tertiary">
+                        <h6>Conversion: {{ current['conversion'] }}%</h6><br>
+                        <h6>Views: {{ current['views'] }}</h6>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <h4>Variant</h4>
+                    <div class="metrics_container metrics_container-tertiary">
+                        {% if current['variant'] | get_first_five == 'http' %}
+                            <img src="{{current['variant']}}">
+                        {% else %}
+                            <h4>{{current['variant'] | get_first_five}}</h4>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
     <div class="row">
-        
+        <h4>No data yet! After 7 days of active tests, your metrics will show here.</h4>
     </div>
+    {% endif %}
 {% endmacro %}
 
 

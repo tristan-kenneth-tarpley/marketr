@@ -231,9 +231,15 @@ class CustomerDataViewModel:
 			core_data.update([(columns[i], data[i])])
 
 		competitors = CompetitorService()
+		try:
+			core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
+		except:
+			core_data['competitor_intro_1'] = ""
 		
-		core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
-		core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
+		try:
+			core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
+		except:
+			core_data['competitor_intro_2'] = ""
 
 		return core_data
 	
@@ -322,13 +328,22 @@ class CustomerDataViewModel:
 
 	def compile_salescycle(self) -> dict:
 		data = self.core_service.get_salescycle()
-		return_data = {
-			'awareness': data[0].split("^") if data[0] else None,
-			'evaluation': data[1].split("^") if data[1] else None,
-			'conversion': data[2].split("^") if data[2] else None,
-			'retention': data[3].split("^") if data[3] else None,
-			'referral': data[4].split("^") if data[4] else None
-		}
+		try:
+			return_data = {
+				'awareness': data[0].split("^") if data[0] else None,
+				'evaluation': data[1].split("^") if data[1] else None,
+				'conversion': data[2].split("^") if data[2] else None,
+				'retention': data[3].split("^") if data[3] else None,
+				'referral': data[4].split("^") if data[4] else None
+			}
+		except KeyError:
+			return_data = {
+				'awareness',
+				'evaluation',
+				'conversion',
+				'retention',
+				'referral'
+			}
 
 		return return_data
 

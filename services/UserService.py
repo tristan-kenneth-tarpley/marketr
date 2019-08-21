@@ -16,15 +16,16 @@ def intake_page_map():
             0: 'begin',
             1: 'competitors',
             2: 'company',
-            3: 'audience',
-            4: 'product',
-            5: 'product_2',
-            6: 'salescycle',
-            7: 'goals',
-            8: 'history',
-            9: 'platforms',
-            10: 'past',
-			11: 'home'
+			3: 'home'
+            # 3: 'audience',
+            # 4: 'product',
+            # 5: 'product_2',
+            # 6: 'salescycle',
+            # 7: 'goals',
+            # 8: 'history',
+            # 9: 'platforms',
+            # 10: 'past',
+			# 11: 'home'
             }
 
     return pages
@@ -41,7 +42,7 @@ def load_last_page(user):
 		data = int(data[0][0]) / 10
 	except:
 		data = 0
-	if data < 11:
+	if data < 3:
 		session['onboarding_complete'] = False
 	else:
 		session['onboarding_complete'] = True
@@ -319,6 +320,7 @@ class UserService:
 		db.execute(query, False, tup, commit=True)
 
 	def init_profile(time, user):
+		print('called')
 		init_query = "EXEC init_profile @date = ?, @customer_id = ?"
 		db.execute(init_query, False, (time, user), commit=True)
 
@@ -454,16 +456,21 @@ class IntakeService:
 		last_modified(id)
 
 	def perc_complete(self):
-		page_dict = intake_page_map()
-		page_list = list(page_dict.values())
+		# page_list = [
+		# 	'begin', 'competitors', 'company',
+		# 	'audience', 'product', 'product_details',
+		# 	'salescycle', 'goals', 'history',
+		# 	'platforms', 'past'
+		# ]
 
-		perc = (page_list.index(self.page) + 1) * 10
-		if self.page != 'salescycle':
-			tup = (self.id, perc, self.page)
-		else: 
-			tup = (self.id, perc, 'awareness')
+		# perc = (page_list.index(self.page) + 1) * 10
+		# if self.page != 'salescycle':
+		# 	tup = (self.id, perc, self.page)
+		# else: 
+		# 	tup = (self.id, perc, 'awareness')
+		tup = (self.id,)
 		query = """
-				EXEC update_perc_complete @user = ?, @perc = ?, @page = ?
+				EXEC update_perc_complete @user = ?
 				"""
 
 		db.execute(query, False, tup, commit=True)
@@ -701,7 +708,6 @@ class IntakeService:
 		query = dbactions.insert_conditional('not exists', table='past')
 		query += " WHERE customer_id = %s" % (self.id,)
 		vals += vals
-		session['onboarding_complete'] = True
 
 		db.execute(query, False, vals, commit=True)
 

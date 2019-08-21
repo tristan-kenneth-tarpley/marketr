@@ -11,6 +11,8 @@ from services.SharedService import NotificationsService
 from services.PaymentsService import PaymentsService
 from services.LoginHandlers import login_required
 import services.forms as forms
+import time
+import datetime
 
 
 @app.route('/areas', methods=['GET'])
@@ -131,7 +133,15 @@ def company():
             service.company(form.data)
         else:
             service.skip()
-        return redirect(url_for('audience'))
+
+        if not session['onboarding_complete']:
+            ts = time.time()
+            st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            UserService.init_profile(st, session['user'])
+            session['onboarding_complete'] = True
+            return redirect(url_for('expectations'))
+        else:
+            return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -167,7 +177,7 @@ def audience():
             next_id = service.get_persona()
             return redirect(url_for('audience', view_id=next_id, splash=False))
         else:
-            return redirect(url_for('product'))
+            return redirect(url_for('home'))
 
 
     return ViewFuncs.view_page(user=session['user'],
@@ -258,7 +268,7 @@ def product_2():
             next_id = service.get_product(request.args.get('view_id'))
             return redirect(url_for('product_2', view_id=next_id, splash=False))
         else:
-            return redirect(url_for('salescycle'))
+            return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -284,7 +294,7 @@ def salescycle():
             service.salescycle(form.data)
         else:
             service.skip()
-        return redirect(url_for('nice'))
+        return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -319,7 +329,7 @@ def goals():
             service.goals(form.data)
         else:
             service.skip()
-        return redirect(url_for('history'))
+        return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -366,7 +376,7 @@ def platforms():
             service.platforms(request.form)
         else:
             service.skip()
-        return redirect(url_for('past'))
+        return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],
@@ -400,13 +410,11 @@ def past():
     service = IntakeService(session['user'], 'past')
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        if session['onboarding_complete'] == False:
-            init = True
         if request.form['submit_button'] != 'skip':
             service.past(form.data)
         else:
             service.skip()
-        return redirect(url_for('home', init=init))
+        return redirect(url_for('home', init=True))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],

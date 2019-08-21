@@ -297,10 +297,14 @@ class ScoreService:
         df = self.aggregate()
         df['html_name'] = df['html_name'].apply(self.pop_suffix)
         df.drop_duplicates(subset ="html_name", keep = 'first', inplace=True)
-        
+        self.df = df
         self.total_possible = df.score_weight_factor.sum()
-        self.sum_completed = df[df.answer != ''].score_weight_factor.sum()
+        self.sum_completed = df[df.answer != 'null'].score_weight_factor.sum()
         
     def get(self):
         self.clean()
         return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))
+    
+    def get_head(self):
+        self.clean()
+        return self.df

@@ -119,16 +119,18 @@
 			<div class="col-lg-1"></div>
 			<div class="col-lg-8 col-sm-12 comp_box">
 				<h5>Recent Ads</h5>
-				{{ google(
-					headline=base['ads'][0]['title'],
-					website=base['ads'][0]['url'],
-					description=base['ads'][0]['body']
-				) }}
-				{{ google(
-					headline=base['ads'][1]['title'],
-					website=base['ads'][1]['url'],
-					description=base['ads'][1]['body']
-				) }}
+				{% if base['ads'] %}
+					{{ google(
+						headline=base['ads'][0]['title'],
+						website=base['ads'][0]['url'],
+						description=base['ads'][0]['body']
+					) }}
+					{{ google(
+						headline=base['ads'][1]['title'],
+						website=base['ads'][1]['url'],
+						description=base['ads'][1]['body']
+					) }}
+				{% endif %}
 			</div>
 		</div>
 	{% endmacro %}
@@ -146,194 +148,225 @@
 		</div>
 	{% endmacro %}
 
-	
-	{{ comp_header() }}
-	{{ comp_metrics() }}
-	<div class="separator"></div>
-	{{ comp_header(pos=2) }}
-	{{ comp_metrics(pos=2) }}
+	{% if core['comp_1_name'] %}
+		{{ comp_header() }}
+		{{ comp_metrics() }}
+		<div class="separator"></div>
+		{{ comp_header(pos=2) }}
+		{{ comp_metrics(pos=2) }}
+	{% else %}
+		<div class="row">
+			<div class="col-lg-5 col-sm-12">
+				<img src="/static/assets/img/competitors.png">
+			</div>
+			<div class="col-lg-1"></div>
+			<div class="col-lg-6">
+				<h5>Hey, what's your competition doing over there?..</h5>
+				<p>Give us some info on your competitors and we'll pull some strings and collect valuable intelligence on things like:</p>
+				<ul>
+					<li>Estimated monthly spend</li>
+					<li>Monthly clicks</li>
+					<li>Recent Ads</li>
+				</ul>
+				<a href="{{url_for('competitors')}}" class="btn btn-secondary">Complete now</a>
+			</div>
+		</div>
+	{% endif %}
 
 {% endmacro %}
 
 {% macro five() %}
 
-{% for index in page.data['audiences'] %}
-	{% set state = page.data['audiences'][index] %}
-	{% if state['persona_name'] and state['persona_name'] != "" %}	
-		<h5>Audience name: {{ state['persona_name']}}</h5>
-		<table class="table table-responsive profile_table">
-			<thead style="text-align:center;">
-				<th>Demographic</th>
-				<th>Personality</th>
-				<th>Purchasing Habits</th>
-			</thead>
-			<tbody>
-				<td>	
-					<ul>
-						<li> Targets 
-							{% if state['gender'] == 'All' %}
-								{{state['gender'] | lower}} genders
-							{% else %}
-								{{state['gender']}}
-							{% endif %}
-						</li>
+{% if page.data['audiences']['0'] %}
+	{% for index in page.data['audiences'] %}
+		{% set state = page.data['audiences'][index] %}
+		{% if state['persona_name'] and state['persona_name'] != "" %}	
+			<h5>Audience name: {{ state['persona_name']}}</h5>
+			<table class="table table-responsive profile_table">
+				<thead style="text-align:center;">
+					<th>Demographic</th>
+					<th>Personality</th>
+					<th>Purchasing Habits</th>
+				</thead>
+				<tbody>
+					<td>	
+						<ul>
+							<li> Targets 
+								{% if state['gender'] == 'All' %}
+									{{state['gender'] | lower}} genders
+								{% else %}
+									{{state['gender']}}
+								{% endif %}
+							</li>
 
-						<li>Target ages:
-							{% set ages = [
-								state['age_group_1'],
-								state['age_group_2'],
-								state['age_group_3'],
-								state['age_group_4'],
-								state['age_group_5'],
-								state['age_group_6'],
-								state['age_group_7'],
-								state['age_group_8']
-							]%}
-							<ul>
-								{{ multi_val_iterator(ages) }}
-							</ul>
-						</li>
-						<li>{{state['location'] if state['location'] | length }}</li>
-					</ul>
-				</td>
-				<td>
-					<ul>
-						{% if state['formality']%}
-							<li>{{state['formality']}}</li>
-						{% endif %}
-						{% if state['tech_savvy']%}
-							<li>{{state['tech_savvy']}}</li>
-						{% endif %}
-						{% if state['detail-oriented']%}
-							<li>{{state['detail-oriented']}}</li>
-						{% endif %}
-					</ul>
-				</td>
-				<td>
-					<ul>
-						{% if state['buying_for'] %}
-							<li>They buy {{state['buying_for'] | lower }}</li>
-						{% endif %}
-						{% if state['decision_making'] %}
-							<li>They are {{"the" if state['decision_making'] == 'Ultimate decision maker' }} {{state['decision_making'] | lower }}</li>
-						{% endif %}
-						{% if state['motive'] %}
-							<li>They buy to {{state['motive'] | lower }}</li>
-						{% endif %}
-						{% if state['why'] %}
-							<li>They buy because {{state['why'] | lower }}</li>
-						{% endif %}
-						<li>How they feel before buying:
-							{% set before = [
-								state['before_1'],
-								state['before_2'],
-								state['before_3'],
-								state['before_4'],
-								state['before_5'],
-								state['before_6'],
-								state['before_7'],
-								state['before_8'],
-								state['before_9'],
-								state['before_10'],
-							]%}
-							<ul>
-								{{ multi_val_iterator(before) }}
-							</ul>
-						</li>
-						<li>How they feel after buying:
-							{% set after = [
-								state['after_1'],
-								state['after_2'],
-								state['after_3'],
-								state['after_4'],
-								state['after_5'],
-								state['after_6'],
-								state['after_7'],
-								state['after_8'],
-								state['after_9'],
-								state['after_10']	
-							]%}
-							<ul>
-								{{ multi_val_iterator(after) }}
-							</ul>
-						</li>
-					</ul>
-				</td>
-			</tbody>
-		</table>
-	{% endif %}
-{% endfor %}
+							<li>Target ages:
+								{% set ages = [
+									state['age_group_1'],
+									state['age_group_2'],
+									state['age_group_3'],
+									state['age_group_4'],
+									state['age_group_5'],
+									state['age_group_6'],
+									state['age_group_7'],
+									state['age_group_8']
+								]%}
+								<ul>
+									{{ multi_val_iterator(ages) }}
+								</ul>
+							</li>
+							<li>{{state['location'] if state['location'] | length }}</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							{% if state['formality']%}
+								<li>{{state['formality']}}</li>
+							{% endif %}
+							{% if state['tech_savvy']%}
+								<li>{{state['tech_savvy']}}</li>
+							{% endif %}
+							{% if state['detail-oriented']%}
+								<li>{{state['detail-oriented']}}</li>
+							{% endif %}
+						</ul>
+					</td>
+					<td>
+						<ul>
+							{% if state['buying_for'] %}
+								<li>They buy {{state['buying_for'] | lower }}</li>
+							{% endif %}
+							{% if state['decision_making'] %}
+								<li>They are {{"the" if state['decision_making'] == 'Ultimate decision maker' }} {{state['decision_making'] | lower }}</li>
+							{% endif %}
+							{% if state['motive'] %}
+								<li>They buy to {{state['motive'] | lower }}</li>
+							{% endif %}
+							{% if state['why'] %}
+								<li>They buy because {{state['why'] | lower }}</li>
+							{% endif %}
+							<li>How they feel before buying:
+								{% set before = [
+									state['before_1'],
+									state['before_2'],
+									state['before_3'],
+									state['before_4'],
+									state['before_5'],
+									state['before_6'],
+									state['before_7'],
+									state['before_8'],
+									state['before_9'],
+									state['before_10'],
+								]%}
+								<ul>
+									{{ multi_val_iterator(before) }}
+								</ul>
+							</li>
+							<li>How they feel after buying:
+								{% set after = [
+									state['after_1'],
+									state['after_2'],
+									state['after_3'],
+									state['after_4'],
+									state['after_5'],
+									state['after_6'],
+									state['after_7'],
+									state['after_8'],
+									state['after_9'],
+									state['after_10']	
+								]%}
+								<ul>
+									{{ multi_val_iterator(after) }}
+								</ul>
+							</li>
+						</ul>
+					</td>
+				</tbody>
+			</table>
+		{% endif %}
+	{% endfor %}
+{% else %}
+<div class="row">
+	<div class="col-lg-6 col-sm-12">
+		<h5>Who are we without our customers?</h5>
+		<p>Complete your customer persona sectin and Market(r) will be able to use artificial intelligence to create ads that connect with your target audience.</p>
+		<a href="{{url_for('audience')}}" class="btn btn-secondary">Complete now</a>
+	</div>
+	<div class="col-lg-5 col-sm-12"><img class="empty_img" src="/static/assets/img/audience.png"></div>
+</div>
+{% endif %}
 
 {% endmacro %}
 
 {% macro six() %}
-	<p>{{ company_name}} offers {{ core['quantity'] }} products / services.</p><br><br>
-	<a target="__blank" href="https://{{ core['link'] }}">Visit website</a>
-	<br>
-	<br>
-	<h6>Offerings are segmented in the marketplace by:</h6>
-	{% set segments = [
-		core['segment_1'],
-		core['segment_2'],
-		core['segment_3'],
-		core['segment_4'],
-		core['segment_5'],
-		core['segment_6'],
-		core['segment_7'],
-		core['segment_8'],
-		core['segment_9'],
-		core['segment_10'],
-	]%}
-	<ul>
-		{{ multi_val_iterator(segments) }}
-	</ul>
+	{% if core['quantity'] %}
+		<p>{{ company_name}} offers {{ core['quantity'] }} products / services.</p><br><br>
+		<a target="__blank" href="https://{{ core['link'] }}">Visit website</a>
+		<br>
+		<br>
+		<h6>Offerings are segmented in the marketplace by:</h6>
+		{% set segments = [
+			core['segment_1'],
+			core['segment_2'],
+			core['segment_3'],
+			core['segment_4'],
+			core['segment_5'],
+			core['segment_6'],
+			core['segment_7'],
+			core['segment_8'],
+			core['segment_9'],
+			core['segment_10'],
+		]%}
+		<ul>
+			{{ multi_val_iterator(segments) }}
+		</ul>
 
-	<h6>And sourced via:</h6>
-	{% set sources = [
-		core['source_1'],
-		core['source_2'],
-		core['source_3'],
-		core['source_4']
-	]%}
-	<ul>
-		{{ multi_val_iterator(sources) }}
-	</ul>
-	{% if core['source_freeform'] %}
-		<p>Additional sourcing info:</p>
-		<p class="truncate">{{ core['source_freeform'] }}</p>
-	{% endif %}
-	<br>
-	<div class="center_it">
-		<h6>Offering Details</h6>
-	</div>
+		<h6>And sourced via:</h6>
+		{% set sources = [
+			core['source_1'],
+			core['source_2'],
+			core['source_3'],
+			core['source_4']
+		]%}
+		<ul>
+			{{ multi_val_iterator(sources) }}
+		</ul>
+		{% if core['source_freeform'] %}
+			<p>Additional sourcing info:</p>
+			<p class="truncate">{{ core['source_freeform'] }}</p>
+		{% endif %}
+		<br>
+		<div class="center_it">
+			<h6>Offering Details</h6>
+		</div>
 
-	<table id="products" class="table-striped table table-borderless table-responsive">
-		<thead>
-			<th>Product Name</th>
-			<th>Category</th>
-			<th>COGS</th>
-			<th>Sale Price</th>
-			<th>Qty Sold Last 12 mos.</th>
-			<th>Estimated Unique Buyers</th>
-		</thead>
-		<tbody>
-		{% for index in page.data['products'] %}
-		{% set state = page.data['products'][index] %}
-			{% if state['name'] | not_none %}
-				<tr>
-					<td><strong>{{ state['name'] if state['name'] | not_none else "" }}</strong></td>
-					<td>{{ state['category'] if state['category'] | not_none else "" }}</td>
-					<td>{{ "$" + state['cogs'] if state['cogs'] | not_none else "" }}</td>
-					<td>{{ "$" + state['sales_price'] if state['sales_price'] | not_none else "" }}</td>
-					<td>{{ state['qty_sold'] if state['qty_sold'] | not_none else "" }}</td>
-					<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] | not_none else "" }}</td>
-				</tr>	
-			{% endif %}
-		{% endfor %}
-		</tbody>
-	</table>
+		<table id="products" class="table-striped table table-borderless table-responsive">
+			<thead>
+				<th>Product Name</th>
+				<th>Category</th>
+				<th>COGS</th>
+				<th>Sale Price</th>
+				<th>Qty Sold Last 12 mos.</th>
+				<th>Estimated Unique Buyers</th>
+			</thead>
+			<tbody>
+			{% for index in page.data['products'] %}
+			{% set state = page.data['products'][index] %}
+				{% if state['name'] | not_none %}
+					<tr>
+						<td><strong>{{ state['name'] if state['name'] | not_none else "" }}</strong></td>
+						<td>{{ state['category'] if state['category'] | not_none else "" }}</td>
+						<td>{{ "$" + state['cogs'] if state['cogs'] | not_none else "" }}</td>
+						<td>{{ "$" + state['sales_price'] if state['sales_price'] | not_none else "" }}</td>
+						<td>{{ state['qty_sold'] if state['qty_sold'] | not_none else "" }}</td>
+						<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] | not_none else "" }}</td>
+					</tr>	
+				{% endif %}
+			{% endfor %}
+			</tbody>
+		</table>
 
-	<div class="separator"></div>
+		<div class="separator"></div>
+
 	{% if not admin %}
 		<div class="edit">
 			<a href="{{url_for('product_2', home=True)}}" class="edit btn-primary btn">
@@ -389,146 +422,186 @@
 			</tr>
 		</tbody>
 	</table>
+	{% else %}
+		<div class="row">
+			<div class="col-lg-5 col-sm-12">
+				<img src="/static/assets/img/product.png">
+			</div>
+			<div class="col-lg-1"></div>
+			<div class="col-lg-6 col-sm-12">
+				<h5>What value do we trade for customers' $?</h5>
+				<p>By describing your product, it's characteristics and positioning in the market, and customer value you'll unlock a wealth of new tactics that can help improve product-market-fit. </p>
+				<a href="{{url_for('product')}}" class="btn btn-secondary">Complete now</a>
+			</div>
+		</div>
 
+	{% endif %}
 {% endmacro %}
 
 {% macro seven() %}
-
-	<div class="row">
-		<div class="col-1"></div>
-		<div class="card home_stages col-2">
-			<div class="container-fluid center_it">
-				<h6>Awareness</h6>
-			</div>
-			<div class="container-fluid">
-				<ul>
-					{% if page.data['salescycle']['awareness'] %}
-						{% for value in page.data['salescycle']['awareness'] %}
-							<li>{{value}}</li>
-						{% endfor %}
-					{% else %}
-						<li>No data for awareness yet</li>
-					{% endif %}
-				</ul>
-			</div>
-		</div>&nbsp;
-		<div class="card home_stages col-2">
-			<div class="container-fluid center_it">
-				<h6>Evaluation</h6>
-			</div>
-			<div class="container-fluid">
-				<ul>
-					{% if page.data['salescycle']['evaluation'] %}
-						{% for value in page.data['salescycle']['evaluation'] %}
-							<li>{{value}}</li>
-						{% endfor %}
-					{% else %}
-						<li>No data for evaluation yet</li>
-					{% endif %}
-				</ul>
-			</div>
-		</div>&nbsp;
-		<div class="card home_stages col-2">
-			<div class="container-fluid center_it">
-				<h6>Conversion</h6>
-			</div>
-			<div class="container-fluid">
-				<ul>
-					{% if page.data['salescycle']['conversion'] %}
-						{% for value in page.data['salescycle']['conversion'] %}
-							<li>{{value}}</li>
-						{% endfor %}
-					{% else %}
-						<li>No data for conversion yet</li>
-					{% endif %}
-				</ul>
-			</div>
-		</div>&nbsp;
-		<div class="card home_stages col-2">
-			<div class="container-fluid center_it">
-				<h6>Retention</h6>
-			</div>
-			<div class="container-fluid">
-				<ul>
-					{% if page.data['salescycle']['retention'] %}
-						{% for value in page.data['salescycle']['retention'] %}
-							<li>{{value}}</li>
-						{% endfor %}
-					{% else %}
-						<li>No data for retention yet</li>
-					{% endif %}
-				</ul>
-			</div>
-		</div>&nbsp;
-		<div class="card home_stages col-2">
-			<div class="container-fluid center_it">
-				<h6>Referral</h6>
-			</div>
-			<div class="container-fluid">
-				<ul>
-					{% if page.data['salescycle']['referral'] %}
-						{% for value in page.data['salescycle']['referral'] %}
-							<li>{{value}}</li>
-						{% endfor %}
-					{% else %}
-						<li>No data for referral yet</li>
-					{% endif %}
-				</ul>
+	{% if page.data['salescycle']['awareness'] or page.data['salescycle']['evaluation'] or page.data['salescycle']['conversion'] or page.data['salescycle']['retention'] or page.data['salescycle']['referral'] %}
+		<div class="row">
+			<div class="col-1"></div>
+			<div class="card home_stages col-2">
+				<div class="container-fluid center_it">
+					<h6>Awareness</h6>
+				</div>
+				<div class="container-fluid">
+					<ul>
+						{% if page.data['salescycle']['awareness'] %}
+							{% for value in page.data['salescycle']['awareness'] %}
+								<li>{{value}}</li>
+							{% endfor %}
+						{% else %}
+							<li>No data for awareness yet</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>&nbsp;
+			<div class="card home_stages col-2">
+				<div class="container-fluid center_it">
+					<h6>Evaluation</h6>
+				</div>
+				<div class="container-fluid">
+					<ul>
+						{% if page.data['salescycle']['evaluation'] %}
+							{% for value in page.data['salescycle']['evaluation'] %}
+								<li>{{value}}</li>
+							{% endfor %}
+						{% else %}
+							<li>No data for evaluation yet</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>&nbsp;
+			<div class="card home_stages col-2">
+				<div class="container-fluid center_it">
+					<h6>Conversion</h6>
+				</div>
+				<div class="container-fluid">
+					<ul>
+						{% if page.data['salescycle']['conversion'] %}
+							{% for value in page.data['salescycle']['conversion'] %}
+								<li>{{value}}</li>
+							{% endfor %}
+						{% else %}
+							<li>No data for conversion yet</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>&nbsp;
+			<div class="card home_stages col-2">
+				<div class="container-fluid center_it">
+					<h6>Retention</h6>
+				</div>
+				<div class="container-fluid">
+					<ul>
+						{% if page.data['salescycle']['retention'] %}
+							{% for value in page.data['salescycle']['retention'] %}
+								<li>{{value}}</li>
+							{% endfor %}
+						{% else %}
+							<li>No data for retention yet</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>&nbsp;
+			<div class="card home_stages col-2">
+				<div class="container-fluid center_it">
+					<h6>Referral</h6>
+				</div>
+				<div class="container-fluid">
+					<ul>
+						{% if page.data['salescycle']['referral'] %}
+							{% for value in page.data['salescycle']['referral'] %}
+								<li>{{value}}</li>
+							{% endfor %}
+						{% else %}
+							<li>No data for referral yet</li>
+						{% endif %}
+					</ul>
+				</div>
 			</div>
 		</div>
-	</div>
+	{% else %}
+		<div class="row">
+			<div class="col-lg-6 col-sm-12">
+				<h5>How does your brand engage with customers throughout their buying experience?</h5>
+				<p>Every business follows predictable sales cycles. Describe all the touchpoints in each state and Market(r) can recommend tactics to bridge any identified gaps.</p>
+				<a href="{{url_for('salescycle')}}" class="btn btn-secondary">Complete now</a>
+			</div>
+			<div class="col-lg-1"></div>
+			<div class="col-lg-5 col-sm-12">
+				<img src="/static/assets/img/salescycle.png">
+			</div>
+		</div>
+	{% endif %}
 
 {% endmacro %}
 
 {% macro eight() %}
-<p>Average monthly spend across all platforms</p>
-<h5 class="title blue_header">{{ core['digital_spend']}}</h5>
-<div class="divider"></div>
-<div class="row">
-	<div class="col-1"></div>
-	<div class="col-3">
-		<h6>Platform Name</h6>
-	</div>
-	<div class="col-3">
-		<h6>Results</h6>
-	</div>
-	<div class="col-3">
-		<h6>Still using?</h6>
-	</div>
-</div>
-
-{% for index in page.data['platforms'] %}
-	{% set state = page.data['platforms'][index] %}
+{% if page.data['platforms'] %}
+	<p>Average monthly spend across all platforms</p>
+	<h5 class="title blue_header">{{ core['digital_spend']}}</h5>
+	<div class="divider"></div>
 	<div class="row">
 		<div class="col-1"></div>
 		<div class="col-3">
-			<h6>
-				<span class="platform_img">
-					{{ state['platform_name']}}
-				</span>
-			</h6>
+			<h6>Platform Name</h6>
 		</div>
-		<div class="col-3 results_img">
-			<span>
-				{{ state['results'] }}
-			</span>
+		<div class="col-3">
+			<h6>Results</h6>
 		</div>
-		
-		{% if state['currently_using'] == 'yes' %}
-		<div class="col-2 center_it alert alert-success">
-			ACTIVE
+		<div class="col-3">
+			<h6>Still using?</h6>
 		</div>
-		{% elif state['currently_using'] == 'no' %}
-		<div class="col-2 center_it alert alert-secondary">
-			INACTIVE
-		</div>
-		{% endif %}
 	</div>
-{% endfor %}
+
+	{% for index in page.data['platforms'] %}
+		{% set state = page.data['platforms'][index] %}
+		<div class="row">
+			<div class="col-1"></div>
+			<div class="col-3">
+				<h6>
+					<span class="platform_img">
+						{{ state['platform_name']}}
+					</span>
+				</h6>
+			</div>
+			<div class="col-3 results_img">
+				<span>
+					{{ state['results'] }}
+				</span>
+			</div>
+			
+			{% if state['currently_using'] == 'yes' %}
+			<div class="col-2 center_it alert alert-success">
+				ACTIVE
+			</div>
+			{% elif state['currently_using'] == 'no' %}
+			<div class="col-2 center_it alert alert-secondary">
+				INACTIVE
+			</div>
+			{% endif %}
+		</div>
+	{% endfor %}
 	{% if core['history_freeform'] %}
 		<p>Additional notes</p>
 		<p class="inset truncate">{{ core['history_freeform']}}</p>
 	{% endif %}
+{% else %}
+	<div class="row">
+		<div class="col-lg-5 col-sm-12">
+			<img src="/static/assets/img/platforms.png">
+		</div>
+		<div class="col-lg-1"></div>
+		<div class="col-lg-6 col-sm-12">
+			<h5>What have you already tried?</h5>
+			<p>By detailing what you've done before and whether it was good or bad, our human account managers can provide better recommendations given that context.</p>
+			<a href="{{url_for('history')}}" class="btn btn-secondary">Complete now</a>
+		</div>
+	</div>
+{% endif %}
 {% endmacro %}
 
 
@@ -587,7 +660,7 @@
 ) }}
 {{ section(
 	link="salescycle",
-	title="Sales Cycle",
+	title="Customer Journey",
 	body=seven(),
 	hash="salescycle",
 	admin=page.admin

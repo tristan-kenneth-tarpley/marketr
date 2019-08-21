@@ -84,7 +84,7 @@ const ScoreService = class {
     update(data) {
         let condition_class;
         let condition;
-        $("#marketr-score").text(data)
+        $(".marketr-score").text(data)
         if (parseInt(data) < 390) {
             condition_class = 'score-very_weak'
             condition = 'very weak'
@@ -101,9 +101,10 @@ const ScoreService = class {
             condition_class = 'score-excellent'
             condition = 'excellent'
         }
-
+        $(".score-loading").css('display', 'none')
+        $('.score_container').fadeIn()
         $(".score_container").addClass(condition_class)
-        $("#marketr-score-quality").text(condition)
+        $(".marketr-score-quality").text(condition)
     }
 
     get() {

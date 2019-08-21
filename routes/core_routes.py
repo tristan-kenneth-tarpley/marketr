@@ -192,8 +192,17 @@ def success():
 def cancel():
     return 'cancelled'
 
+@app.route('/schedule')
+@login_required
+def schedule():
+    return render_template('core/schedule.html')
 
 # home actions
+@app.route('/expectations')
+@login_required
+@onboarding_required
+def expectations():
+    return render_template('core/expectations.html')
 
 
 @app.route('/customer_core', methods=['GET'])
@@ -207,10 +216,6 @@ def customer_core():
 @login_required
 @onboarding_required
 def home():
-    if request.referrer == 'http://127.0.0.1:5000/history/platforms/past' or 'https://marketr.life/history/platforms/past':        
-        ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        UserService.init_profile(st, session['user'])
 
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
     return render_template(

@@ -30,39 +30,61 @@
 </div>
 
 
-{{ section(
-    link=None,
-    title="Insights",
-    body=insights(page),
-    hash="insights",
-    admin=page.admin
-) }}
-{{ section(
-    link=None,
-    title="Ad Campaign Performance <i class='fa fa-lock'></i>",
-    body=locked(type="ads"),
-    hash="insights",
-    admin=page.admin
-) }}
-{{ section(
-    link=None,
-    title="Ad Campaign Performance",
-    body=ads_performance(page),
-    hash="ads_performance",
-    admin=page.admin
-) }}
-{{ section(
-    link=None,
-    title="A/B Testing <i class='fa fa-lock'></i>",
-    body=locked(type="testing"),
-    hash="insights",
-    admin=page.admin
-) }}
-{{ section(
-    link=None,
-    title="A/B Testing Performance",
-    body=test_performance(page),
-    hash="tests",
-    admin=page.admin
-) }}
+
+{% if page.data['core']['current_plan'] %}
+    {{ section(
+        link=None,
+        title="Insights",
+        body=insights(page),
+        hash="insights",
+        admin=page.admin
+    ) }}
+{% else %}
+    {{ section(
+        link=None,
+        title="Insights",
+        body=locked(type="insights"),
+        hash="insights",
+        admin=page.admin
+    ) }}
+{% endif %}
+
+
+{# paid ads management or almost free #}
+{% if page.data['core']['current_plan'] == 'prod_FecATNfeTGFE5n' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
+    {{ section(
+        link=None,
+        title="Ad Campaign Performance",
+        body=ads_performance(page),
+        hash="ads_performance",
+        admin=page.admin
+    ) }}
+{% else %}
+    {{ section(
+        link=None,
+        title="Ad Campaign Performance <i class='fa fa-lock'></i>",
+        body=locked(type="ads"),
+        hash="insights",
+        admin=page.admin
+    ) }}
+{% endif %}
+
+{# ab testing or almost free #}
+{% if page.data['core']['current_plan'] == 'prod_Feck6uZdvfFOgj' or page.data['core']['current_plan'] == 'prod_FeZnfiNrgvoYvN' %}
+    {{ section(
+        link=None,
+        title="A/B Testing Performance",
+        body=test_performance(page),
+        hash="tests",
+        admin=page.admin
+    ) }}
+{% else %}
+    {{ section(
+        link=None,
+        title="A/B Testing <i class='fa fa-lock'></i>",
+        body=locked(type="testing"),
+        hash="insights",
+        admin=page.admin
+    ) }}
+{% endif%}
 

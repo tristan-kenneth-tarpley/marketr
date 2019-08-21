@@ -1,15 +1,73 @@
 {% macro locked(type="ads") %}
     <div class="locked_parent">
         <div class="row locked_container">
-            <div class="col-lg-4 col-sm-12">
-                <button class="btn btn-lg btn-outline-secondary">
-                    {{"Yes, manage my ads!" if type == 'ads' else "Yes, A/B test for me!"}}
-                    <i class='fa fa-unlock'></i>
-                </button>
+            <div class="col-lg-3 col-sm-12">
+                {% if type != 'insights' %}
+                    <button data-toggle="modal" data-target="#upgrade_modal" class="btn btn-lg btn-outline-secondary">
+                        {% if type =='ads' %}
+                            Yes, manage my ads!
+                        {% else %}
+                            Yes, A/B test for me!
+                        {% endif %}
+                        <i class='fa fa-unlock'></i>
+                    </button>
+                    <div class="modal fade" id="upgrade_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Pricing Options</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <h5>$1/month</h5>
+                                            <h6>Forever (basically) free</h6>
+                                            <ul>
+                                                <li>Ads management on up to $500/month in ad spend</li>
+                                                <li>A/B testing for 1 test per month</li>
+                                                <li>Analysis and insights from dedicated account manager</li>
+                                            </ul>
+                                            <a class="btn btn-outline btn-outline-primary" href="{{url_for('free_checkout')}}">Sign up</a>
+                                        </div>
+                                        <div class="col-lg-6 col-sm-12"> 
+                                            {% if type == 'ads' %}
+                                            <h5>$350/month</h5>
+                                            <h6>+ % of ad spend</h6>
+                                            <ul>
+                                                <li>$500-$5,000/month: 8%</li>
+                                                <li>$5,000-$15,000/month: 7%</li>
+                                                <li>$15,000-$35,000/month: 6%</li>
+                                            </ul>
+                                            {% else %}
+                                            <h5>A/B Testing</h5>
+                                            <h6>Starting at $495/month</h6>
+                                            <ul>
+                                                <li>1 test per month: $1/month (not kidding)</li>
+                                                <li>$165/month per test with 3 test minimum</li>
+                                                <li>Conversion tracking reports to guage effectiveness</li>
+                                            </ul>
+                                            {% endif %}
+                                            <h6>Unlock full version.</h6>
+                                            <a class="btn btn-primary" href="{{url_for('ads_checkout') if type == 'ads' else url_for('ab_checkout') }}">Sign up</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                          
+                {% endif %}
             </div>
+            <div class="col-lg-1"></div>
             <div class="col-lg-8 col-sm-12">
                 {% if type == 'ads' %}
                     <h3>Marketr can only report on managed spend. Let us manage your ads. <strong>Up to $500/month for free!</strong></h3>
+                {% elif type == 'insights' %}
+                    <h3>Marketr offers customized marketing improvement insights for all users who enroll in Ad campaign management and/or A/B testing.</h3>
+                    <h3>Enroll in one or both of them below to start getting your monthly Marketr Insights!</h3>
                 {% else %}
                     <h3>Let Market(r) manage your A/B tests so you don't have to worry about it. We'll even do <strong>one A/B test per month for free!</strong></h3>
                 {% endif %}

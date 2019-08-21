@@ -16,11 +16,13 @@ def account_rep_required(f):
 def onboarding_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if 'onboarding_complete' in session and session['onboarding_complete'] == True:
+        if session.get('onboarding_complete') == True:
             return f(*args, **kwargs)
-        elif 'onboarding_complete' in session and session['onboarding_complete'] == False:
+        elif session.get('onboarding_complete') == False:
             page = load_last_page(session['user'])
             return redirect(url_for(page, splash=True))
+        else:
+            return redirect('/logout')
 
     return wrap
     
