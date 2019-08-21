@@ -447,11 +447,19 @@ const PageViewController = class {
 
 			const run_page = (resolve, reject) => {
 				const init = new InitFuncs()
+				const progress = new IntakeProgressMeter()
 				switch (PageMap(this.url_path)) {
 					case 'audience':
 						init.container('audience')
 						break
+					case 'begin':
+						progress.fill(1)
+						break
+					case 'competitors':
+						progress.fill(2)
+						break
 					case 'company':
+						progress.fill(3)
 						setTimeout(() => {
 							init.company()
 						}, 1000)

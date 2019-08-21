@@ -1,3 +1,16 @@
+const IntakeProgressMeter = class {
+    constructor() {
+        $('.progress_meter-container').css('display', 'block')
+    }
+    fill(step){
+        const target = `.progress_meter div:nth-of-type(${step})`
+        $(target).css('background-color', '#62cde0')
+        $(target).addClass('slide_in')
+
+        $(".indicator").text(`step ${step}/3`)
+    }
+}
+
 const CoreViewModels = class {
 
 	constructor(url_path) {
@@ -10,7 +23,6 @@ const CoreViewModels = class {
     }
 
     payments(){
-        
     }
 
     left_nav_update(e) {

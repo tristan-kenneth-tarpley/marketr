@@ -5436,3 +5436,47 @@ ul#product {
   background: linear-gradient(to right, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.5) 80%,  rgba(255, 255, 255, 0)),
               linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 5%,  rgba(255, 255, 255, .3));
 }
+
+
+.progress_meter-container {
+  width: 100%;
+  margin-bottom: 2%;
+  display: none;
+}
+.progress_meter {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+.progress_meter div {
+  width: 33%;
+  height: 15px;
+  display: inline-block;
+}
+.progress_meter div:nth-of-type(1) {
+  border-radius: 50px 0 0 50px;
+}
+.progress_meter div:nth-of-type(3) {
+  border-radius: 0px 50px 50px 0px;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slide_in {
+  animation: 1s ease-out 0s 1 slideInFromLeft;
+}
+
+
+.indicator {
+  color: var(--primary);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
