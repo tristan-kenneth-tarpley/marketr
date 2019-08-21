@@ -11,7 +11,7 @@
                 <h5>From:<br>{{ '$' if page.data['core']['core'][0]['current_avg'] == 'Revenue' }}<strong>{{ page.data['core']['core'][0]['current_avg'] }}/mo</strong></h5>
             </div> 
             <div class="col-lg-4 col-sm-12">
-                <h5>To:<br>{{ '$' if page.data['core']['core'][0]['current_avg'] == 'Revenue' }}<strong>{{ page.data['core']['core'][0]['current_avg'] }}/mo</strong></h5>   
+                <h5>To:<br>{{ '$' if page.data['core']['core'][0]['target_avg'] == 'Revenue' }}<strong>{{ page.data['core']['core'][0]['target_avg'] }}/mo</strong></h5>   
             </div>
             <div class="col-lg-4 col-sm-12">
                 <h5>Within:<br><strong>{{ page.data['core']['core'][0]['timeframe'] }}{{'s' if page.data['core']['core'][0]['timeframe'] == '2yr' }}</strong></h5>   
