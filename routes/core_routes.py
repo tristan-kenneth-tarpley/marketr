@@ -140,7 +140,7 @@ def pricing():
 
 @app.route('/inspect')
 def inspect():
-    service = PaymentsService(None, customer_id='cus_Fee7FUpYrODymo')
+    service = PaymentsService(None, customer_id='cus_FfIDeTFMXFCZWG')
     customer = service.get_customer() 
     return json.dumps(customer)
 

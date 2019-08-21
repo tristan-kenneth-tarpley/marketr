@@ -83,7 +83,7 @@ def begin():
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
         else:
-            service.skip()
+            service.skip(10)
 
         return redirect(url_for('competitors'))
 
@@ -108,7 +108,7 @@ def competitors():
         if request.form['submit_button'] != 'skip':
             service.competitors(form.data)
         else:
-            service.skip()
+            service.skip(20)
         return redirect(url_for('company'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -132,7 +132,7 @@ def company():
         if request.form['submit_button'] != 'skip':
             service.company(form.data)
         else:
-            service.skip()
+            service.skip(30)
 
         if not session['onboarding_complete']:
             ts = time.time()

@@ -251,8 +251,6 @@ class UserService:
 		db.execute(query, False, (plan_id, customer_id), commit=True)
 
 	def UpdateStripeId(customer_id, stripe_id):
-		print("stripe_id: " + str(stripe_id))
-		print("customer_id: " + str(customer_id))
 		query = "UPDATE customer_basic SET stripe_id = ? WHERE id = ?"
 		db.execute(query, False, (stripe_id, customer_id), commit=True)
 
@@ -455,7 +453,7 @@ class IntakeService:
 		self.page = page
 		last_modified(id)
 
-	def perc_complete(self):
+	def perc_complete(self, perc):
 		# page_list = [
 		# 	'begin', 'competitors', 'company',
 		# 	'audience', 'product', 'product_details',
@@ -468,15 +466,15 @@ class IntakeService:
 		# 	tup = (self.id, perc, self.page)
 		# else: 
 		# 	tup = (self.id, perc, 'awareness')
-		tup = (self.id,)
+		tup = (self.id, perc)
 		query = """
-				EXEC update_perc_complete @user = ?
+				EXEC update_perc_complete @user = ?, @perc = ?
 				"""
 
 		db.execute(query, False, tup, commit=True)
 	
-	def skip(self):
-		self.perc_complete()
+	def skip(self, perc):
+		self.perc_complete(perc)
 
 	def get_persona(self):
 		query = """
@@ -507,7 +505,6 @@ class IntakeService:
 		return str(result[0])
 
 	def audience(self, data, persona_id):
-		self.perc_complete()
 
 		vals, keys = get_args_from_form(data)
 		db_actions = DBActions(table='audience', keys=keys, vals=vals, owner_id=self.id)
@@ -517,7 +514,7 @@ class IntakeService:
 		db.execute(query, False, tuple(vals), commit=True)
 
 	def begin(self, data):
-		self.perc_complete()
+		self.perc_complete(10)
 
 		vals, keys = get_args_from_form(data)
 
@@ -544,7 +541,7 @@ class IntakeService:
 
 
 	def competitors(self, data):
-		self.perc_complete()
+		self.perc_complete(20)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='competitors', keys=keys, vals=vals)
@@ -555,7 +552,7 @@ class IntakeService:
 		db.execute(query, False, vals, commit=True)
 
 	def company(self, data):
-		self.perc_complete()
+		self.perc_complete(30)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='company', keys=keys, vals=vals)
@@ -567,7 +564,7 @@ class IntakeService:
 		db.execute(query, False, vals, commit=True)
 
 	def product(self, data):
-		self.perc_complete()
+
 		vals, keys = get_args_from_form(data)
 		product_list = data['product']
 
@@ -592,7 +589,6 @@ class IntakeService:
 			db.execute(p_query, False, tuple(p_val), commit=True)
 
 	def product_2(self, data, view_id):
-		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='product_list', keys=keys, vals=vals)
@@ -602,7 +598,6 @@ class IntakeService:
 		db.execute(query, False, tuple(vals), commit=True)
 
 	def salescycle(self, data):
-		self.perc_complete()
 
 		def Merge(dict1, dict2):
 			del dict1['csrf_token']
@@ -660,7 +655,6 @@ class IntakeService:
 					db.execute(query, False, tuple(stage_tup), commit=True)
 
 	def goals(self, data):
-		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='goals', keys=keys, vals=vals)
@@ -672,7 +666,6 @@ class IntakeService:
 		db.execute(query, False, vals, commit=True)
 
 	def history(self, data):
-		self.perc_complete()
 		
 		vals, keys = get_args_from_form(data)
 
@@ -685,7 +678,6 @@ class IntakeService:
 		db.execute(query, False, vals, commit=True)
 
 	def platforms(self, data):
-		self.perc_complete()
 		for i in range(int(data.get("platform_length"))):
 
 			keys = ['platform_name', 'currently_using', 'results']
@@ -701,7 +693,6 @@ class IntakeService:
 			db.execute(query, False, vals, commit=True)
 
 	def past(self, data):
-		self.perc_complete()
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='past', keys=keys, vals=vals)
