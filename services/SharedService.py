@@ -40,15 +40,44 @@ class NotificationsService:
             message=message
         )
 
-    def Tristan(self):
-        mailman = EmailService(to='tristan@marketr.life')
+    
+    def onboarding_started(self):
+        tristan = EmailService(to='tristan@marketr.life')
+        tyler = EmailService(to='tyler@marketr.life')
         subject = "Someone started their intake!"
         message = f"customer_id = {self.customer_id}"
-
-        mailman.send(
+        tristan.send(
             subject=subject,
             message=message
         )
+        tyler.send(
+            subject=subject,
+            message=message
+        )
+
+    def checkout(self, plan_id):
+        lut = {
+            'prod_FeZnfiNrgvoYvN': 'almost free',
+            'prod_FfIACSllbWuj2t': 'almost free',
+            'prod_FecATNfeTGFE5n': 'paid ads',
+            'prod_FfI9czcpPVjN58': 'paid ads',
+            'prod_Feck6uZdvfFOgj': 'ab testing',
+            'prod_FfI9XxCPg3CfB2': 'ab testing'
+        }
+
+        tristan = EmailService(to='tristan@marketr.life')
+        tyler = EmailService(to='tyler@marketr.life')
+        subject = f"Market(r): New {lut[plan_id]} customer"
+        message = f"customer_id = {self.customer_id}"
+        tristan.send(
+            subject=subject,
+            message=message
+        )
+        tyler.send(
+            subject=subject,
+            message=message
+        )
+
 
 
     def TaskNotification(self, to):

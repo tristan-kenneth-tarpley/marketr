@@ -71,7 +71,8 @@ def begin():
     service = IntakeService(session['user'], 'begin')
     
     notify = NotificationsService(session['user'])
-    # notify.Tristan()
+    if request.method == 'GET' and not session.get('onboarding_complete'):
+        notify.onboarding_started()
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         payments = PaymentsService(session['email'])

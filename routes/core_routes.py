@@ -184,6 +184,9 @@ def success():
     plan_id = payments.get_plan()
     # update db with plan id
     UserService.update_plan(session['user'], plan_id)
+
+    notify = NotificationsService(session['user'])
+    notify.checkout(plan_id)
     # redirect to home
     # return plan_id
     return redirect(url_for('home', view='campaigns'))
