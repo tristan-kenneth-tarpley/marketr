@@ -396,15 +396,15 @@ class CustomerDataViewModel:
 
 		return_data = {
 			'core': core_values,
-			'products': eval(core_data[1]),
-			'audiences': eval(core_data[2]),
-			'platforms': eval(core_data[3]),
-			'messages': eval(core_data[4]),
-			'tasks': eval(core_data[5]),
+			'products': eval(core_data[1]) if core_data[1] else "",
+			'audiences': eval(core_data[2]) if core_data[2] else "",
+			'platforms': eval(core_data[3]) if core_data[3] else "",
+			'messages': eval(core_data[4]) if core_data[4] else "",
+			'tasks': eval(core_data[5]) if core_data[5] else "",
 			'salescycle': salescycle,
-			'google': eval(core_data[6]),
+			'google': eval(core_data[6]) if core_data[6] else "",
 			'insights': insights,
-			'tests': eval(core_data[7])
+			'tests': eval(core_data[7]) if core_data[7] else ""
 		}
 
 		self.data = return_data
