@@ -377,8 +377,7 @@ class UserService:
 				error = "Invalid credentials. Try again."
 				return False, error 
 
-		# except Exception as e:
-		except AssertionError:
+		except Exception as e:
 			error = "Invalid credentials. Try again!"
 			return False, error
 
