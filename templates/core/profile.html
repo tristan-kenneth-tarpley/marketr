@@ -139,7 +139,7 @@
 		<div class="row">
 			<div class="col-lg-4 col-sm-12">
 				<h5>{{ core['comp_1_name'] if pos == 1 else core['comp_2_name'] }}</h5>
-				<a href="{{ core['comp_1_website'] if pos == 1 else core['comp_2_website'] }}" target="__blank">{{core['comp_1_website'] if pos == 1 else core['comp_2_website']}}</a>
+				<a href="https://{{ core['comp_1_website'] if pos == 1 else core['comp_2_website'] }}" target="__blank">{{core['comp_1_website'] if pos == 1 else core['comp_2_website']}}</a>
 			</div>
 			<div class="col-lg-2 col-sm-12">
 				<p class="comp-badge">{{ core['comp_1_type'] if pos ==1 else core['comp_2_type'] }}</p>
