@@ -221,14 +221,16 @@
 
 {% macro insights(page) %}
 <div class="row">
-    {% if page.data['insights'] %}
-        {% for insight in page.data['insights'] %}
-            {% set base = page.data['insights'][insight] %}
+    {% if page.data['insights']['insights'] %}
+        {% for insight in page.data['insights']['insights'] %}
+            {% set base = insight %}
                 <div class="card col">
                     <label>{{ base['time'] }}</label>
                     <p>{{ base['body'] }}</p>
                 </div>
         {% endfor %}
+    {% else %}
+        <h4>No insights yet. Your account manager will post their findings here once they get a chance to look around.</h4>
     {% endif %}
 </div>
 {% endmacro %}

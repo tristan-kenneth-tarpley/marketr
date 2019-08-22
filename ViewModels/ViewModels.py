@@ -163,12 +163,18 @@ class AdminViewModel:
 
 	def acct_mgmt(self):
 		service = AdminUserService(self.user, self.admin)
-		self.messages = service.messaging.get_messages()
-		self.tasks = service.tasks.get_tasks()
+		messages = service.messaging.get_messages()
+		tasks = service.tasks.get_tasks()
 		self.task_form = forms.TaskForm()
 		self.customer_name = self.admin_service.get_customer_name(self.user)
 		insights_service = InsightsService(self.user, admin_id=self.admin, user='admin')
-		self.insights = insights_service.fetch()
+		insights = insights_service.fetch()
+
+		self.data = {
+			'tasks': tasks,
+			'insights': insights,
+			'messages': messages
+		}
 
 	def personnel(self) -> None:
 		self.data = self.admin_service.get_admin_info()
@@ -370,17 +376,6 @@ class CustomerDataViewModel:
 
 	def compile_all(self) -> None:
 		core = self.compile_core()
-		# core = self.compile_core()
-		# products = self.compile_products()
-		# audiences = self.compile_audience()
-		# platforms = self.compile_platforms()
-		# messages = self.compile_messages()
-		# self.tasks = self.compile_tasks()
-		salescycle = self.compile_salescycle()
-		# google = self.compile_google()
-		insights = self.compile_insights()
-		# tests = self.compile_tests()
-		# have everything but insights and salescycle
 		competitors = CompetitorService()
 		core_data = core
 		core_values = eval(core[0])
@@ -394,6 +389,21 @@ class CustomerDataViewModel:
 		except:
 			core_values['core'][0].update([('competitor_intro_2', "")])
 
+		def clean_salescycle(row):
+			if row:
+				core = eval(row)
+			else:
+				return None
+			base = core['salescycle'][0]
+			struct = {
+				'awareness': base.get('awareness').split('^') if base.get('awareness') else "",
+				'evaluation': base.get('evaluation').split('^') if base.get('evaluation') else "",
+				'conversion': base.get('conversion').split('^') if base.get('conversion') else "",
+				'retention': base.get('retention').split('^') if base.get('retention') else "",
+				'referral': base.get('referral').split('^') if base.get('referral') else ""
+			}
+			return struct
+
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -401,10 +411,10 @@ class CustomerDataViewModel:
 			'platforms': eval(core_data[3]) if core_data[3] else "",
 			'messages': eval(core_data[4]) if core_data[4] else "",
 			'tasks': eval(core_data[5]) if core_data[5] else "",
-			'salescycle': salescycle,
 			'google': eval(core_data[6]) if core_data[6] else "",
-			'insights': insights,
-			'tests': eval(core_data[7]) if core_data[7] else ""
+			'tests': eval(core_data[7]) if core_data[7] else "",
+			'salescycle': clean_salescycle(core_data[8]),
+			'insights': eval(core_data[9]) if core_data[9] else None
 		}
 
 		self.data = return_data
@@ -420,7 +430,6 @@ class ViewFuncs:
 		splashVM = SplashViewModel(next_step=view_page)
 		splashes = splashVM.splashes()
 
-		print(coming_home)
 
 		if view_page in splashes and splash == None and coming_home == None:
 			return redirect(url_for('splash', next_step=view_page))

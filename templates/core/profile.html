@@ -439,89 +439,38 @@
 {% endmacro %}
 
 {% macro seven() %}
-	{% if page.data['salescycle']['awareness'] or page.data['salescycle']['evaluation'] or page.data['salescycle']['conversion'] or page.data['salescycle']['retention'] or page.data['salescycle']['referral'] %}
+	{% set base = page.data['salescycle'] %}
+	{% if base['awareness']
+		or base['evaluation'] or base['conversion']
+		or base['retention'] or base['referral'] %}
+
 		<div class="row">
 			<div class="col-1"></div>
+			{% macro home_stage(stage_name) %}
 			<div class="card home_stages col-2">
 				<div class="container-fluid center_it">
-					<h6>Awareness</h6>
+					<h6>{{ stage_name | upper }}</h6>
 				</div>
 				<div class="container-fluid">
 					<ul>
-						{% if page.data['salescycle']['awareness'] %}
-							{% for value in page.data['salescycle']['awareness'] %}
+						{% if base[stage_name] %}
+							{% for value in base[stage_name] %}
 								<li>{{value}}</li>
 							{% endfor %}
 						{% else %}
-							<li>No data for awareness yet</li>
+							<li>No data for {{ stage_name }} yet</li>
 						{% endif %}
 					</ul>
 				</div>
 			</div>&nbsp;
-			<div class="card home_stages col-2">
-				<div class="container-fluid center_it">
-					<h6>Evaluation</h6>
-				</div>
-				<div class="container-fluid">
-					<ul>
-						{% if page.data['salescycle']['evaluation'] %}
-							{% for value in page.data['salescycle']['evaluation'] %}
-								<li>{{value}}</li>
-							{% endfor %}
-						{% else %}
-							<li>No data for evaluation yet</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>&nbsp;
-			<div class="card home_stages col-2">
-				<div class="container-fluid center_it">
-					<h6>Conversion</h6>
-				</div>
-				<div class="container-fluid">
-					<ul>
-						{% if page.data['salescycle']['conversion'] %}
-							{% for value in page.data['salescycle']['conversion'] %}
-								<li>{{value}}</li>
-							{% endfor %}
-						{% else %}
-							<li>No data for conversion yet</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>&nbsp;
-			<div class="card home_stages col-2">
-				<div class="container-fluid center_it">
-					<h6>Retention</h6>
-				</div>
-				<div class="container-fluid">
-					<ul>
-						{% if page.data['salescycle']['retention'] %}
-							{% for value in page.data['salescycle']['retention'] %}
-								<li>{{value}}</li>
-							{% endfor %}
-						{% else %}
-							<li>No data for retention yet</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>&nbsp;
-			<div class="card home_stages col-2">
-				<div class="container-fluid center_it">
-					<h6>Referral</h6>
-				</div>
-				<div class="container-fluid">
-					<ul>
-						{% if page.data['salescycle']['referral'] %}
-							{% for value in page.data['salescycle']['referral'] %}
-								<li>{{value}}</li>
-							{% endfor %}
-						{% else %}
-							<li>No data for referral yet</li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>
+			{% endmacro %}
+
+			{{ home_stage('awareness') }}
+			{{ home_stage('evaluation') }}
+			{{ home_stage('conversion') }}
+			{{ home_stage('retention') }}
+			{{ home_stage('referral') }}
+
 		</div>
 	{% else %}
 		<div class="row">

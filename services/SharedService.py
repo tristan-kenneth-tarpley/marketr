@@ -198,12 +198,15 @@ class MessagingService:
         self.user = user
 
     def get_messages(self) -> dict:
-        query = """SELECT * FROM get_messages(?)"""
+        query = """SELECT * FROM prep_messages(?)"""
         result, cursor = db.execute(query, True, (self.customer_id))
-        columns = ['message_string', 'admin_id', 'customer_id', 'from', 'timestamp']
-        result = cursor.fetchall()
-        result = UserService.parseCursor(result, columns)
-        return result
+        # columns = ['message_string', 'admin_id', 'customer_id', 'from', 'timestamp']
+        result = cursor.fetchone()
+        # result = UserService.parseCursor(result, columns)
+        try:
+            return eval(result[0])
+        except:
+            return None
 
     def post_message(self, msg):
         tup = (msg, self.admin_id, self.customer_id, self.user)
@@ -234,12 +237,15 @@ class TaskService:
         self.user = user
  
     def get_tasks(self) -> dict:
-        query = """SELECT * FROM get_tasks(?) ORDER BY created_date DESC"""
+        query = """SELECT * FROM prep_tasks(?)"""
         result, cursor = db.execute(query, True, (self.customer_id))
-        columns = ['task_title', 'complete_binary']
-        result = cursor.fetchall()
-        result = UserService.parseCursor(result, columns)
-        return result
+        # columns = ['task_title', 'complete_binary']
+        result = cursor.fetchone()
+        # result = UserService.parseCursor(result, columns)
+        try:
+            return eval(result[0])
+        except:
+            return None
 
     def post_task(self, task) -> None:
         tup = (task, self.customer_id, task, 0, self.admin_id, self.customer_id)
@@ -290,19 +296,15 @@ class InsightsService:
             query = """SELECT body, CONVERT(varchar, time) as time FROM insights WHERE customer_id = ? order by time desc"""
             tup = (self.customer_id,)
         else:
-            query = """SELECT body, CONVERT(varchar, time) as time FROM insights WHERE admin_id = ? and customer_id = ? order by time desc"""
-            tup = (self.admin_id, self.customer_id)
+            query = """select * from prep_admin_insights(?, ?)"""
+            tup = (self.customer_id, self.admin_id)
         data, cursor = db.execute(query, True, tup)
-        data = cursor.fetchall()
-        columns = ['body', 'time']
-
-        if len(data) > 0:
-            return_data = UserService.parseCursor(data, columns)
-        else:
-            null_list = [('no insights', '')]
-            return_data = UserService.parseCursor(null_list, columns)
+        data = cursor.fetchone()
         
-        return return_data
+        try:
+            return eval(data[0])
+        except:
+            return None
 
 class ScoreService:
     def __init__(self, customer_id: int):

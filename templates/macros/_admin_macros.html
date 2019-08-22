@@ -525,7 +525,7 @@
 
 	<nav aria-label="breadcrumb" role="navigation">
 		<ol class="breadcrumb">
-			{% set customer_id = page.user if not profile_view else page.data['core']['customer_id'] %}
+			{% set customer_id = page.user if not profile_view else page.customer_id %}
 			{{ formulate_row("acct_mgmt", title="dashboard", view=view, customer_id=customer_id) }}
 			{{ formulate_row("customer_profile_view_admin", title="customer profile", view=view, customer_id=customer_id) }}
 		</ol>
@@ -581,18 +581,19 @@
 			</form>
 		</div>
 		<div class="card-footer past_insights">
-			{% for insight in page.insights %}
+			{% set base = page.data['insights']['insights'] %}
+			{% for insight in base %}
 
 				{% if loop.index == 1 %}
-					<h6>The last insight you sent to {{page.customer_name}} was on {{page.insights[insight]['time']}}</h6>
+					<h6>The last insight you sent to {{page.customer_name}} was on {{insight['time']}}</h6>
 					<br><br>
 					<label>Past insights:</label>
 					<br><br>
 				{% endif %}
 
 				<div class="card">
-					<p><strong>{{ page.insights[insight]['time'] }}</strong></p>
-					<p>{{ page.insights[insight]['body'] }}</p>
+					<p><strong>{{ insight['time'] }}</strong></p>
+					<p>{{ insight['body'] }}</p>
 				</div>
 		
 			{% endfor %}
@@ -667,7 +668,7 @@
 				</div>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12 col-12">
-				{{ messages(page.messages, page=page) }}
+				{{ messages(page.data['messages']['messages'], page=page) }}
 			</div>
 		</div>
 
