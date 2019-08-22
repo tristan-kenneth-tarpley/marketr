@@ -380,6 +380,16 @@ class CustomerDataViewModel:
 		core_data = core
 		core_values = eval(core[0])
 
+		def clean_urls():
+			def clean(val):
+				core_values['core'][0][val] = core_values['core'][0][val].replace('\\', '').replace('http://', '').replace('/','')
+
+			clean_list = ['comp_1_website', 'comp_2_website']
+			for url in clean_list:
+				clean(url)
+
+		clean_urls()
+
 		try:
 			core_values['core'][0].update([('competitor_intro_1', competitors.intro(core_values['core'][0].get('comp_1_website')))])
 		except:
