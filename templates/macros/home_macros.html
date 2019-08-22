@@ -119,7 +119,7 @@
             {% endif %}
             <h5>{{ title | safe }}</h5>
         </div>
-        <div class="card">
+        <div class="card top_card">
             <div class="container">
                 {{ body | safe }}
             </div>
@@ -135,7 +135,7 @@
 {% macro multi_val_iterator(iterable) %}
     {% for i in iterable %}
         {% if i %}
-            <td>{{ i }},</td>
+            <li>{{ i }},</li>
         {% endif %}
     {% endfor %}
 {% endmacro %}
@@ -143,9 +143,9 @@
 {% macro product_val_iterator(iterable, key) %}
     {% for index in iterable %}
         {% if index %}
-            <td>{{ index[key] }}</td>
+            <li>{{ index[key] }}</li>
         {% else %}
-            <td>n/a</td>
+            <li>n/a</li>
         {% endif %}
     {% endfor %}
 {% endmacro %}

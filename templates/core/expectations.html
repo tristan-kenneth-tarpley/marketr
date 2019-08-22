@@ -36,16 +36,55 @@
         body {
             background-color: #f5f8fd;
         } 
+        .expectations_container:not(.first_fade) {
+            animation: fadein 4s;
+            -moz-animation: fadein 4s; /* Firefox */
+            -webkit-animation: fadein 4s; /* Safari and Chrome */
+            -o-animation: fadein 4s; /* Opera */
+        }
+        @keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @-moz-keyframes fadein { /* Firefox */
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @-webkit-keyframes fadein { /* Safari and Chrome */
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        @-o-keyframes fadein { /* Opera */
+            from {
+                opacity:0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
     </style>
 </head>
 <body>
 
 <div class="expectations_container">
     <div class="container">
-        <div class="row">
+        <div class="row first_fade">
             <div class="col">
-                <h1 class="fade-1 blue_header">Welcome to Market(r)</h1>
-                <h5 class="fade-2 blue_header">The #1 platform for small business owners to power through the next level of business growth!</h5>
+                <h1 class="fade-1 blue_header first_fade">Welcome to Market(r)</h1>
+                <h5 class="fade-2 blue_header first_fade">The #1 platform for small business owners to power through the next level of business growth!</h5>
                 <p class="fade-3">What to expect...</p>
             </div>
         </div>

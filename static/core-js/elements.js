@@ -100,7 +100,7 @@ const taskView = title => {
 					</div>
 				</td>
 				<td class="text-left task_title">
-					${title}
+					<p id="task_title">${title}</p>
 				</td>
 				<td class="td-actions text-right">
 					<button type="button" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">

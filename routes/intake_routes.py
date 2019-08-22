@@ -95,7 +95,8 @@ def begin():
                             next_page='competitors',
                             coming_home=request.args.get('home'),
                             splash=request.args.get('splash'),
-                            onboarding_complete=session['onboarding_complete'])
+                            onboarding_complete=session['onboarding_complete'],
+                            onboarding= True if session['onboarding_complete'] == False else False)
 
 
 
@@ -119,7 +120,8 @@ def competitors():
                             next_page='company',
                             coming_home=request.args.get('home'),
                             splash=request.args.get('splash'),
-                                onboarding_complete=session['onboarding_complete'])
+                            onboarding_complete=session['onboarding_complete'],
+                            onboarding= True if session['onboarding_complete'] == False else False)
 
 
 
@@ -151,7 +153,8 @@ def company():
                                 next_page='audience',
                                 coming_home=request.args.get('home'),
                                 splash=request.args.get('splash'),
-                                onboarding_complete=session['onboarding_complete'])
+                                onboarding_complete=session['onboarding_complete'],
+                                onboarding= True if session['onboarding_complete'] == False else False)
 
 
 

@@ -555,7 +555,7 @@ $(document).ready(() => {
 	const params = new URLSearchParams(window.location.search)
 	const config = {
 		debug: false,
-		helpTimer: 20000,
+		helpTimer: 400000,
 	}
 	const VC = new PageViewController(
 		config.debug,

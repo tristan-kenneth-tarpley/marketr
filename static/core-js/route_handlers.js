@@ -225,22 +225,25 @@ const product_list_handler = (data) => {
 
 const container_handler = (data, title) => {
 	data = JSON.parse(data)
+	console.log(Object.keys(data).length)
 
-	Object.keys(data).forEach(function(key){
-		let id = data[key]['id']
-		let name = data[key]['name']
-		
-		let item;
-		if (name != null && name != "") {
-			item = container_item(name, id, title)
-		} else {
-			item = container_item('Still working...', id, title)
-		}
-		if ($("#append_container").length >= 1) {
-			$("#append_container").append(item)
-		}
+	if (Object.keys(data).length > 1) {
+		Object.keys(data).forEach(function(key){
+			let id = data[key]['id']
+			let name = data[key]['name']
 			
-	})
+			let item;
+			if (name != null && name != "") {
+				item = container_item(name, id, title)
+			} else {
+				item = container_item('Incomplete', id, title)
+			}
+			$("#append_container").append(item)
+		})
+	} else {
+		$("#append_container").css('display', 'none')
+	}
+		
 
 	const params = new URLSearchParams(window.location.search)
 	let id = params.get('view_id')

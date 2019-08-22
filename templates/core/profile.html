@@ -17,15 +17,15 @@
 
 {% macro one() %}
 	<div class="row">
-		<div class="col-lg-8 col-sm-12">
-			<h5>Industry: {{core['industry']|safe}}</h5>
-			<div class="col-lg-6 col-sm-12">
+		<div class="col-lg-7 col-sm-12">
+			<p><strong>Industry: {{core['industry']|safe}}</strong></p>
+			<div class="col-lg-10 col-sm-12">
 				<p>Stage: {{ core['stage'] }}</p>
 				<p>Based in: {{ core['city'] }}, {{ core['state'] }}</p>
 			</div>
 		</div>
-		<div class="col-lg-3">
-			<h5>Profile Owner:</h5>
+		<div class="col-lg-5 col-sm-12">
+			<p><strong>Profile Owner:</strong></p>
 			<p>{{ core['first_name'] }} {{ core['last_name'] }}</p>
 			<p>{{ core['email'] }}</p>
 		</div>
@@ -37,8 +37,7 @@
 	<p>{{core['company_name']}} is a {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p><br><br>
 
 	<div class="row percentages">
-		<div class="col-md-1"></div>
-		<div class="card col-md-2 col-sm-4 center_it">
+		<div class="card col-lg-5 center_it">
 			<div class="">
 				<br>
 				<h6 class="title">Storefront</h6>
@@ -49,7 +48,7 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-md-2 col-sm-4 center_it">
+		<div class="card col-lg-5 center_it">
 			<div class="">
 				<br>
 				<h6 class="title">Direct</h6>
@@ -60,7 +59,7 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-md-2 col-sm-4 center_it">
+		<div class="card col-lg-5 center_it">
 			<div class="">
 				<br>
 				<h6 class="title">Online</h6>
@@ -71,7 +70,7 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-md-2 col-sm-4 center_it">
+		<div class="card col-lg-5 center_it">
 			<div class="">
 				<br>
 				<h6 class="title">Tradeshows</h6>
@@ -82,11 +81,12 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-md-2 col-sm-4 center_it">
+		<div class="card col-lg-5 center_it">
 			<div class="">
 				<br>
 				<h6 class="title">Other</h6>
 				<p></p>
+				<br><br>
 			</div>
 			<p class="meter">
 				{{ core['other_perc'] if core['other_perc'] != "" else "0" }}%
@@ -178,9 +178,9 @@
 {% macro five() %}
 
 {% if page.data['audiences']['audiences'] %}
-	{% for index in page.data['audiences']['audiences'] %}
-		{% set state = index %}
-		{% if state['persona_name'] and state['persona_name'] != "" %}	
+	{% for audience in page.data['audiences']['audiences'] %}
+		{% set state = audience %}
+		{% if state['persona_name'] %}	
 			<h5>Audience name: {{ state['persona_name']}}</h5>
 			<table class="table table-responsive profile_table">
 				<thead style="text-align:center;">
@@ -189,97 +189,99 @@
 					<th>Purchasing Habits</th>
 				</thead>
 				<tbody>
-					<td>	
-						<ul>
-							<li> Targets 
-								{% if state['gender'] == 'All' %}
-									{{state['gender'] | lower}} genders
-								{% else %}
-									{{state['gender']}}
-								{% endif %}
-							</li>
+					<tr>
+						<td>	
+							<ul>
+								<li> Targets 
+									{% if state['gender'] == 'All' %}
+										{{state['gender'] | lower}} genders
+									{% else %}
+										{{state['gender']}}
+									{% endif %}
+								</li>
 
-							<li>Target ages:
-								{% set ages = [
-									state['age_group_1'],
-									state['age_group_2'],
-									state['age_group_3'],
-									state['age_group_4'],
-									state['age_group_5'],
-									state['age_group_6'],
-									state['age_group_7'],
-									state['age_group_8']
-								]%}
-								<ul>
-									{{ multi_val_iterator(ages) }}
-								</ul>
-							</li>
-							<li>{{state['location'] if state['location'] | length }}</li>
-						</ul>
-					</td>
-					<td>
-						<ul>
-							{% if state['formality']%}
-								<li>{{state['formality']}}</li>
-							{% endif %}
-							{% if state['tech_savvy']%}
-								<li>{{state['tech_savvy']}}</li>
-							{% endif %}
-							{% if state['detail-oriented']%}
-								<li>{{state['detail-oriented']}}</li>
-							{% endif %}
-						</ul>
-					</td>
-					<td>
-						<ul>
-							{% if state['buying_for'] %}
-								<li>They buy {{state['buying_for'] | lower }}</li>
-							{% endif %}
-							{% if state['decision_making'] %}
-								<li>They are {{"the" if state['decision_making'] == 'Ultimate decision maker' }} {{state['decision_making'] | lower }}</li>
-							{% endif %}
-							{% if state['motive'] %}
-								<li>They buy to {{state['motive'] | lower }}</li>
-							{% endif %}
-							{% if state['why'] %}
-								<li>They buy because {{state['why'] | lower }}</li>
-							{% endif %}
-							<li>How they feel before buying:
-								{% set before = [
-									state['before_1'],
-									state['before_2'],
-									state['before_3'],
-									state['before_4'],
-									state['before_5'],
-									state['before_6'],
-									state['before_7'],
-									state['before_8'],
-									state['before_9'],
-									state['before_10'],
-								]%}
-								<ul>
-									{{ multi_val_iterator(before) }}
-								</ul>
-							</li>
-							<li>How they feel after buying:
-								{% set after = [
-									state['after_1'],
-									state['after_2'],
-									state['after_3'],
-									state['after_4'],
-									state['after_5'],
-									state['after_6'],
-									state['after_7'],
-									state['after_8'],
-									state['after_9'],
-									state['after_10']	
-								]%}
-								<ul>
-									{{ multi_val_iterator(after) }}
-								</ul>
-							</li>
-						</ul>
-					</td>
+								<li>Target ages:
+									{% set ages = [
+										state['age_group_1'],
+										state['age_group_2'],
+										state['age_group_3'],
+										state['age_group_4'],
+										state['age_group_5'],
+										state['age_group_6'],
+										state['age_group_7'],
+										state['age_group_8']
+									]%}
+									<ul>
+										{{ multi_val_iterator(ages) }}
+									</ul>
+								</li>
+								<li>{{state['location'] if state['location'] | length }}</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								{% if state['formality']%}
+									<li>{{state['formality']}}</li>
+								{% endif %}
+								{% if state['tech_savvy']%}
+									<li>{{state['tech_savvy']}}</li>
+								{% endif %}
+								{% if state['detail-oriented']%}
+									<li>{{state['detail-oriented']}}</li>
+								{% endif %}
+							</ul>
+						</td>
+						<td>
+							<ul>
+								{% if state['buying_for'] %}
+									<li>They buy {{state['buying_for'] | lower }}</li>
+								{% endif %}
+								{% if state['decision_making'] %}
+									<li>They are {{"the" if state['decision_making'] == 'Ultimate decision maker' }} {{state['decision_making'] | lower }}</li>
+								{% endif %}
+								{% if state['motive'] %}
+									<li>They buy to {{state['motive'] | lower }}</li>
+								{% endif %}
+								{% if state['why'] %}
+									<li>They buy because {{state['why'] | lower }}</li>
+								{% endif %}
+								<li>How they feel before buying:
+									{% set before = [
+										state['before_1'],
+										state['before_2'],
+										state['before_3'],
+										state['before_4'],
+										state['before_5'],
+										state['before_6'],
+										state['before_7'],
+										state['before_8'],
+										state['before_9'],
+										state['before_10'],
+									]%}
+									<ul>
+										{{ multi_val_iterator(before) }}
+									</ul>
+								</li>
+								<li>How they feel after buying:
+									{% set after = [
+										state['after_1'],
+										state['after_2'],
+										state['after_3'],
+										state['after_4'],
+										state['after_5'],
+										state['after_6'],
+										state['after_7'],
+										state['after_8'],
+										state['after_9'],
+										state['after_10']	
+									]%}
+									<ul>
+										{{ multi_val_iterator(after) }}
+									</ul>
+								</li>
+							</ul>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		{% endif %}
@@ -288,7 +290,7 @@
 <div class="row">
 	<div class="col-lg-6 col-sm-12">
 		<h5>Who are we without our customers?</h5>
-		<p>Complete your customer persona sectin and Market(r) will be able to use artificial intelligence to create ads that connect with your target audience.</p>
+		<p>Complete your customer persona section and Market(r) will be able to use artificial intelligence to create ads that connect with your target audience.</p>
 		<a href="{{url_for('audience')}}" class="btn btn-secondary">Complete now</a>
 	</div>
 	<div class="col-lg-5 col-sm-12"><img class="empty_img" src="/static/assets/img/audience.png"></div>
@@ -429,8 +431,8 @@
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-6 col-sm-12">
-				<h5>What value do we trade for customers' $?</h5>
-				<p>By describing your product, it's characteristics and positioning in the market, and customer value you'll unlock a wealth of new tactics that can help improve product-market-fit. </p>
+				<h5>What value do you trade for customers' $?</h5>
+				<p>By describing your product, its characteristics and positioning in the market, and customer value you'll unlock a wealth of new tactics that can help improve product-market-fit. </p>
 				<a href="{{url_for('product')}}" class="btn btn-secondary">Complete now</a>
 			</div>
 		</div>
@@ -556,7 +558,7 @@
 
 
 <div class="row">
-	<div class="col-lg-8">
+	<div class="col-lg-7 col-sm-12">
 		{{ section(
 			link="begin",
 			title=company_name,
@@ -572,7 +574,7 @@
 			admin=page.admin
 		) }}		
 	</div>
-	<div class="col-lg-4 col-sm-12">
+	<div class="col-lg-5 col-sm-12">
 		<div class="card" style="padding: 8%;">
 			{{ score() }}
 		</div>

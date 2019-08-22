@@ -20,28 +20,22 @@
 	{% if currency %}
 	<div class="input-group">
 	  <div class="input-group-prepend">
-	    <span class="input-group-text">$</span>
+	    <span class="input-group-text inputGroup-sizing-sm">$</span>
 	  </div>
 	{% endif %}
 	{% if website %}
 	<div class="input-group col-12">
       <div class="input-group-prepend">
-        <span class="input-group-text">https://</span>
+        <span class="input-group-text inputGroup-sizing-sm">https://</span>
       </div>
 	{% endif %}
 
 		{{ field(**kwargs)|safe }}
 
-	{% if website %}
+	{% if website or currency %}
 	</div>
 	{% endif %}
 
-	{% if currency %}
-	  <div class="input-group-append">
-	    <span class="input-group-text">.00</span>
-	  </div>
-	</div>
-	{% endif %}
 		{% if field.errors %}
 			<ul class="errors text-danger">
 			{% for error in field.errors %}
@@ -381,7 +375,7 @@
 		{% set p = None %}
 	{% endif %}
 
-	{% set large_md_sm_col = 'col' %}
+	{% set large_md_sm_col = 'col-lg-4 col-md-3 col-sm-5' %}
 
 	{% macro core(h6, p, tile_type, file_path, sub_name) %}
 
@@ -427,7 +421,7 @@
 				    		<td>
 
 							<div class="input-group">
-								<input style="text-align:center;" type="text" id="percent" class="percent in_box form-control" placeholder="" name="{{sub_name}}">
+								<input style="text-align:center;" type="text" id="percent" class="percent in_box form-control form-control" placeholder="" name="{{sub_name}}">
 								<div class="input-group-append">
 									<span class="input-group-text">%</span>
 								</div>
@@ -505,8 +499,8 @@
 			<p>{{p_label | safe | clean_chars }}</p>
 		{% elif type == 'l' %}
 			<p>
-				<strong>
-					{{el | safe| clean_chars }}
+
+					<strong>{{el | safe| clean_chars }}</strong>
 
 					{% if why == 1 %}
 						{{ popout('why', copy, target) }}
@@ -514,11 +508,11 @@
 					{% if what == 1 %}
 						{{ popout('what', copy, target) }}
 					{% endif %}
-				</strong>
+
 			</p>
 		{% endif %}	
 	{% else %}
-		<p style="visibility: hidden;">Lorem ipsum</p>
+		<p style="display: none;">Lorem ipsum</p>
 	{% endif %}
 {% endmacro %}
 

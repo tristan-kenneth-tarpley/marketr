@@ -8,13 +8,16 @@
         <p><strong>Our primary marketing goal is to improve {{page.data['core']['core'][0]['goal'] | lower }}:</strong></p>
         <div class="row goal_container">
             <div class="col-lg-4 col-sm-12">
-                <h5>From:<br>{{ '$' if page.data['core']['core'][0]['current_avg'] == 'Revenue' }}<strong>{{ page.data['core']['core'][0]['current_avg'] }}/mo</strong></h5>
+                <h6>From:</h6>
+                <p><strong>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['current_avg'] }} per month</strong></p>
             </div> 
             <div class="col-lg-4 col-sm-12">
-                <h5>To:<br>{{ '$' if page.data['core']['core'][0]['target_avg'] == 'Revenue' }}<strong>{{ page.data['core']['core'][0]['target_avg'] }}/mo</strong></h5>   
+                <h6>To:</h6>
+                <p><strong>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['target_avg'] }} per month</strong></p>   
             </div>
             <div class="col-lg-4 col-sm-12">
-                <h5>Within:<br><strong>{{ page.data['core']['core'][0]['timeframe'] }}{{'s' if page.data['core']['core'][0]['timeframe'] == '2yr' }}</strong></h5>   
+                <h6>Within:</h6>
+                    <p><strong>{{ page.data['core']['core'][0]['timeframe'] }}{{'s' if page.data['core']['core'][0]['timeframe'] == '2yr' }}</strong></p>   
             </div>
         </div>
     {% else %}
@@ -61,9 +64,6 @@
                 <p id="task_title">{{ title | clean_chars }}</p>
             </td>
             <td class="td-actions text-right">
-                {#<button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
-                    <i class="now-ui-icons ui-2_settings-90"></i>
-                </button>#}
                 {% if admin %}
                     <button type="button" id="remove_task" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
                         <i class="now-ui-icons ui-1_simple-remove"></i>

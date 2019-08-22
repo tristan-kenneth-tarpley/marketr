@@ -24,14 +24,16 @@
 				        <div class="load-circle"><span class="one"></span></div>
 				    </div>
 				    <div id="content-ready" style="visibility:hidden;">
-						<div class="progress_meter-container">
-							<div class="progress_meter">
-								<div></div>
-								<div></div>
-								<div></div>
-								<span class="indicator">Almost done!</span>
+						{% if onboarding %}
+							<div class="progress_meter-container">
+								<div class="progress_meter">
+									<div></div>
+									<div></div>
+									<div></div>
+									<span class="indicator"></span>
+								</div>
 							</div>
-						</div>
+						{% endif %}
 						{{ form_open(page.title, request.args.get('home'), form, view_id=request.args.get('view_id')) }}
 							<div class="card-header">
 									{{ breadcrumb(page.title, page.stage, page.title) }}

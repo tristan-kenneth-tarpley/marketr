@@ -3844,6 +3844,7 @@ Created using IcoMoon - icomoon.io
   border-bottom: 5px solid #ffd8ad;
 }
 .hover_box {
+  overflow: hidden !important;
   border-radius: 20px;
   border: 4px solid transparent;
   box-shadow: var(--md-box-shadow);
@@ -3854,7 +3855,6 @@ Created using IcoMoon - icomoon.io
   margin: 1% auto;
   padding: 2% .5%;
   transition-duration: .3s;
-  width: 80%;
 }
 .hover_box > table {
   padding: 0 !important;
@@ -4705,7 +4705,7 @@ li.breadcrumb-item.active a {
   border-radius: 0.1875rem;
   content: "";
   display: block;
-  margin: 4% auto 0;
+  margin: auto 0;
   position: absolute;
   height: 10px;
   background: var(--secondary);
@@ -4713,7 +4713,7 @@ li.breadcrumb-item.active a {
 }
 .percentages .card {
   padding-bottom: 5%;
-  margin-left: 1%;
+  margin: 3% auto;
 }
 
 
@@ -4740,6 +4740,10 @@ li.breadcrumb-item.active a {
 }
 .target {
   margin-bottom: 2%;
+  box-shadow: var(--sm-box-shadow);
+}
+.target .top_card {
+  box-shadow: none !important;
 }
 .target_container > h5 {
   position: relative;
@@ -4754,7 +4758,6 @@ li.breadcrumb-item.active a {
   position: relative;
   background-color: hsl(220, 12%, 95%);
   border: 1px solid hsl(220, 12%, 95%);
-  box-shadow: var(--sm-box-shadow);
   height: 60px;
   width: 100%;
   /* padding-left: -300vw !important;
@@ -4911,6 +4914,12 @@ ul#product {
   position: relative;
   margin: 0 auto;
 }
+@media only screen and (max-width: 1400px) {
+  .chat_box {
+    padding: 7% 6%;
+    width: 70%;
+  }
+}
 .chat-helper {
   margin-left: 0;
   background: var(--client-chat);
@@ -4980,13 +4989,13 @@ ul#product {
 
 
 .todo {
-  height: 400px;
+  height: 450px;
 }
 #task_body tr {
-  line-height: 1em;
+  line-height: 1.3em;
 }
 #task_title {
-  padding: 6% 0;
+  padding: 4% 0 1.5%;
   color: rgba(0,0,0,.7);
 }
 .task_title {
