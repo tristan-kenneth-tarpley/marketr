@@ -16,13 +16,13 @@ const get_account_availability_handler = (data) => {
 }
 
 const InputMethods = class {
-	populate_inputs = (data, key) => {
+	populate_inputs (data, key) {
 		$(`select[name=${key}]`).val(data[0][key]).digits()
 		$(`input[name=${key}]`).val(data[0][key]).digits()
 		$(`textarea[name=${key}]`).val(data[0][key]).digits()
 	} //end populate_inputs
 
-	populate_percent_tiles = () => {
+	populate_percent_tiles () {
 		$('.in_box').each(function(){
 			if ($(this).val() != "") {
 				const target = $(this).parentsUntil('.hover_box').parent()
@@ -31,7 +31,7 @@ const InputMethods = class {
 		})
 	} // end populate_percent_tiles
 
-	populate_tiles = () => {
+	populate_tiles () {
 		$('.hidden_input').each(function(){
 			if ($(this).val() != '') {
 				// check if multi or single hover_box
@@ -49,12 +49,12 @@ const InputMethods = class {
 		})
 	} //end populate_tiles
 
-	product_title = (data) => {
+	product_title (data)  {
 		const product_name = data[0]['name']
 		$('#product_name_target').text(product_name)
 	}
 
-	load_sales_cycle = (data) => {
+	load_sales_cycle (data) {
 		var awareness = data.filter(function(item){
 		    return item.stage == "awareness";         
 		});

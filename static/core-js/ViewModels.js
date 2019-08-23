@@ -270,7 +270,9 @@ const PriceViewModel = class {
             $(e.currentTarget).val(fixedInput);
         });
     }
-    num_commas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+    num_commas (num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+    }
     calc_fee = (base_fee, spend, perc_of_spend) =>  (base_fee + (spend * perc_of_spend)).toFixed(2)
     marketr_model(spend){
         const base_fee = 350
