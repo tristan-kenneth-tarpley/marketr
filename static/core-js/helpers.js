@@ -53,7 +53,9 @@ const PageMap = (route) => {
 		"/personnel": "personnel",
 		"/new": "new",
 		"/create": "create",
-		"/payments": "payments"
+		"/payments": "payments",
+		"/pricing": "pricing",
+		'/': 'index'
 	}
 
 	function hasNumber(myString) {
@@ -66,6 +68,8 @@ const PageMap = (route) => {
 		return map[route]
 	}
 }
+
+const isNumber = input => typeof input == 'number'
 
 
 function updateURLParameter(url, param, paramVal)

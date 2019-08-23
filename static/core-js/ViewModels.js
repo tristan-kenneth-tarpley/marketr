@@ -258,3 +258,120 @@ const CoreViewModels = class {
     }
 }
 
+
+
+
+
+const PriceViewModel = class {
+    constructor(){
+        $('input').on('change, keyup', e => {
+            let currentInput = $(e.currentTarget).val();
+            let fixedInput = currentInput.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            $(e.currentTarget).val(fixedInput);
+        });
+    }
+    num_commas = num => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+    calc_fee = (base_fee, spend, perc_of_spend) =>  (base_fee + (spend * perc_of_spend)).toFixed(2)
+    marketr_model(spend){
+        const base_fee = 350
+        let perc_of_spend;
+        if (spend < 500){ return 1 }
+        else if (spend >= 500 && spend < 5000){ perc_of_spend = .08 }
+        else if (spend >= 5000 && spend < 15000){ perc_of_spend = .07 }
+        else if (spend >= 15000 && spend < 35000){ perc_of_spend = .06 }
+        else { perc_of_spend = .05 }
+        return this.calc_fee(base_fee, spend, perc_of_spend)
+    }
+    marketr_test_model(tests){
+        let cost_per_test = 195
+        if (tests == 1) { return 1 }
+        else if (tests >= 1) { return cost_per_test * tests }
+    }
+
+    competitors(spend, competitor){
+        const wordstream = spend => {
+            const base_fee = 1000
+            let perc_of_spend;
+            if (spend < 5000){ return false }
+            else if (spend >= 5000 && spend < 10000){ perc_of_spend = .10 }
+            else if (spend >= 10000 && spend < 25000){ perc_of_spend = .09 }
+            else if (spend >= 25000 && spend < 50000){ perc_of_spend = .08 }
+            else if (spend >= 50000){ perc_of_spend = .07 }
+            return this.calc_fee(base_fee, spend, perc_of_spend)
+        }
+        const avg_agency = spend => {
+            let base_fee;
+            let perc_of_spend = .20;
+            if (spend < 5000){ base_fee = 1000 }
+            else if (spend >= 5000 && spend < 10000){ base_fee = 2000 }
+            else if (spend >= 10000 && spend < 25000){ base_fee = 3000 }
+            else if (spend >= 25000 && spend < 50000){ base_fee = 5000 }
+            else if (spend >= 50000){ base_fee = 10000 }
+            return this.calc_fee(base_fee, spend, perc_of_spend)
+        }
+        const adroll = spend => {
+            let perc_of_spend = .20;
+            let base_fee = 0;
+            return this.calc_fee(base_fee, spend, perc_of_spend)
+        }
+
+        const call_table = {
+            'wordstream': wordstream,
+            'avg_agency': avg_agency,
+            'adroll': adroll
+        }
+        return call_table[competitor](spend)
+    }
+    init(){
+        const add_revert_handler = (target, secondary) => {
+            $(target).blur(() => {
+                if ($(target).val() == ""){
+                    $(target).val(0)
+                    $(secondary).text(0)
+                }
+            })
+        }
+        const populate_ad_fields = () =>{
+            const spend = parseInt($("#ad_spend").val().replace(/,/g, '')),
+                  competitor_name = $("#competitor_name").val(),
+                  marketr_spend = this.marketr_model(spend),
+                  comp_spend = this.competitors(spend, competitor_name),
+                  savings = (comp_spend*12-marketr_spend*12).toFixed(2)
+            
+            if (!Number.isNaN(spend)) {
+                let comp_output = comp_spend != false ? `$${this.num_commas(comp_spend)}/month` : "Doesn't reach minimum spend"
+                let savings_output = comp_output == "Doesn't reach minimum spend" ? 'N/A' : `$${savings}/year`
+                $("#ads_marketr_cost").text(this.num_commas(marketr_spend))
+                $("#ads_comp_est").text(this.num_commas(comp_output))                
+                $("#ad_savings").text(this.num_commas(savings_output))
+            }
+        }
+
+        const populate_test_fields = () => {
+            const tests = parseInt($("#test_count").val().replace(/,/g, '')),
+                  marketr_cost = this.marketr_test_model(tests)
+            
+            if (!Number.isNaN(tests)) {
+                $("#testing_marketr_cost").text(this.num_commas(marketr_cost))
+                $("#testing_savings").text(this.num_commas("$" + ((3000 - marketr_cost)) * 12))
+            }
+        }
+
+        $("#ad_spend").keyup( ()=> populate_ad_fields() )
+        $("#competitor_name").change( ()=> populate_ad_fields() )
+        add_revert_handler("#ad_spend", "#ads_marketr_cost")
+        add_revert_handler("#test_count", "#testing_marketr_cost")
+
+        $("#test_count").keyup( ()=> populate_test_fields() )
+  
+        // $("#competitor_name")
+        // $("#ad_spend")
+        // $("#test_count")
+        // $("#ads_marketr_cost")
+        // $("#testing_marketr_cost")
+        // $("#ads_comp_est")
+        // $("#testing_comp_est")
+        // $("#ad_savings")
+        // $("#testing_savings")
+    }
+}

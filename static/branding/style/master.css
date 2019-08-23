@@ -3724,7 +3724,10 @@ h6 {
   font-weight: 600;
   margin: 0 0 20px;
   padding: 0 0 20px;
+}
+.price-table .pt-head p {
   border-bottom: 1px solid #ddd;
+  padding: 0 0 20px;
 }
 .price-table .pt-body h4 {
   font-size: 18px;
@@ -10123,3 +10126,20 @@ h6 {
 }
 
 /*# sourceMappingURL=master.css.map */
+
+
+
+
+.price_calculator {
+  text-align: center;
+}
+
+
+.center_on_mobile {
+  text-align: right;
+}
+@media screen and (max-width: 990px) {
+  .center_on_mobile {
+    text-align: center;
+  }
+}

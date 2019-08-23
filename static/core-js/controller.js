@@ -529,6 +529,11 @@ const PageViewController = class {
 					view_model.messages()
 					view_model.dashboard()
 					break
+				case 'pricing':
+				case 'index':
+					const pricing = new PriceViewModel()
+					pricing.init()
+					break
 				case 'home':
 					view_model.dashboard()
 					view_model.messages()
