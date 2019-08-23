@@ -4,6 +4,8 @@ var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var open = require('gulp-open');
+var babel = require("gulp-babel");
+var concat = require("gulp-concat");
 
 var Paths = {
   HERE: './',
@@ -12,6 +14,15 @@ var Paths = {
   SCSS_TOOLKIT_SOURCES: './assets/scss/now-ui-dashboard.scss',
   SCSS: './assets/scss/**/**'
 };
+
+gulp.task("default", function () {
+  return gulp.src("src/**/*.js")
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(concat("all.js"))
+    .pipe(sourcemaps.write("."))
+    .pipe(gulp.dest("dist"));
+});
 
 gulp.task('compile-scss', function() {
   return gulp.src(Paths.SCSS_TOOLKIT_SOURCES)
