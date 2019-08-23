@@ -57,7 +57,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'prod_FfIACSllbWuj2t'
+                'plan': 'plan_FfIAIrHBJ78YpY'
                 }],
             },
             success_url = self.success_url,
@@ -72,7 +72,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'prod_FfI9XxCPg3CfB2'
+                'plan': 'plan_FfI9OI02wob7Wl'
                 }],
             },
             success_url = self.success_url,
@@ -88,7 +88,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'prod_FfI9czcpPVjN58'
+                'plan': 'plan_FfI9ZGhlsAkGii'
                 }],
             },
             success_url = self.success_url,
