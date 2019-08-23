@@ -2,15 +2,17 @@
     <div class="locked_parent">
         <div class="row locked_container">
             <div class="col-lg-3 col-sm-12">
-                {% if type != 'insights' %}
-                    <button data-toggle="modal" data-target="#upgrade_modal" class="btn btn-lg btn-outline-secondary">
+ 
+                    <a class="btn btn-lg btn-outline-secondary" href="/pricing">
                         {% if type =='ads' %}
                             Yes, manage my ads!
+                        {% elif type == 'insights' %}
+                            I want insights!
                         {% else %}
                             Yes, A/B test for me!
                         {% endif %}
                         <i class='fa fa-unlock'></i>
-                    </button>
+                    </a>
                     <div class="modal fade" id="upgrade_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -59,7 +61,7 @@
                         </div>
                     </div>
                           
-                {% endif %}
+
             </div>
             <div class="col-lg-1"></div>
             <div class="col-lg-8 col-sm-12">
