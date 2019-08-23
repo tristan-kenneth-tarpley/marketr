@@ -339,6 +339,11 @@ const PriceViewModel = class {
                   savings = (comp_spend*12-marketr_spend*12).toFixed(2)
             
             if (!Number.isNaN(spend)) {
+                if (spend <= 500){
+                    $("#ad_checkout_link").attr('href', '/checkout/almost_free')
+                } else {
+                    $("#ad_checkout_link").attr('href', '/checkout/paid_ads')
+                }
                 let comp_output = comp_spend != false ? `$${this.num_commas(comp_spend)}/month` : "Doesn't reach minimum spend"
                 let savings_output = comp_output == "Doesn't reach minimum spend" ? 'N/A' : `$${savings}/year`
                 $("#ads_marketr_cost").text(this.num_commas(marketr_spend))
@@ -350,6 +355,11 @@ const PriceViewModel = class {
         const populate_test_fields = () => {
             const tests = parseInt($("#test_count").val().replace(/,/g, '')),
                   marketr_cost = this.marketr_test_model(tests)
+            if (tests <= 1) {
+                $("#testing_checkout_link").attr('href', '/checkout/almost_free')
+            } else {
+                $("#testing_checkout_link").attr('href', '/checkout/ab_testing')
+            }
             
             if (!Number.isNaN(tests)) {
                 $("#testing_marketr_cost").text(this.num_commas(marketr_cost))
