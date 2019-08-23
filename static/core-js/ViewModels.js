@@ -273,7 +273,9 @@ const PriceViewModel = class {
     num_commas (num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
     }
-    calc_fee = (base_fee, spend, perc_of_spend) =>  (base_fee + (spend * perc_of_spend)).toFixed(2)
+    calc_fee (base_fee, spend, perc_of_spend) {
+        return (base_fee + (spend * perc_of_spend)).toFixed(2)
+    } 
     marketr_model(spend){
         const base_fee = 350
         let perc_of_spend;
