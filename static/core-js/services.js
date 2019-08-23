@@ -1,6 +1,6 @@
 const PaymentsService = class {
     constructor() {
-        this.stripe = Stripe('pk_test_tpdQTF2hsjqmMJrVshKR24RR00BVP4B6qC');
+        this.stripe = Stripe('pk_live_tZr8rAfnEIUi4pZQLhKqa8VF00aOM5wPNc');
         let url_string = window.location.href,
             url = new URL(url_string)
         this.session_id = url.searchParams.get("session_id");

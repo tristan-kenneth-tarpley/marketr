@@ -7,8 +7,8 @@ import time
 class PaymentsService:
     def __init__(self, email, customer_id=None):
         app.config.from_pyfile('config.cfg')
-        self.sk = app.config['STRIPE_TEST_SK']
-        self.pk = app.config['STRIPE_TEST_PK']
+        self.sk = app.config['STRIPE_SK']
+        self.pk = app.config['STRIPE_PK']
         self.success_url = 'http://127.0.0.1:5000/success'
         self.cancel_url = 'http://127.0.0.1:5000/logout'
         self.email = email
@@ -57,7 +57,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_FeZoBcEgfD35he'
+                'plan': 'prod_FfIACSllbWuj2t'
                 }],
             },
             success_url = self.success_url,
@@ -72,7 +72,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_Fed1YzQtnto2mT'
+                'plan': 'prod_FfI9XxCPg3CfB2'
                 }],
             },
             success_url = self.success_url,
@@ -88,7 +88,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_FecAlOmYSmeDK3'
+                'plan': 'prod_FfI9czcpPVjN58'
                 }],
             },
             success_url = self.success_url,
