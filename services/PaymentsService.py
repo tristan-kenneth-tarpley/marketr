@@ -1,6 +1,5 @@
 from app import app
 from flask import render_template, session, url_for, redirect
-from services.UserService import UserService
 import stripe
 import time
 
@@ -21,19 +20,18 @@ class PaymentsService:
     def get_plan(self):
         stripe.api_key = self.sk
         customer = stripe.Customer.retrieve(self.customer_id)
-        try:
-            current_plan = customer['subscriptions']['data'][0]['items']['data'][0]['plan']['product']
-        except:
-            current_plan = None
+        plans = []
+        # current_plan = customer['subscriptions']['data'][0]['items']['data'][0]['plan']['product']
+        for plan_parent in customer['subscriptions']['data']:
+            plans.append(plan_parent['items']['data'][0]['plan']['id'])
 
-        return str(current_plan)
+        return plans
 
     def create_customer(self, name=""):
         stripe.api_key = self.sk
         customer = stripe.Customer.create(
             description=f"Customer for {self.email}",
-            email=self.email,
-            name=name
+            email=self.email
         )
         return customer.id
 

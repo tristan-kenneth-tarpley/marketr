@@ -32,6 +32,10 @@
 
 
 {% set current_plan = page.data['core']['core'][0]['current_plan'] %}
+{% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
+{% set almost_free = page.data['core']['core'][0]['almost_free_binary'] %}
+{% set ad_plan = page.data['core']['core'][0]['ad_binary'] %}
+
 {% if current_plan %}
     {{ section(
         link=None,
@@ -51,7 +55,7 @@
 {% endif %}
 
 {# paid ads management or almost free #}
-{% if current_plan == 'prod_FecATNfeTGFE5n' or current_plan == 'prod_FeZnfiNrgvoYvN' %}
+{% if ad_plan or almost_free %}
     {{ section(
         link=None,
         title="Ad Campaign Performance",
@@ -70,7 +74,7 @@
 {% endif %}
 
 {# ab testing or almost free #}
-{% if current_plan == 'prod_Feck6uZdvfFOgj' or current_plan == 'prod_FeZnfiNrgvoYvN' %}
+{% if ab_plan or almost_free %}
     {{ section(
         link=None,
         title="A/B Testing Performance",

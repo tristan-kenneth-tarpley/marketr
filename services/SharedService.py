@@ -57,12 +57,14 @@ class NotificationsService:
 
     def checkout(self, plan_id):
         lut = {
-            'prod_FeZnfiNrgvoYvN': 'almost free',
-            'prod_FfIACSllbWuj2t': 'almost free',
-            'prod_FecATNfeTGFE5n': 'paid ads',
-            'prod_FfI9czcpPVjN58': 'paid ads',
-            'prod_Feck6uZdvfFOgj': 'ab testing',
-            'prod_FfI9XxCPg3CfB2': 'ab testing'
+            # live mode
+            'plan_FfI9OI02wob7Wl': 'ab testing',
+            'plan_FfI9ZGhlsAkGii':'paid ads',
+            'plan_FfIAIrHBJ78YpY': 'almost free',
+            # test mode
+            'plan_Fed1YzQtnto2mT': 'ab testing',
+            'plan_FecAlOmYSmeDK3': 'paid ads',
+            'plan_FeZoBcEgfD35he': 'almost free'
         }
 
         tristan = EmailService(to='tristan@marketr.life')

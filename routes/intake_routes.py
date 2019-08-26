@@ -70,17 +70,7 @@ def begin():
     form = forms.Profile()
     service = IntakeService(session['user'], 'begin')
     
-    notify = NotificationsService(session['user'])
-    if request.method == 'GET' and not session.get('onboarding_complete'):
-        notify.onboarding_started()
-
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        payments = PaymentsService(session['email'])
-        stripe_id = payments.create_customer(name = str(form.company_name.data))
-        session['stripe_id'] = stripe_id
-
-        UserService.UpdateStripeId(session['user'], session['stripe_id'])
-
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
         else:

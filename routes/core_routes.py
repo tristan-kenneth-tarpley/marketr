@@ -106,6 +106,16 @@ def confirm_email(token):
     s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     email = s.loads(token, salt='email-confirm', max_age=3600)
     UserService.confirm_customer(email, token)
+
+    payments = PaymentsService(email)
+    stripe_id = payments.create_customer()
+
+    session['stripe_id'] = stripe_id
+    UserService.UpdateStripeId(email, session['stripe_id'])
+
+    notify = NotificationsService(email)
+    notify.onboarding_started()
+
     form = forms.CustomerLogin()
     return render_template("login.html", conf=True, form=form)
 
@@ -140,8 +150,8 @@ def pricing():
 
 @app.route('/inspect')
 def inspect():
-    service = PaymentsService(None, customer_id='cus_FfIDeTFMXFCZWG')
-    customer = service.get_customer() 
+    service = PaymentsService(None, customer_id='cus_Fg7dwInveMv4wX')
+    customer = service.get_plan() 
     return json.dumps(customer)
 
 @app.route('/checkout/ab_testing', methods=['GET', 'POST'])
@@ -174,19 +184,20 @@ def ads_checkout():
     else:
         return redirect(url_for('ads_checkout', session_id=obj.id))
 
-
+# anchor
 @app.route('/success')
 def success():
     # get plan id
     email = session['email'] if session['logged_in'] else request.args.get('email')
     customer_id = session['stripe_id'] if session['logged_in'] else request.args.get('stripe_id')
     payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
-    plan_id = payments.get_plan()
-    # update db with plan id
-    UserService.update_plan(session['user'], plan_id)
-
     notify = NotificationsService(session['user'])
-    notify.checkout(plan_id)
+    plans = payments.get_plan()
+    for plan in plans:
+        # update db with plan id
+        notify.checkout(plan)
+        UserService.update_plan(session['user'], plan)
+
     # redirect to home
     # return plan_id
     return redirect(url_for('home', view='campaigns'))

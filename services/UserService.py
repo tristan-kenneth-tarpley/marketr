@@ -9,7 +9,7 @@ from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from app import app
-
+from services.PaymentsService import PaymentsService
 
 def intake_page_map():
     pages = {
@@ -247,14 +247,25 @@ class DBActions:
 
 
 class UserService:
-
 	def update_plan(customer_id, plan_id):
-		query = """UPDATE customer_basic SET current_plan = ? WHERE id = ?"""
-		db.execute(query, False, (plan_id, customer_id), commit=True)
+		plan_table = {
+			# live mode
+			'plan_FfI9OI02wob7Wl': 'ab_binary',
+			'plan_FfI9ZGhlsAkGii':'ad_binary',
+			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
+			# test mode
+			'plan_Fed1YzQtnto2mT': 'ab_binary',
+			'plan_FecAlOmYSmeDK3': 'ad_binary',
+			'plan_FeZoBcEgfD35he': 'almost_free_binary'
+		}
 
-	def UpdateStripeId(customer_id, stripe_id):
-		query = "UPDATE customer_basic SET stripe_id = ? WHERE id = ?"
-		db.execute(query, False, (stripe_id, customer_id), commit=True)
+		query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1 WHERE id = ?"
+		print(query)
+		db.execute(query, False, (customer_id,), commit=True)
+
+	def UpdateStripeId(email, stripe_id):
+		query = "UPDATE customer_basic SET stripe_id = ? WHERE email = ?"
+		db.execute(query, False, (stripe_id, email), commit=True)
 
 	def CreateCustomer(email, password, form=None, app=None):
 		password = encrypt_password(password)
@@ -320,7 +331,6 @@ class UserService:
 		db.execute(query, False, tup, commit=True)
 
 	def init_profile(time, user):
-		print('called')
 		init_query = "EXEC init_profile @date = ?, @customer_id = ?"
 		db.execute(init_query, False, (time, user), commit=True)
 
