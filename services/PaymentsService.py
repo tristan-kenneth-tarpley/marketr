@@ -12,6 +12,12 @@ class PaymentsService:
         self.cancel_url = 'https://marketr.life/logout'
         self.email = email
         self.customer_id = customer_id
+
+    def modify(self, company_name=None):
+        stripe.Customer.modify(
+            self.customer_id,
+            name=company_name
+        )
         
     def get_customer(self):
         stripe.api_key = self.sk
