@@ -14,6 +14,7 @@ class PaymentsService:
         self.customer_id = customer_id
 
     def modify(self, company_name=None):
+        stripe.api_key = self.sk
         stripe.Customer.modify(
             self.customer_id,
             name=company_name
