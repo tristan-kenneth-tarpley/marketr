@@ -73,7 +73,7 @@ def begin():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
-            stripe_info = PaymentsService(form.email.data, customer_id=session['stripe_id'])
+            stripe_info = PaymentsService(session['email'], customer_id=session['stripe_id'])
             stripe_info.modify(company_name=form.company_name.data)
         else:
             service.skip(10)
