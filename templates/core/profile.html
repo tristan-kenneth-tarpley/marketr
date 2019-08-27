@@ -291,7 +291,7 @@
 	<div class="col-lg-6 col-sm-12">
 		<h5>Who are we without our customers?</h5>
 		<p>Complete your customer persona section and Market(r) will be able to use artificial intelligence to create ads that connect with your target audience.</p>
-		<a href="{{url_for('audience')}}" class="btn btn-secondary">Complete now</a>
+		<a href="{{url_for('audience', splash=True)}}" class="btn btn-secondary">Complete now</a>
 	</div>
 	<div class="col-lg-5 col-sm-12"><img class="empty_img" src="/static/assets/img/audience.png"></div>
 </div>
@@ -433,7 +433,7 @@
 			<div class="col-lg-6 col-sm-12">
 				<h5>What value do you trade for customers' $?</h5>
 				<p>By describing your product, its characteristics and positioning in the market, and customer value you'll unlock a wealth of new tactics that can help improve product-market-fit. </p>
-				<a href="{{url_for('product')}}" class="btn btn-secondary">Complete now</a>
+				<a href="{{url_for('product', splash=True)}}" class="btn btn-secondary">Complete now</a>
 			</div>
 		</div>
 
@@ -479,7 +479,7 @@
 			<div class="col-lg-6 col-sm-12">
 				<h5>How does your brand engage with customers throughout their buying experience?</h5>
 				<p>Every business follows predictable sales cycles. Describe all the touchpoints in each state and Market(r) can recommend tactics to bridge any identified gaps.</p>
-				<a href="{{url_for('salescycle')}}" class="btn btn-secondary">Complete now</a>
+				<a href="{{url_for('salescycle', splash=True)}}" class="btn btn-secondary">Complete now</a>
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-5 col-sm-12">
@@ -549,7 +549,7 @@
 		<div class="col-lg-6 col-sm-12">
 			<h5>What have you already tried?</h5>
 			<p>By detailing what you've done before and whether it was good or bad, our human account managers can provide better recommendations given that context.</p>
-			<a href="{{url_for('history')}}" class="btn btn-secondary">Complete now</a>
+			<a href="{{url_for('history', splash=True)}}" class="btn btn-secondary">Complete now</a>
 		</div>
 	</div>
 {% endif %}
