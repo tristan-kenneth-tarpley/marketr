@@ -167,7 +167,7 @@ def audience():
         if request.form['submit_button'] != 'skip':
             service.audience(form.data, request.args.get('view_id'))
         else:
-            service.skip()
+            service.skip(40)
   
         if request.form['submit_button'] == '+ save and add another audience':
             next_id = service.get_persona()
@@ -207,7 +207,7 @@ def product():
         if request.form['submit_button'] != 'skip':
             service.product(form.data)
         else:
-            service.skip()
+            service.skip(50)
         return redirect(url_for('product_2'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -258,7 +258,7 @@ def product_2():
         if request.form['submit_button'] != 'skip':
             service.product_2(form.data, request.args.get('view_id'))
         else:
-            service.skip()
+            service.skip(60)
         
         if request.form['submit_button'] == 'update next product':
             next_id = service.get_product(request.args.get('view_id'))
@@ -289,7 +289,7 @@ def salescycle():
         if request.form['submit_button'] != 'skip':
             service.salescycle(form.data)
         else:
-            service.skip()
+            service.skip(70)
         return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -324,7 +324,7 @@ def goals():
         if request.form['submit_button'] != 'skip':
             service.goals(form.data)
         else:
-            service.skip()
+            service.skip(80)
         return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -349,7 +349,7 @@ def history():
         if request.form['submit_button'] != 'skip':
             service.history(form.data)
         else:
-            service.skip()
+            service.skip(90)
         return redirect(url_for('platforms'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -371,7 +371,7 @@ def platforms():
         if request.form['submit_button'] != 'skip':
             service.platforms(request.form)
         else:
-            service.skip()
+            service.skip(100)
         return redirect(url_for('home'))
 
     return ViewFuncs.view_page(user=session['user'],
@@ -409,7 +409,7 @@ def past():
         if request.form['submit_button'] != 'skip':
             service.past(form.data)
         else:
-            service.skip()
+            service.skip(110)
         return redirect(url_for('home', init=True))
 
     return ViewFuncs.view_page(user=session['user'],

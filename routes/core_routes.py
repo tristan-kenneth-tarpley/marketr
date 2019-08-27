@@ -12,7 +12,7 @@ from services.LoginHandlers import login_required, admin_required, owner_require
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService
 from services.PaymentsService import PaymentsService
-from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel
+from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel
 import hashlib
 from data.db import execute, sql_to_df
 from bleach import clean
@@ -151,7 +151,7 @@ def pricing():
 @app.route('/inspect')
 def inspect():
     service = PaymentsService(None, customer_id='cus_Fg7dwInveMv4wX')
-    customer = service.get_plan() 
+    customer = service.get_plan_meta(plan_id='sub_FhE3gUPeN4xjE4') 
     return json.dumps(customer)
 
 @app.route('/checkout/ab_testing', methods=['GET', 'POST'])
@@ -237,7 +237,37 @@ def home():
         page=view_model
     )
 
+@app.route('/home/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    page = SettingsViewModel(session['email'], customer_id=session['user'], stripe_id=session['stripe_id'])
+    return render_template('core/settings.html', page=page, root=True)
 
+@app.route('/home/settings/<plan_id>', methods=['GET', 'POST'])
+@login_required
+def plan_view(plan_id):
+    page = SettingsViewModel(
+        session['email'],
+        customer_id=session['user'],
+        stripe_id=session['stripe_id'],
+        root=False,
+        sub_id = plan_id
+    )
+
+    if request.method == 'POST':
+        if request.form['cancel_sub']:
+            payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
+            payments.delete_subscriptions(
+                sub_id = request.form['sub_id']
+            )
+            return redirect(url_for('settings'))
+    
+        # if request.form['send_invoice']:
+        #     payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
+        #     payments.send_invoice(invoice_id=request.form['invoice_id'])
+        #     return redirect(url_for('plan_view', plan_id=request.form['plan_id']))
+
+    return render_template('core/settings.html', page=page, root=False, plan_id=plan_id)
 
 
 # core actions

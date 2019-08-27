@@ -19,20 +19,57 @@ class PaymentsService:
             self.customer_id,
             name=company_name
         )
+
+    def delete_subscriptions(self, sub_id=None):
+        stripe.api_key = self.sk
+        stripe.Subscription.delete(sub_id)
+
+    def send_invoice(self, invoice_id=None):
+        stripe.api_key = self.sk
+        stripe.Invoice.send_invoice(invoice_id)
         
     def get_customer(self):
         stripe.api_key = self.sk
         return stripe.Customer.retrieve(self.customer_id)
-
+    # just returns id of active plans
     def get_plan(self):
         stripe.api_key = self.sk
         customer = stripe.Customer.retrieve(self.customer_id)
         plans = []
-        # current_plan = customer['subscriptions']['data'][0]['items']['data'][0]['plan']['product']
         for plan_parent in customer['subscriptions']['data']:
             plans.append(plan_parent['items']['data'][0]['plan']['id'])
 
         return plans
+
+    def get_plan_meta(self, plan_id=None):
+        stripe.api_key = self.sk
+        return stripe.Subscription.retrieve(plan_id)
+
+    # use this if you need more metadata about plans
+    def fetch_plans(self):
+        stripe.api_key = self.sk
+        customer = stripe.Customer.retrieve(self.customer_id)
+        plans = {}
+        for i in range(len(customer['subscriptions']['data'])):
+            plans[i] = {
+                'nickname': customer['subscriptions']['data'][i]['plan']['nickname'],
+                'plan_id': customer['subscriptions']['data'][i]['id'],
+                'amount': (customer['subscriptions']['data'][i]['plan']['amount']/100)
+            }
+        return plans
+
+    def invoices(self, sub_num=None):
+        stripe.api_key = self.sk
+        if not sub_num:
+            return stripe.Invoice.list(customer=self.customer_id)
+        else:
+            return stripe.Invoice.list(customer=self.customer_id, subscription=sub_num)
+
+    def upcoming_invoices(self):
+        stripe.api_key = self.sk
+        return stripe.Invoice.retrieve("upcoming", customer=self.customer_id).lines.list(limit=1)
+        
+
 
     def create_customer(self, name=""):
         stripe.api_key = self.sk

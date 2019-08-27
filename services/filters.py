@@ -1,4 +1,5 @@
 from app import app
+import datetime
 
 def check_active(val, page):
 	if val == page:
@@ -95,7 +96,10 @@ def not_none(input):
 def get_first_five(input):
 	return input[:4]
 
+def to_date(date):
+	return format(datetime.datetime.fromtimestamp(date), '%m/%d/%Y')
 
+app.jinja_env.filters['to_date'] = to_date
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active
 app.jinja_env.filters['breadcrumb_active'] = breadcrumb_active

@@ -1,4 +1,13 @@
 
+{% macro settings_link() %}
+<li>
+	<a href="{{ url_for('settings') }}">
+		<i class="now-ui-icons ui-1_settings-gear-63"></i>
+		<p>Settings</p>
+	</a>
+</li>
+{% endmacro %}
+
 <div class="sidebar" data-color="orange">
 	<div class="logo">
 	  <a href="https://marketr.life" class="simple-text logo-normal">
@@ -28,6 +37,7 @@
 
 				{% endif %}
 				</li>
+				{{ settings_link() }}
 			</ul>
 		</div>
 		<div id="campaigns-nav" class="hidden">		
@@ -44,6 +54,7 @@
 						<li><a class="ads_performance" href="#ads_performance">Ad performance</a></li>
 					</ul>
 				</li>
+				{{ settings_link() }}
 			</ul>
 		</div>
 		<div id="messages-nav" class="hidden">		
@@ -57,6 +68,7 @@
 						<li><a class="targeted profile_information" href="#to_do">Messages</a></li>
 					</ul>
 				</li>
+				{{ settings_link() }}
 			</ul>
 		</div>
 

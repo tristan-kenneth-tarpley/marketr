@@ -1,0 +1,161 @@
+{% extends "layouts/layout.html" %}
+{% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
+{% from "macros/dashboard_macros.html" import todo, messages, goals, score %}
+
+{% block title %}
+<title>Market(r) - Settings</title>
+{% endblock %}
+
+{% block content %}
+    {% include "core/navbar/settings-sidebar.html" %}
+    {% include "/topbar/topbar-customer.html" %}
+    <div class="panel-header panel-header-sm">
+	</div>
+	<div class="content">
+		<div class="row row_cancel">
+			<div class="col-md-12">
+                <div class="card" style="padding: 5%;">
+                    <div id="loading">
+                        <div class="load-circle"><span class="one"></span></div>
+                    </div>
+                    <div id="content-ready" style="visibility:hidden;">
+                        <div class="row">
+                            <div class="col">
+                                {% if root %}
+                                        <h6>Welcome, {{ page.customer['first_name'] }}.</h6>
+                                        <p>To begin, select a subscription to view.</p>
+                                    {% for plan in page.plans %}
+                                        <div class="row">
+                                            <div class="col">
+                                                <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}" class="plan_container">
+                                                    <h4>{{ page.plans[plan]['nickname'] }}</h4>
+                                                    <h6>{{ "$%.2f"|format(page.plans[plan]['amount']|float) }}/month</h6>   
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    <div class="container" style="text-align:center;">
+                                        <a href="{{ url_for('pricing') }}" class="btn btn-lg btn-primary">
+                                            Upgrade Plan
+                                        </a>
+                                    </div>
+
+                                {% else %}
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <a href="{{ url_for('settings') }}">
+                                                    <i class="now-ui-icons arrows-1_minimal-left"></i>
+                                                    Back
+                                                </a>
+                                            </div>
+                                            <div style="text-align:right;" class="col-lg-6">
+                                                <form method="POST">
+                                                    <input type="text" name="sub_id" value="{{ plan_id }}" class="hidden">
+                                                    <button type="button" data-toggle="modal" data-target="#cancel_modal" class="btn btn-neutral btn-danger">
+                                                        Cancel subscription
+                                                    </button>
+                                                    <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                        <h6 style="text-align:left;" class="modal-title" id="exampleModalLabel">Are you sure you want to cancel your subscription?</h6>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                        <button type="button" class="btn btn-neutral" data-dismiss="modal">Close</button>
+                                                        <button type="submit" value="true" name="cancel_sub" class="btn btn-danger">Yes, I'm sure</button>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <label>Subscription Overview</label>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                 <h3>{{ "$%.2f"|format(page.plan_meta['amount'] | float) }}/month</h3>
+                                            </div>
+                                            <div class="plan_container-div">
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-sm-6">
+                                                        <p>Next Payment</p>
+                                                        <p style="color: #62cde0; font-size: 120%">
+                                                            <strong>{{ "$%.2f"|format(page.upcoming_invoices['amount'] | float)  }} on {{ page.upcoming_invoices['start'] | to_date }}</strong>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-lg-9 col-sm-6">
+                                                        <p>Started</p>
+                                                        <p style="font-size: 120%;">
+                                                            <strong>
+                                                                {{ page.plan_meta['start_date'] | to_date }}
+                                                            </strong>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"><p>To change payment information, please email <a href="mailto:info@marketr.life">info@marketr.life</a> with your company name and we will send you a secure form.</p></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <h3>Invoices</h3>
+                                            </div>
+                                            <div class="col-lg-12 invoices">
+                                                <table class="table invoice_table" style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <td>Amount</td>
+                                                            <td>Status</td>
+                                                            <td>Due</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for invoice in page.past_invoices %}
+                                                        <tr>
+                                                            <td>{{ "$%.2f"|format(page.past_invoices[invoice]['amount_due'] | float) }}</td>
+                                                            <td>
+                                                                {{ page.past_invoices[invoice]['status'] }}
+                                                            </td>
+                                                            <td>
+                                                                {{ page.past_invoices[invoice]['due'] | to_date }}
+                                                            </td>
+                                                            <td>
+                                                                {#<form method="POST">
+                                                                    <input type="text" name="plan_id" class="hidden" value="{{plan_id}}">
+                                                                    <input type="text" name="invoice_id" class="hidden" value="{{page.past_invoices[invoice]['id']}}">
+                                                                    <button 
+                                                                    style="background: none"
+                                                                    type="submit"
+                                                                    name="send_invoice"
+                                                                    value="true"
+                                                                    class="btn btn-neutral"
+                                                                    data-toggle="modal"
+                                                                    data-target="#invoice_{{loop.index}}_form">Email invoice
+                                                                        <i class="now-ui-icons arrows-1_minimal-right"></i>
+                                                                    </button>
+                                                                </form>#}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

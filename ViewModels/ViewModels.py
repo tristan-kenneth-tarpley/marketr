@@ -11,6 +11,7 @@ from services.CompetitorService import CompetitorService
 import services.forms as forms
 import json
 import itertools
+from services.PaymentsService import PaymentsService
 
 class SplashViewModel:
 	def __init__(self, next_step=None):
@@ -521,7 +522,60 @@ class ViewFuncs:
 
 
 
+class SettingsViewModel:
+	def __init__(self, email, customer_id=None, stripe_id=None, root=True, sub_id=None):
+		self.customer_id = customer_id
+		self.stripe_id = stripe_id
+		self.root = root
+		self.sub_id = sub_id
+		self.stripe_obj = PaymentsService(email, customer_id=stripe_id)
+		self.compile()
 
+	def get_stripe(self):
+		self.plans = self.stripe_obj.fetch_plans()
+		self.invoices = self.stripe_obj.invoices()
+
+	def get_customer_data(self):
+		query = "SELECT * FROM settings_view(?)"
+		data, cursor = db.execute(query, True, (self.customer_id,))
+		data = cursor.fetchone()
+		self.customer = {
+			'first_name': data[0]
+		}
+
+	def subscription(self):
+		data = self.stripe_obj.get_plan_meta(self.sub_id)
+		self.plan_meta = {
+			'amount': (data['plan']['amount']/100),
+			'start_date': data['start_date'],
+			'canceled_at': data['canceled_at'],
+			'cancel_at': data['cancel_at']
+		}
+
+	def compile(self):
+		self.get_stripe()
+		self.get_customer_data()
+
+		if self.root == False:
+			self.subscription()
+			upcoming_invoices = self.stripe_obj.upcoming_invoices()
+			past_invoices = self.stripe_obj.invoices(sub_num=self.sub_id)
+
+			self.upcoming_invoices = {
+				'amount': (upcoming_invoices['data'][0]['amount']/100),
+				'start': upcoming_invoices['data'][0]['period']['start'],
+				'end': upcoming_invoices['data'][0]['period']['end']
+			}
+			invoices = {}
+			for i in range(len(past_invoices['data'])):
+				invoices[i] = {
+					'id': past_invoices['data'][i]['id'],
+					'amount_due': (past_invoices['data'][i]['amount_due']/100),
+					'status': 'paid' if past_invoices['data'][i]['amount_due'] == past_invoices['data'][i]['amount_paid'] else 'open',
+					'due': past_invoices['data'][i]['created']
+				}
+			self.past_invoices = invoices
+			
 
 
 
