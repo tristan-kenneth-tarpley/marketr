@@ -2,11 +2,32 @@
 {% from "macros/dashboard_macros.html" import goals, insights, ads_performance, test_performance %}
 {% from "macros/home_macros.html" import locked %}
 
+{% set current_plan = page.data['core']['core'][0]['current_plan'] %}
+{% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
+{% set almost_free = page.data['core']['core'][0]['almost_free_binary'] %}
+{% set ad_plan = page.data['core']['core'][0]['ad_binary'] %}
 {% set company_name = page.data['core']['company_name'] %}
 
 
 <div class="row">    
     <div class="col-lg-7 col-sm-12">
+        {% if current_plan %}
+        {{ section(
+            link=None,
+            title="Insights",
+            body=insights(page),
+            hash="insights",
+            admin=page.admin
+        ) }}
+        {% else %}
+        {{ section(
+            link=None,
+            title="Insights",
+            body=locked(type="insights"),
+            hash="insights",
+            admin=page.admin
+        ) }}
+        {% endif %}
         {{ section(
             link=None,
             title=company_name,
@@ -31,28 +52,6 @@
 
 
 
-{% set current_plan = page.data['core']['core'][0]['current_plan'] %}
-{% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
-{% set almost_free = page.data['core']['core'][0]['almost_free_binary'] %}
-{% set ad_plan = page.data['core']['core'][0]['ad_binary'] %}
-
-{% if current_plan %}
-    {{ section(
-        link=None,
-        title="Insights",
-        body=insights(page),
-        hash="insights",
-        admin=page.admin
-    ) }}
-{% else %}
-    {{ section(
-        link=None,
-        title="Insights",
-        body=locked(type="insights"),
-        hash="insights",
-        admin=page.admin
-    ) }}
-{% endif %}
 
 {# paid ads management or almost free #}
 {% if ad_plan or almost_free %}

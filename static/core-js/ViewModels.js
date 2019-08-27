@@ -22,9 +22,6 @@ const CoreViewModels = class {
         }
     }
 
-    payments(){
-    }
-
     left_nav_update(e) {
         let target = $(e.currentTarget)
         let id = target.attr('id')
@@ -163,18 +160,18 @@ const CoreViewModels = class {
             const view = urlParams.get('view');
             $(".sidebar-wrapper div").addClass('hidden')
             switch(view) {
-                case 'profile':
-                case null:
-                    $("#profile").addClass('active')
-                    $("#profile-tab").addClass('active')
-                    $("#profile-tab").addClass('show')
-                    $("#profile-nav").removeClass('hidden')
-                    break
                 case 'campaigns':
+                case null:
                     $("#campaigns").addClass('active')
                     $("#campaigns-tab").addClass('active')
                     $("#campaigns-tab").addClass('show')
                     $("#campaigns-nav").removeClass('hidden')
+                    break
+                case 'profile':
+                    $("#profile").addClass('active')
+                    $("#profile-tab").addClass('active')
+                    $("#profile-tab").addClass('show')
+                    $("#profile-nav").removeClass('hidden')
                     break
                 case 'messages':
                     $("#messages").addClass('active')
