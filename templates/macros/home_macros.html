@@ -1,18 +1,7 @@
 {% macro locked(type="ads") %}
     <div class="locked_parent">
         <div class="row locked_container">
-            <div class="col-lg-3 col-sm-12">
- 
-                    <a class="btn btn-lg btn-outline-secondary" href="/pricing">
-                        {% if type =='ads' %}
-                            Yes, manage my ads!
-                        {% elif type == 'insights' %}
-                            I want insights!
-                        {% else %}
-                            Yes, A/B test for me!
-                        {% endif %}
-                        <i class='fa fa-unlock'></i>
-                    </a>
+            <div class="col-lg-12 col-sm-12">
                     <div class="modal fade" id="upgrade_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -63,16 +52,26 @@
                           
 
             </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-8 col-sm-12">
+            <div class="col-lg-12 col-md-12 col-sm-12">
                 {% if type == 'ads' %}
-                    <h3>Marketr can only report on managed spend. Let us manage your ads. <strong>Up to $500/month for free!</strong></h3>
+                    <h5>Marketr can only report on managed spend. Let us manage your ads. <strong>Up to $500/month for $1/month!</strong></h5>
                 {% elif type == 'insights' %}
-                    <h3>Marketr offers customized marketing improvement insights for all users who enroll in Ad campaign management and/or A/B testing.</h3>
-                    <h3>Enroll in one or both of them below to start getting your monthly Marketr Insights!</h3>
+                    <h5>Marketr offers customized marketing improvement insights for all users who enroll in Ad campaign management and/or A/B testing.</h5>
+                    <h5>Enroll in one or both of them below to start getting your monthly Marketr Insights!</h3>
                 {% else %}
-                    <h3>Let Market(r) manage your A/B tests so you don't have to worry about it. We'll even do <strong>one A/B test per month for free!</strong></h3>
+                    <h5>Let Market(r) manage your A/B tests so you don't have to worry about it. We'll even do <strong>one A/B test per month for $1/month!</strong></h5>
                 {% endif %}
+
+                <a class="btn btn-lg btn-outline-secondary" href="/pricing">
+                    {% if type =='ads' %}
+                        Yes, manage my ads!
+                    {% elif type == 'insights' %}
+                        I want insights!
+                    {% else %}
+                        Yes, A/B test for me!
+                    {% endif %}
+                    <i class='fa fa-unlock'></i>
+                </a>
             </div>
         </div>
     </div>

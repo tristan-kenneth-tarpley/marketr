@@ -5115,6 +5115,7 @@ ul#product {
 .score_container {
   border-radius: 5px;
   box-shadow: var(--sm-box-shadow);
+  background-color: white;
   padding: 2%;
   height: 100%;
 }
@@ -5122,31 +5123,32 @@ ul#product {
 #marketr-score {
   margin: auto;
 }
+#score_popover {
+  text-transform: initial;
+  font-weight: normal;
+}
 .score_container h1 {
   margin-bottom: 0;
 }
-.marketr-score {
-  color: white;
-}
 .marketr-score-quality {
-  color: white !important;
+  color: rgba(0,0,0,.5);
 }
 
 
 .score-very_weak {
-  background-color: #8b0000;
+  color: #8b0000 !important;
 }
 .score-weak {
-  background-color: #ff5751;
+  color: #ff5751 !important;
 }
 .score-moderate {
-  background-color: #ff8351;
+  color: #ff8351 !important;
 }
 .score-good {
-  background-color: #9acd32;
+  color: #9acd32 !important;
 }
 .score-excellent {
-  background-color: #18ce0f;
+  color: #18ce0f !important;
 }
 
 #marketr-score {
@@ -5194,11 +5196,11 @@ ul#product {
   background: rgba(0,0,0,.8);
   padding: 5% 5% 3%;
 }
-.locked_container h3 {
+.locked_container h5 {
   color: white;
 }
-.locked_container button {
-  background-color: white;
+.locked_container .btn-outline-secondary:hover {
+  background-color: white !important;
 }
 
 .goal_container {

@@ -103,7 +103,7 @@ const ScoreService = class {
         }
         $(".score-loading").css('display', 'none')
         $('.score_container').fadeIn()
-        $(".score_container").addClass(condition_class)
+        $(".score_container h1").addClass(condition_class)
         $(".marketr-score-quality").text(condition)
     }
 

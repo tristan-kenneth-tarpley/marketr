@@ -347,7 +347,7 @@ const PriceViewModel = class {
                 }
                 let comp_output = comp_spend != false ? `$${this.num_commas(comp_spend)}/month` : "Doesn't reach minimum spend"
                 let savings_output = comp_output == "Doesn't reach minimum spend" ? 'N/A' : `$${savings}/year`
-                $("#ads_marketr_cost").text(this.num_commas(marketr_spend))
+                $(".ads_marketr_cost").text(this.num_commas(marketr_spend))
                 $("#ads_comp_est").text(this.num_commas(comp_output))                
                 $("#ad_savings").text(this.num_commas(savings_output))
             }
@@ -363,7 +363,7 @@ const PriceViewModel = class {
             }
             
             if (!Number.isNaN(tests)) {
-                $("#testing_marketr_cost").text(this.num_commas(marketr_cost))
+                $(".testing_marketr_cost").text(this.num_commas(marketr_cost))
                 $("#testing_savings").text(this.num_commas("$" + ((3000 - marketr_cost)) * 12))
             }
         }
