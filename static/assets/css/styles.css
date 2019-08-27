@@ -2941,10 +2941,12 @@ Created using IcoMoon - icomoon.io
 
 
 .sidebar .nav li a > p {
-  color: #fff;
+  color: var(--nav-color);
   transition-duration: .2s;
 }
-
+.sidebar .nav li a > i {
+  color: var(--nav-color);
+}
 .sidebar .nav li a {
   transition-duration: .2s !important;
 }
@@ -2998,7 +3000,7 @@ Created using IcoMoon - icomoon.io
 @media (min-width: 991px) {
   .sidebar {
     display: block;
-    box-shadow: 0px 2px 22px 0 rgba(0, 0, 0, 0.2), 0px 2px 30px 0 rgba(0, 0, 0, 0.35); 
+    box-shadow: var(--nav-shadow);
   } 
   }
 .panel-header {
@@ -4803,15 +4805,16 @@ li.breadcrumb-item.active a {
 .sub_nav a {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-  color: rgba(255,255,255,.4) !important;
+  color: var(--nav-color) !important;
   border-radius: 0 !important;
 }
 .sub_nav a:hover {
-  color: rgba(255,255,255,.9) !important;
+  color: #121212 !important;
+  opacity: .9;
 }
 .sub_nav a.targeted {
-  color: white !important;
-  border-left: 3px solid white;
+  color: var(--nav-color) !important;
+  border-left: 3px solid #121212;
 }
 
 .home_stages ul {

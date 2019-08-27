@@ -23,8 +23,10 @@
   --secondary-font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --alt-font: "Pacifico", sans-serif;
 
-  	/* nav styles */
-  --left-nav: #000E19;
+    /* nav styles */
+  --nav-shadow: -3px 0 5px 0 #555;
+  --left-nav: #f2eee9;
+  --nav-color: #6a6764; 
   --top-nav-gradient: linear-gradient(to right, #a2e1ed 0%, var(--primary) 60%, #28b4cd 100%);
   --webkit-top-nav-gradient: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788));
 
