@@ -38,7 +38,7 @@ class PaymentsService:
 
         db.execute(
             f'UPDATE customer_basic SET {plan_table[plan_id]} = null WHERE id = ?',
-            False, (customer_id,)
+            False, (customer_id,), commit=True
         )
 
     def send_invoice(self, invoice_id=None):
