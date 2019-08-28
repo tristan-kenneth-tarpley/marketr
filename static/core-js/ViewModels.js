@@ -177,7 +177,7 @@ const CoreViewModels = class {
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            const view = urlParams.get('view');
+            const view = urlParams.get('view') ? urlParams.get('view') != null : 'campaigns'
             $(".sidebar-wrapper div").addClass('hidden')
             show_nav(view)
         })
