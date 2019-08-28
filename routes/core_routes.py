@@ -258,7 +258,8 @@ def plan_view(plan_id):
         if request.form['cancel_sub']:
             payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
             payments.delete_subscriptions(
-                sub_id = request.form['sub_id']
+                sub_id = request.form['sub_id'],
+                customer_id = session['user']
             )
             return redirect(url_for('settings'))
     

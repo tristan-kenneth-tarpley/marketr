@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, session, url_for, redirect
 import stripe
 import time
+import data.db as db
 
 class PaymentsService:
     def __init__(self, email, customer_id=None):
@@ -20,9 +21,24 @@ class PaymentsService:
             name=company_name
         )
 
-    def delete_subscriptions(self, sub_id=None):
+    def delete_subscriptions(self, sub_id=None, customer_id=None):
         stripe.api_key = self.sk
         stripe.Subscription.delete(sub_id)
+        plan_table = {
+			# live mode
+			'plan_FfI9OI02wob7Wl': 'ab_binary',
+			'plan_FfI9ZGhlsAkGii':'ad_binary',
+			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
+			# test mode
+			'plan_Fed1YzQtnto2mT': 'ab_binary',
+			'plan_FecAlOmYSmeDK3': 'ad_binary',
+			'plan_FeZoBcEgfD35he': 'almost_free_binary'
+		}
+
+        db.execute(
+            f'UPDATE customer_basic SET {plan_table[sub_id]} = null WHERE id = ?',
+            False, (customer_id,)
+        )
 
     def send_invoice(self, invoice_id=None):
         stripe.api_key = self.sk

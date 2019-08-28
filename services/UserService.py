@@ -260,7 +260,6 @@ class UserService:
 		}
 
 		query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1 WHERE id = ?"
-		print(query)
 		db.execute(query, False, (customer_id,), commit=True)
 
 	def UpdateStripeId(email, stripe_id):
