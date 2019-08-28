@@ -169,30 +169,17 @@ const CoreViewModels = class {
         });
         
         $(window).on('load', e => {
+            const show_nav = target => {
+                $(`#${target}`).addClass('active')
+                $(`#${target}-tab`).addClass('active')
+                $(`#${target}-tab`).addClass('show')
+                $(`#${target}-nav`).removeClass('hidden')
+            }
+            
             const urlParams = new URLSearchParams(window.location.search);
             const view = urlParams.get('view');
             $(".sidebar-wrapper div").addClass('hidden')
-            switch(view) {
-                case 'campaigns':
-                case null:
-                    $("#campaigns").addClass('active')
-                    $("#campaigns-tab").addClass('active')
-                    $("#campaigns-tab").addClass('show')
-                    $("#campaigns-nav").removeClass('hidden')
-                    break
-                case 'profile':
-                    $("#profile").addClass('active')
-                    $("#profile-tab").addClass('active')
-                    $("#profile-tab").addClass('show')
-                    $("#profile-nav").removeClass('hidden')
-                    break
-                case 'messages':
-                    $("#messages").addClass('active')
-                    $("#messages-tab").addClass('active')
-                    $("#messages-tab").addClass('show')
-                    $("#messages-nav").removeClass('hidden')
-                    break
-            }
+            show_nav(view)
         })
     }
 
