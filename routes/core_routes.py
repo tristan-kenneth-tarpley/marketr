@@ -6,11 +6,12 @@ import json
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
-from services.UserService import UserService, EmailService
+from services.UserService import UserService
+from services.NotificationsService import EmailService, GoogleChatService, NotificationsService
 from services.CompetitorService import CompetitorService
 from services.LoginHandlers import login_required, admin_required, owner_required, manager_required, account_rep_required, onboarding_required
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
-from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService
+from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel
 import hashlib
@@ -113,8 +114,8 @@ def confirm_email(token):
     session['stripe_id'] = stripe_id
     UserService.UpdateStripeId(email, session['stripe_id'])
 
-    notify = NotificationsService(email)
-    notify.onboarding_started()
+    gchat = GoogleChatService()
+    gchat.onboarding_started(email=email)
 
     form = forms.CustomerLogin()
     return render_template("login.html", conf=True, form=form)
@@ -191,15 +192,14 @@ def success():
     email = session['email'] if session['logged_in'] else request.args.get('email')
     customer_id = session['stripe_id'] if session['logged_in'] else request.args.get('stripe_id')
     payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
-    notify = NotificationsService(session['user'])
+    gchat = GoogleChatService()
     plans = payments.get_plan()
     for plan in plans:
+        gchat.new_customer(email=session['email'], customer_type=plan)
         # update db with plan id
-        notify.checkout(plan)
         UserService.update_plan(session['user'], plan)
 
     # redirect to home
-    # return plan_id
     return redirect(url_for('home', view='campaigns'))
 
 @app.route('/cancel')

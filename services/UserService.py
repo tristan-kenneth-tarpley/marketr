@@ -420,41 +420,7 @@ def last_modified(id):
 
 	db.execute(query, False, tup, commit=True)
 
-class EmailService:
-	def __init__(self, to: str=None):
-		app.config.from_pyfile('config.cfg')
-		self.mail = Mail(app)
-		self.s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-		self.sender = 'no-reply@marketr.life'
-		self.to = to
 
-	def send(self, subject=None, message=None):
-		msg = Message(subject, sender=self.sender, recipients=[self.to])
-		msg.body = message
-		self.mail.send(msg)
-
-	def send_email_reset(self, supplied_email):
-		query = "SELECT * FROM dbo.customer_basic WHERE email = ?"
-		tup = (supplied_email,)
-		data, cursor = db.execute(query, True, tup)
-
-		data = data.fetchone()
-		cursor.close()
-
-		token = self.s.dumps(supplied_email, salt="password-reset")
-		msg = Message('Reset Password', sender=self.sender, recipients=[supplied_email])
-		link = url_for('update_password', token=token, _external=True)
-		msg.body = "Your password reset link is: %s" % (link,)
-		self.mail.send(msg)
-
-	def update_password(self, supplied_password, token=None):
-		email = self.s.loads(token, salt='password-reset', max_age=3600)
-		password = encrypt_password(supplied_password)
-
-		tup = (password, email)
-		query = "UPDATE dbo.customer_basic SET password = ? WHERE email = ?"
-
-		db.execute(query, False, tup, commit=True)
 
 
 class IntakeService:

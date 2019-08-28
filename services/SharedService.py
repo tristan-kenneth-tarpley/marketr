@@ -7,90 +7,15 @@ import json
 from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
-from services.UserService import UserService, encrypt_password, EmailService
+from services.UserService import UserService, encrypt_password
+from services.NotificationsService import NotificationsService, EmailService, GoogleChatService
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
 import math
 import pandas as pd
 
-class NotificationsService:
-    def __init__(self, customer_id, prev_log_in=None):
-        self.customer_id = customer_id
-        self.prev_log_in = prev_log_in
-
-    def get(self) -> dict:
-        query = f"""exec fetch_notifications @customer_id = {self.customer_id}"""
-        data, cursor = db.execute(query, True, ())
-        data = cursor.fetchall()
-        columns = [
-            'message_string',
-            'task_title',
-            'insight_body'
-        ]
-        return_data = UserService.parseCursor(data, columns)
-        return return_data
-
-    def ChatNotification(self, to):
-        mailman = EmailService(to=to)
-        subject = "You have a new message in Market(r)!"
-        message = "Login here to view the message: https://marketr.life/home?view=messages"
-
-        mailman.send(
-            subject=subject,
-            message=message
-        )
-
-    
-    def onboarding_started(self):
-        tristan = EmailService(to='tristan@marketr.life')
-        tyler = EmailService(to='tyler@marketr.life')
-        subject = "Someone started their intake!"
-        message = f"customer_id = {self.customer_id}"
-        tristan.send(
-            subject=subject,
-            message=message
-        )
-        tyler.send(
-            subject=subject,
-            message=message
-        )
-
-    def checkout(self, plan_id):
-        lut = {
-            # live mode
-            'plan_FfI9OI02wob7Wl': 'ab testing',
-            'plan_FfI9ZGhlsAkGii':'paid ads',
-            'plan_FfIAIrHBJ78YpY': 'almost free',
-            # test mode
-            'plan_Fed1YzQtnto2mT': 'ab testing',
-            'plan_FecAlOmYSmeDK3': 'paid ads',
-            'plan_FeZoBcEgfD35he': 'almost free'
-        }
-
-        tristan = EmailService(to='tristan@marketr.life')
-        tyler = EmailService(to='tyler@marketr.life')
-        subject = f"Market(r): New {lut[plan_id]} customer"
-        message = f"customer_id = {self.customer_id}"
-        tristan.send(
-            subject=subject,
-            message=message
-        )
-        tyler.send(
-            subject=subject,
-            message=message
-        )
 
 
-
-    def TaskNotification(self, to):
-        mailman = EmailService(to=to)
-        subject = "You have a new assignment in Market(r)."
-        message = "Login here to view the message: https://marketr.life/home?view=campaigns"
-
-        mailman.send(
-            subject=subject,
-            message=message
-        )
 
 class CoreService:
     def __init__(self, customer_id):
