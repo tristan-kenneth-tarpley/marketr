@@ -68,6 +68,10 @@
                     {{ render_area(label='cac', form_attr=form.cac)}}
                     {{ render_area(label='users', form_attr=form.users)}}
                     {{ render_area(label='leads', form_attr=form.leads)}}
+                    {{ render_area(label='new users', form_attr=form.new_users) }}
+                    {{ render_area(label='ltv', form_attr=form.ltv) }}
+                    {{ render_area(label='customer satisfaction', form_attr=form.customer_satisfaction) }}
+                    {{ render_area(label='mind share', form_attr=form.mind_share) }}
                     {{ render_area(label='other', form_attr=form.other)}}
                 </div>
             </div>
@@ -81,7 +85,13 @@
                     {{ render_area(label='sales', form_attr=form.sales)}}
                     {{ render_area(label='clicks', form_attr=form.clicks)}}
                     {{ render_area(label='downloads', form_attr=form.downloads)}}
-                    {{ render_area(label='email_signup', form_attr=form.email_signup)}}
+                    {{ render_area(label='email signup', form_attr=form.email_signup)}}
+                    {{ render_area(label='time on site', form_attr=form.time_on_site) }}
+                    {{ render_area(label='page rank', form_attr=form.page_rank) }}
+                    {{ render_area(label='performance', form_attr=form.performance) }}
+                    {{ render_area(label='customer satisfaction', form_attr=form.customer_satisfaction) }}
+                    {{ render_area(label='conversion rate', form_attr=form.conversion_rate) }}
+                    {{ render_area(label='content consumption', form_attr=form.content_consumption) }}
                     {{ render_area(label='registration', form_attr=form.registration)}}
                     {{ render_area(label='views', form_attr=form.views)}}
                     {{ render_area(label='shares', form_attr=form.shares)}}
@@ -127,6 +137,9 @@
                 <h5>Other Tags</h5>
                 <div class="row">
                     {{render_area(label='ab test', form_attr=form.ab_test)}}
+                    {{render_area(label='google', form_attr=form.google)}}
+                    {{render_area(label='blogs', form_attr=form.blogs)}}
+                    {{render_area(label='content', form_attr=form.content)}}
                     {{render_area(label='ad campaigns', form_attr=form.ad_campaigns)}}
                     {{render_area(label='branding', form_attr=form.branding)}}
                     {{render_area(label='copy', form_attr=form.copy)}}
