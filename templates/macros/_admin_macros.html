@@ -69,22 +69,16 @@
 	</div>
 	<div class="sidebar-wrapper">
 	  <ul class="nav">
-		    <li class="{{ 0 | check_active(stage) }}">
-		      <a href="/admin">
-		        <i class="now-ui-icons design_app"></i>
-		        <p>Home</p>
-		      </a>
-		    </li>
 	  	{% if owner %}
 			<li class="{{ 0 | check_active(stage) }}">
 				<a href="/personnel">
-				<i class="now-ui-icons design_app"></i>
+				<i class="now-ui-icons users_circle-08"></i>
 				<p>Manage personnel</p>
 				</a>
 			</li>
 			<li class="{{ 0 | check_active(stage) }}">
 				<a href="/tags">
-				<i class="now-ui-icons design_app"></i>
+				<i class="now-ui-icons shopping_tag-content"></i>
 				<p>tags</p>
 				</a>
 			</li>
@@ -98,7 +92,7 @@
 		    </li>
 		    <li class="{{ 0 | check_active(stage) }}">
 		      <a href="/customers">
-		        <i class="now-ui-icons design_app"></i>
+		        <i class="now-ui-icons users_single-02"></i>
 		        <p>Customers</p>
 		      </a>
 		    </li>

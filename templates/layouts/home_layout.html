@@ -36,11 +36,11 @@
 						<div class="load-circle"><span class="one"></span></div>
 					</div>
 						<div id="content-ready" style="visibility:hidden;">
-						{% if not page.admin %}
-							{{ tab_bar(page) }}
-						{% else %}
+						{% if page.admin %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
 						{% endif %}
+
+						{{ tab_bar(page) }}
 						
 						<div class="tab-content">
 							<div class="tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
