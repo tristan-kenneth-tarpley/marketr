@@ -107,9 +107,9 @@
 {% endmacro %}
 
 
-{% macro section(link=None, title="", body="", hash="", admin=False) %}
+{% macro section(link=None, title="", body="", hash=None, admin=False) %}
 
-    <div class="target" id="{{hash}}">
+    <div class="target" id="{{hash if hash}}">
         <div class="container-responsive target_container">
             {% if not admin and link != None %}
                 <div class="edit">

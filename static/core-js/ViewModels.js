@@ -77,6 +77,7 @@ const CoreViewModels = class {
         $(".nav-tabs").find(`a`).not(`a[href='${tab_target}']`).removeClass('active') 
     }
 
+
     dashboard() {
 
         $('.truncate').each(function(){
@@ -135,24 +136,36 @@ const CoreViewModels = class {
             $('.sub_nav a').not(this).removeClass('targeted')
             setTimeout(function(){ 
                 $(document).bind('scroll',function(e){
-                    $('.target').each(function(){
-                        if (
-                           $(this).offset().top < window.pageYOffset + 10
-                        && $(this).offset().top + $(this).height() > window.pageYOffset + 10
-                        ) {
-                            window.location.hash = $(this).attr('id');
-                        }
-                    });
+                    assign_hash()
                 });
-        
             }, 1000);
         })
-        
-        $(window).on('hashchange', () => {
-            var select = "." + window.location.hash.substring(1)
-            var target = "a" + select
+
+        const assign_hash = () => {
+            $('.target').each((index, element)=> {
+                if (
+                   $(element).offset().top < window.pageYOffset + 10
+                && $(element).offset().top + $(element).height() > window.pageYOffset + 10
+                && $(element).attr('id') != "" 
+                ) {
+                    window.location.hash = $(element).attr('id');
+                }
+            });
+        }
+
+        const change_nav_active = () => {
+            const hash = window.location.hash.substring(1)
+            let target = `a.${hash}`
             $('a').not(target).removeClass('targeted')
             $(target).addClass("targeted")
+        }
+
+        $(document).on('scroll', e => {
+            assign_hash()
+        });
+        
+        $(window).on('hashchange', () => {
+            change_nav_active()
         });
         
         $(window).on('load', e => {
@@ -180,16 +193,6 @@ const CoreViewModels = class {
                     $("#messages-nav").removeClass('hidden')
                     break
             }
-            $(document).on('scroll', e => {
-                $('.target').each(function() {
-                    if (
-                       $(this).offset().top < window.pageYOffset + 10
-                    && $(this).offset().top + $(this).height() > window.pageYOffset + 10
-                    ) {
-                        window.location.hash = $(this).attr('id');
-                    }
-                });
-            });
         })
     }
 
