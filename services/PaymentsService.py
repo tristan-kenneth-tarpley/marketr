@@ -23,7 +23,8 @@ class PaymentsService:
 
     def delete_subscriptions(self, sub_id=None, customer_id=None):
         stripe.api_key = self.sk
-        stripe.Subscription.delete(sub_id)
+        cancelled_plan = stripe.Subscription.delete(sub_id)
+        plan_id = cancelled_plan['items']['data'][0]['plan']['id']
         plan_table = {
 			# live mode
 			'plan_FfI9OI02wob7Wl': 'ab_binary',
@@ -36,7 +37,7 @@ class PaymentsService:
 		}
 
         db.execute(
-            f'UPDATE customer_basic SET {plan_table[sub_id]} = null WHERE id = ?',
+            f'UPDATE customer_basic SET {plan_table[plan_id]} = null WHERE id = ?',
             False, (customer_id,)
         )
 
