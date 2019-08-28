@@ -59,6 +59,7 @@ const CoreViewModels = class {
             case 'profile':
                 tab_target = "#profile"
                 break
+            case null:
             case 'campaigns':
                 tab_target = "#campaigns"
                 break
@@ -177,7 +178,7 @@ const CoreViewModels = class {
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            const view = urlParams.get('view') ? urlParams.get('view') != null : 'campaigns'
+            let view = urlParams.get('view') != null ? urlParams.get('view') : 'campaigns'
             $(".sidebar-wrapper div").addClass('hidden')
             show_nav(view)
         })
