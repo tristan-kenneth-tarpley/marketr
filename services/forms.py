@@ -13,6 +13,14 @@ class ForgotPassword(FlaskForm):
 class UpdatePassword(FlaskForm):
     password = PasswordField('password', validators=[validators.InputRequired()])
 
+class ChangePassword(FlaskForm):
+    current_password = PasswordField('Current Password', [validators.DataRequired()])
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
 class CreateCustomer(FlaskForm):
     email = StringField('email', validators=[validators.InputRequired(), validators.Email()])
     password = PasswordField('password', [

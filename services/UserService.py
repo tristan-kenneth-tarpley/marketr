@@ -247,6 +247,29 @@ class DBActions:
 
 
 class UserService:
+	def update_password(current_password, new_password, customer_id):
+		pw, cursor = db.execute(
+			'SELECT password FROM customer_basic WHERE id = ?',
+			True, (customer_id,)
+		)
+		pw = cursor.fetchone()
+		pw = pw[0]
+
+		if sha256_crypt.verify(current_password, pw):
+			new_pw = encrypt_password(new_password)
+			db.execute(
+				'UPDATE customer_basic SET password = ? WHERE id = ?',
+				False, (new_pw, customer_id), commit=True
+			)
+			return True
+		else:
+			return 'Current password does not match records'
+	
+	def reset_free(user):
+		db.execute(
+			'UPDATE customer_basic SET almost_free_binary = null WHERE id = ?',
+			False, (user,), commit=True
+		)
 	def update_plan(customer_id, plan_id):
 		plan_table = {
 			# live mode

@@ -194,6 +194,7 @@ def success():
     payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
     gchat = GoogleChatService()
     plans = payments.get_plan()
+    UserService.reset_free(session['user'])
     for plan in plans:
         gchat.new_customer(email=session['email'], customer_type=plan)
         # update db with plan id
@@ -241,7 +242,32 @@ def home():
 @login_required
 def settings():
     page = SettingsViewModel(session['email'], customer_id=session['user'], stripe_id=session['stripe_id'])
-    return render_template('core/settings.html', page=page, root=True)
+    return render_template(
+        'core/settings.html', page=page,
+        root=True
+    )
+
+@app.route('/home/settings/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    pw_form = forms.ChangePassword()
+    if request.method == 'POST' and pw_form.validate_on_submit():
+        result = UserService.update_password(pw_form.current_password.data, pw_form.password.data, session['user'])
+        if result == True:
+            return redirect(url_for('change_password', success=True))
+        else:
+            return render_template(
+                'core/change_password.html',
+                success=False if not request.args.get('success') else True,
+                root=False, pw_form=pw_form, message=result
+            )
+
+    return render_template(
+        'core/change_password.html',
+        success=False if not request.args.get('success') else True,
+        root=False, pw_form=pw_form
+    )
+
 
 @app.route('/home/settings/<plan_id>', methods=['GET', 'POST'])
 @login_required

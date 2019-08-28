@@ -1,4 +1,5 @@
 {% extends "layouts/layout.html" %}
+{% from "macros/_macros.html" import render_field %}
 {% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
 {% from "macros/dashboard_macros.html" import todo, messages, goals, score %}
 
@@ -23,7 +24,8 @@
                             <div class="col">
                                 {% if root %}
                                         <h6>Welcome, {{ page.customer['first_name'] }}.</h6>
-                                        <p>To begin, select a subscription to view.</p>
+                                        {% if page.plans %}<p>To begin, select a subscription to view.</p>{% endif %}
+                                        
                                     {% for plan in page.plans %}
                                         <div class="row">
                                             <div class="col">
@@ -34,6 +36,14 @@
                                             </div>
                                         </div>
                                     {% endfor %}
+                                    {{ collapsed }}
+                                    <div class="row">
+                                        <div class="col">
+                                            <a class="btn btn-secondary" href="{{ url_for('change_password') }}">
+                                                Change Password
+                                            </a>
+                                        </div>
+                                    </div>                                    
 
                                     <div class="container" style="text-align:center;">
                                         <a href="{{ url_for('pricing') }}" class="btn btn-lg btn-primary">
