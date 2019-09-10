@@ -25,13 +25,14 @@
 	  </div>
 	{% endif %}
 	{% if website %}
-	<div class="input-group col-12">
+	<div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text inputGroup-sizing-sm">https://</span>
       </div>
 	{% endif %}
 
 		{{ field(**kwargs)|safe }}
+		<span class="form-control-border"></span>
 
 	{% if website or currency %}
 	</div>
@@ -101,7 +102,7 @@
 	{% endif %}
 
 	{% if position == 1 %}
-		<h2 class="blue_header">{{ open_h2 }}</h2>
+		<h5 class="blue_header">{{ open_h2 }}</h5>
 	{% else %}
 		<p>{{ open_p }}</p>
 	{% endif %}
@@ -313,7 +314,7 @@
 		{% set website = False %}
 	{% endif %}
 
-
+	
 	{{ render_field(form[name], id=name, maxlength=maxlength, placeholder=placeholder, class=class_list, website=website, currency=currency) }}
 
 	{% if type == "number_input" and name != "zip" %}
@@ -423,6 +424,7 @@
 
 							<div class="input-group">
 								<input style="text-align:center;" type="text" id="percent" class="percent in_box form-control form-control" placeholder="" name="{{sub_name}}">
+								<span class="form-control-border"></span>
 								<div class="input-group-append">
 									<span class="input-group-text">%</span>
 								</div>

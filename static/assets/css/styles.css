@@ -417,9 +417,13 @@ html {
 .btn > h6 {
   color: white;
 }
+.btn:active {
+  font-size:80%;
+}
 
 .btn, .navbar .navbar-nav > a.btn {
   text-transform: uppercase;
+  transition: .5s;
   font-weight: bold !important; 
   border-width: 2px;
   font-weight: 400;
@@ -913,10 +917,29 @@ fieldset[disabled] .btn-link.active {
 label {
   margin-top: 3%;
 }
+
+.form-control ~ .form-control-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--secondary);
+  transition: 0.5s;
+}
+
+.form-control:focus ~ .form-control-border {
+  width: 100%;
+}
+
 .form-control {
   background-color: transparent;
-  border: var(--input-border-weight) solid var(--input-border-color);
-  border-radius: 30px;
+  border-top: 3px solid transparent;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 3px solid rgba(0,0,0,.1);
+  /* border: var(--input-border-weight) solid var(--input-border-color); */
+  /* border-radius: 30px; */
   color: var(--input-color);
   line-height: normal;
   font-size: 0.8571em;
@@ -925,17 +948,20 @@ label {
   -o-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
   -ms-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
   transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  -webkit-box-shadow: none;
-  box-shadow: var(--inset-box-shadow) }
+  -webkit-box-shadow: none; }
   .form-control:focus {
-    border: var(--input-border-weight) solid var(--input-border-color-focus);
+    border-bottom: 3px solid rgba(0,0,0,.1);
+    border-top: 3px solid transparent;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    /* border: var(--input-border-weight) solid var(--input-border-color-focus); */
     -webkit-box-shadow: none;
     box-shadow: none;
     outline: 0 !important;
     color: var(--input-color-focus); }
     .form-control:focus + .input-group-append .input-group-text, .form-control:focus ~ .input-group-append .input-group-text, .form-control:focus + .input-group-prepend .input-group-text, .form-control:focus ~ .input-group-prepend .input-group-text {
-      border: 1px solid var(--secondary);
-      border-left: none;
+      /* border: 1px solid var(--secondary); */
+      border-left: 3px solid transparent;
       background-color: transparent; }
   .has-success .form-control, .has-error .form-control, .has-success .form-control:focus, .has-error .form-control:focus {
     -webkit-box-shadow: none;
@@ -1118,17 +1144,12 @@ label {
 
 .has-success .form-control-feedback, .has-success .control-label {
   color: #18ce0f; }
+  /* anchor */
 
 .input-group-append .input-group-text, .input-group-prepend .input-group-text {
   background-color: transparent;
-  border: 1px solid #E3E3E3;
-  border-radius: 30px;
-  color: #888;
-  -webkit-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  -moz-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  -o-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  -ms-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
-  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out; }
+  border: 3px solid transparent;
+  color: #888;}
   .input-group-append .input-group-text i,
   .input-group-prepend .input-group-text i {
     opacity: .5; }
@@ -1178,7 +1199,7 @@ label {
   background-color: #E3E3E3; }
 
 .input-group .form-control:not(:first-child):not(:last-child), .input-group-btn:not(:first-child):not(:last-child) {
-  border-radius: 30px;
+  /* border-radius: 30px; */
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left: 0 none; }
@@ -4006,9 +4027,9 @@ li.breadcrumb-item.active a {
 
 
 .yellow_border {
-  padding-bottom: 5%;
+  padding-bottom: 1%;
   margin-bottom: 5%;
-  border-bottom: 10pt solid #ffd8ad;
+  border-bottom: 10pt solid var(--left-nav);
 }
 
 .blue_header {
