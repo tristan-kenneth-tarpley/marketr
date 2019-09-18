@@ -374,4 +374,8 @@ def marketr_score():
 def notifications():
     user = session['user'] if session['customer'] == True else request.args.get('customer_id')
     notifications = NotificationsService(user)
-    return json.dumps(notifications.get())
+    notifications_list = json.dumps(notifications.get())
+    if notifications_list:
+        return notifications_list
+    else:
+        return None
