@@ -377,3 +377,15 @@ const PriceViewModel = class {
         // $("#testing_savings")
     }
 }
+
+class AuditViewModel {
+    constructor() {
+        this.audit_service = new AdAuditService()
+        $('.affirmative').click(()=>{
+            this.audit_service.answer(true)
+        })
+        $('.negative').click(()=>{
+            this.audit_service.answer(false)
+        })
+    }
+}

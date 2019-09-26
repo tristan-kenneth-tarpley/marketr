@@ -2,7 +2,7 @@ import pandas as pd
 import pyodbc
 import time
 from passlib.hash import sha256_crypt
-from app import *
+from app import app
 
 app.config.from_pyfile('config.cfg')
 
@@ -27,8 +27,8 @@ def init_db():
 	    	try:
 	    		del db
 	    		db = pyodbc.connect(connStr)
-	    		return db
 	    		try_flag = False
+	    		return db
 	    	except:
 	    		retry_count = retry_count + 1
 	    		time.sleep(1)
@@ -75,10 +75,10 @@ def sql_to_df(x):
 	db = init_db()
 	while retry_flag and retry_count <5:
 		if retry_count == 4:
-			return "can you try again, please?"
-		try:
-			retry_flag = False
+			return False
+		try:	
 			return pd.read_sql_query(x, db, index_col=None, coerce_float=True, params=None, parse_dates=None, chunksize=None)
+			retry_flag = False 
 		except:
 			retry_count = retry_count + 1
 			time.sleep(1)

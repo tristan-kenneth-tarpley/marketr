@@ -236,3 +236,11 @@ const TaskService = class {
         
     }
 }
+
+
+
+class AdAuditService {
+    constructor(){
+        console.log('initialized')
+    }
+}

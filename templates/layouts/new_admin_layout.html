@@ -1,0 +1,42 @@
+{% extends "/layouts/layout.html" %}
+{% from "macros/_admin_macros.html" import admin_sidebar, admin_breadcrumb %}
+
+
+{% block title %}
+<title>
+	Market(r) - Admin
+</title>
+{% endblock %}
+
+{% block content %}
+	<div class="main-panel">
+
+        {{ admin_sidebar('test', owner, admin, manager) }}
+		{% include "/topbar/topbar-admin.html" %}
+		
+		<div class="panel-header panel-header-sm">
+		</div>
+		<div class="content">
+			<div class="append_to">
+				<div class="card root-card">
+					<style>
+						.card {
+							padding: 5%;
+						}
+                    </style>
+
+					<div id="loading">
+						<div class="load-circle"><span class="one"></span></div>
+					</div>
+
+					<div id="content-ready" style="visibility: hidden;">
+						{{ admin_breadcrumb(page, view=view) }}
+						{% if view == "ad audit" %}
+							{% include "admin_view/ad_audit.html" %}
+						{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

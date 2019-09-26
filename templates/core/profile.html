@@ -157,7 +157,7 @@
 	{% else %}
 		<div class="row">
 			<div class="col-lg-5 col-sm-12">
-				<img src="/static/assets/img/competitors.png">
+				<img src="/static/assets/img/competitors.jpg">
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-6">
@@ -177,7 +177,7 @@
 
 {% macro five() %}
 
-{% if page.data['audiences']['audiences'] %}
+{% if page.data['audiences']['audiences'] and page.data['audiences']['audiences'][0]['persona_name'] %}
 	{% for audience in page.data['audiences']['audiences'] %}
 		{% set state = audience %}
 		{% if state['persona_name'] %}	
@@ -288,12 +288,12 @@
 	{% endfor %}
 {% else %}
 <div class="row">
-	<div class="col-lg-6 col-sm-12">
+	<div class="col-lg-6 col-sm-12"><br><br><br>
 		<h5>Who are we without our customers?</h5>
 		<p>Complete your customer persona section and Market(r) will be able to use artificial intelligence to create ads that connect with your target audience.</p>
 		{% if not admin %}<a href="{{url_for('audience', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
 	</div>
-	<div class="col-lg-5 col-sm-12"><img class="empty_img" src="/static/assets/img/audience.png"></div>
+	<div class="col-lg-5 col-sm-12"><img class="empty_img" src="/static/assets/img/audience.jpg"></div>
 </div>
 {% endif %}
 
@@ -427,9 +427,9 @@
 	{% else %}
 		<div class="row">
 			<div class="col-lg-5 col-sm-12">
-				<img src="/static/assets/img/product.png">
+				<img src="/static/assets/img/product.jpg">
 			</div>
-			<div class="col-lg-1"></div>
+			<div class="col-lg-1"></div><br><br><br>
 			<div class="col-lg-6 col-sm-12">
 				<h5>What value do you trade for customers' $?</h5>
 				<p>By describing your product, its characteristics and positioning in the market, and customer value you'll unlock a wealth of new tactics that can help improve product-market-fit. </p>
@@ -476,14 +476,14 @@
 		</div>
 	{% else %}
 		<div class="row">
-			<div class="col-lg-6 col-sm-12">
+			<div class="col-lg-6 col-sm-12"><br><br><br>
 				<h5>How does your brand engage with customers throughout their buying experience?</h5>
 				<p>Every business follows predictable sales cycles. Describe all the touchpoints in each state and Market(r) can recommend tactics to bridge any identified gaps.</p>
 				{% if not admin %}<a href="{{url_for('salescycle', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-5 col-sm-12">
-				<img src="/static/assets/img/salescycle.png">
+				<img src="/static/assets/img/salescycle.jpg">
 			</div>
 		</div>
 	{% endif %}
@@ -543,13 +543,13 @@
 {% else %}
 	<div class="row">
 		<div class="col-lg-5 col-sm-12">
-			<img src="/static/assets/img/platforms.png">
+			<img src="/static/assets/img/platforms.jpg">
 		</div>
 		<div class="col-lg-1"></div>
-		<div class="col-lg-6 col-sm-12">
+		<div class="col-lg-6 col-sm-12"><br><br><br>
 			<h5>What have you already tried?</h5>
 			<p>By detailing what you've done before and whether it was good or bad, our human account managers can provide better recommendations given that context.</p>
-			{% if not admin %} %<a href="{{url_for('history', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
+			{% if not admin %}<a href="{{url_for('history', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
 		</div>
 	</div>
 {% endif %}

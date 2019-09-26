@@ -240,28 +240,35 @@ class ScoreService:
         self.min_score = 200
         
     def pop_suffix(self, string):
-        if string[-1].isdigit() and not string[-2].isdigit():
-            return string[:-2]
-        elif string[-2].isdigit():
-            return string[:-3]
-        else:
+        try:
+            if string[-1].isdigit() and not string[-2].isdigit():
+                return string[:-2]
+            elif string[-2].isdigit():
+                return string[:-3]
+            else:
+                return string
+        except:
             return string
         
     def aggregate(self):
-        df = db.sql_to_df(f'exec prep_marketr_score @customer_id = {self.customer_id}')
-        return df
+        pass
         
     def clean(self):
-        df = self.aggregate()
-        df['html_name'] = df['html_name'].apply(self.pop_suffix)
-        df.drop_duplicates(subset ="html_name", keep = 'first', inplace=True)
-        self.df = df
-        self.total_possible = df.score_weight_factor.sum()
-        self.sum_completed = df[df.answer != 'null'].score_weight_factor.sum()
+        df = db.sql_to_df(f'exec prep_marketr_score @customer_id = {self.customer_id}')
+        if df:
+            df['html_name'] = df['html_name'].apply(self.pop_suffix)
+            df.drop_duplicates(subset="html_name", keep = 'first', inplace=True)
+            self.df = df
+            self.total_possible = df['score_weight_factor'].sum()
+            self.sum_completed = df[df['answer'] != 'null'].score_weight_factor.sum()
+        else:
+            return False
         
     def get(self):
-        self.clean()
-        return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))
+        if self.clean():
+            return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))
+        else:
+            return 'n/a'
     
     def get_head(self):
         self.clean()

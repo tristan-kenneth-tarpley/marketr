@@ -26,7 +26,7 @@
                 <h5>Where are we headed?</h5>
                 <p>Establish the goal that would make an impact on your business to put everything else in perspective. </p>
                 {% if not page.admin %}<a href="{{url_for('goals', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
-                <img src="/static/assets/img/goals.png">
+                <img src="/static/assets/img/goals.jpg">
             </div> 
         </div>
     {% endif %}
@@ -208,6 +208,7 @@
         <div class="card-footer">
             <div class="input-group chat-section">
                 <input class="chat_bar form-control" id="msg" placeholder="Market(r)">
+                <span class="form-control-border"></span>
                 <div class="input-group-append">
                     <div class="input-group-text">
                         <button id="send_msg" class="btn btn-icon btn-fab btn-round btn-primary send_button"><i class="now-ui-icons ui-1_send"></i></button>

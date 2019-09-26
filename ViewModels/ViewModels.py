@@ -577,7 +577,10 @@ class SettingsViewModel:
 			self.past_invoices = invoices
 			
 
-
+class AdAuditViewModel:
+	def __init__(self, admin_id=None, customer_id=None):
+		self.admin_id = admin_id
+		self.user = customer_id
 
 
 
