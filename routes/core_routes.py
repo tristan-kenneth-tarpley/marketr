@@ -186,7 +186,7 @@ def ads_checkout():
         return redirect(url_for('ads_checkout', session_id=obj.id))
 
 # anchor
-@app.route('/success')
+@app.route('/Xr8FcPcNQsvTEJ3kuznY')
 def success():
     # get plan id
     email = session['email'] if session['logged_in'] else request.args.get('email')

@@ -504,9 +504,7 @@
 
 	{% macro formulate_row(link, title=None, view=view, customer_id=None) %}
 
-		{% if view == title %}
-			{% set classList = "active" %}
-		{% elif view == 'audit_history' and title == 'ad audit' %}
+		{% if view == title or (view == 'audit_master' and title == 'ad audit') %}
 			{% set classList = "active" %}
 		{% endif %}
 
@@ -524,7 +522,7 @@
 			{% set customer_id = page.user if not profile_view else page.customer_id %}
 			{{ formulate_row("acct_mgmt", title="dashboard", view=view, customer_id=customer_id) }}
 			{{ formulate_row("customer_profile_view_admin", title="customer profile", view=view, customer_id=customer_id) }}
-			{{ formulate_row("audit_master", title='ad audit', view='audit_history', customer_id=customer_id) }}
+			{{ formulate_row("audit_master", title='ad audit', view=view, customer_id=customer_id) }}
 		</ol>
 	</nav>
 

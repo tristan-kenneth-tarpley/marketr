@@ -280,7 +280,8 @@ def audit_master(customer_id):
 			owner=session['owner_logged_in'],
 			admin=session['admin_logged_in'],
 			manager=session['manager_logged_in'],
-			page=page
+			page=page,
+			customer_id=customer_id
 		)
 	else:
 		return 'You do not have permission to view this client.'

@@ -63,7 +63,7 @@ const PageMap = (route) => {
 	}
 	
 	if (route.substring(0, 10) == "/customers" && hasNumber(route)){
-		if (route.substring(14) == '/ad_audit' && hasNumber(route)) {
+		if (route.substring(27) == '/ad_audit' && hasNumber(route)) {
 			return 'audit'
 		} else {
 			return 'customers'

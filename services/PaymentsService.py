@@ -9,7 +9,7 @@ class PaymentsService:
         app.config.from_pyfile('config.cfg')
         self.sk = app.config['STRIPE_SK']
         self.pk = app.config['STRIPE_PK']
-        self.success_url = 'https://marketr.life/success'
+        self.success_url = 'https://marketr.life/Xr8FcPcNQsvTEJ3kuznY'
         self.cancel_url = 'https://marketr.life/logout'
         self.email = email
         self.customer_id = customer_id
