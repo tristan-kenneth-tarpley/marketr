@@ -131,3 +131,30 @@ const notificationEl = (type, copy, admin) => {
 	const el = `<a href="${link}" class="notification dropdown-item text-warning">New ${type}: ${copy}</a>`
 	return el
 }
+
+
+// const audit_row = (copy, action=false) => {
+// 	let buttons;
+// 	if (action == false){
+// 		buttons = `
+// 		<button class="affirmative btn btn-outline-secondary">
+// 			agree
+// 		</button>
+// 		<button class="negative btn btn-outline btn-outline-danger">
+// 			disagree
+// 		</button>
+// 		`
+// 	} else {
+// 		buttons = ``
+// 	}
+
+// 	el = `
+// 	<div class="row">
+//     	<div class="audit_row col">
+// 			<p>${copy}</p>
+// 			${buttons}
+//     	</div>
+// 	</div>`
+
+// 	return el
+// }

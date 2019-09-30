@@ -268,16 +268,33 @@ def customer_profile_view_admin(customer_id):
 		return 'You do not have permission to view this client.'
 
 
-@app.route('/customers/<customer_id>/ad_audit', methods=['GET'])
+@app.route('/customers/<customer_id>/audit_master', methods=['GET'])
+@admin_required
+def audit_master(customer_id):
+	vf = AdminViewFuncs(customer_id)
+	if vf.ValidView():
+		page = AdAuditViewModel(admin_id=session['admin'], customer_id=customer_id)
+		return render_template(
+			'layouts/new_admin_layout.html',
+			view="audit_master",
+			owner=session['owner_logged_in'],
+			admin=session['admin_logged_in'],
+			manager=session['manager_logged_in'],
+			page=page
+		)
+	else:
+		return 'You do not have permission to view this client.'
+
+
+@app.route('/customers/<customer_id>/audit_master/ad_audit', methods=['GET'])
 @admin_required
 def ad_audit_view(customer_id):
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
 		page = AdAuditViewModel(admin_id=session['admin'], customer_id=customer_id)
 		obj = ad_audit()
-		session['audit_state'] = json.dumps(obj.struct)
 		first_question = obj.struct[1]['title']
-		obj.run(session['audit_state'])
+		session['audit_state'] = json.dumps(obj.struct)
 		return render_template(
 			'layouts/new_admin_layout.html',
 			view="ad audit",
@@ -290,22 +307,34 @@ def ad_audit_view(customer_id):
 	else:
 		return 'You do not have permission to view this client.'
 
-@app.route('/customers/<customer_id>/ad_audit/answer', methods=['POST'])
+
+
+@app.route('/ad_audit/kill', methods=['POST'])
 @admin_required
-def audit_answer(customer_id):
+def kill_audit():
+	del session['audit_state']
+	return 'success'
+
+@app.route('/ad_audit/answer', methods=['POST'])
+@admin_required
+def audit_answer():
 	obj = ad_audit()
-	obj.answer(request.form['answer'], session['object_state'])
-	return audit_next_question(customer_id)
+	session['audit_state'] = obj.answer(request.form['answer'], session['audit_state'], request.form['level'])
+	return audit_next_question(int(request.form['level'])+1)
 
 
-def audit_next_question(customer_id):
+def audit_next_question(level):
 	obj = ad_audit()
-	obj.struct = session['object_state']
-	cont, question = obj.run(session['object_state'])
+	obj.struct = session['audit_state']
+	cont, question = obj.parse(session['audit_state'], level)
 	if cont:
 		return question
 	else:
 		return 'action: ' + question
+
+
+
+
 
 
 

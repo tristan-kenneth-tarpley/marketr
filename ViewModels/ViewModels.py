@@ -582,6 +582,9 @@ class AdAuditViewModel:
 		self.admin_id = admin_id
 		self.user = customer_id
 
+	def history(self):
+		pass
+
 
 
 

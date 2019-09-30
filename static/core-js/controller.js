@@ -534,7 +534,6 @@ const PageViewController = class {
 					view_model.messages()
 					view_model.dashboard()
 					const audit = new AuditViewModel()
-					audit.init()
 					break
 				case 'pricing':
 				case 'index':

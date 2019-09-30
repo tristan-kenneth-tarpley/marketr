@@ -5,10 +5,10 @@ class ad_audit:
         self.level = 1
         self.struct =  {
         1: {
-            'title': 'Are they getting impressions?\n', 
+            'title': 'Are they getting impressions?', 
             True: {
                 2: {
-                    'title': 'Are they getting clicks?\n',
+                    'title': 'Are they getting clicks?',
                     True: {
                         3: {
                             'title': 'Is the ad copy and targeting congruent with the landing page copy and graphics?',
@@ -22,57 +22,59 @@ class ad_audit:
                                         6: {
                                             'title': "Are you a/b testing offers?",
                                             True: {
-                                                'action': 'add more channels'
+                                                'Action': 'add more channels'
                                             }
                                         }
                                         },
                                         False: {
                                             6: {
-                                                'action': 'a/b test audiences'
+                                                'Action': 'a/b test audiences'
                                             }
                                         }
                                     }
                                 },
                                 False: {
                                     6: {
-                                        'action': 'a/b test audiences'
+                                        'Action': 'a/b test audiences'
                                     }
                                 }
                             }
                             },
                             False: {
                                 4: {
-                                    'action': 'Align campaign architecture'
+                                    'Action': 'Align campaign architecture'
                                 }
                             }
                         }
                     },
                     False: {
                         3: {
-                            'action': 'optimize creative and copy'
+                            'Action': 'optimize creative and copy'
                         }
                     }
                 }
             },
             False: {
                 2: {
-                    'title': 'Is the ad showing at all?\n',
+                    'title': 'Is the ad showing at all?',
                     True: {
                         3: {
-                            'action': 'Broaden audience using spyfu or facebook audiences'
+                            'Action': 'Broaden audience using spyfu or facebook audiences'
                         }
                     },
                     False: {
-                        'action': 'Optimize bids'
+                        3: {
+                            'Action': 'Optimize bids'
+                        }
                     }
                 }
             }
         }
     }
 
-    def validate_answer(self, answer):
-        affirmative_answers = ['yes', 'y', 'yup', 'high']
-        negative_answers = ['no', 'n', 'nope', 'low']
+    def validate_answer(self, answer) -> bool:
+        affirmative_answers = ['true', 'yes', 'y', 'yup', 'high']
+        negative_answers = ['false', 'no', 'n', 'nope', 'low']
 
         if answer.lower() in affirmative_answers:
             return True
@@ -81,29 +83,29 @@ class ad_audit:
         else:
             return "error"
 
-    def run(self, struct):
-        struct = json.loads(struct)
-        question = struct[str(self.level)].get('title')
 
-        if question:
-            return True, question
-        elif question == None:
-            action = struct[str(self.level)].get('action')
-            return False, action
-
-    def answer(self, answer, struct):    
-        proceed = self.traverse(answer, struct)
-        if proceed == False:
+    def answer(self, answer, struct, level) -> dict:    
+        result = self.traverse(answer, struct, level)
+        if result == False:
             return 'Error: input not accepted'
-            # answer = input(question)
-            # proceed = self.traverse(answer, struct)
+        else:
+            return json.dumps(result)
 
-    def traverse(self, answer, struct):
+    def traverse(self, answer, struct, level):
+        struct = json.loads(struct)
         proceed = self.validate_answer(answer)
         if proceed != 'error':
-            struct = json.dumps(struct[str(self.level)][str(proceed).lower()])
-            self.level = self.level + 1
-            self.run(struct)
+            struct = struct[level][str(proceed).lower()]
+            return struct
         else:
             return False
 
+    def parse(self, struct, level) -> str:
+        struct = json.loads(struct)
+        print(struct)
+        question = struct[str(level)].get('title')
+        if question:
+            return True, question
+        elif question == None:
+            action = struct[str(level)].get('Action')
+            return False, action

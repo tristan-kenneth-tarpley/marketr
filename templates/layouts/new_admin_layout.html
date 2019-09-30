@@ -33,6 +33,8 @@
 						{{ admin_breadcrumb(page, view=view) }}
 						{% if view == "ad audit" %}
 							{% include "admin_view/ad_audit.html" %}
+						{% elif view == 'audit_master' %}
+							{% include 'admin_view/audit_history.html' %}
 						{% endif %}
                     </div>
                 </div>

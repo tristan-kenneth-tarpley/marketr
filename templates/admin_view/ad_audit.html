@@ -1,7 +1,26 @@
-<h5>{{ first_question }}</h5>
-<button class="affirmative btn btn-primary">
-    Yes
-</button>
-<button class="negative btn btn-secondary">
-    No
-</button>
+<div class="row">
+    <div style="text-align:right;" class="col">
+        <button id="end_audit" class="btn btn-danger">End audit</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <h5 class="blue_header">Analysis complete!</h5>
+        <p><strong>Please carefully review each logic step and complete the ad audit for ABC Company and provide them with a delightful experience by helping them grow their business better than anyone else can!</strong></p>
+    </div>
+</div>
+
+<div id="audit_container">
+    <div class="row">
+        <div class="audit_row col">
+            <p id="question_copy">{{ first_question }}</p>
+            <button class="affirmative btn btn-outline-secondary">
+                agree
+            </button>
+            <button class="negative btn btn-outline btn-outline-danger">
+                disagree
+            </button>
+        </div>
+    </div>
+</div>

@@ -381,11 +381,17 @@ const PriceViewModel = class {
 class AuditViewModel {
     constructor() {
         this.audit_service = new AdAuditService()
+        this.level = 0
+        $("#end_audit").click(()=>{
+            this.audit_service.kill()
+        })
         $('.affirmative').click(()=>{
-            this.audit_service.answer(true)
+            this.level++
+            this.audit_service.answer(true, this.level)
         })
         $('.negative').click(()=>{
-            this.audit_service.answer(false)
+            this.level++
+            this.audit_service.answer(false, this.level)
         })
     }
 }

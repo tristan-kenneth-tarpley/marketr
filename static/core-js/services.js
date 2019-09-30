@@ -240,7 +240,36 @@ const TaskService = class {
 
 
 class AdAuditService {
-    constructor(){
-        console.log('initialized')
+    constructor() {
+        
+    }
+
+    append(res, action){
+        $("#question_copy").text(res)
+    }
+
+    answer(answer, level) {
+        const args = {'answer': answer, 'level': level}
+        $.post('/ad_audit/answer', args, res=>{
+            if (res.substring(0, 6).toLowerCase() == 'action') {
+                this.append(res, true)
+                this.end_audit()
+            } else {
+                this.append(res, false)
+            }
+        })
+    }
+
+    pop_new_question(){
+        console.log('pop new question')
+    }
+
+    end_audit(){
+        $('.affirmative, .negative').attr('disabled', 'true')
+    }
+
+    kill(){
+        $.post('/ad_audit/kill')
+        location.reload()
     }
 }

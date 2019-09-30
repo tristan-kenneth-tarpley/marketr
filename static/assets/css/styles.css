@@ -417,9 +417,6 @@ html {
 .btn > h6 {
   color: white;
 }
-.btn:active {
-  font-size:80%;
-}
 
 .btn, .navbar .navbar-nav > a.btn {
   text-transform: uppercase;
@@ -796,6 +793,16 @@ html {
   padding: 10px 22px;
   background-color: transparent; }
 
+.btn-outline-danger {
+  border-color: var(--btn-danger) !important;
+  color: var(--btn-danger) !important;
+  padding: 10px 22px;
+  background-color: transparent;
+}
+.btn-outline-danger:hover, .btn-outline-danger:focus {
+  background-color: transparent;
+}
+
 .btn-outline-primary:focus {
   background:transparent !important;
 }
@@ -804,7 +811,6 @@ html {
 }
 
 .btn-outline-primary {
-  border: var(--btn-outline-thickness) solid;
   border-color: var(--btn-primary) !important;
   color: var(--btn-primary) !important;
   padding: 10px 22px;
@@ -5548,4 +5554,9 @@ ul#product {
 .invoice_table thead > tr {
   background: #fafafa;
   border-radius: 20px 20px 0 0;
+}
+
+
+.audit_row {
+  text-align:center;
 }
