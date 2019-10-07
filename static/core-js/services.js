@@ -252,20 +252,18 @@ class AdAuditService {
         const args = {'answer': answer, 'level': level}
         $.post('/ad_audit/answer', args, res=>{
             if (res.substring(0, 6).toLowerCase() == 'action') {
-                this.append(res, true)
-                this.end_audit()
+                this.end_audit(res)
             } else {
                 this.append(res, false)
             }
         })
     }
 
-    pop_new_question(){
-        console.log('pop new question')
-    }
-
-    end_audit(){
+    end_audit(res){
         $('.affirmative, .negative').attr('disabled', 'true')
+        $("#prescription_container").removeClass('hidden')
+        $("#prescription").text(res.substring(8))
+        window.scrollTo(0,document.body.scrollHeight);
     }
 
     kill(){

@@ -334,18 +334,19 @@
 {% endmacro %}
 
 
+{% macro google_preview(page) %}
+<div class="google_ad_preview_container">
+    <h5>{{ base['best_headline_1'] }} | {{ base['best_headline_2'] }}</h5>
+    <p class="website"><span>Ad</span> www.website.com</p>
+    <p>{{ base['best_description'] }}</p>
+</div>
+{% endmacro %}
+
 {% macro ads_performance(page) %}
 
 
     {% macro ad_display(page, best=True) %}
         {% set base = page.data['google']['google'][0] %}
-        {% macro google_preview(page) %}
-            <div class="google_ad_preview_container">
-                <h5>{{ base['best_headline_1'] }} | {{ base['best_headline_2'] }}</h5>
-                <p class="website"><span>Ad</span> www.website.com</p>
-                <p>{{ base['best_description'] }}</p>
-            </div>
-        {% endmacro %}
 
         <div class="row">
             <div class="col-lg-12">
@@ -401,4 +402,45 @@
         <li>Your Market(r) guide will craft your initial {{ 'campaigns' if service == 'Paid Ads' else 'tests' }} within specified budget parameters.</li>
         <li>You'll see key metrics here within 1 week. </li>
     </ol>
+{% endmacro %}
+
+{% macro ad_metrics(page) %}
+    {% macro metrics_col(page, title=None) %}
+        <div class="ad_container">
+            <h5>{{ title }}</h5>
+            <div class="row">
+                <div class="col-lg-6 col-md-4 col-sm-12">
+                    <p class="small_txt"><strong>Industry</strong> avg.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-4 col-sm-12">
+                    <p class="small_txt"><strong>ABC Company's</strong> prior 7-day avg.</p>
+                </div>
+            </div>
+            <div class="box">
+                <p style="margin-bottom: 0;" class="small_txt">Cost-savings per $1,000 spent</p>
+                <h5 class="blue_header">$320</h5>
+            </div>
+        </div>
+    {% endmacro %}
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <p><strong>4</strong> Ads are active</p>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <p><strong>8</strong> Ads tested past 30 days</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ metrics_col(page, title="Cost Per Click (CPC)") }}
+        </div>
+        <div class="col">
+            {{ metrics_col(page, title="Click-Through Rate (CTR)") }}
+        </div>
+        <div class="col">
+            {{ metrics_col(page, title="Clicks Per $1,000 Spend") }}
+        </div>
+    </div>
 {% endmacro %}

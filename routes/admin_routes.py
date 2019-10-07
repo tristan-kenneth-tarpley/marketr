@@ -287,15 +287,24 @@ def audit_master(customer_id):
 		return 'You do not have permission to view this client.'
 
 
-@app.route('/customers/<customer_id>/audit_master/ad_audit', methods=['GET'])
+@app.route('/customers/<customer_id>/audit_master/ad_audit', methods=['GET', 'POST'])
 @admin_required
 def ad_audit_view(customer_id):
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
+		
+		atForm = forms.ActionsTaken()
+		dForm = forms.DisagreeForm()
+		if request.method == 'POST' and atForm.validate_on_submit() and 'atForm' in request.form:
+			return 'atform works'
+		elif request.method == 'POST' and dForm.validate_on_submit() and 'dForm' in request.form:
+			return 'dform works'
+
 		page = AdAuditViewModel(admin_id=session['admin'], customer_id=customer_id)
 		obj = ad_audit()
 		first_question = obj.struct[1]['title']
 		session['audit_state'] = json.dumps(obj.struct)
+
 		return render_template(
 			'layouts/new_admin_layout.html',
 			view="ad audit",
@@ -303,8 +312,12 @@ def ad_audit_view(customer_id):
 			admin=session['admin_logged_in'],
 			manager=session['manager_logged_in'],
 			page=page,
-			first_question = first_question
+			first_question = first_question,
+			atForm = atForm,
+			dForm = dForm,
+			customer_id = customer_id
 		)
+
 	else:
 		return 'You do not have permission to view this client.'
 

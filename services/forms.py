@@ -241,6 +241,12 @@ class ABForm(FlaskForm):
 class InsightForm(FlaskForm):
     body = TextAreaField('body', validators=[validators.InputRequired()])
 
+class ActionsTaken(FlaskForm):
+    form_body = TextAreaField('body', validators=[validators.InputRequired()])
+
+class DisagreeForm(FlaskForm):
+    form_body = TextAreaField('body', validators=[validators.InputRequired()])
+
 class TagForm(FlaskForm):
     search = StringField('search')
     #Business model

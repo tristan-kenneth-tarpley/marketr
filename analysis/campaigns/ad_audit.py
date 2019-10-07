@@ -22,34 +22,34 @@ class ad_audit:
                                         6: {
                                             'title': "Are you a/b testing offers?",
                                             True: {
-                                                'Action': 'add more channels'
+                                                'action': 'add more channels'
                                             }
                                         }
                                         },
                                         False: {
                                             6: {
-                                                'Action': 'a/b test audiences'
+                                                'action': 'a/b test audiences'
                                             }
                                         }
                                     }
                                 },
                                 False: {
                                     6: {
-                                        'Action': 'a/b test audiences'
+                                        'action': 'a/b test audiences'
                                     }
                                 }
                             }
                             },
                             False: {
                                 4: {
-                                    'Action': 'Align campaign architecture'
+                                    'action': 'Align campaign architecture'
                                 }
                             }
                         }
                     },
                     False: {
                         3: {
-                            'Action': 'optimize creative and copy'
+                            'action': 'optimize creative and copy'
                         }
                     }
                 }
@@ -59,12 +59,12 @@ class ad_audit:
                     'title': 'Is the ad showing at all?',
                     True: {
                         3: {
-                            'Action': 'Broaden audience using spyfu or facebook audiences'
+                            'action': 'Broaden audience using spyfu or facebook audiences'
                         }
                     },
                     False: {
                         3: {
-                            'Action': 'Optimize bids'
+                            'action': 'Optimize bids'
                         }
                     }
                 }
@@ -102,10 +102,9 @@ class ad_audit:
 
     def parse(self, struct, level) -> str:
         struct = json.loads(struct)
-        print(struct)
         question = struct[str(level)].get('title')
         if question:
             return True, question
         elif question == None:
-            action = struct[str(level)].get('Action')
+            action = struct[str(level)].get('action')
             return False, action

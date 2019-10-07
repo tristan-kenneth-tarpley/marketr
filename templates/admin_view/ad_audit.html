@@ -1,6 +1,6 @@
 <div class="row">
     <div style="text-align:right;" class="col">
-        <button id="end_audit" class="btn btn-danger">End audit</button>
+        <button id="end_audit" class="btn btn-outline btn-outline-danger">End audit</button>
     </div>
 </div>
 
@@ -21,6 +21,36 @@
             <button class="negative btn btn-outline btn-outline-danger">
                 no
             </button>
+        </div>
+    </div>
+</div>
+<div class="hidden" id="prescription_container">
+    <div class="separator"></div>
+    <div class="row">
+        <div style="text-align:center;" class="col">
+            <h5>Market(r) Bot recommends...</h5>
+            <p id="prescription"></p>
+            <div class="row">
+                <div class="col">
+                    <button class="admin_feedback btn btn-secondary">Agree</button><br>
+                    <form class="hidden" method="POST" action="{{ url_for('ad_audit_view', customer_id=customer_id) }}">
+                        {{ atForm.csrf_token }}
+                        {{ render_field(atForm.form_body, placeholder="Describe the actions you have taken on this account", class="form-control") }}
+                        <button name="atForm" type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                    
+                </div>
+                <div class="col">
+                    <button class="admin_feedback btn btn-danger">Disagree</button>
+                    <form class="hidden" method="POST" action="{{ url_for('ad_audit_view', customer_id=customer_id) }}">
+                        {{ dForm.csrf_token }}
+                        {{ render_field(dForm.form_body, placeholder="Why do you disagree?", class="form-control")}}
+                        <button name="dForm" type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                    
+                    
+                </div>
+            </div>
         </div>
     </div>
 </div>

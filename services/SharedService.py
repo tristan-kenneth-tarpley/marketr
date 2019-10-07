@@ -255,20 +255,19 @@ class ScoreService:
         
     def clean(self):
         df = db.sql_to_df(f'exec prep_marketr_score @customer_id = {self.customer_id}')
-        if df:
-            df['html_name'] = df['html_name'].apply(self.pop_suffix)
-            df.drop_duplicates(subset="html_name", keep = 'first', inplace=True)
-            self.df = df
-            self.total_possible = df['score_weight_factor'].sum()
-            self.sum_completed = df[df['answer'] != 'null'].score_weight_factor.sum()
-        else:
-            return False
+    
+        df['html_name'] = df['html_name'].apply(self.pop_suffix)
+        df.drop_duplicates(subset="html_name", keep = 'first', inplace=True)
+        self.df = df
+        self.total_possible = df['score_weight_factor'].sum()
+        self.sum_completed = df[df['answer'] != 'null'].score_weight_factor.sum()
+  
         
     def get(self):
-        if self.clean():
-            return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))
-        else:
-            return 'n/a'
+        self.clean()
+        return str(math.ceil(self.sum_completed/self.total_possible * self.spread + self.min_score))
+        # else:
+        #     return 'n/a'
     
     def get_head(self):
         self.clean()

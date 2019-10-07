@@ -365,10 +365,9 @@ def remove_task():
 @app.route('/api/marketr_score', methods=['GET'])
 @login_required
 def marketr_score():
-    # user = session['user'] if session['customer'] == True else request.args.get('customer_id')
-    # score = ScoreService(user)
-    # return score.get()
-    return 'n/a'
+    user = session['user'] if session['customer'] == True else request.args.get('customer_id')
+    score = ScoreService(user)
+    return score.get()
 
 @app.route('/api/notifications', methods=['GET'])
 @login_required

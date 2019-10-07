@@ -393,5 +393,10 @@ class AuditViewModel {
             this.level++
             this.audit_service.answer(false, this.level)
         })
+        $(".admin_feedback").click(e=>{
+            let $this = e.currentTarget
+            $($this).siblings().toggleClass('hidden')
+            window.scrollTo(0,document.body.scrollHeight);
+        })
     }
 }

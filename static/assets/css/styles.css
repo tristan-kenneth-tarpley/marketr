@@ -5560,3 +5560,21 @@ ul#product {
 .audit_row {
   text-align:center;
 }
+
+.ad_container h5 {
+  font-size: 95%;
+}
+
+.small_txt {
+  font-size: 85%;
+}
+.ad_container .box {
+  padding: 10%;
+  width: 90%;
+  text-align:center;
+  border-top: 3px solid var(--primary);
+  background-color: var(--left-nav);
+}
+.ad_container .box h5 {
+  font-size: 120% !important;
+}
