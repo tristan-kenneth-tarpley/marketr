@@ -1,0 +1,224 @@
+{% from "macros/dashboard_macros.html" import back_button %}
+{% from "macros/_macros.html" import render_field %}
+{% macro change_password() %}
+
+    <div class="col">
+        <p>To change your password, <a class="" href="{{ url_for('change_password') }}">click here</a>.</p>
+    </div>
+     
+{% endmacro %}
+
+{% macro plans(page) %}
+<label>Select a plan for details and invoices</label>
+{% for plan in page.plans %}
+    <div class="row">
+        <div class="col">
+
+            <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}" class="plan_container">
+                <h4>{{ page.plans[plan]['nickname'] }}</h4>
+                <h6>{{ "$%.2f"|format(page.plans[plan]['amount']|float) }}/month</h6>   
+            </a>
+        </div>
+    </div>
+    <div class="fine_print">
+        <ol>
+            <li style="font-size:75%; opacity: .7;">If fees owed become more than 10 days overdue, all services will freeze (regardless of remaining ad-funds remaining) until payment submitted. Note:  Market(r) cannot use Funds submitted for ad spend for the purpose of paying for service fees. </li>
+            <ul>
+                <li style="font-size:75%; opacity: .7;">Read <a href="#">terms & conditions</a> for more info.</li>
+            </ul>
+        </ol>
+    </div>
+{% endfor %}
+{% endmacro %}
+
+{% macro welcome(page) %}
+<h6>Welcome, {{ page.customer['first_name'] }}.</h6>
+{% if page.plans %}<p>To begin, select a subscription to view.</p>{% endif %}
+                     
+{% endmacro %}
+
+{% macro cancel_subscription(plan_id) %}
+<form method="POST">
+    <input type="text" name="sub_id" value="{{ plan_id }}" class="hidden">
+    <button type="button" data-toggle="modal" data-target="#cancel_modal" class="btn btn-neutral btn-danger">
+        Cancel subscription
+    </button>
+    <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h6 style="text-align:left;" class="modal-title" id="exampleModalLabel">Are you sure you want to cancel your subscription?</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-neutral" data-dismiss="modal">Close</button>
+                    <button type="submit" value="true" name="cancel_sub" class="btn btn-danger">Yes, I'm sure</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endmacro %}
+
+{% macro invoices(page) %}
+<div class="row">
+    <div class="col-lg-12">
+        <h3>Invoices</h3>
+    </div>
+    <div class="col-lg-12 invoices">
+        <table class="table invoice_table" style="width: 100%;">
+            <thead>
+                <tr>
+                    <td>Amount</td>
+                    <td>Status</td>
+                    <td>Due</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in page.past_invoices %}
+                <tr>
+                    <td>{{ "$%.2f"|format(page.past_invoices[invoice]['amount_due'] | float) }}</td>
+                    <td>
+                        {{ page.past_invoices[invoice]['status'] }}
+                    </td>
+                    <td>
+                        {{ page.past_invoices[invoice]['due'] | to_date }}
+                    </td>
+                    <td>
+                        {#<form method="POST">
+                            <input type="text" name="plan_id" class="hidden" value="{{plan_id}}">
+                            <input type="text" name="invoice_id" class="hidden" value="{{page.past_invoices[invoice]['id']}}">
+                            <button 
+                            style="background: none"
+                            type="submit"
+                            name="send_invoice"
+                            value="true"
+                            class="btn btn-neutral"
+                            data-toggle="modal"
+                            data-target="#invoice_{{loop.index}}_form">Email invoice
+                                <i class="now-ui-icons arrows-1_minimal-right"></i>
+                            </button>
+                        </form>#}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro plan_overview(page) %}
+<div class="row">
+    <div class="col-lg-12">
+        <label>Subscription Overview</label>
+    </div>
+    <div class="col-lg-12">
+            <h3>{{ "$%.2f"|format(page.plan_meta['amount'] | float) }}/month</h3>
+    </div>
+    <div class="plan_container-div">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <p>Next Payment</p>
+                <p style="color: #62cde0; font-size: 120%">
+                    <strong>{{ "$%.2f"|format(page.upcoming_invoices['amount'] | float)  }} on {{ page.upcoming_invoices['start'] | to_date }}</strong>
+                </p>
+            </div>
+            <div class="col-lg-9 col-sm-6">
+                <p>Started</p>
+                <p style="font-size: 120%;">
+                    <strong>
+                        {{ page.plan_meta['start_date'] | to_date }}
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro top_row() %}
+<div class="row">
+    <div class="col-lg-6">
+        {{ back_button('settings') }}
+    </div>
+    <div style="text-align:right;" class="col-lg-6">
+        {{ cancel_subscription(plan_id) }}
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro ad_spend_dash(page) %}
+<label>Ad Spend Wallet</label>
+<p>Load funds to your account in order to run your ads.</p>
+<p class="small_txt">Note: 100% of this money goes straight to the ad platforms and is only for your ad spend. We don't pocket any of this.</p>
+<div class="fine_print_container">
+    <div class="card negative_card">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <p>
+                    <strong>Funds Remaining</strong>
+                </p>
+                <h5 style="font-size:95%;"><strong>$900</strong></h5>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                <p><strong>Want to add Funds?</strong></p>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input type="number" style="background:#fff;" class="form-control">
+                            <span class="form-control-border"></span>
+                        </div>
+                        <div class="form-group">        
+                            <input id="one_time" class="form-control" type="radio" name="spend_rate" value="">
+                            <label for="one_time" class="small_txt">One time</p>
+            
+                            <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
+                            <label for="auto" class="small_txt">Set for auto-deposit</p>
+                            <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
+                        </div>
+                        
+                    </div>
+                    
+                </div>   
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <p>
+                    <strong>Current Spend Rate</strong>
+                </p>
+                <h5 style="font-size:95%;"><strong>$500/month</strong></h5>
+            </div>
+            <div class="col-lg-8">
+                <p><Strong>Need to change the spend rate?</Strong></p>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input type="number" style="background:#fff;" class="form-control">
+                            <span class="form-control-border"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>per month</p>
+                    </div>
+                </div>
+    
+                <button type="submit" class="btn btn-outline btn-outline-primary">Submit Change</button>
+            </div>
+        </div>
+    </div>
+    <div class="fine_print">
+        <ol>
+            <li style="opacity: .7; font-size: 75%;">Does not include ad spend scheduled for today, 11:59 pm CST.</li>
+            <li style="opacity: .7; font-size: 75%;">Monthly spend will be consistent per month however may fluctuate day-by-day based on ad-spend optimizations.  Any funds not used in current month will be applied as a credit for the next month.</li>
+            <li style="opacity: .7; font-size: 75%;">Change requests may take up to 24 hours to process</li>
+        </ol>
+    </div>
+</div>
+
+{% endmacro %}

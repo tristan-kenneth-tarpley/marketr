@@ -5556,6 +5556,13 @@ ul#product {
   border-radius: 20px 20px 0 0;
 }
 
+.negative_card {
+  background: #f5f8fd !important;
+  box-shadow: none;
+  padding: 3%;
+  border-radius: 5px;
+  margin: 0;
+}
 
 .audit_row {
   text-align:center;
@@ -5577,4 +5584,11 @@ ul#product {
 }
 .ad_container .box h5 {
   font-size: 120% !important;
+}
+
+.fine_print {
+  background: rgba(226, 232, 211, .7);
+  width: 100%;
+  padding: 3%;
+  margin: 0;
 }

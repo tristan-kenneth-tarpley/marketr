@@ -1,7 +1,12 @@
 {% from "macros/_macros.html" import render_field %}
 
 
-
+{% macro back_button(url) %}
+<a href="{{ url_for(url) }}">
+    <i class="now-ui-icons arrows-1_minimal-left"></i>
+    BACK
+</a>
+{% endmacro %}
 
 {% macro goals(page) %}
     {% if page.data['core']['core'][0]['goal'] %}
