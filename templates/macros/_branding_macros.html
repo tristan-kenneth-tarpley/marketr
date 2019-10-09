@@ -1,4 +1,4 @@
-{% macro pricing(logged_in) %}
+{% macro pricing(logged_in, settings_view=False) %}
     {% macro feature(copy) %}
         <li><i class="fas fa-check"></i> {{copy | safe}}</li>
     {% endmacro %}
@@ -8,7 +8,7 @@
         </div>
     {% endmacro %}
     {% macro shell(logged=logged_in, headline=None, subheading=None, body=None, footer=None) %}
-        <div class="col-lg-6 m-15px-tb">
+        <div class="col-lg-12 m-15px-tb">
             <div class="price-table price_calculator">
                 <div class="pt-head">
                     <h5>{{ headline | safe }}</h5>
@@ -28,12 +28,10 @@
     {% macro ad_body() %}
         <div class="row">
             <div class="col-lg-12">
-                <h5>$350/month flat fee + % of ad spend</h5>
-                <p><strong>Service cost per % of monthly ad spend</strong></p>
-                <p>$500-$5,000: 8%</p>
-                <p>$5,000-$15,000: 7%</p>
-                <p>$15,000-$35,000: 6%</p>
-                <p>$35,000+: 5%</p>
+                <p><strong>Transparent, flat-rate pricing</strong></p>
+                <p>$0-$499: $1/month</p>
+                <p>$500-$4,999: $395/month</p>
+                <p>$5,000+: $1,495/month</p>
             </div>
         </div>
     {% endmacro %}
@@ -130,10 +128,14 @@
     <section id="price" class="section gray-bg">
         <div class="container">
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
-                <div class="col-lg-8 col-md-10">
+                <div class="col-lg-8 col-md-8">
                     <div class="section-title text-center">
-                        <h2>Pricing</h2>
+                        <h2>{{'Pricing' if not settings_view else 'Get More Out Of Your Marketing'}}</h2>
+                        {% if not settings_view %}
                         <p>Not only do we bring to the table years of results on behalf of our clients, we can do it at a fraction of the cost of leading competitors due to superior technology.</p>
+                        {% elif settings_view %}
+                        <p>Let us take ads management off your plate so that you can focus on running your business.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -144,12 +146,12 @@
                     body=ad_body(),
                     footer=calculator(ads=True)
                 )}}
-                {{ shell(
+                {#{{ shell(
                     headline="A/B Testing",
                     subheading="Just want 1 test per month? We'll do it for <strong>$1/month</strong> (not joking)",
                     body=ab_body(),
                     footer=calculator(testing=True)
-                )}}
+                )}}#}
             </div>
         </div>
     </section>

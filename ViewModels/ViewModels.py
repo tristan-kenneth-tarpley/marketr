@@ -540,7 +540,11 @@ class SettingsViewModel:
 		data, cursor = db.execute(query, True, (self.customer_id,))
 		data = cursor.fetchone()
 		self.customer = {
-			'first_name': data[0]
+			'first_name': data[0],
+			'current_plan': False if not data[1] else True,
+			'almost_free': False if not data[2] else True,
+			'ad_mid': False if not data[3] else True,
+			'ad_premium': False if not data[4] else True
 		}
 
 	def subscription(self):

@@ -3,7 +3,7 @@
 {% macro change_password() %}
 
     <div class="col">
-        <p>To change your password, <a class="" href="{{ url_for('change_password') }}">click here</a>.</p>
+        <p>To change your password, <a style="color: #ca7d66;" class="" href="{{ url_for('change_password') }}">click here</a>.</p>
     </div>
      
 {% endmacro %}
@@ -117,7 +117,7 @@
         <label>Subscription Overview</label>
     </div>
     <div class="col-lg-12">
-            <h3>{{ "$%.2f"|format(page.plan_meta['amount'] | float) }}/month</h3>
+        <h3>{{ "$%.2f"|format(page.plan_meta['amount'] | float) }}/month</h3>
     </div>
     <div class="plan_container-div">
         <div class="row">
@@ -188,18 +188,25 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-4 col-md-12">
                 <p>
                     <strong>Current Spend Rate</strong>
                 </p>
                 <h5 style="font-size:95%;"><strong>$500/month</strong></h5>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-8 col-md-12">
                 <p><Strong>Need to change the spend rate?</Strong></p>
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <input type="number" style="background:#fff;" class="form-control">
+                            {% if page.customer['almost_free'] %}
+                                {% set spend_validation = 'almost_free_val' %}
+                            {% elif page.customer['ad_mid'] %}
+                                {% set spend_validation = 'ad_mid_val' %}
+                            {% elif page.customer['ad_premium'] %}
+                                {% set spend_validation = 'ad_premium_val' %}
+                            {% endif %}
+                            <input type="number" style="background:#fff;" class="{{ spend_validation }} form-control">
                             <span class="form-control-border"></span>
                         </div>
                     </div>
@@ -208,7 +215,8 @@
                     </div>
                 </div>
     
-                <button type="submit" class="btn btn-outline btn-outline-primary">Submit Change</button>
+                <button type="submit" class="spend_submit btn btn-outline btn-outline-primary">Submit Change</button>
+                <p id="plan_info"></p>
             </div>
         </div>
     </div>
@@ -221,4 +229,15 @@
     </div>
 </div>
 
+{% endmacro %}
+
+{% macro active_plan_root(page) %}
+<div class="row">
+    <div class="col-lg-8 col-sm-12">
+        {{ ad_spend_dash(page) }}
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        {{ plans(page) }}
+    </div>
+</div>    
 {% endmacro %}

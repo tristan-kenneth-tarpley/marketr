@@ -185,6 +185,16 @@ def ads_checkout():
     else:
         return redirect(url_for('ads_checkout', session_id=obj.id))
 
+@app.route('/checkout/paid_ads_premium', methods=['GET', 'POST'])
+@login_required
+def paid_ads_premium_checkout():
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
+    obj.paid_ads_premium()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="ads_premium")
+    else:
+        return redirect(url_for('paid_ads_premium_checkout', session_id=obj.id))
+
 # anchor
 @app.route('/Xr8FcPcNQsvTEJ3kuznY')
 def success():
@@ -284,8 +294,8 @@ def plan_view(plan_id):
         if request.form['cancel_sub']:
             payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
             payments.delete_subscriptions(
-                sub_id = request.form['sub_id'],
-                customer_id = session['user']
+                sub_id = plan_id,
+                customer_id = session['stripe_id']
             )
             return redirect(url_for('settings'))
     

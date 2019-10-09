@@ -265,14 +265,11 @@ const PriceViewModel = class {
         return (base_fee + (spend * perc_of_spend)).toFixed(2)
     } 
     marketr_model(spend){
-        const base_fee = 350
-        let perc_of_spend;
+        let fee;
         if (spend < 500){ return 1 }
-        else if (spend >= 500 && spend < 5000){ perc_of_spend = .08 }
-        else if (spend >= 5000 && spend < 15000){ perc_of_spend = .07 }
-        else if (spend >= 15000 && spend < 35000){ perc_of_spend = .06 }
-        else { perc_of_spend = .05 }
-        return this.calc_fee(base_fee, spend, perc_of_spend)
+        else if (spend >= 500 && spend < 5000){ fee = 395 }
+        else if (spend >= 5000){ fee = 1495 }
+        return fee
     }
     marketr_test_model(tests){
         let cost_per_test = 195
@@ -333,8 +330,10 @@ const PriceViewModel = class {
             if (!Number.isNaN(spend)) {
                 if (spend <= 500){
                     $("#ad_checkout_link").attr('href', '/checkout/almost_free')
-                } else {
+                } else if (spend > 500 && spend < 5000) {
                     $("#ad_checkout_link").attr('href', '/checkout/paid_ads')
+                } else if (spend > 5000) {
+                    $("#ad_checkout_link").attr('href', '/checkout/paid_ads_premium')
                 }
                 let comp_output = comp_spend != false ? `$${this.num_commas(comp_spend)}/month` : "Doesn't reach minimum spend"
                 let savings_output = comp_output == "Doesn't reach minimum spend" ? 'N/A' : `$${savings}/year`
@@ -397,6 +396,62 @@ class AuditViewModel {
             let $this = e.currentTarget
             $($this).siblings().toggleClass('hidden')
             window.scrollTo(0,document.body.scrollHeight);
+        })
+    }
+}
+
+
+const WalletViewModel = class {
+    constructor(){
+    }
+    
+    disable(type){
+        document.querySelector('.spend_submit').disabled = true;
+        let copy;
+        switch (type) {
+            case 'almost_free':
+                copy = "Your plan only allows for up to $500/month in ad spend. To spend more, <a href='/checkout/paid_ads'>upgrade your plan</a>"
+                break
+            case 'mid':
+                copy = "Your plan only allows for up to $5,000/month in ad spend. To spend more, <a href='/checkout/paid_ads_premium'>upgrade your plan</a>"
+                break
+        }
+        $("#plan_info").html(copy)
+    }
+    enable() {
+        document.querySelector('.spend_submit').disabled = false;
+        $("#plan_info").html('')
+    }
+
+    suggest_downgrade(){
+        let copy = `
+        If you want to spend less than $500/month with us, we will only charge you $1/month. If you want to proceed, <a href="/checkout/almost_free">downgrade your account</a>.
+        `
+        $("#plan_info").html(copy)
+    }
+
+    add_validation(){
+        $(".almost_free_val").keyup(e=>{
+            let $this = parseInt($(".almost_free_val").val())
+            if ($this > 499) {
+                this.disable('almost_free')
+            } else {
+                this.enable()
+            }
+        })
+
+        $(".ad_mid_val").keyup(e=>{
+            let $this = parseInt($(".ad_mid_val").val())
+            if ($this > 4999) {
+                this.disable('mid')
+            } else if ($this < 500) {
+                setTimeout(e=>{
+                    this.suggest_downgrade()
+                },1000)
+            }
+            else {
+                this.enable()
+            }
         })
     }
 }

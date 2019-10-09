@@ -2,7 +2,8 @@
 {% from "macros/_macros.html" import render_field %}
 {% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
 {% from "macros/dashboard_macros.html" import todo, messages, goals, score, back_button %}
-{% from "macros/settings_macros.html" import ad_spend_dash, change_password, plans, welcome, top_row, invoices, plan_overview %}
+{% from "macros/settings_macros.html" import active_plan_root, change_password, welcome, top_row, invoices, plan_overview %}
+{% from "macros/_branding_macros.html" import pricing %}
 
 {% block title %}
 <title>Billing & Settings</title>
@@ -11,6 +12,7 @@
 {% block content %}
     {% include "core/navbar/settings-sidebar.html" %}
     {% include "/topbar/topbar-customer.html" %}
+    
     <div class="panel-header panel-header-sm">
 	</div>
 	<div class="content">
@@ -31,17 +33,24 @@
                                         <div style="text-align:right;" class="col">
                                             {{ change_password() }} 
                                         </div>
-                                          
+                       
                                     </div>
-                                    
+                                    {% if page.customer['current_plan'] == True %}
+                                        {{ active_plan_root(page) }}   
+                                    {% else %}
+                                    <link rel="stylesheet" href="/static/branding/style/master.css">
                                     <div class="row">
-                                        <div class="col">
-                                            {{ ad_spend_dash(page) }}
+                                        <div class="col-lg-1 col-sm-12">
                                         </div>
-                                        <div class="col">
-                                            {{ plans(page) }}
+                                        <div class="col-lg-10 col-sm-12">
+                                            <div class="pricing">
+                                                {{ pricing(True, settings_view=True) }}
+                                            </div>
                                         </div>
-                                    </div>                          
+                                        <div class="col-lg-1 col-sm-12">
+                                        </div>
+                                    </div>
+                                    {% endif %}                   
                                 {% else %}
 
                                     {{ top_row() }}

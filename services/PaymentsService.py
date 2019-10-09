@@ -25,11 +25,13 @@ class PaymentsService:
         stripe.api_key = self.sk
         cancelled_plan = stripe.Subscription.delete(sub_id)
         plan_id = cancelled_plan['items']['data'][0]['plan']['id']
+        
         plan_table = {
 			# live mode
 			'plan_FfI9OI02wob7Wl': 'ab_binary',
-			'plan_FfI9ZGhlsAkGii':'ad_binary',
+			'plan_FxJImVg8UME2BU':'ad_binary',
 			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
+			'plan_FxJJZ1sUDZ0550': 'ad_premium',
 			# test mode
 			'plan_Fed1YzQtnto2mT': 'ab_binary',
 			'plan_FecAlOmYSmeDK3': 'ad_binary',
@@ -37,7 +39,7 @@ class PaymentsService:
 		}
 
         db.execute(
-            f'UPDATE customer_basic SET {plan_table[plan_id]} = null WHERE id = ?',
+            f'UPDATE customer_basic SET {plan_table[plan_id]} = null, current_plan = null, WHERE stripe_id = ?',
             False, (customer_id,), commit=True
         )
 
@@ -147,7 +149,22 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_FfI9ZGhlsAkGii'
+                'plan': 'plan_FxJImVg8UME2BU'
+                }],
+            },
+            success_url = self.success_url,
+            cancel_url = self.cancel_url
+        )
+        self.id = session['id']
+
+    def paid_ads_premium(self):
+        stripe.api_key = self.sk
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            customer=self.customer_id,
+            subscription_data={
+                'items': [{
+                'plan': 'plan_FxJJZ1sUDZ0550'
                 }],
             },
             success_url = self.success_url,

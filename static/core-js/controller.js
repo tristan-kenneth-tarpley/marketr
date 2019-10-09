@@ -513,6 +513,11 @@ const PageViewController = class {
 				let payments = new PaymentsService()
 				payments.process()
 			}
+
+			if (this.url_path.includes('settings')) {
+				let Wallet = new WalletViewModel()
+				Wallet.add_validation()
+			}
 						
 			switch(PageMap(this.url_path)) {
 				case 'admin':
@@ -537,6 +542,7 @@ const PageViewController = class {
 					break
 				case 'pricing':
 				case 'index':
+				case 'settings':
 					const pricing = new PriceViewModel()
 					pricing.init()
 					break
