@@ -204,7 +204,6 @@ def success():
     payments = PaymentsService(session['email'], customer_id = session['stripe_id'])
     gchat = GoogleChatService()
     plans = payments.get_plan()
-    UserService.reset_free(session['user'])
     for plan in plans:
         gchat.new_customer(email=session['email'], customer_type=plan)
         # update db with plan id
@@ -330,6 +329,22 @@ def add_task():
         request.form.get('task')
     )
     return 'added'
+
+@app.route('/api/add_balance', methods=['POST'])
+@login_required
+def add_balance():
+    amount = request.form['amount']
+    payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
+    payments.add_balance(amount)
+    UserService.add_balance(session['user'], amount)
+    return redirect(url_for('settings'))
+
+@app.route('/api/spend_rate', methods=['POST'])
+@login_required
+def spend_rate():
+    spend_rate = request.form['spend_rate']
+    UserService.set_spend_rate(session['user'], spend_rate)
+    return redirect(url_for('settings'))
 
 @app.route('/api/send_message', methods=['POST'])
 @account_rep_required

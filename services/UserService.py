@@ -247,6 +247,14 @@ class DBActions:
 
 
 class UserService:
+	def set_spend_rate(customer_id, rate):
+		query = "UPDATE customer_basic SET spend_rate = ? where id = ?"
+		db.execute(query, False, (rate, customer_id), commit=True)
+
+	def add_balance(customer_id, amount):
+		query = "EXEC update_ledger @customer_id = ?, @amount = ?"
+		db.execute(query, False, (customer_id, amount), commit=True)
+	
 	def update_password(current_password, new_password, customer_id):
 		pw, cursor = db.execute(
 			'SELECT password FROM customer_basic WHERE id = ?',
@@ -264,12 +272,8 @@ class UserService:
 			return True
 		else:
 			return 'Current password does not match records'
-	
-	def reset_free(user):
-		db.execute(
-			'UPDATE customer_basic SET almost_free_binary = null WHERE id = ?',
-			False, (user,), commit=True
-		)
+
+		
 	def update_plan(customer_id, plan_id):
 		plan_table = {
 			# live mode

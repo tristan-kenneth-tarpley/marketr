@@ -163,25 +163,26 @@
                 <p>
                     <strong>Funds Remaining</strong>
                 </p>
-                <h5 style="font-size:95%;"><strong>$900</strong></h5>
+                <h5 style="font-size:95%;"><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h5>
             </div>
             <div class="col-lg-8 col-sm-12">
                 <p><strong>Want to add Funds?</strong></p>
                 <div class="row">
                     <div class="col">
-                        <div class="form-group">
-                            <input type="number" style="background:#fff;" class="form-control">
-                            <span class="form-control-border"></span>
-                        </div>
-                        <div class="form-group">        
-                            <input id="one_time" class="form-control" type="radio" name="spend_rate" value="">
-                            <label for="one_time" class="small_txt">One time</p>
-            
-                            <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
-                            <label for="auto" class="small_txt">Set for auto-deposit</p>
-                            <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
-                        </div>
-                        
+                        <form method="POST" action="{{ url_for('add_balance') }}">
+                            <div class="form-group">
+                                <input type="number" name="amount" min="1" step="1" style="background:#fff;" class="form-control">
+                                <span class="form-control-border"></span>
+                            </div>
+                            <div class="form-group">   
+                                <!-- <input id="one_time" class="form-control" type="radio" name="spend_rate" value="">
+                                <label for="one_time" class="small_txt">One time</p>
+                
+                                <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
+                                <label for="auto" class="small_txt">Set for auto-deposit</p> -->
+                                <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
+                            </div>
+                        </form>
                     </div>
                     
                 </div>   
@@ -192,31 +193,37 @@
                 <p>
                     <strong>Current Spend Rate</strong>
                 </p>
-                <h5 style="font-size:95%;"><strong>$500/month</strong></h5>
+                <h5 style="font-size:95%;"><strong>{{ "$%.0f"|format(page.customer['spend_rate'] | float) }}</strong></h5>
             </div>
             <div class="col-lg-8 col-md-12">
-                <p><Strong>Need to change the spend rate?</Strong></p>
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            {% if page.customer['almost_free'] %}
-                                {% set spend_validation = 'almost_free_val' %}
-                            {% elif page.customer['ad_mid'] %}
-                                {% set spend_validation = 'ad_mid_val' %}
-                            {% elif page.customer['ad_premium'] %}
-                                {% set spend_validation = 'ad_premium_val' %}
-                            {% endif %}
-                            <input type="number" style="background:#fff;" class="{{ spend_validation }} form-control">
-                            <span class="form-control-border"></span>
+                <form method="POST" action="{{ url_for('spend_rate') }}">
+                    <p><Strong>Need to change the spend rate?</Strong></p>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group">
+                                {% if page.customer['almost_free'] %}
+                                    {% set spend_validation = 'almost_free_val' %}
+                                {% elif page.customer['ad_mid'] %}
+                                    {% set spend_validation = 'ad_mid_val' %}
+                                {% elif page.customer['ad_premium'] %}
+                                    {% set spend_validation = 'ad_premium_val' %}
+                                {% endif %}
+                                <div style="background-color: white;" class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input type="text" name="spend_rate" value="{{ page.customer['spend_rate'] }}" style="background:#fff;" class="{{ spend_validation }} form-control">
+                                <span class="form-control-border"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <p>per month</p>
                         </div>
                     </div>
-                    <div class="col">
-                        <p>per month</p>
-                    </div>
-                </div>
-    
-                <button type="submit" class="spend_submit btn btn-outline btn-outline-primary">Submit Change</button>
-                <p id="plan_info"></p>
+        
+                    <button type="submit" class="spend_submit btn btn-outline btn-outline-primary">Submit Change</button>
+                    <p id="plan_info"></p>
+                    
+                </form>
             </div>
         </div>
     </div>
@@ -238,6 +245,7 @@
     </div>
     <div class="col-lg-4 col-sm-12">
         {{ plans(page) }}
+        <p class="small_txt">See any problems? Email us at <a href="mailto:info@marketr.life">info@marketr.life</a> and we'll get it taken care of.</p>
     </div>
 </div>    
 {% endmacro %}

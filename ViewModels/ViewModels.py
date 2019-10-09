@@ -544,7 +544,9 @@ class SettingsViewModel:
 			'current_plan': False if not data[1] else True,
 			'almost_free': False if not data[2] else True,
 			'ad_mid': False if not data[3] else True,
-			'ad_premium': False if not data[4] else True
+			'ad_premium': False if not data[4] else True,
+			'funds_remaining': data[5],
+			'spend_rate': data[6]
 		}
 
 	def subscription(self):

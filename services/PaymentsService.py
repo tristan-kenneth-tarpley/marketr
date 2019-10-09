@@ -9,8 +9,8 @@ class PaymentsService:
         app.config.from_pyfile('config.cfg')
         self.sk = app.config['STRIPE_SK']
         self.pk = app.config['STRIPE_PK']
-        self.success_url = 'https://marketr.life/Xr8FcPcNQsvTEJ3kuznY'
-        self.cancel_url = 'https://marketr.life/logout'
+        self.success_url = 'http://127.0.0.1:5000/Xr8FcPcNQsvTEJ3kuznY'
+        self.cancel_url = 'http://127.0.0.1:5000/logout'
         self.email = email
         self.customer_id = customer_id
 
@@ -39,7 +39,7 @@ class PaymentsService:
 		}
 
         db.execute(
-            f'UPDATE customer_basic SET {plan_table[plan_id]} = null, current_plan = null, WHERE stripe_id = ?',
+            f'UPDATE customer_basic SET {plan_table[plan_id]} = null, current_plan = null WHERE stripe_id = ?',
             False, (customer_id,), commit=True
         )
 
@@ -171,3 +171,13 @@ class PaymentsService:
             cancel_url = self.cancel_url
         )
         self.id = session['id']
+
+    def add_balance(self, amount):
+        stripe.api_key = self.sk
+        amount = int(amount) * 100
+        stripe.Customer.create_balance_transaction(
+            self.customer_id,
+            amount=amount,
+            currency='usd',
+            description=f'Added ${amount} to Market(r) wallet'
+        )
