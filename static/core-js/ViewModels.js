@@ -433,7 +433,7 @@ const WalletViewModel = class {
     add_validation(){
         $(".almost_free_val").keyup(e=>{
             let $this = parseInt($(".almost_free_val").val())
-            if ($this > 499) {
+            if ($this > 250) {
                 this.disable('almost_free')
             } else {
                 this.enable()
