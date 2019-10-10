@@ -196,13 +196,14 @@
         <div class="row">
             <div class="col-lg-4 col-md-12">
                 <p>
-                    <strong>Current Spend Rate</strong>
+                    <strong>Current Advertising Spend Rate</strong>
                 </p>
                 <h4><strong>{{ "$%.0f"|format(page.customer['spend_rate'] | float) }}</strong>/month</h4>
             </div>
             <div class="col-lg-8 col-md-12">
                 <form method="POST" action="{{ url_for('spend_rate') }}">
                     <p><Strong>Need to change the spend rate?</Strong></p>
+                    <p class="small_txt">This is the amount that we will spend for you every month for advertising.</p>
                     <div class="row">
                         <div class="col">
                             <div class="input-group">
