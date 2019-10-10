@@ -55,9 +55,15 @@ const NotificationsService = class {
             const row = notificationEl(type, notification, this.admin)
             $("#notifications").append(row)
         })
-        $(".notification_count").text(Object.keys(data).length)
-        $(".tab_and_insight_count").text(tasks_and_insights.length)
-        $(".message_count").text(messages.length)
+        if (Object.keys(data).length > 0){
+            $(".notification_count").text(Object.keys(data).length)
+        }
+        if (tasks_and_insights.length > 0) {
+            $(".tab_and_insight_count").text(tasks_and_insights.length)
+        }
+        if (messages.length > 0){
+            $(".message_count").text(messages.length)
+        }
     }
 
     get() {
