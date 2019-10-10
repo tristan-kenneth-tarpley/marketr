@@ -247,6 +247,10 @@ class DBActions:
 
 
 class UserService:
+	def now():
+		now = datetime.datetime.now()
+		today = now.strftime("%Y-%m-%d %H:%M")
+		return today
 	def set_spend_rate(customer_id, rate):
 		query = "UPDATE customer_basic SET spend_rate = ? where id = ?"
 		db.execute(query, False, (rate, customer_id), commit=True)

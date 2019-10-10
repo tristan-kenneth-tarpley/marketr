@@ -31,7 +31,10 @@
                 <h5>Where are we headed?</h5>
                 <p>Establish the goal that would make an impact on your business to put everything else in perspective. </p>
                 {% if not page.admin %}<a href="{{url_for('goals', splash=True)}}" class="btn btn-secondary">Complete now</a>{% endif %}
-                <img src="/static/assets/img/goals.jpg">
+                <div style="width: 60%; margin: auto;">
+                    <img width="100%" src="/static/assets/img/goals.jpg">
+                </div>
+                
             </div> 
         </div>
     {% endif %}
@@ -152,8 +155,11 @@
 </div>
 <div class="row">
 	<div class="col">
-		<label><strong>How to improve:</strong></label><br>
-		<a href="/home?view=profile">Finish completing profile</a>
+        <label><strong>How to improve:</strong></label><br>
+        <p>The Market(r) score takes into account the deepest nether-regions of your marketing efforts where marketing managers don't like to go and gives you an easily understandable metric and easily-implemented steps.</p>
+        <p>
+            The first, and best, thing you can do is to finish your profile. Scroll over to the <a href="/home?view=profile">profile tab</a> to get going.
+        </p>
 	</div>
 </div>
 {% endmacro %}
@@ -173,8 +179,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h5 class="card-category">Make sure to respond promptly!</h5>
-            <h4 class="card-title">Messages</h4>
+            <h5 class="card-category">Messages</h5>
         </div>
         <div class="card-body">
             <div class="chat">
@@ -413,28 +418,43 @@
     {% macro metrics_col(page, title=None) %}
         <div class="ad_container">
             <h5>{{ title }}</h5>
-            <div class="row">
+  {#          <div class="row">
                 <div class="col-lg-6 col-md-4 col-sm-12">
                     <p class="small_txt"><strong>Industry</strong> avg.</p>
                 </div>
-            </div>
+                <div class="col-lg-6 col-md-4 col-sm-12">
+                    <span class="bar_chart"></span>
+                </div>
+            </div>#}
             <div class="row">
                 <div class="col-lg-6 col-md-4 col-sm-12">
-                    <p class="small_txt"><strong>ABC Company's</strong> prior 7-day avg.</p>
+                    <p class="small_txt"><strong>{{ page.data['core']['core'][0]['company_name'] }}'s</strong> prior 7-day avg.</p>
                 </div>
+                <div class="col-lg-6 col-md-4 col-sm-12">
+                    {% if title == 'Cost Per Click (CPC)' %}
+                        {% set metric = '$' + base['cpc_last_7'] | string %}
+                    {% elif title == 'Click-Through Rate (CTR)' %}
+                        {% set metric = base['ctr_last_7'] | string + '%' %}
+                    {% elif title == 'Clicks Per $1,000 Spend' %}
+                        {% set metric = page.data['clicks_per_1000']%}
+                    {% endif %}
+                    <p><span width="" class="bar_chart us"></span>{{ metric }}</p>
+                </div>
+                
             </div>
-            <div class="box">
+  {#          <div class="box">
                 <p style="margin-bottom: 0;" class="small_txt">Cost-savings per $1,000 spent</p>
                 <h5 class="blue_header">$320</h5>
-            </div>
+            </div>#}
         </div>
     {% endmacro %}
+    {% set base = page.data['temp_ad_data']['ad_view'][0] %}
     <div class="row">
         <div class="col-lg-3 col-md-6 col-sm-12">
-            <p><strong>4</strong> Ads are active</p>
+            <p><strong>{{ base['active_ads'] }}</strong> Ads are active</p>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12">
-            <p><strong>8</strong> Ads tested past 30 days</p>
+            <p><strong>{{ base['ads_last_30'] }}</strong> Ads tested past 30 days</p>
         </div>
     </div>
     <div class="row">

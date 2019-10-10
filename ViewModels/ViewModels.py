@@ -171,10 +171,48 @@ class AdminViewModel:
 		insights_service = InsightsService(self.user, admin_id=self.admin, user='admin')
 		insights = insights_service.fetch()
 
+		query = 'SELECT * from admin_dashboard(?)'
+		returned, cursor = db.execute(query, True, (self.user,))
+		returned = cursor.fetchone()
+
+		if returned[2]:
+			plan = 'Ads Mid'
+		elif returned[3]:
+			plan = 'Almost free'
+		elif returned[4]:
+			plan = 'Ads Premium'
+		else:
+			plan = 'No Active Plan' #anchor
+
+		now = UserService.now()
+		temp_data = eval(returned[5])
+		last_date = temp_data['ad_view'][0]['end_date']
+		now = datetime.datetime.strptime(now[:10], '%Y-%m-%d')
+		last_date = datetime.datetime.strptime(last_date[:10], '%Y-%m-%d')
+
+		if temp_data:
+			if str(now-last_date)[1].isdigit():
+				data_due = True
+			elif int(str(now-last_date)[0]) > 6:
+				data_due = True
+			else:
+				data_due = False
+		else:
+			data_due = True
+		
+		
+
 		self.data = {
 			'tasks': tasks,
 			'insights': insights,
-			'messages': messages
+			'messages': messages,
+			'customer': {
+				'funds_remaining': returned[0],
+				'spend_rate': returned[1],
+				'plan': plan,
+				'last_audit': str(last_date)[:10],
+				'data_due': data_due
+			}
 		}
 
 	def personnel(self) -> None:
@@ -239,7 +277,7 @@ class CustomerDataViewModel:
 		query = "select * from compile_home_page(?)"
 		core_data, cursor = db.execute(query, True, (self.customer_id,))
 		core_data = cursor.fetchone()
-		return_dict = {}
+		return_dict = {} #anchor2
 		for i in range(len(core_data)):
 			return_dict[i] = core_data[i]
 
@@ -415,6 +453,10 @@ class CustomerDataViewModel:
 			}
 			return struct
 
+		base = eval(core_data[10] if core_data[10] else None)
+		
+		cpc = int(base['ad_view'][0]['cpc_last_7'])
+		ctr = int(base['ad_view'][0]['ctr_last_7'])
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -425,7 +467,9 @@ class CustomerDataViewModel:
 			'google': eval(core_data[6]) if core_data[6] else "",
 			'tests': eval(core_data[7]) if core_data[7] else "",
 			'salescycle': clean_salescycle(core_data[8]),
-			'insights': eval(core_data[9]) if core_data[9] else None
+			'insights': eval(core_data[9]) if core_data[9] else None,
+			'temp_ad_data': eval(core_data[10] if core_data[10] else None),
+			'clicks_per_1000': (1000 / cpc * ctr)
 		}
 
 		self.data = return_data
@@ -449,7 +493,7 @@ class ViewFuncs:
 		else:
 			return render_template("layouts/intake_layout.html", onboarding=onboarding, onboarding_complete=onboarding_complete, page=page, form=form)
 
-	def view_admin(page=None, tag_id=None, owner=False, admin=False, manager=False, form=None, csv_form=None, ab_form=None, insight_form=None):
+	def view_admin(page=None, tag_id=None, owner=False, admin=False, manager=False, form=None, temp_form=None, csv_form=None, ab_form=None, insight_form=None):
 		return render_template(
 			'layouts/admin_layout.html',
 			page=page,
@@ -458,6 +502,7 @@ class ViewFuncs:
 			manager=manager,
 			form=form,
 			csv_form=csv_form,
+			temp_form=temp_form,
 			ab_form=ab_form,
 			insight_form=insight_form,
 			tag_id=tag_id

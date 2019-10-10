@@ -254,3 +254,17 @@ class TacticService(object):
         ]
         data = UserService.parseCursor(data, columns)
         return data
+
+class TempDataService:
+    def __init__(self):
+        pass
+
+    def add_record(self, form, customer_id):
+        query = """
+        INSERT INTO temp_ad_view
+        (customer_id, start_date, end_date, spend, active_ads, ads_last_30, cpc_last_7, ctr_last_7, google, facebook, bing, capterra)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        """
+        tup = (customer_id, form.start_date.data, form.end_date.data, form.spend.data, form.active_ads.data, form.ads_last_30.data, form.cpc_last_7.data, form.ctr_last_7.data, form.google.data, form.facebook.data, form.bing.data, form.capterra.data)
+
+        db.execute(query, False, tup, commit=True)

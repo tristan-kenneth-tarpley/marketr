@@ -6,6 +6,7 @@
 {% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
 {% set almost_free = page.data['core']['core'][0]['almost_free_binary'] %}
 {% set ad_plan = page.data['core']['core'][0]['ad_binary'] %}
+{% set ad_premium = page.data['core']['core'][0][''] %}
 {% set company_name = page.data['core']['company_name'] %}
 
 
@@ -27,10 +28,34 @@
 </div>
 
 
+{# paid ads management or almost free #}
+{% if current_plan %}
+    {{ section(
+        link=None,
+        title="Ad Campaigns",
+        body=ad_metrics(page),
+        hash="ads_performance",
+        admin=page.admin
+    ) }}
+{% else %}
+    {% if page.data['temp_ad_data']['ad_view'] %}
+    {{ section(
+        link=None,
+        title="Ad Campaign Performance <i class='fa fa-lock'></i>",
+        body=locked(type="ads"),
+        hash="ads_performance",
+        admin=page.admin
+    ) }}
+    {% else %}
+    <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
+    <p>You can expect to see specific improvement insights here within 48 hours.</p>
+    <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+    {% endif %}
+{% endif %}
 
 <div class="row">
     <div class="col-lg-6 col-sm-12">
-        {% if ad_plan or almost_free or ab_plan %}
+        {% if current_plan %}
         {{ section(
             link=None,
             title="Insights",
@@ -59,36 +84,11 @@
     </div>
 </div>
 
-{{ section(
-    link=None,
-    title="Ad Campaigns",
-    body=ad_metrics(page),
-    hash="ads_performance",
-    admin=page.admin
-) }}
 
 
-{# paid ads management or almost free #}
-{% if ad_plan or almost_free %}
-    {{ section(
-        link=None,
-        title="Ad Campaign Performance",
-        body=ads_performance(page),
-        hash="ads_performance",
-        admin=page.admin
-    ) }}
-{% else %}
-    {{ section(
-        link=None,
-        title="Ad Campaign Performance <i class='fa fa-lock'></i>",
-        body=locked(type="ads"),
-        hash="ads_performance",
-        admin=page.admin
-    ) }}
-{% endif %}
 
 {# ab testing or almost free #}
-{% if ab_plan or almost_free %}
+{#{% if ab_plan or almost_free %}
     {{ section(
         link=None,
         title="A/B Testing Performance",
@@ -104,5 +104,5 @@
         hash="tests",
         admin=page.admin
     ) }}
-{% endif%}
+{% endif%}#}
 

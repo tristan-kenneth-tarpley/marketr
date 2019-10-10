@@ -7,7 +7,7 @@ import data.db as db
 import pandas as pd
 import services.helpers as helpers
 from services.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
-from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService, TacticService
+from services.AdminService import TempDataService, AdminService, AdminActions, MessagingService, AdminUserService, TacticService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, AdminViewFuncs, AdAuditViewModel
 from analysis.campaigns.ad_audit import ad_audit
 import hashlib
@@ -124,9 +124,10 @@ def admin_availability():
 @app.route('/admin')
 @manager_required
 def admin():
-    results = db.sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
-    page = AdminViewModel('owner', 'home', admin=str(session['admin']))
-    return render_template('admin_view/admin_index.html', page=page, sub=False, results=results, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
+	return redirect(url_for('customers'))
+    # results = db.sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
+    # page = AdminViewModel('owner', 'home', admin=str(session['admin']))
+    # return render_template('admin_view/admin_index.html', page=page, sub=False, results=results, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
 
 
 @app.route('/personnel', methods=['POST', 'GET'])
@@ -198,6 +199,7 @@ def acct_mgmt(customer_id):
 	csv_form = forms.CSVForm()
 	ab_form = forms.ABForm()
 	insight_form = forms.InsightForm()
+	temp_form = forms.TempData()
 
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
@@ -227,6 +229,11 @@ def acct_mgmt(customer_id):
 				ab.save(customer_id)
 				return redirect(url_for('acct_mgmt', customer_id=customer_id))
 
+			elif request.form['submit_button'] == 'temp_data' and temp_form.validate_on_submit():
+				service = TempDataService()
+				service.add_record(temp_form, customer_id)
+				return redirect(url_for('acct_mgmt', customer_id=customer_id))
+
 		elif request.method == 'GET':
 			page = AdminViewModel(
 				session['permissions'],
@@ -244,6 +251,7 @@ def acct_mgmt(customer_id):
 				csv_form=csv_form,
 				ab_form=ab_form,
 				insight_form=insight_form,
+				temp_form=temp_form,
 				form=None
 			)
 	else:

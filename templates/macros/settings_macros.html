@@ -163,10 +163,15 @@
                 <p>
                     <strong>Funds Remaining</strong>
                 </p>
-                <h5 style="font-size:95%;"><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h5>
+                <h4><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h4>
+                {% if page.customer['spend_rate'] | float > page.customer['funds_remaining'] | float %}
+                <h5 class="text-danger">More funds needed</h5>
+                <p class="small_txt">You don't have enough in your Market(r) wallet to cover the next ad bill. If you don't add more, your account will be disabled and you will be billed for the exact amount of ad spend due.</p>
+                {% endif %}
             </div>
             <div class="col-lg-8 col-sm-12">
-                <p><strong>Want to add Funds?</strong></p>
+                <p><strong>Ad funds to your Market(r) wallet. 100% of this goes towards your ad spend.</strong></p>
+                <p>You won't be charged right now. Instead, keep an eye out for it on your next bill.</p>
                 <div class="row">
                     <div class="col">
                         <form method="POST" action="{{ url_for('add_balance') }}">
@@ -193,7 +198,7 @@
                 <p>
                     <strong>Current Spend Rate</strong>
                 </p>
-                <h5 style="font-size:95%;"><strong>{{ "$%.0f"|format(page.customer['spend_rate'] | float) }}</strong></h5>
+                <h4><strong>{{ "$%.0f"|format(page.customer['spend_rate'] | float) }}</strong>/month</h4>
             </div>
             <div class="col-lg-8 col-md-12">
                 <form method="POST" action="{{ url_for('spend_rate') }}">

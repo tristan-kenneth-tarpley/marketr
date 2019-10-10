@@ -344,3 +344,17 @@ class TagForm(FlaskForm):
     twitter = BooleanField('twitter')
     ui = BooleanField('ui')
     website = BooleanField('website')
+
+
+class TempData(FlaskForm):
+    start_date = htmldate('start date', validators=[validators.InputRequired()])
+    end_date = htmldate('end date', validators=[validators.InputRequired()])
+    spend = IntegerField('spend')
+    active_ads = IntegerField('active_ads')
+    ads_last_30 = IntegerField('ads_last_30')
+    cpc_last_7 = IntegerField('cpc_last_7')
+    ctr_last_7 = IntegerField('ctr_last_7')
+    google = BooleanField('google')
+    facebook = BooleanField('facebook')
+    bing = BooleanField('bing')
+    capterra = BooleanField('capterra')

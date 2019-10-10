@@ -1,13 +1,13 @@
 {% from "macros/dashboard_macros.html" import todo, messages %}
 
 
-{% macro render_page(page, csv_form=None, ab_form=ab_form, insight_form=None, form=None) %}
+{% macro render_page(page, csv_form=None, temp_form=temp_form, ab_form=ab_form, insight_form=None, form=None) %}
 	{% if page.page == 'personnel' %}
 		{{ personnel(page) }}
 	{% elif page.page == 'customers' %}
 		{{ customers(page) }}
 	{% elif page.page == 'acct_mgmt' %}
-		{{ customer_level(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form) }}
+		{{ customer_level(page, csv_form=csv_form, ab_form=ab_form, temp_form=temp_form, insight_form=insight_form) }}
 	{% elif page.page == 'tags' %}
 		{% with page = page, form = form %}
 			{% include "admin_view/tags.html" %}
@@ -97,6 +97,13 @@
 		      </a>
 		    </li>
 		{% endif %}
+
+		<li>
+			<a href="{{ url_for('logout') }}">
+				<i class="now-ui-icons objects_key-25"></i>
+				<p>Logout</p>
+			</a>
+		</li>
 	  </ul>
 	</div>
 </div>
@@ -631,7 +638,7 @@
 {% endmacro %}
 
 {# customer level view #}
-{% macro customer_level(page, csv_form=None, ab_form=None, insight_form=None) %}
+{% macro customer_level(page, csv_form=None, temp_form=None, ab_form=None, insight_form=None) %}
 
 
 	{% macro shell(header=None, body=None, footer=None) %}
@@ -650,11 +657,102 @@
 
 
 	{# dashboard layout#}
-	{% macro dashboard(page, csv_form=None, ab_form=ab_form, insight_form=None) %}
+	{% macro dashboard(page, csv_form=None, temp_form=temp_form, ab_form=ab_form, insight_form=None) %}
 
 
 		{{ admin_breadcrumb(page, view="dashboard") }}
 		<h4>{{ page.customer_name }}</h4>
+		<div class="row">
+			<div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+				<p class="small_txt">Funds remaining</p>
+				{% if page.data['customer']['funds_remaining'] %}
+				<h5>${{ page.data['customer']['funds_remaining'] }}</h5>
+				{% else %}
+				<h5>Wallet empty</h5>
+				{% endif %}
+			</div> 
+			<div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+				<p class="small_txt">Spend Rate</p>
+				{% if page.data['customer']['spend_rate'] %}
+				<h5>${{ page.data['customer']['spend_rate'] }}/month</h5>
+				{% else %}
+				<h5>Spend rate not set</h5>
+				{% endif %}
+			</div> 
+			<div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+				<p class="small_txt">Current Plan</p>
+				<h5>{{ page.data['customer']['plan'] }}</h5>
+			</div> 
+
+		</div>
+
+		<div class="row">
+			<div class="col">
+				{% if page.data['customer']['data_due'] %}
+				<h5 class="center_it text-danger">It's time to input some more data!</h5>
+				<p class="center_it">Last inputted on {{ page.data['customer']['last_audit'] }} </p>
+				<form method="POST" action="{{ url_for('acct_mgmt', customer_id=page.user) }}">
+					{{ temp_form.csrf_token }}
+					<div class="row">
+						<div class="col">
+							{{ temp_form.start_date(class="form-control") }}
+							<label>Start date</label>
+						</div>
+						<div class="col">
+							{{ temp_form.end_date(class="form-control") }}
+							<label>End date</label>
+						</div>
+						<div class="col">
+							{{ temp_form.spend(class="form-control") }}
+							<label>Spend for last 7 days</label>
+						</div>
+						<div class="col">
+							{{ temp_form.active_ads(class="form-control") }}
+							<label>Current active ads</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							{{ temp_form.ads_last_30(class="form-control") }}
+							<label>Ads run over the past 30 days</label>
+						</div>
+						<div class="col">
+							{{ temp_form.cpc_last_7(class="form-control") }}
+							<label>CPC for last 7 days</label>
+						</div>
+						<div class="col">
+							{{ temp_form.ctr_last_7(class="form-control") }}
+							<label>CTR for last 7 days</label>
+						</div>
+						<div class="col">
+							<div class="form-group">
+								<label>{{ temp_form.google(class="form-control") }} Google Ads</label>
+							</div>
+						</div>
+						<div class="col">
+							<div class="form-group">
+								<label>{{ temp_form.facebook(class="form-control") }} Facebook Ads</label>
+							</div>
+						</div>
+						<div class="col">
+							
+								<label>{{ temp_form.bing(class="form-control") }} Bing Ads</label>
+			
+						</div>
+						<div class="col">
+							<div class="form-group">
+								<label>{{ temp_form.capterra(class="form-control") }} Capterra Ads</label>
+							</div>
+						</div>
+					</div>
+					<div class="center_it">
+						<button type="submit" name="submit_button" value="temp_data" class="btn btn-primary">Add Changes</button>
+					</div>
+					
+				</form>
+				{% endif %}
+			</div>
+		</div>
 
 		<div class="row">
 			<div class="col-lg-6 col-md-6 col-sm-12 col-12">	
@@ -697,7 +795,7 @@
 
 	{# page controller #}
 	{% if page.view == "dashboard" %}
-		{{ dashboard(page, csv_form=csv_form, ab_form=ab_form, insight_form=insight_form)}}
+		{{ dashboard(page, csv_form=csv_form, temp_form=temp_form, ab_form=ab_form, insight_form=insight_form)}}
 	{% elif page.view == "intake" %}
 		{{ intake(page) }}
 	{% endif %}
