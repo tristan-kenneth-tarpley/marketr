@@ -191,11 +191,11 @@ class AdminViewModel:
 			last_date = temp_data['ad_view'][0]['end_date']
 			now = datetime.datetime.strptime(now[:10], '%Y-%m-%d')
 			last_date = datetime.datetime.strptime(last_date[:10], '%Y-%m-%d')
-			time_diff = int(str(now-last_date)[0])
-
-			if str(time_diff)[1].isdigit():
+			time_diff = str(now-last_date)
+			
+			if time_diff[1].isdigit():
 				data_due = True
-			elif time_diff > 6:
+			elif int(str(time_diff)[0]) > 6:
 				data_due = True
 			else:
 				data_due = False
@@ -645,10 +645,6 @@ class AdAuditViewModel:
 
 	def history(self):
 		pass
-
-
-
-
 
 
 
