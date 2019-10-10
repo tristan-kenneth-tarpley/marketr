@@ -12,7 +12,7 @@
 
 <div class="row">   
     <div class="col-lg-6 col-sm-12"> 
-        <div class="card" style="padding: 8%;">
+        <div class="card negative_card" style="padding: 8%;">
             {{ score() }}
         </div>
     </div>
@@ -71,7 +71,7 @@
         {% else %}
         {{ section(
             link=None,
-            title="Insights",
+            title="Insights <i class='fa fa-lock'></i>",
             body=locked(type="insights"),
             hash="insights",
             admin=page.admin
