@@ -65,6 +65,8 @@ const NotificationsService = class {
         }
         if (messages.length > 0){
             $(".message_count").text(messages.length)
+        } else {
+            $(".message_count").remove()
         }
     }
 
