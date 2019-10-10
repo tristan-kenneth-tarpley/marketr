@@ -7,7 +7,7 @@
 {% macro google(headline=None, website=None, description=None) %}
 
 	<div class="google_ad_preview_container">
-		<h5>{{ headline }}</h5>
+		<h5 style="font-size: 110%;">{{ headline }}</h5>
 		<p class="website"><span>Ad</span> {{ website }}</p>
 		<p>{{ description }}</p>
 	</div>
@@ -107,13 +107,13 @@
 	{% macro comp_metrics(pos=1) %}
 		{% set base = core['competitor_intro_1'] if pos == 1 else core['competitor_intro_2'] %}
 		<div class="row comp_metrics">
-			<div class="col-lg-3 col-sm-12">
+			<div style="text-align:center;" class="col-lg-3 col-sm-12">
 				<div class="comp_box comp_box-metrics">
-					<h5>Adwords Budget<br>
-					<strong>${{ base['budget'] }}/month</strong></h5>
+					<p>Adwords Budget<br>
+					<strong>${{ base['budget'] }}/month</strong></p>
 				</div>
 				<div class="comp_box comp_box-metrics">
-					<h5><strong>{{ base['clicks'] }}</strong><br>clicks in past 30 days</h5>
+					<p><strong>{{ base['clicks'] }}</strong><br>clicks in past 30 days</p>
 				</div>
 			</div>
 			<div class="col-lg-1"></div>
