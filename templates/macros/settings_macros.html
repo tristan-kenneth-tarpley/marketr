@@ -9,15 +9,15 @@
 {% endmacro %}
 
 {% macro plans(page) %}
-<label>Select a plan for details and invoices</label>
+<label>Current Plan</label>
 {% for plan in page.plans %}
     <div class="row">
         <div class="col">
 
             <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}" class="plan_container">
                 <h4>{{ page.plans[plan]['nickname'] }}</h4>
+                <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}">Click here to view details and invoices</a> 
                 <h6>{{ "$%.2f"|format(page.plans[plan]['amount']|float) }}/month</h6><br>
-                <a href="#">Click here to view details and invoices</a> 
             </a>
         </div>
     </div>
