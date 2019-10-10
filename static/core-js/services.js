@@ -60,6 +60,8 @@ const NotificationsService = class {
         }
         if (tasks_and_insights.length > 0) {
             $(".tab_and_insight_count").text(tasks_and_insights.length)
+        } else {
+            $(".tab_and_insight_count").remove()
         }
         if (messages.length > 0){
             $(".message_count").text(messages.length)
