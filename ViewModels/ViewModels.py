@@ -185,19 +185,22 @@ class AdminViewModel:
 			plan = 'No Active Plan' #anchor
 
 		now = UserService.now()
-		temp_data = eval(returned[5])
-		last_date = temp_data['ad_view'][0]['end_date']
-		now = datetime.datetime.strptime(now[:10], '%Y-%m-%d')
-		last_date = datetime.datetime.strptime(last_date[:10], '%Y-%m-%d')
+		temp_data = eval(returned[5]) if returned[5] else None
 
-		if temp_data:
-			if str(now-last_date)[1].isdigit():
+		if temp_data:	
+			last_date = temp_data['ad_view'][0]['end_date']
+			now = datetime.datetime.strptime(now[:10], '%Y-%m-%d')
+			last_date = datetime.datetime.strptime(last_date[:10], '%Y-%m-%d')
+			time_diff = int(str(now-last_date)[0])
+
+			if str(time_diff)[1].isdigit():
 				data_due = True
-			elif int(str(now-last_date)[0]) > 6:
+			elif time_diff > 6:
 				data_due = True
 			else:
 				data_due = False
 		else:
+			last_date = None
 			data_due = True
 		
 		
@@ -453,10 +456,17 @@ class CustomerDataViewModel:
 			}
 			return struct
 
-		base = eval(core_data[10] if core_data[10] else None)
+		base = eval(core_data[10]) if core_data[10] else 'empty'
 		
-		cpc = int(base['ad_view'][0]['cpc_last_7'])
-		ctr = int(base['ad_view'][0]['ctr_last_7'])
+		if base != 'empty':		
+			cpc = int(base['ad_view'][0]['cpc_last_7'])
+			ctr = int(base['ad_view'][0]['ctr_last_7'])
+			clicks_per_1000 = (1000 / cpc * ctr)
+		else:
+			cpc = ''
+			ctr = ''
+			clicks_per_1000 = None
+
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -467,9 +477,9 @@ class CustomerDataViewModel:
 			'google': eval(core_data[6]) if core_data[6] else "",
 			'tests': eval(core_data[7]) if core_data[7] else "",
 			'salescycle': clean_salescycle(core_data[8]),
-			'insights': eval(core_data[9]) if core_data[9] else None,
-			'temp_ad_data': eval(core_data[10] if core_data[10] else None),
-			'clicks_per_1000': (1000 / cpc * ctr)
+			'insights': eval(core_data[9]) if core_data[9] else "",
+			'temp_ad_data': eval(core_data[10]) if core_data[10] else None,
+			'clicks_per_1000': clicks_per_1000
 		}
 
 		self.data = return_data

@@ -30,6 +30,7 @@
 
 {# paid ads management or almost free #}
 {% if current_plan %}
+    {% if page.data['temp_ad_data']['ad_view'] %}
     {{ section(
         link=None,
         title="Ad Campaigns",
@@ -37,8 +38,15 @@
         hash="ads_performance",
         admin=page.admin
     ) }}
+    {% else %}
+    <div class="card">
+        <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
+        <p>You can expect to see specific improvement insights here within 48 hours.</p>
+        <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+    </div>
+    {% endif %}
 {% else %}
-    {% if page.data['temp_ad_data']['ad_view'] %}
+    
     {{ section(
         link=None,
         title="Ad Campaign Performance <i class='fa fa-lock'></i>",
@@ -46,11 +54,8 @@
         hash="ads_performance",
         admin=page.admin
     ) }}
-    {% else %}
-    <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
-    <p>You can expect to see specific improvement insights here within 48 hours.</p>
-    <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
-    {% endif %}
+
+
 {% endif %}
 
 <div class="row">
