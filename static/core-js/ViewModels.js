@@ -266,8 +266,8 @@ const PriceViewModel = class {
     } 
     marketr_model(spend){
         let fee;
-        if (spend < 500){ return 1 }
-        else if (spend >= 500 && spend < 5000){ fee = 395 }
+        if (spend < 250){ return 1 }
+        else if (spend >= 250 && spend < 5000){ fee = 395 }
         else if (spend >= 5000){ fee = 1495 }
         return fee
     }
