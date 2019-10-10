@@ -17,17 +17,18 @@
             <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}" class="plan_container">
                 <h4>{{ page.plans[plan]['nickname'] }}</h4>
                 <h6>{{ "$%.2f"|format(page.plans[plan]['amount']|float) }}/month</h6><br>
-                <p style="color:#ca7d66;text-decoration:underline;">Click here to manage</p>
+                <p style="color:#ca7d66;text-decoration:underline;">Click here to view details</p>
             </a>
         </div>
     </div>
     <div class="fine_print">
-        <ol>
-            <li style="font-size:75%; opacity: .7;">If fees owed become more than 10 days overdue, all services will freeze (regardless of remaining ad-funds remaining) until payment submitted. Note:  Market(r) cannot use Funds submitted for ad spend for the purpose of paying for service fees. </li>
+        <ul>
+            <li style="font-size:75%; opacity: .7;">If fees owed become more than 10 days overdue, all services will freeze (regardless of remaining ad-funds remaining) until payment submitted.</li>
             <ul>
+                <li style="font-size:75%; opacity: .7;">Note:  Market(r) cannot use Funds submitted for ad spend for the purpose of paying for service fees.</li>
                 <li style="font-size:75%; opacity: .7;">Read <a href="#">terms & conditions</a> for more info.</li>
             </ul>
-        </ol>
+        </ul>
     </div>
 {% endfor %}
 {% endmacro %}
