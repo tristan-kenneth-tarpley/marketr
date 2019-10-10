@@ -16,8 +16,8 @@
 
             <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}" class="plan_container">
                 <h4>{{ page.plans[plan]['nickname'] }}</h4>
-                <a href="{{ url_for('plan_view', plan_id=page.plans[plan]['plan_id']) }}">Click here to view details and invoices</a> 
                 <h6>{{ "$%.2f"|format(page.plans[plan]['amount']|float) }}/month</h6><br>
+                <p style="color:#ca7d66;text-decoration:underline;">Click here to manage</p>
             </a>
         </div>
     </div>
