@@ -80,6 +80,21 @@
     
     <div class="row">
         <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
+            <h5>Amount you pay us</h5>
+        </div>
+        <div class="col-lg-6">
+            {% if ads %}<h5>$<span class="ads_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
+            {% if testing %}<h5>$<span class="testing_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
+        </div>
+    </div>
+    {% if logged %} 
+        {% if ads %}<a id="ad_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
+        {% if testing %}<a id="testing_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
+    {% else %}  
+        <a id="checkout_link" class="m-btn m-btn-theme m-btn-round" href="/new">Get started (pay later)</a>
+    {% endif %}
+    <div class="row">
+        <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
             {% if ads %}
                 <label>Cost of leading competitors</label>
                 <select id="competitor_name">
@@ -96,33 +111,19 @@
         </div>
     </div>
         <br>
-        <div class="row">
-            <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
-                <h5>Amount you pay us</h5>
-            </div>
-            <div class="col-lg-6">
-                {% if ads %}<h5>$<span class="ads_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
-                {% if testing %}<h5>$<span class="testing_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
-            </div>
-        </div>
         <br>
         <hr style="height:5px; box-shadow:none; background-color: rgba(0,0,0,.1); color:rgba(0,0,0,.1);width:50%;">
-        {% if logged %} 
-            {% if ads %}<a id="ad_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
-            {% if testing %}<a id="testing_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
-        {% else %}  
-            <a id="checkout_link" class="m-btn m-btn-theme m-btn-round" href="/new">Get started (pay later)</a>
-        {% endif %}
+
         <br><br>
         <div class="row">
-                <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
-                    <p>Cost savings you can re-invest into your business</p>
-                </div>
-                <div class="col-lg-6">
-                    {% if ads %}<h5 style="color: #62cde0;"><span id="ad_savings">$00</span></h5>{% endif %}
-                    {% if testing %}<h5 style="color: #62cde0;"><span id="testing_savings">$00</span></h5>{% endif %}
-                </div>
+            <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
+                <p>Cost savings you can re-invest into your business</p>
             </div>
+            <div class="col-lg-6">
+                {% if ads %}<h5 style="color: #62cde0;"><span id="ad_savings">$00</span></h5>{% endif %}
+                {% if testing %}<h5 style="color: #62cde0;"><span id="testing_savings">$00</span></h5>{% endif %}
+            </div>
+        </div>
     {% endmacro %}
 
     <section id="price" class="section gray-bg">

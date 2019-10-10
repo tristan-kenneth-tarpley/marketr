@@ -35,7 +35,6 @@
 
 {% macro welcome(page) %}
 <h6>Welcome, {{ page.customer['first_name'] }}.</h6>
-{% if page.plans %}<p>To begin, select a subscription to view.</p>{% endif %}
                      
 {% endmacro %}
 
