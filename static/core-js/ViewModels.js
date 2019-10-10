@@ -448,7 +448,7 @@ const WalletViewModel = class {
             console.log($this)
             if ($this > 4999) {
                 this.disable('mid')
-            } else if ($this < 500) {
+            } else if ($this < 250) {
                 setTimeout(e=>{
                     this.suggest_downgrade()
                 },1000)
