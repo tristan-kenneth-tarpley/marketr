@@ -23,7 +23,7 @@
     </div>
     <div class="fine_print">
         <ul>
-            <li style="font-size:75%; opacity: .7;">If fees owed become more than 10 days overdue, all services will freeze (regardless of remaining ad-funds remaining) until payment submitted.</li>
+            <li style="font-size:75%; opacity: .7;">If fees owed become more than 10 days overdue, all services will freeze (regardless of remaining ad-funds remaining) until payment is submitted.</li>
             <ul>
                 <li style="font-size:75%; opacity: .7;">Note:  Market(r) cannot use Funds submitted for ad spend for the purpose of paying for service fees.</li>
                 <li style="font-size:75%; opacity: .7;">Read <a href="#">terms & conditions</a> for more info.</li>
@@ -165,9 +165,10 @@
                     <strong>Funds Remaining</strong>
                 </p>
                 <h4><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h4>
+                <p class="small_txt">Added too much?  Send us a <a href="/home?view=messages">message us</a> to reduce</p>
                 {% if page.customer['spend_rate'] | float > page.customer['funds_remaining'] | float %}
                 <h5 class="text-danger">More funds needed</h5>
-                <p class="small_txt">You don't have enough in your Market(r) wallet to cover the next ad bill. If you don't add more, your account will be disabled and you will be billed for the exact amount of ad spend due.</p>
+                <p class="small_txt">You don't have enough in your Market(r) wallet.  We can only spend what you fund. If funds are not available, your ad spend will drop below the rate you specified below.</p>
                 {% endif %}
             </div>
             <div class="col-lg-8 col-sm-12">
@@ -186,6 +187,7 @@
                 
                                 <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
                                 <label for="auto" class="small_txt">Set for auto-deposit</p> -->
+                                <label class="small_txt" style="text-transform:lowercase;"><input type="checkbox">&nbsp; By clicking "+ add funds", I understand that this amount will be added to my wallet, and billed to my credit card on file in the next billing cycle.</label>
                                 <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
                             </div>
                         </form>

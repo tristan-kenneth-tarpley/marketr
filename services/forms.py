@@ -79,6 +79,7 @@ class Audience(FlaskForm):
     age_group_5 = StringField('age_group_5')
     age_group_6 = StringField('age_group_6')
     age_group_7 = StringField('age_group_7')
+    age_group_8 = StringField('age_group_8')
     before_1 = StringField('before_1')
     before_2 = StringField('before_2')
     before_3 = StringField('before_3')
