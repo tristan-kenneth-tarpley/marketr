@@ -136,9 +136,9 @@
 
 {% macro score() %}
 <div class="row">
-	<div class="col-lg-7 col-sm-12">
+	<div class="col-lg-8 col-sm-12">
 		<h5><strong>Market(r)<br>Score</strong></h5>
-		<button type="button" id="score_popover" class="btn btn-neutral" data-container="body" data-toggle="popover" data-html="true" data-placement="left" title="<p>The Market(r) Score</p>" data-content="<p>Market(r) score is the credit score for your marketing.  It's a business model-dependent, weighted algorithm that analyzes the completion state of your market(r) profile compared to an achievable ideal state.</p><br>
+		<button type="button" style="background-color: transparent;" id="score_popover" class="btn btn-neutral" data-container="body" data-toggle="popover" data-html="true" data-placement="left" title="<p>The Market(r) Score</p>" data-content="<p>Market(r) score is the credit score for your marketing.  It's a business model-dependent, weighted algorithm that analyzes the completion state of your market(r) profile compared to an achievable ideal state.</p><br>
 		<p>Reaching high Market(r) scores is a great way to ensure you have a healthy marketing core from which to effectively grow sales.</p>">
 			What does this mean?
 		</button>
@@ -146,7 +146,7 @@
     <div id="loading" class="score-loading">
         <div class="load-circle"><span class="one"></span></div>
     </div>
-	<div class="col-lg-5 col-sm-12 score_container" style="display: none; text-align:center;">
+	<div class="col-lg-4 col-sm-12 score_container" style="display: none; text-align:center;">
         <div id="score-ready">
             <h1><span class="marketr-score">000</span></h1>
             <label class="marketr-score-quality">...</label>
