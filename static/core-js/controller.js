@@ -550,6 +550,7 @@ const PageViewController = class {
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()
+					view_model.tasks()
 					$(function () {
 						$('[data-toggle="popover"]').popover()
 					})

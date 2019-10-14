@@ -360,16 +360,14 @@ def messages():
     return 'sent'
 
 @app.route('/api/complete_task', methods=['POST'])
-@admin_required
-@account_rep_required
 def complete_task():
     tasks = TaskService(
-        request.form.get('customer_id'),
+        request.form.get('customer_id') if request.form.get('customer_id') else session['user'],
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
     tasks.complete_task(
-        request.args.get('task')
+        request.form.get('task')
     )
     return 'completed'
 

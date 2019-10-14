@@ -18,7 +18,7 @@ def remove_first_char(word):
 	return word[1:]
 
 def clean_chars(copy):
-	return copy.replace("`", "'")
+	return copy.replace("`", "'").replace("\\", "")
 
 def tiles_to_array(copy):
 	if copy != None:
@@ -99,6 +99,13 @@ def get_first_five(input):
 def to_date(date):
 	return format(datetime.datetime.fromtimestamp(date), '%m/%d/%Y')
 
+def currency(num):
+	return "{:,.2f}".format(num)
+
+def add_commas(num):
+	return "{:,}".format(num)
+
+
 app.jinja_env.filters['to_date'] = to_date
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active
@@ -114,6 +121,8 @@ app.jinja_env.filters['perc_array'] = perc_array
 app.jinja_env.filters['customPages'] = customPages
 app.jinja_env.filters['not_none'] = not_none
 app.jinja_env.filters['get_first_five'] = get_first_five
+app.jinja_env.filters['currency'] = currency
+app.jinja_env.filters['add_commas'] = add_commas
 
 
 

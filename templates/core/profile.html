@@ -110,10 +110,10 @@
 			<div style="text-align:center;" class="col-lg-3 col-sm-12">
 				<div class="comp_box comp_box-metrics">
 					<p>Adwords Budget<br>
-					<strong>${{ base['budget'] }}/month</strong></p>
+					<strong>${{ base['budget'] | currency }}/month</strong></p>
 				</div>
 				<div class="comp_box comp_box-metrics">
-					<p><strong>{{ base['clicks'] }}</strong><br>clicks in past 30 days</p>
+					<p><strong>{{ base['clicks'] | add_commas }}</strong><br>clicks in past 30 days</p>
 				</div>
 			</div>
 			<div class="col-lg-1"></div>
@@ -302,9 +302,11 @@
 {% macro six() %}
 	{% if core['quantity'] %}
 		<p>{{ company_name }} offers {{ core['quantity'] }} products / services.</p><br><br>
-		<a target="__blank" href="https://{{ core['link'] }}">Visit website</a>
-		<br>
-		<br>
+		{% if core['link'] %}
+			<a target="__blank" href="https://{{ core['link'] }}">Visit website</a>
+			<br>
+			<br>
+		{% endif %}
 		<h6>Offerings are segmented in the marketplace by:</h6>
 		{% set segments = [
 			core['segment_1'],
@@ -357,8 +359,8 @@
 					<tr>
 						<td><strong>{{ state['name'] if state['name'] else "" }}</strong></td>
 						<td>{{ state['category'] if state['category'] else "" }}</td>
-						<td>{{ "$" + state['cogs'] if state['cogs'] else "" }}</td>
-						<td>{{ "$" + state['sales_price'] if state['sales_price'] else "" }}</td>
+						<td>{{ state['cogs'] }}</td>
+						<td>{{ state['sales_price'] }}</td>
 						<td>{{ state['qty_sold'] if state['qty_sold'] | not_none else "" }}</td>
 						<td>{{ state['est_unique_buyers'] if state['est_unique_buyers'] else "" }}</td>
 					</tr>	
@@ -392,7 +394,8 @@
 		<tbody>
 			<tr> 
 				<th>Complexity</th>
-				{{ product_val_iterator(products, 'complexity') }}
+				{{ product_val_iterator(products, 'price') }}
+				{#{{ product_val_iterator(products, 'complexity') }}#}
 			</tr>
 			<tr>
 				<th>Price</th>
@@ -407,8 +410,24 @@
 				{{ product_val_iterator(products, 'frequency_of_purchase') }}
 			</tr>
 			<tr>
+				
 				<th>Value Prop</th>
-				{{ product_val_iterator(products, 'value_prop') }}
+				{% for product in products %}
+					{% set value_props = [
+						product['value_prop_1'],
+						product['value_prop_2'],
+						product['value_prop_3'],
+						product['value_prop_4'],
+						product['value_prop_5']
+					]%}
+					<td>
+						{% for i in value_props %}
+							{% if i %}
+								<li>{{ i }},</li>
+							{% endif %}
+						{% endfor %}
+					</td>
+				{% endfor %}
 			</tr>
 			<tr>
 				<th>Warranties or Guarantee</th>
@@ -459,8 +478,6 @@
 							{% for value in base[stage_name] %}
 								<li>{{value}}</li>
 							{% endfor %}
-						{% else %}
-							<li>No data for {{ stage_name }} yet</li>
 						{% endif %}
 					</ul>
 				</div>

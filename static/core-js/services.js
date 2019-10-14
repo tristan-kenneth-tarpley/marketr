@@ -38,10 +38,16 @@ const NotificationsService = class {
         Object.keys(data).forEach(key=> {
             let notification;
             let type;
+            let push;
             if (data[key].message_string != null){
                 type = 'message'
-                notification = data[key].message_string
-                messages.push('message')
+                let _from = data[key].message_from
+                if ((this.admin == false && _from != 'customer') || (this.admin == true && _from == 'customer')){
+                    notification = data[key].message_string
+                    messages.push('message')
+                } else {
+                    push = false
+                }
             } else if (data[key].task_title != null) {
                 type = 'task'
                 notification = data[key].task_title
@@ -52,11 +58,18 @@ const NotificationsService = class {
                 tasks_and_insights.push('insight')
             }
 
-            const row = notificationEl(type, notification, this.admin)
-            $("#notifications").append(row)
+            if (push) {
+                const row = notificationEl(type, notification, this.admin)
+                $("#notifications").append(row)
+            }
         })
         if (Object.keys(data).length > 0){
-            $(".notification_count").text(Object.keys(data).length)
+            let notification_length = messages.length + tasks_and_insights.length
+            if (notification_length > 0){
+                $(".notification_count").text(notification_length)
+            } else {
+                $(".notification_count").remove()
+            }
         }
         if (tasks_and_insights.length > 0) {
             $(".tab_and_insight_count").text(tasks_and_insights.length)

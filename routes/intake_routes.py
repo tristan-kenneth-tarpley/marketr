@@ -78,7 +78,10 @@ def begin():
         else:
             service.skip(10)
 
-        return redirect(url_for('competitors'))
+        if session['onboarding_complete'] == True:
+            return redirect(url_for('home', view='profile'))
+        else:
+            return redirect(url_for('competitors'))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],
@@ -98,12 +101,17 @@ def competitors():
     form = forms.Competitors()
     service = IntakeService(session['user'], 'competitors')
 
+
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.competitors(form.data)
         else:
             service.skip(20)
-        return redirect(url_for('company'))
+
+        if session['onboarding_complete'] == True:
+            return redirect(url_for('home', view='profile'))
+        else:
+            return redirect(url_for('company'))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],
@@ -136,7 +144,7 @@ def company():
             session['onboarding_complete'] = True
             return redirect(url_for('expectations'))
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('home', view='profile'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -173,7 +181,7 @@ def audience():
             next_id = service.get_persona()
             return redirect(url_for('audience', view_id=next_id, splash=False))
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('home', view='profile'))
 
 
     return ViewFuncs.view_page(user=session['user'],
@@ -264,7 +272,7 @@ def product_2():
             next_id = service.get_product(request.args.get('view_id'))
             return redirect(url_for('product_2', view_id=next_id, splash=False))
         else:
-            return redirect(url_for('home'))
+            return redirect(url_for('home', view='profile'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -290,7 +298,7 @@ def salescycle():
             service.salescycle(form.data)
         else:
             service.skip(70)
-        return redirect(url_for('home'))
+        return redirect(url_for('home', view='profile'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -325,7 +333,7 @@ def goals():
             service.goals(form.data)
         else:
             service.skip(80)
-        return redirect(url_for('home'))
+        return redirect(url_for('home', view='profile'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
@@ -372,7 +380,7 @@ def platforms():
             service.platforms(request.form)
         else:
             service.skip(100)
-        return redirect(url_for('home'))
+        return redirect(url_for('home', view='profile'))
 
     return ViewFuncs.view_page(user=session['user'],
                             user_name=session['user_name'],

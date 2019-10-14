@@ -144,17 +144,30 @@ class MessagingService:
                 (?, ?, ?, ?)
                 """
         db.execute(query, False, tup, commit=True)
+
         if self.user == 'customer':
-            email = 'select top 1 email from customer_basic where id = ?'
+            email = """
+                    select top 1 email from get_acct_mgr(?)
+                    """
             data, cursor = db.execute(email, True, (self.customer_id,))
         elif self.user == 'admin':
-            email = 'select top 1 email from admins where id = ?'
-            data, cursor = db.execute(email, True, (self.admin_id,))
+            email = 'select top 1 email from customer_basic where id = ?'
+            data, cursor = db.execute(email, True, (self.customer_id,))
 
         email = cursor.fetchone()
-        email = email[0]
+        email = email[0] if email else False
         notification = NotificationsService(self.customer_id)
         notification.ChatNotification(email)
+
+        query = 'select customer_id from customer_account_reps where customer_id = ?'
+        assigned, cursor = db.execute(query, True, (self.customer_id,))
+        assigned = cursor.fetchone()
+        google = GoogleChatService()
+        google.chat(
+            email=email,
+            admin_added = assigned,
+            msg=msg
+        )
 
 
 class TaskService:
@@ -202,6 +215,8 @@ class TaskService:
         query = """
                 UPDATE to_do SET completed_binary = 1 WHERE task_title = ? and customer_id = ?
                 """
+        print(query)
+        print(self.customer_id)
         db.execute(query, False, tup, commit=True)
 
     def remove_task(self, task):

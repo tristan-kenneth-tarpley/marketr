@@ -111,7 +111,7 @@
             {% if not admin and link != None %}
                 <div class="edit">
                     <a href="{{url_for(link, home=True, splash=False)}}" class="edit btn-neutral btn">
-                        <i class="now-ui-icons ui-2_settings-90"></i>
+                        Edit
                     </a>
                 </div>
             {% endif %}
@@ -140,10 +140,10 @@
 
 {% macro product_val_iterator(iterable, key) %}
     {% for index in iterable %}
-        {% if index %}
-            <li>{{ index[key] }}</li>
+        {% if index[key] %}
+            <td>{{ index[key] }}</td>
         {% else %}
-            <li>n/a</li>
+            <td>n/a</td>
         {% endif %}
     {% endfor %}
 {% endmacro %}

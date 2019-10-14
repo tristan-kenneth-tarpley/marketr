@@ -4162,12 +4162,12 @@ li.breadcrumb-item.active a {
 }
 .past_container {
   width: 100%;
-  color: white;
+  color: rgba(0,0,0,.5);
   padding: 4% 2% 4% 4%;
   line-height: 0;
   display: inline-block;
   white-space: nowrap;
-  background-color: #929292;
+  background-color: white;
   margin-top: 2%;
   font-size: 1vw;
   transition-duration: .3s;
@@ -4189,8 +4189,8 @@ li.breadcrumb-item.active a {
 }
 
 .past_container_active {
-  background-color: white !important;
-  color: var(--primary) !important;
+  background-color: var(--primary) !important;
+  color: white !important;
   font-weight: bold !important;
 }
 #container_hide {
@@ -4736,7 +4736,7 @@ li.breadcrumb-item.active a {
   width: 40%;
   display: block;
   position: absolute;
-  height: 5px;
+  height: 4px;
   bottom: 100%;
   background: #e5e5e5;
   left: 30%;
@@ -4753,7 +4753,7 @@ li.breadcrumb-item.active a {
   left: 0;
 }
 .percentages .card {
-  padding-bottom: 5%;
+  padding-bottom: 12%;
   margin: 3% auto;
 }
 
@@ -4766,8 +4766,8 @@ li.breadcrumb-item.active a {
 
 .edit {
   position: absolute;
-  left: 80%;
-  top: 7%;
+  left: 73%;
+  top: 5%;
 }
 @media only screen and (max-width: 1120px) {
   .edit {

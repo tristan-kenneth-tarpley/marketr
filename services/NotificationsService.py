@@ -11,19 +11,30 @@ class GoogleChatService:
     def __init__(self):
         pass
 
+    def send(self, url, msg):
+        message_headers = { 'Content-Type': 'application/json; charset=UTF-8'}
+        http_obj = Http()
+        http_obj.request(
+            uri=url,
+            method='POST',
+            headers=message_headers,
+            body=json.dumps(msg),
+        )
+
+    def chat(self, email=None, admin_added=False, msg=None):
+        url = "https://chat.googleapis.com/v1/spaces/AAAAJlefMSU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=jb61xPyoYwkE9S5gsf-XeUrDZlFcu_cgEzWBK_oLtxA%3D"
+        append = 'Manager needs to be assigned!' if not admin_added else ''
+        bot_message = {
+            'text' : f'New message from {email}:\n{msg}\n\n{append}'
+        }
+        self.send(url, bot_message)
+
     def onboarding_started(self, email=None):
         webhook_url = 'https://chat.googleapis.com/v1/spaces/AAAAgnkbcqY/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=2FTH-q3zQEZLOmGtOtJCjNytqCeR3GJRPTBJTFxkqw8%3D'
         bot_message = {
             'text' : f'New onboarding started: {email}'
         }
-        message_headers = { 'Content-Type': 'application/json; charset=UTF-8'}
-        http_obj = Http()
-        http_obj.request(
-            uri=webhook_url,
-            method='POST',
-            headers=message_headers,
-            body=json.dumps(bot_message),
-        )
+        self.send(webhook_url, bot_message)
 
     def new_customer(self, email=None, customer_type=None):
         plan_table = {
@@ -41,14 +52,7 @@ class GoogleChatService:
         bot_message = {
             'text' : f'New {plan_table[customer_type]} customer: {email}'
         }
-        message_headers = { 'Content-Type': 'application/json; charset=UTF-8'}
-        http_obj = Http()
-        http_obj.request(
-            uri=webhook_url,
-            method='POST',
-            headers=message_headers,
-            body=json.dumps(bot_message),
-        )
+        self.send(webhook_url, bot_message)
 
 
 class NotificationsService:
@@ -63,7 +67,8 @@ class NotificationsService:
         columns = [
             'message_string',
             'task_title',
-            'insight_body'
+            'insight_body',
+            'message_from'
         ]
         return_data = UserService.parseCursor(data, columns)
         return return_data

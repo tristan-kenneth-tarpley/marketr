@@ -10,7 +10,7 @@
 
 {% macro goals(page) %}
     {% if page.data['core']['core'][0]['goal'] %}
-        <p><strong>Our primary marketing goal is to improve {{page.data['core']['core'][0]['goal'] | lower }}:</strong></p>
+        <p><strong>Our primary marketing goal is to improve {{page.data['core']['core'][0]['goal'] | lower | clean_chars }}:</strong></p>
         <div class="row goal_container">
             <div class="col-lg-4 col-sm-12">
                 <h6>From:</h6>
@@ -46,7 +46,7 @@
 
             {% set message = task | int %}
             {% set title = page.data['tasks']['tasks'][message]['task_title'] %}
-            {% set completed = page.data['tasks']['tasks'][message]['complete_binary'] %}
+            {% set completed = page.data['tasks']['tasks'][message]['completed_binary'] %}
             
             {% if completed == 0 %}
                 {% set status = False %}
@@ -63,7 +63,13 @@
             <td>
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input task_complete" type="checkbox" {{ 'checked' if completed == True else '' }}>
+                        {% if completed == True %}
+                            {% set checked = 'checked' %}
+                        {% else %}
+                            {% set checked = ''%}
+                        {% endif %}
+                        <input class="form-check-input task_complete" type="checkbox"
+                        {{ checked }}>
                         <span class="form-check-sign"></span>
                     </label>
                 </div>
@@ -159,7 +165,7 @@
         <label><strong>How to improve:</strong></label><br>
         <p>The Market(r) score takes into account the deepest nether-regions of your marketing efforts where marketing managers don't like to go and gives you an easily understandable metric and easily-implemented steps.</p>
         <p>
-            The first, and best, thing you can do is to finish your profile. Scroll over to the <a href="/home?view=profile">profile tab</a> to get going.
+            The first, and best, thing you can do is to finish your profile. You can do this on the <a href="/home?view=profile">profile tab</a>.
         </p>
 	</div>
 </div>
@@ -242,9 +248,11 @@
                 </div>
         {% endfor %}
     {% else %}
-        <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
-        <p>You can expect to see specific improvement insights here within 48 hours.</p>
-        <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+        <div style="padding: 5% 5% 3%;">
+            <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
+            <p>You can expect to see specific improvement insights here within the next week.</p>
+            <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+        </div>
     {% endif %}
 </div>
 {% endmacro %}
@@ -433,11 +441,11 @@
                 </div>
                 <div class="col-lg-6 col-md-4 col-sm-12">
                     {% if title == 'Cost Per Click (CPC)' %}
-                        {% set metric = '$' + base['cpc_last_7'] | string %}
+                        {% set metric = '$' + base['cpc_last_7'] | currency | string %}
                     {% elif title == 'Click-Through Rate (CTR)' %}
                         {% set metric = base['ctr_last_7'] | string + '%' %}
                     {% elif title == 'Clicks Per $1,000 Spend' %}
-                        {% set metric = page.data['clicks_per_1000']%}
+                        {% set metric = page.data['clicks_per_1000'] | add_commas | string %}
                     {% endif %}
                     <p><span width="" class="bar_chart us"></span>{{ metric }}</p>
                 </div>
