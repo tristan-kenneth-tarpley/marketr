@@ -75,7 +75,7 @@
                 </div>
             </td>
             <td class="task_title text-left">
-                <p id="task_title">{{ title | clean_chars }}</p>
+                <p id="task_title">{{ title | clean_chars | safe }}</p>
             </td>
             <td class="td-actions text-right">
                 {% if admin %}
@@ -114,9 +114,8 @@
 
     <div class="card-tasks todo">
         <div class="card-header">
-            <h5 class="card-category">To-Do List</h5>
             {% if not admin %}
-            <p>To improve your Marketr score complete the bold To-Do List items below</p>
+            {#<p>To improve your Marketr score complete the bold To-Do List items below</p>#}
             {% endif %}
             {% if admin %}
                 <button class="btn btn-primary" data-toggle="modal" data-target="#task_modal" id="new_task">New task</button>
@@ -129,6 +128,7 @@
                     <tbody id="task_body">
                         {% if page.data['tasks']['tasks'] %}
                             {{view_tasks(page, admin=admin)}}
+                            <div id="show_confetti" class="hidden">{% include "macros/confetti.html" %}</div>
                         {% else %}
                             <h4>No tasks yet! Your Marketer will assign you tasks here to help you with your Market(r) score.</h4>
                         {% endif %}
@@ -161,6 +161,7 @@
 	</div>
 </div>
 <div class="row">
+    <div id="score_error"></div>
 	<div class="col">
         <label><strong>How to improve:</strong></label><br>
         <p>The Market(r) score takes into account the deepest nether-regions of your marketing efforts where marketing managers don't like to go and gives you an easily understandable metric and easily-implemented steps.</p>
@@ -238,15 +239,43 @@
 
 
 {% macro insights(page) %}
+    {% macro build(page) %}
+    <div id="carouselExampleIndicators" class="text-carousel carousel slide">
+        <ol class="carousel-indicators">
+            {% for insight in page.data['insights']['insights'] %}
+                {% set index = loop.index - 1 %}
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ index }}" class="{{'active' if index == 0 else ''}}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner">
+            {% for insight in page.data['insights']['insights'] %}
+                <div class="carousel-item {{'active' if loop.index-1 == 0 else ''}}">
+                    <p style="margin-bottom: 0;"><strong>{{ loop.index }} of {{ page.data['insights']['insights'] | length }}</strong></p>
+                    <p class="small_txt">{{ insight['time'] }}</p>
+                    <p>{{ insight['body'] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="false"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div style="width: 80%; margin: 7% auto 3%;" class="separator"></div>
+    <div style="text-align:center;">
+        <p class="small_txt">Want to discuss these insights? Head over to the <a href="/home?view=messages">messages</a> tab.</p>
+    </div>
+
+    {% endmacro %}
 <div class="row">
     {% if page.data['insights']['insights'] %}
-        {% for insight in page.data['insights']['insights'] %}
-            {% set base = insight %}
-                <div class="card col">
-                    <label>{{ base['time'] }}</label>
-                    <p>{{ base['body'] }}</p>
-                </div>
-        {% endfor %}
+        <div class="col">
+            {{ build(page) }}
+        </div>
     {% else %}
         <div style="padding: 5% 5% 3%;">
             <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>

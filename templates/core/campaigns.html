@@ -11,54 +11,21 @@
 
 
 <div class="row">   
-    <div class="col-lg-6 col-sm-12"> 
+    {#<div class="col-lg-6 col-sm-12"> 
         <div class="card negative_card" style="padding: 8%;">
             {{ score() }}
         </div>
-    </div>
+    </div>#}
     <div class="col-lg-6 col-sm-12">
         {{ section(
-            link="goals",
-            title="Marketing Goal",
-            body=goals(page),
-            hash="goal",
+            link=None,
+            title='To-Do List',
+            body=todo(page, admin=False),
+            hash=None,
             admin=page.admin
         ) }}
     </div>
-</div>
 
-
-{# paid ads management or almost free #}
-{% if current_plan %}
-    {% if page.data['temp_ad_data']['ad_view'] %}
-    {{ section(
-        link=None,
-        title="Ad Campaigns",
-        body=ad_metrics(page),
-        hash="ads_performance",
-        admin=page.admin
-    ) }}
-    {% else %}
-    <div class="card">
-        <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
-        <p>You can expect to see specific improvement insights here within 48 hours.</p>
-        <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
-    </div>
-    {% endif %}
-{% else %}
-    
-    {{ section(
-        link=None,
-        title="Ad Campaign Performance <i class='fa fa-lock'></i>",
-        body=locked(type="ads"),
-        hash="ads_performance",
-        admin=page.admin
-    ) }}
-
-
-{% endif %}
-
-<div class="row">
     <div class="col-lg-6 col-sm-12">
         {% if current_plan %}
         {{ section(
@@ -78,16 +45,57 @@
         ) }}
         {% endif %}
     </div>
-    <div class="col-lg-6 col-sm-12">
+    {#<div class="col-lg-6 col-sm-12">
         {{ section(
-            link=None,
-            title=company_name,
-            body=todo(page, admin=False),
-            hash=None,
+            link="goals",
+            title="Marketing Goal",
+            body=goals(page),
+            hash="goal",
             admin=page.admin
         ) }}
-    </div>
+    </div>#}
 </div>
+
+
+{# paid ads management or almost free #}
+{% if current_plan %}
+    {% if page.data['temp_ad_data']['ad_view'] %}
+    {{ section(
+        link=None,
+        title="Ad Campaigns",
+        body=ad_metrics(page),
+        hash="ads_performance",
+        admin=page.admin
+    ) }}
+    {% else %}
+        {% macro ad_pending() %}
+            <div class="inset">
+                <p>Guess what? We're offering you 3 months of FREE design for your ads (copy, images, all of it).</p>
+                <p><strong>That means you are 100% done for now...if you want to be.</strong></p>
+                <p class="small_txt">However, if you have specific copy, images, or logos that you'd like to be used in the ads then send us an email to <a href="mailto:creative@marketr.life">creative@marketr.life</a> ASAP, otherwise, you'll be notified when your ads are available for review.</p>
+            </div>
+        {% endmacro %}
+        {{ section(
+            link=None,
+            title="Ad Details",
+            body=ad_pending(),
+            hash="ads_performance",
+            admin=page.admin
+        ) }}
+    {% endif %}
+{% else %}
+    
+    {{ section(
+        link=None,
+        title="Ad Campaign Performance <i class='fa fa-lock'></i>",
+        body=locked(type="ads"),
+        hash="ads_performance",
+        admin=page.admin
+    ) }}
+
+
+{% endif %}
+
 
 
 

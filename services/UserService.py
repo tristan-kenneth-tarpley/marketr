@@ -369,6 +369,10 @@ class UserService:
 		init_query = "EXEC init_profile @date = ?, @customer_id = ?"
 		db.execute(init_query, False, (time, user), commit=True)
 
+	def init_profile_after_purchase(time, user):
+		init_query = "EXEC init_profile_after_purchase @date = ?, @customer_id = ?"
+		db.execute(init_query, False, (time, user), commit=True)
+
 
 	def customer_login(email, password):
 		try:   
@@ -396,8 +400,7 @@ class UserService:
 					session.permanent = True
 					session.remember = True
 
-					ts = time.time()
-					st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+					st = UserService.now()
 					last_logged_in = """UPDATE customer_basic SET last_logged_in = ? WHERE id = ?"""
 					db.execute(last_logged_in, False, (st, int(uid)), commit=True)
 

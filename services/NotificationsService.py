@@ -21,6 +21,13 @@ class GoogleChatService:
             body=json.dumps(msg),
         )
 
+    def error(self, e_type, user):
+        url = 'https://chat.googleapis.com/v1/spaces/AAAAKn8VwAs/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=hdngqlJ25rMELyt67mftmaKlw62QVRcCN-oxyNP6khA%3D'
+        msg = {
+            'text': f'Error with {e_type}\nUser: {user}'
+        }
+        self.send(url, msg)
+
     def chat(self, email=None, admin_added=False, msg=None):
         url = "https://chat.googleapis.com/v1/spaces/AAAAJlefMSU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=jb61xPyoYwkE9S5gsf-XeUrDZlFcu_cgEzWBK_oLtxA%3D"
         append = 'Manager needs to be assigned!' if not admin_added else ''

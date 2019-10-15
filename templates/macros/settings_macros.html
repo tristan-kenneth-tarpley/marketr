@@ -164,7 +164,7 @@
                     <strong>Funds Remaining</strong>
                 </p>
                 <h4><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h4>
-                <p class="small_txt">Added too much?  Send us a <a href="/home?view=messages">message us</a> to reduce</p>
+                <p class="small_txt">Added too much? <a href="/home?view=messages">Message us</a> to reduce</p>
                 {% if page.customer['spend_rate'] | float > page.customer['funds_remaining'] | float %}
                 <h5 class="text-danger">More funds needed</h5>
                 <p class="small_txt">You don't have enough in your Market(r) wallet.  We can only spend what you fund. If funds are not available, your ad spend will drop below the rate you specified below.</p>

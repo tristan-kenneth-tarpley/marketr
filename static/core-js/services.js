@@ -130,18 +130,34 @@ const ScoreService = class {
         $(".marketr-score-quality").text(condition)
     }
 
+    handle_error(){
+        const args = {'type': 'marketr score'};
+        $.post('/error', args)
+        $(".score-loading").css('display', 'none')
+        $('#score_error').html("<p>Sorry, there's an error. We've been notified and are working on a solution!</p>")
+    }
+
     get() {
+        let data;
         if (this.admin == false) {
-            $.get('/api/marketr_score', data=>{
-                this.update(data)
-            })
+            data = {}
         } else {
-            $.get(`/api/marketr_score`, {
+            data = {
                 customer_id: this.url_path.slice(11, 14)
-            }, data=>{
-                this.update(data)
-            })
+            }
         }
+
+        $.ajax({
+            url: '/api/marketr_score',
+            data: data,
+            success: data=>{
+                this.update(data)
+            },
+            error: ()=>{
+                this.handle_error()
+            },
+            timeout: 15000 //in milliseconds
+         });
     }
 }
 
@@ -218,12 +234,20 @@ const TaskService = class {
         $('.todo').scrollTop($(".todo")[0].scrollHeight);
     }
 
+    celebrate(){
+        $("#show_confetti").fadeIn()
+        setTimeout(()=>{
+            $("#show_confetti").fadeOut()
+        }, 2000)
+    }
+
     complete(task){
         const args = {
             task: task,
             customer_id: this.customer_id
         }
         $.post("/api/complete_task", args)
+        this.celebrate()
     }
 
     remove(task){

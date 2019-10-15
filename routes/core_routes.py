@@ -209,8 +209,10 @@ def success():
         # update db with plan id
         UserService.update_plan(session['user'], plan)
 
+    UserService.init_profile_after_purchase(UserService.now(), session['user'])
+
     # redirect to home
-    return redirect(url_for('settings'))
+    return redirect(url_for('home', view='campaigns'))
 
 @app.route('/cancel')
 def cancel():
@@ -402,3 +404,11 @@ def notifications():
         return notifications_list
     else:
         return None
+
+
+@app.route('/error', methods=['POST'])
+@login_required
+def error_log():
+    google = GoogleChatService()
+    # google.error(request.form['type'], session['user'])
+    return 'success'
