@@ -410,5 +410,5 @@ def notifications():
 @login_required
 def error_log():
     google = GoogleChatService()
-    # google.error(request.form['type'], session['user'])
+    google.error(request.form['type'], session['user'])
     return 'success'
