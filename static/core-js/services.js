@@ -246,7 +246,18 @@ const TaskService = class {
             task: task,
             customer_id: this.customer_id
         }
-        $.post("/api/complete_task", args)
+        $.ajax({
+            method: 'POST',
+            url: '/api/complete_task',
+            data: args,
+            success: data=>{
+                this.celebrate(data)
+            },
+            error: ()=>{
+                this.console.log('error')
+            },
+            timeout: 5000 //in milliseconds
+         });
         console.log('posted')
         this.celebrate()
     }
