@@ -86,7 +86,7 @@ class IntakeViewModel:
 
 					and
 					(
-						EXISTS (select * from should_show(e.relevant_tags, %s))
+						NOT EXISTS (select * from should_show(e.relevant_tags, %s))
 						OR
 						e.relevant_tags IS null
 					)
