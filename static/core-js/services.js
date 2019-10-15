@@ -250,15 +250,14 @@ const TaskService = class {
             method: 'POST',
             url: '/api/complete_task',
             data: args,
-            success: data=>{
-                this.celebrate(data)
+            success: data=>{  
+                this.celebrate()
             },
             error: ()=>{
                 console.log('error')
             },
             timeout: 5000 //in milliseconds
          });
-        console.log('posted')
     }
 
     remove(task){

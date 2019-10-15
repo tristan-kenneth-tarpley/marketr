@@ -368,6 +368,7 @@ def complete_task():
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
+    print(request.form.get('task'))
     tasks.complete_task(
         request.form.get('task')
     )

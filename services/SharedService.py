@@ -215,10 +215,9 @@ class TaskService:
     def complete_task(self, task):
         tup = (task, self.customer_id)
         query = """
-                UPDATE to_do SET completed_binary = 1 WHERE task_title = ? and customer_id = ?
+                UPDATE to_do SET completed_binary = 1 WHERE task_title like ? and customer_id = ?
                 """
         print(query)
-        print(self.customer_id)
         db.execute(query, False, tup, commit=True)
 
     def remove_task(self, task):

@@ -210,8 +210,8 @@ const CoreViewModels = class {
             const $this = $(event.currentTarget)
             if($this.prop('checked')) {
                 const tasks = new TaskService(this.url_path)
-                const val = $this.parent().parent().parent().next().text().replace(/^\s+/g, '').replace(/\s+$/g, '');;
-                
+                let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
+                val = val.slice(19,(val.length-4))
                 tasks.complete(val)
             }
         })
