@@ -145,6 +145,16 @@ class MessagingService:
                 """
         db.execute(query, False, tup, commit=True)
 
+        query = 'select customer_id from customer_account_reps where customer_id = ?'
+        assigned, cursor = db.execute(query, True, (self.customer_id,))
+        assigned = cursor.fetchone()
+        google = GoogleChatService()
+        google.chat(
+            email=email,
+            admin_added = assigned,
+            msg=msg
+        )
+
         if self.user == 'customer':
             email = """
                     select top 1 email from get_acct_mgr(?)
@@ -155,19 +165,9 @@ class MessagingService:
             data, cursor = db.execute(email, True, (self.customer_id,))
 
         email = cursor.fetchone()
-        email = email[0] if email else False
+        email = email[0] if email else 'tristan@marketr.life'
         notification = NotificationsService(self.customer_id)
         notification.ChatNotification(email)
-
-        query = 'select customer_id from customer_account_reps where customer_id = ?'
-        assigned, cursor = db.execute(query, True, (self.customer_id,))
-        assigned = cursor.fetchone()
-        google = GoogleChatService()
-        google.chat(
-            email=email,
-            admin_added = assigned,
-            msg=msg
-        )
 
 
 class TaskService:
