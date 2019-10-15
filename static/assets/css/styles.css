@@ -4175,7 +4175,7 @@ li.breadcrumb-item.active a {
   -webkit-clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   clip-path: polygon(75% 0%, 83% 50%, 75% 100%, 0% 100%, 8% 50%, 0% 0%);
   font-size: 120%;
-  color: white;
+  color: var(--primary);
   text-decoration: none;
 }
 .past_container:hover {
