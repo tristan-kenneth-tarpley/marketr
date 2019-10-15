@@ -254,12 +254,11 @@ const TaskService = class {
                 this.celebrate(data)
             },
             error: ()=>{
-                this.console.log('error')
+                console.log('error')
             },
             timeout: 5000 //in milliseconds
          });
         console.log('posted')
-        this.celebrate()
     }
 
     remove(task){
