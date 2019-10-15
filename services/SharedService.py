@@ -148,12 +148,6 @@ class MessagingService:
         query = 'select customer_id from customer_account_reps where customer_id = ?'
         assigned, cursor = db.execute(query, True, (self.customer_id,))
         assigned = cursor.fetchone()
-        google = GoogleChatService()
-        google.chat(
-            email=email,
-            admin_added = assigned,
-            msg=msg
-        )
 
         if self.user == 'customer':
             email = """
@@ -168,6 +162,14 @@ class MessagingService:
         email = email[0] if email else 'tristan@marketr.life'
         notification = NotificationsService(self.customer_id)
         notification.ChatNotification(email)
+
+
+        google = GoogleChatService()
+        google.chat(
+            email=email,
+            admin_added = assigned,
+            msg=msg
+        )
 
 
 class TaskService:
