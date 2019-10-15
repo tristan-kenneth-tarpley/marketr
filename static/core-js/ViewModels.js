@@ -206,7 +206,7 @@ const CoreViewModels = class {
             const tasks = new TaskService(this.url_path)
             tasks.add()
         })
-        $(".task_complete").change((event)=>{
+        $(".task_complete").change(event=>{
             const $this = $(event.currentTarget)
             if($this.prop('checked')) {
                 const tasks = new TaskService(this.url_path)

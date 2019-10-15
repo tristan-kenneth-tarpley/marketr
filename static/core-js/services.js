@@ -247,6 +247,7 @@ const TaskService = class {
             customer_id: this.customer_id
         }
         $.post("/api/complete_task", args)
+        console.log('posted')
         this.celebrate()
     }
 
