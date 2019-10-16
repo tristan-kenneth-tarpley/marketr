@@ -219,14 +219,19 @@ const CoreViewModels = class {
         })
         $(".task_complete").change(event=>{
             const $this = $(event.currentTarget)
-            if($this.prop('checked')) {
-                complete_task_view($this)
+            const tasks = new TaskService(this.url_path)
 
-                const tasks = new TaskService(this.url_path)
+            if($this.prop('checked')) {
+                
                 let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
                 val = val.slice(19,(val.length-4))
                 tasks.complete(val)
+                complete_task_view($this)
+
             } else {
+                let val = $this.parent().parent().parent().next().html().trim()
+                val = val.slice(71,(val.length-4))
+                tasks.incomplete(val)
                 revert_task_view($this)
             }
         })

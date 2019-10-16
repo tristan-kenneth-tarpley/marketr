@@ -376,6 +376,19 @@ def complete_task():
     )
     return 'completed'
 
+@app.route('/api/incomplete_task', methods=['POST'])
+def incomplete_task():
+    tasks = TaskService(
+        request.form.get('customer_id') if request.form.get('customer_id') else session['user'],
+        admin_id = session.get('admin'),
+        user = 'customer' if session['customer'] == True else 'admin'
+    )
+    print('hi')
+    tasks.incomplete_task(
+        request.form.get('task')
+    )
+    return 'incomplete'
+
 @app.route('/api/remove_task', methods=['POST'])
 @admin_required
 @account_rep_required

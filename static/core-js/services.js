@@ -252,7 +252,26 @@ const TaskService = class {
             url: '/api/complete_task',
             data: args,
             success: data=>{  
-                console.log(success)
+                console.log('success')
+            },
+            error: ()=>{
+                console.log('error')
+            },
+            timeout: 5000 //in milliseconds
+         });
+    }
+
+    incomplete(task){
+        const args = {
+            task: task,
+            customer_id: this.customer_id
+        }
+        $.ajax({
+            method: 'POST',
+            url: '/api/incomplete_task',
+            data: args,
+            success: data=>{  
+                console.log('success')
             },
             error: ()=>{
                 console.log('error')

@@ -230,6 +230,13 @@ class TaskService:
                 """
         db.execute(query, False, tup, commit=True)
 
+    def incomplete_task(self, task):
+        tup = (task, self.customer_id)
+        query = """
+                UPDATE to_do SET completed_binary = null WHERE task_title like ? and customer_id = ?
+                """
+        db.execute(query, False, tup, commit=True)
+
     def remove_task(self, task):
         tup = (task, self.customer_id)
         query = """
