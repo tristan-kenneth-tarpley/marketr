@@ -19,7 +19,15 @@
 	<div class="card" style="padding: 3% 5% 0;" id="profile_information">
 		<div class="row row_cancel">
 			<div class="col">
-				<h2 class="title" style="margin-bottom: 0;">{{ company_name }}</h2>
+				<h2 class="title" style="margin-bottom: 0;">
+					{{ company_name }}
+
+					{% if not page.admin %}
+						<a style="font-size: 40%;" href="{{url_for('begin', home=True, splash=False)}}" class="btn-neutral btn">
+							Edit
+						</a>
+					{% endif %}
+				</h2>
 				<p style="margin-bottom: 0;" class="small_txt">{{core['industry']|safe}} | {{ core['city'] | capitalize }}, {{ core['state'] | capitalize }} | Business stage: {{ core['stage'] }}</p>
 				<p style="margin-bottom: 0;" class="small_txt">{{ core['employees'] | safe }} employees/contractors with approx. ${{ core['revenue'] }} in annual revenues.</p>
 			</div>
@@ -27,7 +35,9 @@
 		<div class="row">
 			<div class="col">
 				<h4 style="margin-bottom: 0;font-size: 110%;">Profile Owner: {{ core['first_name'] }} {{ core['last_name'] }}</h4>
-				{% if page.admin %}<p class="small_txt">{{ core['email'] }}</p>{% endif %}
+				{% if page.admin %}
+					<p class="small_txt">{{ core['email'] }}</p>
+				{% endif %}
 			</div>
 		</div>
 	</div>
