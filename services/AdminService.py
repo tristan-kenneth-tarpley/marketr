@@ -68,18 +68,14 @@ class AdminService:
 
 
     def update_password(self, a_id, supplied_password, current_password):
-        tup = (a_id,)
-        data, cursor = db.execute('SELECT password FROM dbo.admins WHERE id = ?', True, tup)
-        data = cursor.fetchall()
-        old_pw = data[0][0]
 
-        if sha256_crypt.verify(current_password, old_pw):
+        if supplied_password == current_password:
             new_password = encrypt_password(str(supplied_password))
             tup = (new_password, a_id)
             db.execute('UPDATE dbo.admins SET password = ? WHERE id = ?', False, tup, commit=True)
             return redirect(url_for('personnel'))
         else:
-            error = "old password doesn't match records"
+            error = "passwords don't match"
             return redirect(url_for('personnel', error=error))
 
     def get_admins(self):
