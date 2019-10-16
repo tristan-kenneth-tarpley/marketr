@@ -5226,7 +5226,6 @@ ul#product {
 .notification {
   white-space: pre-wrap;
 }
-
 .notification_count {
   background-color: #ff5751;
   color: white;
@@ -5243,9 +5242,13 @@ ul#product {
   border: 2px solid var(--primary);
 }
 
-.task_table::-webkit-scrollbar {
+.task_table::-webkit-scrollbar,
+.profile_table::-webkit-scrollbar,
+#products::-webkit-scrollbar
+{
   width: 0 !important;
 }
+
 .locked_parent {
   background-image: url("/static/assets/img/dashboard.png");
   background-size: cover;

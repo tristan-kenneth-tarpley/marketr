@@ -96,7 +96,7 @@
 	</div>
 	{% if core['rev_channel_freeform'] %}
 		<p>Additional notes:</p>
-		<p class="truncate inset">{{ core['rev_channel_freeform'] }}</p>
+		<p class="truncate inset">{{ core['rev_channel_freeform'] | clean_chars }}</p>
 	{% endif %}
 {% endmacro %}
 
@@ -555,7 +555,7 @@
 	{% endfor %}
 	{% if core['history_freeform'] %}
 		<p>Additional notes</p>
-		<p class="inset truncate">{{ core['history_freeform']}}</p>
+		<p class="inset truncate">{{ core['history_freeform'] | clean_chars }}</p>
 	{% endif %}
 {% else %}
 	<div class="row">
