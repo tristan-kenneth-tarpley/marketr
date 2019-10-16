@@ -149,19 +149,30 @@ class MessagingService:
         assigned, cursor = db.execute(query, True, (self.customer_id,))
         assigned = cursor.fetchone()
 
-        if self.user == 'customer':
-            email = """
-                    select top 1 email from get_acct_mgr(?)
-                    """
-            data, cursor = db.execute(email, True, (self.customer_id,))
-        elif self.user == 'admin':
-            email = 'select top 1 email from customer_basic where id = ?'
-            data, cursor = db.execute(email, True, (self.customer_id,))
 
-        email = cursor.fetchone()
-        email = email[0] if email else 'tristan@marketr.life'
-        notification = NotificationsService(self.customer_id)
-        notification.ChatNotification(email)
+        admin_email = """
+                select top 1 email from get_acct_mgr(?)
+                """
+        data, cursor = db.execute(admin_email, True, (self.customer_id,))
+
+        admin_email = cursor.fetchone()
+        admin_email = admin_email[0] if admin_email else 'tristan@marketr.life'
+
+
+        customer_email = 'select top 1 email from customer_basic where id = ?'
+        data, cursor = db.execute(customer_email, True, (self.customer_id,))
+
+        customer_email = cursor.fetchone()
+        customer_email = customer_email[0] if customer_email else 'tristan@marketr.life'
+
+        if self.user == 'customer':
+            notification = NotificationsService(self.customer_id)
+            notification.ChatNotification(admin_email)
+            email = admin_email
+        elif self.user == 'admin':
+            notification = NotificationsService(self.customer_id)
+            notification.ChatNotification(customer_email)
+            email = customer_email
 
 
         google = GoogleChatService()
