@@ -80,11 +80,6 @@
                 id="task_title">{{ title | clean_chars | safe }}</p>
             </td>
             <td class="td-actions text-right">
-                {% if admin %}
-                    <button type="button" id="remove_task" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
-                        <i class="now-ui-icons ui-1_simple-remove"></i>
-                    </button>
-                {% endif %}
             </td>
         </tr>
     {% endmacro %}
@@ -113,13 +108,15 @@
             </div>
 
     {% endmacro %}
-
-    <div class="card-tasks todo">
+  
+    {% if admin %}<div style="height:550px;" class="card-tasks todo">
+    {% else %}<div class="card-tasks todo">{% endif %}
         <div class="card-header">
             {% if not admin %}
             {#<p>To improve your Marketr score complete the bold To-Do List items below</p>#}
             {% endif %}
             {% if admin %}
+                <h5>This is a portal into what your client sees. Only add tasks for them. For your tasks, add those in Asana.</h5>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#task_modal" id="new_task">New task</button>
                 {{ new_task_modal(page) }}
             {% endif %}
