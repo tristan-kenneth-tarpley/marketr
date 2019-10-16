@@ -128,7 +128,11 @@
 					{% endif %}
 				</div>
 				<div class="comp_box comp_box-metrics">
-					<p><strong>{{ base['clicks'] | add_commas }}</strong><br>clicks in past 30 days</p>
+					{% if base['clicks'] %}
+						<p><strong>{{ base['clicks'] | add_commas }}</strong><br>clicks in past 30 days</p>
+					{% else %}
+						<p>No data available</p>
+					{% endif %}
 				</div>
 			</div>
 			<div class="col-lg-1"></div>
