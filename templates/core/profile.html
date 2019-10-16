@@ -121,7 +121,11 @@
 			<div style="text-align:center;" class="col-lg-3 col-sm-12">
 				<div class="comp_box comp_box-metrics">
 					<p>Adwords Budget<br>
-					<strong>${{ base['budget'] | currency }}/month</strong></p>
+					{% if base['budget'] %}
+						<strong>${{ base['budget'] | currency }}/month</strong></p>
+					{% else %}
+						<strong>No data available</strong></p>
+					{% endif %}
 				</div>
 				<div class="comp_box comp_box-metrics">
 					<p><strong>{{ base['clicks'] | add_commas }}</strong><br>clicks in past 30 days</p>
