@@ -133,7 +133,7 @@
 {% macro multi_val_iterator(iterable) %}
     {% for i in iterable %}
         {% if i %}
-            <li>{{ i }},</li>
+            <li>{{ i }}</li>
         {% endif %}
     {% endfor %}
 {% endmacro %}

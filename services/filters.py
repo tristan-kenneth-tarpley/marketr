@@ -105,7 +105,10 @@ def currency(num):
 def add_commas(num):
 	return "{:,}".format(num)
 
+def capitalize(string):
+	return string.capitalize()
 
+app.jinja_env.filters['capitalize'] = capitalize
 app.jinja_env.filters['to_date'] = to_date
 app.jinja_env.filters['remove_first_char'] = remove_first_char
 app.jinja_env.filters['check_active'] = check_active

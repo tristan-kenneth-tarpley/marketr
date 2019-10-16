@@ -16,18 +16,19 @@
 
 
 {% macro one() %}
-	<div class="row">
-		<div class="col-lg-7 col-sm-12">
-			<p><strong>Industry: {{core['industry']|safe}}</strong></p>
-			<div class="col-lg-10 col-sm-12">
-				<p>Stage: {{ core['stage'] }}</p>
-				<p>Based in: {{ core['city'] }}, {{ core['state'] }}</p>
+	<div class="card" style="padding: 3% 5% 0;" id="profile_information">
+		<div class="row row_cancel">
+			<div class="col">
+				<h2 class="title" style="margin-bottom: 0;">{{ company_name }}</h2>
+				<p style="margin-bottom: 0;" class="small_txt">{{core['industry']|safe}} | {{ core['city'] | capitalize }}, {{ core['state'] | capitalize }} | Business stage: {{ core['stage'] }}</p>
+				<p style="margin-bottom: 0;" class="small_txt">{{ core['employees'] | safe }} employees/contractors with approx. ${{ core['revenue'] }} in annual revenues.</p>
 			</div>
 		</div>
-		<div class="col-lg-5 col-sm-12">
-			<p><strong>Profile Owner:</strong></p>
-			<p>{{ core['first_name'] }} {{ core['last_name'] }}</p>
-			<p>{{ core['email'] }}</p>
+		<div class="row">
+			<div class="col">
+				<h4 style="margin-bottom: 0;font-size: 110%;">Profile Owner: {{ core['first_name'] }} {{ core['last_name'] }}</h4>
+				{% if page.admin %}<p class="small_txt">{{ core['email'] }}</p>{% endif %}
+			</div>
 		</div>
 	</div>
 {% endmacro %}
@@ -576,13 +577,7 @@
 
 <div class="row">
 	<div class="col-lg-8 col-sm-12">
-		{{ section(
-			link="begin",
-			title=company_name,
-			body=one(),
-			hash="profile_information",
-			admin=page.admin
-		) }}
+		{{ one() }}
 		{{ section(
 			link="company",
 			title="Company Info",
