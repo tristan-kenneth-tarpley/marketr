@@ -5243,6 +5243,9 @@ ul#product {
   border: 2px solid var(--primary);
 }
 
+.task_table::-webkit-scrollbar {
+  width: 0 !important;
+}
 .locked_parent {
   background-image: url("/static/assets/img/dashboard.png");
   background-size: cover;
