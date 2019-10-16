@@ -82,14 +82,15 @@
 				<p>tags</p>
 				</a>
 			</li>
+			
+		    <li class="{{ 0 | check_active(stage) }}">
+				<a href="/personnel">
+					<i class="now-ui-icons design_app"></i>
+					<p>Rocks</p>
+				</a>
+			</li>
 		{% endif %}
 	  	{% if admin %}
-		    <li class="{{ 0 | check_active(stage) }}">
-		      <a href="/personnel">
-		        <i class="now-ui-icons design_app"></i>
-		        <p>Rocks</p>
-		      </a>
-		    </li>
 		    <li class="{{ 0 | check_active(stage) }}">
 		      <a href="/customers">
 		        <i class="now-ui-icons users_single-02"></i>
