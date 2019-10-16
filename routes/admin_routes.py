@@ -435,7 +435,7 @@ def account_reps(customer_id):
 @owner_required
 def change_admin_password(a_id):
 	service = AdminService()
-	return service.update_password(a_id, request.form['new_password'], request.form['current_password'])
+	return service.update_password(a_id, request.form['new_password'], request.form['confirm_password'])
 
 @app.route('/admin/remove', methods=['POST'])
 @owner_required
