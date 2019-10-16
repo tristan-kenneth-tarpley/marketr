@@ -133,7 +133,7 @@
 {% macro multi_val_iterator(iterable) %}
     {% for i in iterable %}
         {% if i %}
-            <li>{{ i }}</li>
+            <li>{{ i | clean_chars }}</li>
         {% endif %}
     {% endfor %}
 {% endmacro %}
@@ -141,7 +141,7 @@
 {% macro product_val_iterator(iterable, key) %}
     {% for index in iterable %}
         {% if index[key] %}
-            <td>{{ index[key] }}</td>
+            <td>{{ index[key] | clean_chars }}</td>
         {% else %}
             <td>n/a</td>
         {% endif %}

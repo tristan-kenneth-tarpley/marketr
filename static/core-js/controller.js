@@ -5,26 +5,26 @@ const InitFuncs = class {
 	}
 
 	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
-		const motivations = [
-			"You're doing great! Remember, if you need a break, you can always log out and come back later.",
-			"Your progress is saved! If you need to leave, you'll pick up right where you left off.",
-			"You're getting so close! Pretty soon, we'll have everything we need to be able to skyrocket your marketing.",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"Did you know: Charles Darwin’s personal pet tortoise didn’t die until 2006.",
-			"Did you know: The average person will spend six months of their life waiting for red lights to turn green.",
-			"Market(r) uses sophisticated algorithms to grow businesses around the country. All of this is vital information!",
-			"Did you know: Marie Curie’s notebooks are still radioactive."
-		]
-		const line = motivations[Math.floor(Math.random()*motivations.length)];
-		if (line != "" && !params.has('home')){
-			$(".motivation_container").fadeIn(()=>{
-				$(".motivation_container p").text(line)
-			})
-		}
+		// const motivations = [
+		// 	"You're doing great! Remember, if you need a break, you can always log out and come back later.",
+		// 	"Your progress is saved! If you need to leave, you'll pick up right where you left off.",
+		// 	"You're getting so close! Pretty soon, we'll have everything we need to be able to skyrocket your marketing.",
+		// 	"",
+		// 	"",
+		// 	"",
+		// 	"",
+		// 	"",
+		// 	"Did you know: Charles Darwin’s personal pet tortoise didn’t die until 2006.",
+		// 	"Did you know: The average person will spend six months of their life waiting for red lights to turn green.",
+		// 	"Market(r) uses sophisticated algorithms to grow businesses around the country. All of this is vital information!",
+		// 	"Did you know: Marie Curie’s notebooks are still radioactive."
+		// ]
+		// const line = motivations[Math.floor(Math.random()*motivations.length)];
+		// if (line != "" && !params.has('home')){
+		// 	$(".motivation_container").fadeIn(()=>{
+		// 		$(".motivation_container p").text(line)
+		// 	})
+		// }
 
 
 		const hover_box = () => {
