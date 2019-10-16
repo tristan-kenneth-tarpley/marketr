@@ -31,6 +31,6 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
 	app.config.from_pyfile('config.cfg')
-	app.run(debug=False)
+	app.run(debug=True)
 
 

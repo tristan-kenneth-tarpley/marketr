@@ -235,6 +235,9 @@ def acct_mgmt(customer_id):
 				service.add_record(temp_form, customer_id)
 				return redirect(url_for('acct_mgmt', customer_id=customer_id))
 
+			else:
+				return redirect(url_for('acct_mgmt', customer_id=customer_id))
+
 		elif request.method == 'GET':
 			page = AdminViewModel(
 				session['permissions'],

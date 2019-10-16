@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm 
-from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList, BooleanField, DateField
+from wtforms import StringField, PasswordField, TextAreaField, SelectField, HiddenField, IntegerField, validators, FormField, FieldList, BooleanField, DateField, FloatField
 from wtforms.fields.html5 import DateField as htmldate
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
@@ -350,11 +350,11 @@ class TagForm(FlaskForm):
 class TempData(FlaskForm):
     start_date = htmldate('start date', validators=[validators.InputRequired()])
     end_date = htmldate('end date', validators=[validators.InputRequired()])
-    spend = IntegerField('spend')
-    active_ads = IntegerField('active_ads')
-    ads_last_30 = IntegerField('ads_last_30')
-    cpc_last_7 = IntegerField('cpc_last_7')
-    ctr_last_7 = IntegerField('ctr_last_7')
+    spend = FloatField('spend', validators=[validators.InputRequired()])
+    active_ads = IntegerField('active_ads', validators=[validators.InputRequired()])
+    ads_last_30 = IntegerField('ads_last_30', validators=[validators.InputRequired()])
+    cpc_last_7 = FloatField('cpc_last_7', validators=[validators.InputRequired()])
+    ctr_last_7 = FloatField('ctr_last_7', validators=[validators.InputRequired()])
     google = BooleanField('google')
     facebook = BooleanField('facebook')
     bing = BooleanField('bing')
