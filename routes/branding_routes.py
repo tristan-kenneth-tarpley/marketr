@@ -18,3 +18,7 @@ def privacy():
 @app.route('/terms_of_service')
 def terms():
 	return render_template('branding/terms_of_service.html')
+
+@app.route('/terms_and_conditions')
+def terms_and_conditions():
+	return render_template('branding/termsandconditions.html')
