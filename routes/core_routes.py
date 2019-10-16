@@ -361,6 +361,8 @@ def messages():
 
     return 'sent'
 
+
+
 @app.route('/api/complete_task', methods=['POST'])
 def complete_task():
     tasks = TaskService(

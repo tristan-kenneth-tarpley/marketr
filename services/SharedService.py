@@ -217,7 +217,6 @@ class TaskService:
         query = """
                 UPDATE to_do SET completed_binary = 1 WHERE task_title like ? and customer_id = ?
                 """
-        print(query)
         db.execute(query, False, tup, commit=True)
 
     def remove_task(self, task):

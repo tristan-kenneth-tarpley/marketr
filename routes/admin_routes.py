@@ -17,6 +17,7 @@ from passlib.hash import sha256_crypt
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from services.GoogleService import google_ads
 from services.ABTestService import ab_test
+from services.TacticsService import TacticsService
 
 
 @app.route('/admin_login', methods=['POST', 'GET'])
@@ -271,6 +272,27 @@ def customer_profile_view_admin(customer_id):
 			admin=session['admin_logged_in'],
 			manager=session['manager_logged_in'],
 			page=view_model
+		)
+	else:
+		return 'You do not have permission to view this client.'
+
+@app.route('/customers/<customer_id>/tactics', methods=['GET'])
+@admin_required
+def admin_tactics_view(customer_id):
+	vf = AdminViewFuncs(customer_id)
+	if vf.ValidView():
+		page = AdAuditViewModel(admin_id=session['admin'], customer_id=customer_id)
+		tactics = TacticsService(customer_id)
+		data = tactics.get()
+		return render_template(
+			'layouts/new_admin_layout.html',
+			view="relevant tactics",
+			owner=session['owner_logged_in'],
+			admin=session['admin_logged_in'],
+			manager=session['manager_logged_in'],
+			page=page,
+			customer_id=customer_id,
+			data=data
 		)
 	else:
 		return 'You do not have permission to view this client.'
