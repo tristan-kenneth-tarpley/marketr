@@ -356,6 +356,9 @@ def history():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.history(form.data)
+            if form.none.data == 'none':
+                service.platforms_null()
+                return redirect(url_for('home', view='profile'))
         else:
             service.skip(90)
         return redirect(url_for('platforms'))

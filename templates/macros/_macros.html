@@ -357,6 +357,7 @@
 							<h6 class="hidden">{{name}}</h6>
 						{% else %}
 							<p>{{ name }}</p>
+							<h6 class="hidden">{% if name == "Haven't tried any yet" %}none{% endif %}</h6>
 						{% endif %}
 						{{ render_field(formField, class="hidden_input") }}
 					</th>

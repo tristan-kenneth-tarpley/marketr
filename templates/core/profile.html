@@ -528,50 +528,59 @@
 
 {% macro eight() %}
 {% if page.data['platforms']['platforms'] %}
-	<p>Average monthly spend across all platforms</p>
-	<h5 class="title blue_header">{{ core['digital_spend']}}</h5>
+	<label>Average monthly spend across all platforms:</label>
+	<h5 class="title blue_header">{{ core['digital_spend'] | clean_chars if core['digital_spend'] else ''}}</h5>
 	<div class="divider"></div>
-	<div class="row">
-		<div class="col-1"></div>
-		<div class="col-3">
-			<h6>Platform Name</h6>
-		</div>
-		<div class="col-3">
-			<h6>Results</h6>
-		</div>
-		<div class="col-3">
-			<h6>Still using?</h6>
-		</div>
-	</div>
-
-	{% for index in page.data['platforms']['platforms'] %}
-		{% set state = index %}
+	{% if page.data['platforms']['platforms'][0]['platform_name'] == 'none' and page.data['platforms']['platforms'] | length  == 1 %}
+		{% if page.data['core']['core'][0]['current_plan'] == '1' %}
+			<p>When you get a second, go ahead and update this section with the platforms on which Market(r) is advertising!</p>
+			<p class="small_txt">If you have questions about how to find this info, <a href="/home?view=messages">ask your account manager</a></p>
+		{% else %}
+			<p>Looks like you haven't tried anything yet. Let's change that! Check out our <a href="/pricing">pricing page</a> for info on how Market(r) can leverage our AI to get you more customers!</p>
+		{% endif %}
+	{% else %}
 		<div class="row">
 			<div class="col-1"></div>
 			<div class="col-3">
-				<h6>
-					<span class="platform_img">
-						{{ state['platform_name']}}
-					</span>
-				</h6>
+				<h6>Platform Name</h6>
 			</div>
-			<div class="col-3 results_img">
-				<span>
-					{{ state['results'] }}
-				</span>
+			<div class="col-3">
+				<h6>Results</h6>
 			</div>
-			
-			{% if state['currently_using'] == 'yes' %}
-			<div class="col-2 center_it alert alert-success">
-				ACTIVE
+			<div class="col-3">
+				<h6>Still using?</h6>
 			</div>
-			{% elif state['currently_using'] == 'no' %}
-			<div class="col-2 center_it alert alert-secondary">
-				INACTIVE
-			</div>
-			{% endif %}
 		</div>
-	{% endfor %}
+
+		{% for index in page.data['platforms']['platforms'] %}
+			{% set state = index %}
+			<div class="row">
+				<div class="col-1"></div>
+				<div class="col-3">
+					<h6>
+						<span class="platform_img">
+							{{ state['platform_name']}}
+						</span>
+					</h6>
+				</div>
+				<div class="col-3 results_img">
+					<span>
+						{{ state['results'] }}
+					</span>
+				</div>
+				
+				{% if state['currently_using'] == 'yes' %}
+				<div class="col-2 center_it alert alert-success">
+					ACTIVE
+				</div>
+				{% elif state['currently_using'] == 'no' %}
+				<div class="col-2 center_it alert alert-secondary">
+					INACTIVE
+				</div>
+				{% endif %}
+			</div>
+		{% endfor %}
+	{% endif %}
 	{% if core['history_freeform'] %}
 		<p>Additional notes</p>
 		<p class="inset truncate">{{ core['history_freeform'] | clean_chars }}</p>

@@ -692,6 +692,10 @@ class IntakeService:
 
 		db.execute(query, False, vals, commit=True)
 
+	def platforms_null(self):
+		query = "INSERT INTO platforms (customer_id, platform_name) VALUES (?, 'none')"
+		db.execute(query, False, (self.id,), commit=True)
+
 	def platforms(self, data):
 		for i in range(int(data.get("platform_length"))):
 
