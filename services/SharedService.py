@@ -168,11 +168,11 @@ class MessagingService:
         if self.user == 'customer':
             notification = NotificationsService(self.customer_id)
             notification.ChatNotification(admin_email)
-            email = admin_email
+            email = customer_email
         elif self.user == 'admin':
             notification = NotificationsService(self.customer_id)
             notification.ChatNotification(customer_email)
-            email = customer_email
+            email = admin_email
 
 
         google = GoogleChatService()
