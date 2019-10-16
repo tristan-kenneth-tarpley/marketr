@@ -246,12 +246,13 @@ const TaskService = class {
             task: task,
             customer_id: this.customer_id
         }
+        this.celebrate()
         $.ajax({
             method: 'POST',
             url: '/api/complete_task',
             data: args,
             success: data=>{  
-                this.celebrate()
+                console.log(success)
             },
             error: ()=>{
                 console.log('error')

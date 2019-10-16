@@ -75,7 +75,9 @@
                 </div>
             </td>
             <td class="task_title text-left">
-                <p id="task_title">{{ title | clean_chars | safe }}</p>
+                <p
+                {% if completed %} style="opacity: .5; text-decoration: line-through;" {% endif %}
+                id="task_title">{{ title | clean_chars | safe }}</p>
             </td>
             <td class="td-actions text-right">
                 {% if admin %}

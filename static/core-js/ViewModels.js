@@ -202,6 +202,17 @@ const CoreViewModels = class {
     
 
 	tasks() {
+        const complete_task_view = target => {
+            let strike = target.parent().parent().parent().next().find('p')
+            strike.css('text-decoration', 'line-through')
+            strike.css('opacity', '.5')
+        }
+        const revert_task_view = target => {
+            let strike = target.parent().parent().parent().next().find('p')
+            strike.css('text-decoration', 'none')
+            strike.css('opacity', '10')
+        }
+
         $("#add_task").click(() => {
             const tasks = new TaskService(this.url_path)
             tasks.add()
@@ -209,10 +220,14 @@ const CoreViewModels = class {
         $(".task_complete").change(event=>{
             const $this = $(event.currentTarget)
             if($this.prop('checked')) {
+                complete_task_view($this)
+
                 const tasks = new TaskService(this.url_path)
                 let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
                 val = val.slice(19,(val.length-4))
                 tasks.complete(val)
+            } else {
+                revert_task_view($this)
             }
         })
         $("#remove_task").click((event)=>{
