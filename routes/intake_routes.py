@@ -7,7 +7,7 @@ import json
 import data.db as db
 from services.UserService import IntakeService, UserService
 from ViewModels.ViewModels import SplashViewModel, ViewFuncs, ContainerViewModel
-from services.SharedService import NotificationsService
+from services.SharedService import NotificationsService, GoogleChatService
 from services.PaymentsService import PaymentsService
 from services.LoginHandlers import login_required
 import services.forms as forms
@@ -141,7 +141,8 @@ def company():
             ts = time.time()
             st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             UserService.init_profile(st, session['user'])
-            UserService.onboarding_complete(session['email'])
+            google = GoogleChatService()
+            google.onboarding_complete(email=session['email'])
             session['onboarding_complete'] = True
             return redirect(url_for('expectations'))
         else:
