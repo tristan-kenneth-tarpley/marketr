@@ -10,7 +10,7 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from app import app
 from services.PaymentsService import PaymentsService
-from NotificationsService import GoogleChatService
+from services.NotificationsService import GoogleChatService
 
 def intake_page_map():
     pages = {
