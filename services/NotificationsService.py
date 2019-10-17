@@ -43,6 +43,14 @@ class GoogleChatService:
         }
         self.send(webhook_url, bot_message)
 
+
+    def onboarding_complete(self, email=None):
+        url = 'https://chat.googleapis.com/v1/spaces/AAAAp2FwCqg/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=I8CJEvVv2s_xPq5fWEWwe7oT3ghaiGvTaPUed3_cXVE%3D'
+        msg = {
+            'text': f'Onboarding completed for: {email}'
+        }
+        self.send(url, msg)
+
     def new_customer(self, email=None, customer_type=None):
         plan_table = {
 			# live mode

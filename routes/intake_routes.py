@@ -141,6 +141,7 @@ def company():
             ts = time.time()
             st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
             UserService.init_profile(st, session['user'])
+            UserService.onboarding_complete(session['email'])
             session['onboarding_complete'] = True
             return redirect(url_for('expectations'))
         else:

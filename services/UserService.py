@@ -10,6 +10,7 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from app import app
 from services.PaymentsService import PaymentsService
+from NotificationsService import GoogleChatService
 
 def intake_page_map():
     pages = {
@@ -247,6 +248,11 @@ class DBActions:
 
 
 class UserService:
+
+	def onboarding_complete(email):
+		google = GoogleChatService()
+		google.onboarding_complete(email=email)
+
 	def now():
 		now = datetime.datetime.now()
 		today = now.strftime("%Y-%m-%d %H:%M")
