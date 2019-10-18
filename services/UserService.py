@@ -483,9 +483,9 @@ class IntakeService:
 		# 	tup = (self.id, perc, self.page)
 		# else: 
 		# 	tup = (self.id, perc, 'awareness')
-		tup = (self.id, perc)
+		tup = (perc, self.id)
 		query = """
-				EXEC update_perc_complete @user = ?, @perc = ?
+				UPDATE customer_basic SET perc_complete = ? where id = ?
 				"""
 
 		db.execute(query, False, tup, commit=True)

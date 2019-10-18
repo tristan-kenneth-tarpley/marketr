@@ -155,6 +155,7 @@ def company():
             google = GoogleChatService()
             google.onboarding_complete(email=session['email'])
             session['onboarding_complete'] = True
+            
             return redirect(url_for('expectations'))
         else:
             return redirect(url_for('home', view='profile'))
