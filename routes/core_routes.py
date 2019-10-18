@@ -326,10 +326,9 @@ def add_task():
 @app.route('/api/add_balance', methods=['POST'])
 @login_required
 def add_balance():
-    amount = request.form['amount']
+    amount = request.form['amount'].replace(',', '')
     payments = PaymentsService(session['email'], customer_id=session['stripe_id'])
     payments.add_balance(amount)
-    amount = amount.replace(',', '')
     UserService.add_balance(session['user'], amount)
     return redirect(url_for('settings'))
 
