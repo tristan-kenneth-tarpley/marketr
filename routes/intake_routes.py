@@ -73,8 +73,19 @@ def begin():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
+
+            payments = PaymentsService(session['email'])
+            stripe_id = payments.create_customer()
+
+            session['stripe_id'] = stripe_id
+            UserService.UpdateStripeId(session['email'], session['stripe_id'])
+
+            gchat = GoogleChatService()
+            gchat.onboarding_started(email=session['email'])
+
             stripe_info = PaymentsService(session['email'], customer_id=session['stripe_id'])
             stripe_info.modify(company_name=form.company_name.data)
+
         else:
             service.skip(10)
 

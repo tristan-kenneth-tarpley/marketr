@@ -108,15 +108,6 @@ def confirm_email(token):
     email = s.loads(token, salt='email-confirm', max_age=3600)
     UserService.confirm_customer(email, token)
 
-    payments = PaymentsService(email)
-    stripe_id = payments.create_customer()
-
-    session['stripe_id'] = stripe_id
-    UserService.UpdateStripeId(email, session['stripe_id'])
-
-    gchat = GoogleChatService()
-    gchat.onboarding_started(email=email)
-
     form = forms.CustomerLogin()
     return render_template("login.html", conf=True, form=form)
 
