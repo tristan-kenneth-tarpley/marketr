@@ -608,9 +608,9 @@ class SettingsViewModel:
 		data = self.stripe_obj.get_plan_meta(self.sub_id)
 		self.plan_meta = {
 			'amount': (data['plan']['amount']/100),
-			'start_date': data['start_date'],
-			'canceled_at': data['canceled_at'],
-			'cancel_at': data['cancel_at']
+			'start_date': data.get('start_date'),
+			'canceled_at': data.get('canceled_at'),
+			'cancel_at': data.get('cancel_at')
 		}
 
 	def compile(self):
