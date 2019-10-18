@@ -452,7 +452,7 @@ const WalletViewModel = class {
 
     add_validation(){
         $(".almost_free_val").keyup(e=>{
-            let $this = parseInt($(".almost_free_val").val())
+            let $this = parseInt($(".almost_free_val").val().replace(',',''))
             if ($this > 250) {
                 this.disable('almost_free')
             } else {
@@ -462,7 +462,7 @@ const WalletViewModel = class {
 
         $(".ad_mid_val").keyup(e=>{
 
-            let $this = parseInt($(".ad_mid_val").val())
+            let $this = parseInt($(".ad_mid_val").val().replace(',', ''))
             if ($this > 4999) {
                 this.disable('mid')
             } else if ($this < 250) {

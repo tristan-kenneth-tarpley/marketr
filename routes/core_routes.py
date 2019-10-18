@@ -335,7 +335,7 @@ def add_balance():
 @app.route('/api/spend_rate', methods=['POST'])
 @login_required
 def spend_rate():
-    spend_rate = request.form['spend_rate']
+    spend_rate = request.form['spend_rate'].replace(',', '')
     UserService.set_spend_rate(session['user'], spend_rate)
     return redirect(url_for('settings'))
 
