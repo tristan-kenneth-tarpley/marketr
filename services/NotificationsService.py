@@ -54,13 +54,14 @@ class GoogleChatService:
     def new_customer(self, email=None, customer_type=None):
         plan_table = {
 			# live mode
-			'plan_FfI9OI02wob7Wl': 'ab testing',
-			'plan_FfI9ZGhlsAkGii':'paid ads',
-			'plan_FfIAIrHBJ78YpY': 'almost free',
+			'plan_FfI9OI02wob7Wl': 'ab_binary',
+			'plan_FxJImVg8UME2BU':'ad_binary',
+			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
+			'plan_FxJJZ1sUDZ0550': 'ad_premium',
 			# test mode
-			'plan_Fed1YzQtnto2mT': 'ab testing',
-			'plan_FecAlOmYSmeDK3': 'paid ads',
-			'plan_FeZoBcEgfD35he': 'almost free'
+			'plan_Fed1YzQtnto2mT': 'ab_binary',
+			'plan_FecAlOmYSmeDK3': 'ad_binary',
+			'plan_FeZoBcEgfD35he': 'almost_free_binary'
 		}
 
         webhook_url = 'https://chat.googleapis.com/v1/spaces/AAAACXzT6xU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=pw7QTFKYMb-8vx-z68Bq-R-IBv-hEfL6m1yhMyxyDEo%3D'
