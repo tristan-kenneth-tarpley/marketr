@@ -607,10 +607,10 @@ class SettingsViewModel:
 	def subscription(self):
 		data = self.stripe_obj.get_plan_meta(self.sub_id)
 		self.plan_meta = {
-			'amount': (data['plan']['amount']/100),
-			'start_date': data.get('start_date'),
-			'canceled_at': data.get('canceled_at'),
-			'cancel_at': data.get('cancel_at')
+			'amount': (data['plan']['amount']/100) if data['plan']['amount'] else 0,
+			'start_date': data.get('start_date') if data.get('start_date') else 0,
+			'canceled_at': data.get('canceled_at') if data['canceled_at'] else 0,
+			'cancel_at': data.get('cancel_at') if data['cancel_at'] else 0
 		}
 
 	def compile(self):

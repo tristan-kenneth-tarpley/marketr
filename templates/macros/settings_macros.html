@@ -122,17 +122,10 @@
     <div class="plan_container-div">
         <div class="row">
             <div class="col-lg-3 col-sm-6">
+
                 <p>Next Payment</p>
                 <p style="color: #62cde0; font-size: 120%">
                     <strong>{{ "$%.2f"|format(page.upcoming_invoices['amount'] | float)  }} on {{ page.upcoming_invoices['start'] | to_date }}</strong>
-                </p>
-            </div>
-            <div class="col-lg-9 col-sm-6">
-                <p>Started</p>
-                <p style="font-size: 120%;">
-                    <strong>
-                        {{ page.plan_meta['start_date'] | to_date }}
-                    </strong>
                 </p>
             </div>
         </div>
@@ -163,7 +156,7 @@
                 <p>
                     <strong>Funds Remaining</strong>
                 </p>
-                <h4><strong>{{ "$%.0f"|format(page.customer['funds_remaining'] | float) }}</strong></h4>
+                <h4><strong>${{ page.customer['funds_remaining'] | float | currency }}</strong></h4>
                 <p class="small_txt">Added too much? <a href="/home?view=messages">Message us</a> to reduce</p>
                 {% if page.customer['spend_rate'] | float > page.customer['funds_remaining'] | float %}
                 <h5 class="text-danger">More funds needed</h5>
@@ -200,7 +193,7 @@
                 <p>
                     <strong>Current Advertising Spend Rate</strong>
                 </p>
-                <h4><strong>{{ "$%.0f"|format(page.customer['spend_rate'] | float) }}</strong>/month</h4>
+                <h4><strong>${{ page.customer['spend_rate'] | currency }}</strong>/month</h4>
             </div>
             <div class="col-lg-8 col-md-12">
                 <form method="POST" action="{{ url_for('spend_rate') }}">
