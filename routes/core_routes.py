@@ -25,6 +25,10 @@ import time
 import datetime
 
 
+@app.route('/sitemap', methods=['GET'])
+def sitemap():
+    return render_template('sitemap.xml')
+
 @app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
     form = forms.ForgotPassword()
