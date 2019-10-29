@@ -11,32 +11,44 @@
 
 <div class="sidebar" data-color="orange">
 	<div class="logo">
-	  <a href="https://marketr.life" class="simple-text logo-normal">
+	  <a href="{{ url_for('home') }}" class="simple-text logo-normal">
 	    <img src="/static/assets/img/marketrblack.png">
 	  </a>
 	</div>
 	<div class="sidebar-wrapper tab-content">
 		<div id="profile-nav" class="hidden">
 			<ul class="nav">
+				<li>
+					<a href="/home?view=campaigns">
+						<i class="now-ui-icons business_chart-pie-36"></i>
+						<p>Campaigns</p>
+					</a>	
+				</li>
 				<li class="{{ plan }}">
-				<a href="/home?page=plan">
-					<i class="now-ui-icons business_badge"></i>
-					<p>Market(r) Profile</p>
-				</a>
+					<a href="/home?view=profile">
+						<i class="now-ui-icons business_badge"></i>
+						<p>Market(r) Profile</p>
+					</a>
 
-				{% if plan=='active' %}
+					{% if plan=='active' %}
 
-					<ul class="sub_nav nav">
-						<li><a class="targeted profile_information" href="#profile_information">Profile Information</a></li>
-						<li><a class="company" href="#company">Company Information</a></li>
-						<li><a class="competitors" href="#competitors">Competitors</a></li>
-						<li><a class="audience" href="#audience">Target Market</a></li>
-						<li><a class="products" href="#products">Products</a></li>
-						<li><a class="salescycle" href="#salescycle">Sales Cycle</a></li>
-						<li><a class="platforms" href="#platforms">Platforms</a></li>
-					</ul>
+						<ul class="sub_nav nav">
+							<li><a class="targeted profile_information" href="#profile_information">Profile Information</a></li>
+							<li><a class="company" href="#company">Company Information</a></li>
+							<li><a class="competitors" href="#competitors">Competitors</a></li>
+							<li><a class="audience" href="#audience">Target Market</a></li>
+							<li><a class="products" href="#products">Products</a></li>
+							<li><a class="salescycle" href="#salescycle">Sales Cycle</a></li>
+							<li><a class="platforms" href="#platforms">Platforms</a></li>
+						</ul>
 
-				{% endif %}
+					{% endif %}
+				</li>
+				<li>
+					<a href="/home?view=messages">
+						<i class="now-ui-icons ui-2_chat-round"></i>
+						<p>Messages</p>
+					</a>	
 				</li>
 				{{ settings_link() }}
 				<li>
@@ -50,7 +62,7 @@
 		<div id="campaigns-nav">		
 			<ul class="nav">
 				<li class="{{ plan }}">
-					<a href="/home?page=plan">
+					<a href="/home?view=campaign">
 						<i class="now-ui-icons business_chart-pie-36"></i>
 						<p>Campaigns</p>
 					</a>	
@@ -60,6 +72,19 @@
 						<li><a class="ads_performance" href="#ads_performance">Ad performance</a></li>
 					</ul>
 				</li>
+				<li class="">
+					<a href="/home?view=profile">
+						<i class="now-ui-icons business_badge"></i>
+						<p>Market(r) Profile</p>
+					</a>
+				</li>
+				<li>
+					<a href="/home?view=messages">
+						<i class="now-ui-icons ui-2_chat-round"></i>
+						<p>Messages</p>
+					</a>	
+				</li>
+				
 				{{ settings_link() }}
 				<li>
 					<a href="{{ url_for('logout') }}">
@@ -71,8 +96,20 @@
 		</div>
 		<div id="messages-nav" class="hidden">		
 			<ul class="nav">
+				<li class="">
+					<a href="/home?view=campaigns">
+						<i class="now-ui-icons business_chart-pie-36"></i>
+						<p>Campaigns</p>
+					</a>	
+				</li>
+				<li class="">
+					<a href="/home?view=profile">
+						<i class="now-ui-icons business_badge"></i>
+						<p>Market(r) Profile</p>
+					</a>
+				</li>
 				<li class="{{ plan }}">
-					<a href="/home?page=plan">
+					<a href="/home?view=messages">
 						<i class="now-ui-icons ui-2_chat-round"></i>
 						<p>Messages</p>
 					</a>	
