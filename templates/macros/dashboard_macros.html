@@ -47,6 +47,7 @@
             {% set message = task | int %}
             {% set title = page.data['tasks']['tasks'][message]['task_title'] %}
             {% set completed = page.data['tasks']['tasks'][message]['completed_binary'] %}
+            {% set tactic = page.data['tasks']['tasks'][message]['tactic_id'] %}
             
             {% if completed == 0 %}
                 {% set status = False %}
@@ -54,11 +55,11 @@
                 {% set status = True %}
             {% endif %}
 
-            {{ tr(title=title, completed=status, admin=admin) }}
+            {{ tr(title=title, completed=status, admin=admin, tactic_id=tactic) }}
 
         {% endfor %}
     {% endmacro %}
-    {% macro tr(title=None, completed=False, admin=True) %}
+    {% macro tr(title=None, completed=False, admin=True, tactic_id=None) %}
         <tr class="editable_task">
             <td>
                 <div class="form-check">
@@ -77,7 +78,7 @@
             <td class="task_title text-left">
                 <p
                 {% if completed %} style="opacity: .5; text-decoration: line-through;" {% endif %}
-                id="task_title">{{ title | clean_chars | safe }}</p>
+                id="task_title">{% if tactic_id %}<a class="tactic_task" target="__blank" href="{{ url_for('tactic', tactic_id=tactic_id)}}">{% endif %}{{ title | clean_chars | safe }}{% if tactic_id %}</a>{% endif %}</p>
             </td>
             <td class="td-actions text-right">
             </td>
@@ -285,6 +286,76 @@
         </div>
     {% endif %}
 </div>
+{% endmacro %}
+
+{% macro tactics(page) %}
+    {% macro build(page) %}
+    <div id="carouselExampleIndicators" class="text-carousel carousel slide">
+        <ol class="carousel-indicators">
+            {% for insight in page.data['tact']['insights'] %}
+                {% set index = loop.index - 1 %}
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ index }}" class="{{'active' if index == 0 else ''}}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner">
+            {% for insight in page.data['insights']['insights'] %}
+                <div class="carousel-item {{'active' if loop.index-1 == 0 else ''}}">
+                    <p style="margin-bottom: 0;"><strong>{{ loop.index }} of {{ page.data['insights']['insights'] | length }}</strong></p>
+                    <p class="small_txt">{{ insight['time'] }}</p>
+                    <p>{{ insight['body'] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="false"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div style="width: 80%; margin: 7% auto 3%;" class="separator"></div>
+    <div style="text-align:center;">
+        <p class="small_txt">Want to discuss these insights? Head over to the <a href="/home?view=messages">messages</a> tab.</p>
+    </div>
+
+    {% endmacro %}
+{#<div class="row">
+    {% if page.data['insights']['insights'] %}
+        <div class="col">
+            {{ build(page) }}
+        </div>
+    {% else %}
+        <div style="padding: 5% 5% 3%;">
+            <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
+            <p>You can expect to see specific improvement insights here within the next week.</p>
+            <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+        </div>
+    {% endif %}
+</div>#}
+    <div class="card negative_card">
+        {% set base = page.data['tactics']['0'] %}
+        {% if base['title']%}
+            <p id="tactic_title"><strong>{{ base['title'] }}</strong></p>
+            <p class="small_txt">{{ base['description'] }}</p>
+            {% for x in page.data['tasks']['tasks'] if x['tactic_id'] %}
+                {% if x['tactic_id'] == base['tactic_id'] %}
+                    <div class="separator"></div>
+                    <p>This tactic is added to your to-do list. Reach out to your Market(r) guide if you have questions!</p>
+                {% else %}
+                    <button id="add_tactic" value="{{ base['tactic_id'] }}" class="btn btn-outline btn-outline-primary">
+                        + add tactic to to-do list
+                    </button> 
+                {% endif %}
+            {% else %}
+                <button id="add_tactic" value="{{ base['tactic_id'] }}" class="btn btn-outline btn-outline-primary">
+                    + add tactic to to-do list
+                </button>
+            {% endfor %}
+            
+        {% endif %}
+    </div>
 {% endmacro %}
 
 

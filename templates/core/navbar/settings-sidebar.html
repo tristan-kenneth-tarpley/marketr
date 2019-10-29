@@ -25,7 +25,7 @@
 						<p>Messages</p>
 					</a>	
                 </li>
-				<li class="active">
+				<li class="{{ 'active' if not tactic }}">
                     <a href="{{ url_for('settings') }}">
                         <i class="now-ui-icons ui-1_settings-gear-63"></i>
                         <p>Account & Billing</p>

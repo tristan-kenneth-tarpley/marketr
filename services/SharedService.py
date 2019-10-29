@@ -180,6 +180,7 @@ class MessagingService:
             email=email,
             admin_added = assigned,
             msg=msg
+            
         )
 
 
@@ -200,14 +201,14 @@ class TaskService:
         except:
             return None
 
-    def post_task(self, task) -> None:
-        tup = (task, self.customer_id, task, 0, self.admin_id, self.customer_id)
+    def post_task(self, task, tactic_id = None) -> None:
+        tup = (task, self.customer_id, task, 0, self.admin_id, self.customer_id, tactic_id)
         query = """
                 IF NOT EXISTS (SELECT task_title FROM to_do WHERE task_title = ? and customer_id = ?)
                     INSERT INTO to_do
-                    (task_title, completed_binary, admin_assigned, customer_id)
+                    (task_title, completed_binary, admin_assigned, customer_id, tactic_id)
                     VALUES
-                    (?,?,?,?)
+                    (?,?,?,?,?)
                 """
         db.execute(query, False, tup, commit=True)
 

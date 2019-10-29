@@ -8,6 +8,7 @@ from services.UserService import UserService
 from services.SharedService import CoreService, InsightsService
 from services.AdminService import AdminService, AdminUserService, MessagingService, TaskService, TacticService
 from services.CompetitorService import CompetitorService
+from services.TacticsService import TacticsService
 import services.forms as forms
 import json
 import itertools
@@ -416,6 +417,11 @@ class CustomerDataViewModel:
 		insights_service = InsightsService(self.customer_id, self.admin)
 		return insights_service.fetch()
 
+	
+	def compile_tactics(self) -> dict:
+		tactics = TacticsService(self.customer_id)
+		return tactics.get()
+
 	def compile_all(self) -> None:
 		core = self.compile_core()
 		competitors = CompetitorService()
@@ -479,8 +485,10 @@ class CustomerDataViewModel:
 			'salescycle': clean_salescycle(core_data[8]),
 			'insights': eval(core_data[9]) if core_data[9] else "",
 			'temp_ad_data': eval(core_data[10]) if core_data[10] else None,
-			'clicks_per_1000': clicks_per_1000
+			'clicks_per_1000': clicks_per_1000,
+			'tactics': self.compile_tactics()
 		}
+		print(return_data['tactics'])
 
 		self.data = return_data
 
@@ -648,3 +656,18 @@ class AdAuditViewModel:
 
 
 
+
+
+class TacticViewModel:
+	def __init__(self, tactic_id):
+		self.tactic_id = tactic_id
+	
+	def compile(self):
+		query = "SELECT title, description, tactic_id FROM tactics WHERE tactic_id = ?"
+		data, cursor = db.execute(query, True, (self.tactic_id,))
+		data = cursor.fetchone()
+		self.data = {
+			'title': data[0],
+			'description': data[1],
+			'id': data[2]
+		}

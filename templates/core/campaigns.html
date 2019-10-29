@@ -1,5 +1,5 @@
 
-{% from "macros/dashboard_macros.html" import goals, insights, ads_performance, ad_metrics, test_performance %}
+{% from "macros/dashboard_macros.html" import goals, tactics, insights, ads_performance, ad_metrics, test_performance %}
 {% from "macros/home_macros.html" import locked %}
 
 {% set current_plan = page.data['core']['core'][0]['current_plan'] %}
@@ -17,33 +17,50 @@
         </div>
     </div>#}
     <div class="col-lg-6 col-sm-12">
-        {{ section(
-            link=None,
-            title='To-Do List',
-            body=todo(page, admin=False),
-            hash=None,
-            admin=page.admin
-        ) }}
+        <div class="row">
+            <div class="col">                 
+                {{ section(
+                    link=None,
+                    title='To-Do List',
+                    body=todo(page, admin=False),
+                    hash=None,
+                    admin=page.admin
+                ) }}
+            </div>
+        </div>
     </div>
 
     <div class="col-lg-6 col-sm-12">
-        {% if current_plan %}
-        {{ section(
-            link=None,
-            title="Insights",
-            body=insights(page),
-            hash="insights",
-            admin=page.admin
-        ) }}
-        {% else %}
-        {{ section(
-            link=None,
-            title="Insights <i class='fa fa-lock'></i>",
-            body=locked(type="insights"),
-            hash="insights",
-            admin=page.admin
-        ) }}
-        {% endif %}
+        <div class="row">
+            <div class="col-lg-12">
+                {% if current_plan %}
+                {{ section(
+                    link=None,
+                    title="Insights",
+                    body=insights(page),
+                    hash="insights",
+                    admin=page.admin
+                ) }}
+                {% else %}
+                {{ section(
+                    link=None,
+                    title="Insights <i class='fa fa-lock'></i>",
+                    body=locked(type="insights"),
+                    hash="insights",
+                    admin=page.admin
+                ) }}
+                {% endif %}
+            </div>
+            <div class="col-lg-12">
+                {{ section(
+                    link=None,
+                    title="Tactic of the Day",
+                    body=tactics(page),
+                    hash="tactics",
+                    admin=page.admin
+                ) }}
+            </div>
+        </div>
     </div>
     {#<div class="col-lg-6 col-sm-12">
         {{ section(

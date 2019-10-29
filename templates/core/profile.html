@@ -30,6 +30,9 @@
 				</h2>
 				<p style="margin-bottom: 0;" class="small_txt">{{core['industry']|safe}} | {{ core['city'] | capitalize }}, {{ core['state'] | capitalize }} | Business stage: {{ core['stage'] }}</p>
 				<p style="margin-bottom: 0;" class="small_txt">{{ core['employees'] | safe }} employees/contractors with approx. ${{ core['revenue'] }} in annual revenues.</p>
+				{% if core['website'] %} 
+					<a style="margin-bottom: 0;" target="__blank" href="https://{{core['website']}}" class="small_txt">{{ core['website'] | safe }}</a>
+				{% endif %}
 			</div>
 		</div>
 		<div class="row">

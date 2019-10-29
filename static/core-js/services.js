@@ -246,6 +246,7 @@ const TaskService = class {
             task: task,
             customer_id: this.customer_id
         }
+        console.log(task)
         this.celebrate()
         $.ajax({
             method: 'POST',
@@ -315,8 +316,23 @@ const TaskService = class {
 }
 
 
+const TacticService = class {
+    constructor(){
 
-class AdAuditService {
+    }
+
+    add_tactic(value, task){
+        const args = {
+            'task': task,
+            'tactic_id': value
+        }
+        $.post('/api/add_task', args)
+        window.location.reload()
+    }
+}
+
+
+const AdAuditService = class {
     constructor() {
         
     }

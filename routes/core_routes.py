@@ -13,7 +13,7 @@ from services.LoginHandlers import login_required, admin_required, owner_require
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
-from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel
+from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel
 import hashlib
 from data.db import execute, sql_to_df
 from bleach import clean
@@ -303,6 +303,21 @@ def plan_view(plan_id):
     return render_template('core/settings.html', page=page, root=False, plan_id=plan_id)
 
 
+@app.route('/tactic/<tactic_id>', methods=['GET'])
+@login_required
+@onboarding_required
+def tactic(tactic_id):
+
+    vm = TacticViewModel(tactic_id)
+    vm.compile()
+    return render_template(
+        'core/tactics.html',
+        page=vm
+    )
+
+
+
+# api
 # core actions
 @app.route('/api/remove_product', methods=['POST'])
 @admin_required
@@ -314,16 +329,15 @@ def remove_product():
 
 
 @app.route('/api/add_task', methods=['POST'])
-@admin_required
-@account_rep_required
 def add_task():
     tasks = TaskService(
-        request.form.get('customer_id'),
+        request.form.get('customer_id') if request.form.get('customer_id') else session.get('user'),
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
     tasks.post_task(
-        request.form.get('task')
+        request.form.get('task'),
+        tactic_id = request.form.get('tactic_id')
     )
     return 'added'
 

@@ -9,7 +9,8 @@ class TacticsService:
         self.customer_id = customer_id
 
     def get(self):
-        query = """ exec get_tactics @customer_id = ? """
+        print('invoked')
+        query = "exec get_tactics @customer_id = ?"
         data, cursor = db.execute(query, True, (self.customer_id,))
         data = cursor.fetchall()
         columns = [
@@ -18,4 +19,5 @@ class TacticsService:
             'tactic_id'
         ]
         returned = UserService.parseCursor(data, columns)
+  
         return returned

@@ -199,6 +199,15 @@ const CoreViewModels = class {
             }
         })
     }
+
+    tactics(){
+        const tactics = new TacticService()
+        $("#add_tactic").click(e=>{
+            const target = e.currentTarget
+            const title = $(target).siblings('#tactic_title').text()
+            tactics.add_tactic(target.value, title)
+        })
+    }
     
 
 	tasks() {
@@ -225,6 +234,7 @@ const CoreViewModels = class {
                 
                 let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
                 val = val.slice(19,(val.length-4))
+                console.log(val)
                 tasks.complete(val)
                 complete_task_view($this)
 
