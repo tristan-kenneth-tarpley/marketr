@@ -35,13 +35,6 @@
 </head>
 <body data-spy="scroll" data-target="#navbar" data-offset="98">
 <!-- page loading -->
-    <div class="browser_warning">
-        <div>
-            <h1>Your browser is not supported!</h1>
-            <p>Sorry, but we don't currently support <span id="browser_name"></span>. For best results, we recommend using <a target="__blank" href="https://www.google.com/chrome/">Google Chrome</a>.</p>
-            <button style="text-decoration: underline; color: #62cde0;" class="m-btn m-btn-neutral" id="clear_warning">Continue anyway</button>
-        </div>
-    </div>
     <div id="loading">
         <div class="load-circle"><span class="one"></span></div>
     </div>
@@ -205,55 +198,6 @@
         <!-- end footer bottom -->
     </footer>
 
-    <script>
-        var browser;
-        if (navigator.userAgent.indexOf("Chrome") != -1 ) {
-            browser = 'Chrome'
-        }
-        // FIREFOX
-        else if (navigator.userAgent.indexOf("Firefox") != -1 ) {
-            browser = 'Firefox'
-        }
-        // INTERNET EXPLORER
-        else if (navigator.userAgent.indexOf("MSIE") != -1 ) {
-            browser = 'Internet Explorer'
-        }
-        // EDGE
-        else if (navigator.userAgent.indexOf("Edge") != -1 ) {
-            browser = 'Edge'
-        }
-        // SAFARI
-        else if (navigator.userAgent.indexOf("Safari") != -1 ) {
-            browser = 'Safari'
-        }
-        // OPERA
-        else if (navigator.userAgent.indexOf("Opera") != -1 ) {
-            browser = 'Opera'
-        }
-        // YANDEX BROWSER
-        else if (navigator.userAgent.indexOf("Opera") != -1 ) {
-            browser = 'Opera'
-        }
-        // OTHERS
-        else {
-            browser = 'other'
-        }
-
-        var blocked_browsers = ['Internet Explorer', 'Edge', 'Chrome']
-        if (blocked_browsers.includes(browser)) {
-            document.querySelector('nav').style.display = 'none'
-            document.querySelector('.browser_warning').style.display = 'block'
-            document.querySelector('#browser_name').innerHTML = 'Microsoft ' + browser
-            document.querySelector('#clear_warning').addEventListener('click', ()=>{
-                document.querySelector('.browser_warning').style.display = 'none'
-                document.querySelector('nav').style.display = 'initial'
-            }) 
-        } else {
-            document.querySelector('.browser_warning').style.display = 'none'
-            document.querySelector('nav').style.display = 'initial'
-        }
- 
-    </script>
     <script src="static/branding/js/jquery-3.2.1.min.js"></script>
     <script src="static/branding/js/jquery-migrate-3.0.0.min.js"></script>
     <!-- end jquery -->
