@@ -225,6 +225,7 @@
   }
 
   var blocked_browsers = ['Internet Explorer', 'Edge']
+  console.log(browser)
   if (blocked_browsers.includes(browser)) {
       document.querySelector('.browser_warning').style.display = 'block'
       document.querySelector('#browser_name').innerHTML = 'Microsoft ' + browser
