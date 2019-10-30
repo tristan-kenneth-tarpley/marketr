@@ -38,9 +38,10 @@
 						<div id="content-ready" style="visibility:hidden;">
 						{% if page.admin %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
+
+							<h5>{{ page.data['core']['core'][0]['company_name'] }}</h5>
+							<p class="small_txt">ID: {{ page.data['core']['core'][0]['id'] }}</p>
 						{% endif %}
-						<h5>{{ page.data['core']['core'][0]['company_name'] }}</h5>
-						<p class="small_txt">ID: {{ page.data['core']['core'][0]['id'] }}</p>
 						{{ tab_bar(page) }}
 						
 						<div class="tab-content">
