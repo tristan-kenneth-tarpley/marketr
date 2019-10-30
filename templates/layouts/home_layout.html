@@ -31,10 +31,10 @@
 	<div class="content">
 		<div class="append_to">
 			<div class="container-fluid">
-				<div class="card root-card">
+				<div class="root-card">
 					<div id="loading">
 						<div class="load-circle"><span class="one"></span></div>
-					</div>
+					</div><br><br>
 						<div id="content-ready" style="visibility:hidden;">
 						{% if page.admin %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
@@ -43,7 +43,7 @@
 							<p class="small_txt">ID: {{ page.data['core']['core'][0]['id'] }}</p>
 						{% endif %}
 						{{ tab_bar(page) }}
-						
+						<br>
 						<div class="tab-content">
 							<div class="tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
 								{% with page=page %}

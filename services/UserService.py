@@ -465,9 +465,10 @@ def last_modified(id):
 
 class IntakeService:
 
-	def __init__(self, id, page):
+	def __init__(self, id, page, onboarding_complete):
 		self.id = id
 		self.page = page
+		self.onboarding_complete = onboarding_complete
 		last_modified(id)
 
 	def perc_complete(self, perc):
@@ -483,12 +484,13 @@ class IntakeService:
 		# 	tup = (self.id, perc, self.page)
 		# else: 
 		# 	tup = (self.id, perc, 'awareness')
-		tup = (perc, self.id)
-		query = """
-				UPDATE customer_basic SET perc_complete = ? where id = ?
-				"""
+		if self.onboarding_complete == False:
+			tup = (perc, self.id)
+			query = """
+					UPDATE customer_basic SET perc_complete = ? where id = ?
+					"""
 
-		db.execute(query, False, tup, commit=True)
+			db.execute(query, False, tup, commit=True)
 	
 	def skip(self, perc):
 		self.perc_complete(perc)

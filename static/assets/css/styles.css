@@ -3481,7 +3481,7 @@ Created using IcoMoon - icomoon.io
     width: 22px;
     height: 1px;
     border-radius: 1px;
-    background: #FFFFFF; }
+    background: rgba(0,0,0,.7); }
     .navbar .navbar-toggler-bar + .navbar-toggler-bar {
       margin-top: 7px; }
     .navbar .navbar-toggler-bar + .navbar-toggler-bar.navbar-kebab {
@@ -4779,11 +4779,13 @@ li.breadcrumb-item.active a {
   }
 }
 .target {
-  margin-bottom: 2%;
   box-shadow: var(--card-box-shadow);
+  padding: 0 !important;
+  margin-bottom: 20px;
 }
 .target .top_card {
-  box-shadow: none !important;
+  box-shadow: none;
+  margin-bottom: 0;
 }
 .target_container > h5 {
   position: relative;

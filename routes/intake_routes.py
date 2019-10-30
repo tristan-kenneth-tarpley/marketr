@@ -66,25 +66,25 @@ def splash():
 
 @app.route('/begin', methods=['GET', 'POST'])
 @login_required
-def begin():    
+def begin():
     form = forms.Profile()
-    service = IntakeService(session['user'], 'begin')
+    service = IntakeService(session['user'], 'begin', session['onboarding_complete'])
     
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.begin(form.data)
+            if session['onboarding_complete'] == False:
+                payments = PaymentsService(session['email'])
+                stripe_id = payments.create_customer()
 
-            payments = PaymentsService(session['email'])
-            stripe_id = payments.create_customer()
+                session['stripe_id'] = stripe_id
+                UserService.UpdateStripeId(session['email'], session['stripe_id'])
 
-            session['stripe_id'] = stripe_id
-            UserService.UpdateStripeId(session['email'], session['stripe_id'])
+                gchat = GoogleChatService()
+                gchat.onboarding_started(email=session['email'])
 
-            gchat = GoogleChatService()
-            gchat.onboarding_started(email=session['email'])
-
-            stripe_info = PaymentsService(session['email'], customer_id=session['stripe_id'])
-            stripe_info.modify(company_name=form.company_name.data)
+                stripe_info = PaymentsService(session['email'], customer_id=session['stripe_id'])
+                stripe_info.modify(company_name=form.company_name.data)
 
         else:
             service.skip(10)
@@ -110,7 +110,7 @@ def begin():
 @login_required
 def competitors():
     form = forms.Competitors()
-    service = IntakeService(session['user'], 'competitors')
+    service = IntakeService(session['user'], 'competitors', session['onboarding_complete'])
 
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
@@ -140,7 +140,7 @@ def competitors():
 @login_required
 def company():
     form = forms.Company()
-    service = IntakeService(session['user'], 'company')
+    service = IntakeService(session['user'], 'company', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -178,7 +178,7 @@ def company():
 @login_required
 def audience():
     form = forms.Audience()
-    service = IntakeService(session['user'], 'audience')
+    service = IntakeService(session['user'], 'audience', session['onboarding_complete'])
 
     if 'view_id' not in request.args:
         view_id = service.get_persona()
@@ -223,7 +223,7 @@ def container():
 @login_required
 def product():
     form = forms.Product()
-    service = IntakeService(session['user'], 'product')
+    service = IntakeService(session['user'], 'product', session['onboarding_complete'])
     
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -270,7 +270,7 @@ def branch_data():
 @login_required
 def product_2():
     form = forms.Product_2()
-    service = IntakeService(session['user'], 'product_2')
+    service = IntakeService(session['user'], 'product_2', session['onboarding_complete'])
 
     if 'view_id' not in request.args:
         view_id = service.get_product(request.args.get('view_id'))
@@ -305,7 +305,7 @@ def product_2():
 def salescycle():
 
     form = forms.SalesCycle()
-    service = IntakeService(session['user'], 'salescycle')
+    service = IntakeService(session['user'], 'salescycle', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -340,7 +340,7 @@ def nice():
 def goals():
 
     form = forms.Goals()
-    service = IntakeService(session['user'], 'goals')
+    service = IntakeService(session['user'], 'goals', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -365,7 +365,7 @@ def goals():
 @login_required
 def history():
     form = forms.History()
-    service = IntakeService(session['user'], 'history')
+    service = IntakeService(session['user'], 'history', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -390,7 +390,7 @@ def history():
 @login_required
 def platforms():
     form = forms.Platforms()
-    service = IntakeService(session['user'], 'platforms')
+    service = IntakeService(session['user'], 'platforms', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
@@ -428,7 +428,7 @@ def get_platforms():
 @login_required
 def past():
     form = forms.Past()
-    service = IntakeService(session['user'], 'past')
+    service = IntakeService(session['user'], 'past', session['onboarding_complete'])
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
