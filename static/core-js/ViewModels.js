@@ -40,8 +40,13 @@ const CoreViewModels = class {
                 nav_target = $("#messages-nav")
                 param_val = "messages"
                 break
+            case "competitors-tab":
+                nav_target = $("#competitors-nav")
+                param_val = "competitors"
+                break
         }
         let new_url = updateURLParameter(this.url_path, 'view', param_val)
+        
         history.pushState(null, null, new_url)
         
         nav_target.removeClass('hidden')
@@ -65,6 +70,9 @@ const CoreViewModels = class {
                 break
             case 'messages':
                 tab_target = "#messages"
+                break
+            case 'competitors':
+                tab_target = "#competitors"
                 break
         }
 
@@ -178,7 +186,7 @@ const CoreViewModels = class {
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            let view = urlParams.get('view') != null ? urlParams.get('view') : 'campaigns'
+            let view = urlParams.get('view') != null || undefined ? urlParams.get('view') : 'campaigns'
             $(".sidebar-wrapper div").addClass('hidden')
             show_nav(view)
         })

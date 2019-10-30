@@ -120,7 +120,7 @@ def competitors():
             service.skip(20)
 
         if session['onboarding_complete'] == True:
-            return redirect(url_for('home', view='profile'))
+            return redirect(url_for('home', view='competitors'))
         else:
             return redirect(url_for('company'))
 

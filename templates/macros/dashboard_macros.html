@@ -353,7 +353,8 @@
                     + add tactic to to-do list
                 </button>
             {% endfor %}
-            
+        {% else %}
+            <p>Looks like we had trouble getting your tactic today. Sorry about that! We've been notified and we're working on it.</p>
         {% endif %}
     </div>
 {% endmacro %}
@@ -578,4 +579,17 @@
             {{ metrics_col(page, title="Clicks Per $1,000 Spend") }}
         </div>
     </div>
+{% endmacro %}
+
+
+
+
+{% macro google(headline=None, website=None, description=None) %}
+
+	<div class="google_ad_preview_container">
+		<h5 style="font-size: 110%;">{{ headline }}</h5>
+		<p class="website"><span>Ad</span> {{ website }}</p>
+		<p>{{ description }}</p>
+	</div>
+
 {% endmacro %}

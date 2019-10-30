@@ -50,6 +50,12 @@
 						<p>Messages</p>
 					</a>	
 				</li>
+				<li>
+					<a href="/home?view=competitors">
+						<i class="now-ui-icons business_globe"></i>
+						<p>Competitive Intelligence</p>
+					</a>	
+				</li>
 				{{ settings_link() }}
 				<li>
 					<a href="{{ url_for('logout') }}">
@@ -62,7 +68,7 @@
 		<div id="campaigns-nav">		
 			<ul class="nav">
 				<li class="{{ plan }}">
-					<a href="/home?view=campaign">
+					<a href="{{ url_for('home', view='campaigns') }}">
 						<i class="now-ui-icons business_chart-pie-36"></i>
 						<p>Campaigns</p>
 					</a>	
@@ -73,15 +79,21 @@
 					</ul>
 				</li>
 				<li class="">
-					<a href="/home?view=profile">
+					<a href="{{ url_for('home', view='profile') }}">
 						<i class="now-ui-icons business_badge"></i>
 						<p>Market(r) Profile</p>
 					</a>
 				</li>
 				<li>
-					<a href="/home?view=messages">
+					<a href="{{ url_for('home', view='messages') }}">
 						<i class="now-ui-icons ui-2_chat-round"></i>
 						<p>Messages</p>
+					</a>	
+				</li>
+				<li>
+					<a href="{{ url_for('home', view='competitors') }}">
+						<i class="now-ui-icons business_globe"></i>
+						<p>Competitive Intelligence</p>
 					</a>	
 				</li>
 				
@@ -97,25 +109,67 @@
 		<div id="messages-nav" class="hidden">		
 			<ul class="nav">
 				<li class="">
-					<a href="/home?view=campaigns">
+					<a href="{{ url_for('home', view='campaigns') }}">
 						<i class="now-ui-icons business_chart-pie-36"></i>
 						<p>Campaigns</p>
 					</a>	
 				</li>
 				<li class="">
-					<a href="/home?view=profile">
+					<a href="{{ url_for('home', view='profile') }}">
 						<i class="now-ui-icons business_badge"></i>
 						<p>Market(r) Profile</p>
 					</a>
 				</li>
 				<li class="{{ plan }}">
-					<a href="/home?view=messages">
+					<a href="{{ url_for('home', view='messages') }}">
 						<i class="now-ui-icons ui-2_chat-round"></i>
 						<p>Messages</p>
 					</a>	
 					<ul class="sub_nav nav">
 						<li><a class="targeted profile_information" href="#to_do">Messages</a></li>
 					</ul>
+				</li>
+				<li>
+					<a href="{{ url_for('home', view='competitors') }}">
+						<i class="now-ui-icons business_globe"></i>
+						<p>Competitive Intelligence</p>
+					</a>	
+				</li>
+				{{ settings_link() }}
+				<li>
+					<a href="{{ url_for('logout') }}">
+						<i class="now-ui-icons objects_key-25"></i>
+						<p>Logout</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<div id="competitors-nav" class="hidden">		
+			<ul class="nav">
+				<li class="">
+					<a href="{{ url_for('home', view='campaigns') }}">
+						<i class="now-ui-icons business_chart-pie-36"></i>
+						<p>Campaigns</p>
+					</a>	
+				</li>
+				<li class="">
+					<a href="{{ url_for('home', view='profile') }}">
+						<i class="now-ui-icons business_badge"></i>
+						<p>Market(r) Profile</p>
+					</a>
+				</li>
+				<li>
+					<a href="{{ url_for('home', view='messages') }}">
+						<i class="now-ui-icons ui-2_chat-round"></i>
+						<p>Messages</p>
+					</a>	
+				</li>
+				<li class="{{ plan }}">
+					<a href="{{ url_for('home', view='competitors') }}">
+						<i class="now-ui-icons business_globe"></i>
+						<p>Competitive Intelligence</p>
+					</a>	
 				</li>
 				{{ settings_link() }}
 				<li>

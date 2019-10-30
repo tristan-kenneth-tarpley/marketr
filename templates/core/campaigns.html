@@ -33,6 +33,15 @@
     <div class="col-lg-6 col-sm-12">
         <div class="row">
             <div class="col-lg-12">
+                {{ section(
+                    link=None,
+                    title="Tactic of the Day",
+                    body=tactics(page),
+                    hash="tactics",
+                    admin=page.admin
+                ) }}
+            </div>
+            <div class="col-lg-12">
                 {% if current_plan %}
                 {{ section(
                     link=None,
@@ -50,15 +59,6 @@
                     admin=page.admin
                 ) }}
                 {% endif %}
-            </div>
-            <div class="col-lg-12">
-                {{ section(
-                    link=None,
-                    title="Tactic of the Day",
-                    body=tactics(page),
-                    hash="tactics",
-                    admin=page.admin
-                ) }}
             </div>
         </div>
     </div>
