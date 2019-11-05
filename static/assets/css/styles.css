@@ -9606,3 +9606,94 @@ ul#product {
     left: 101%;
   }
 }
+
+
+#audit {
+  background-color: var(--panel-bg);
+  font-family: var(--primary-font) !important;
+  font-size: 15px !important;
+  color: var(--body-copy) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  overflow-x: hidden !important;
+  padding: 1%;
+}
+#audit button,
+#audit input,
+#audit optgroup,
+#audit select,
+#audit textarea,
+#audit p,
+#audit h1
+ {
+  font-family: var(--secondary-font) !important}
+
+.font-alt {
+  font-family: var(--alt-font) !important;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-col {
+  flex-basis: 100%;
+  margin: 1%;
+  display: flex;
+}
+.flex-card {
+  background-color: white;
+  border-radius: 5px;
+  width: 90%;
+  padding: 5%;
+  margin: 0 10px;
+}
+.flex-logo {
+  width: 100%;
+}
+.flex-logo_container {
+  width: 30%;
+  margin: 0 auto;
+}
+
+._25 {
+  flex: 2.5 !important;
+}
+._375 {
+  flex: 3.75 !important;
+}
+
+._50 {
+  flex: 5 !important;
+}
+._20 {
+  flex: 2 !important;
+}
+._30 {
+  flex: 3 !important;
+}
+._6 {
+  flex: 6 !important;
+}
+._75 {
+  flex: 7.5 !important;
+}
+
+
+@media screen and (min-width: 800px) {
+  .flex-col {
+    flex: 1;
+  }
+  .flex-logo {
+    width: 80%;
+  }
+}
+
+
+
+.keyword_table tr {
+  text-align:center;
+  border-bottom: 1px solid rgba(0,0,0,.7);
+}

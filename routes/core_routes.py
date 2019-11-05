@@ -15,7 +15,7 @@ from services.SharedService import MessagingService, TaskService, ScoreService, 
 from services.PaymentsService import PaymentsService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel
 import hashlib
-from data.db import execute, sql_to_df
+import data.db as db
 from bleach import clean
 from flask_mail import Mail, Message
 from passlib.hash import sha256_crypt
@@ -123,7 +123,7 @@ def availability():
     tup = (email,)
     query = """ SELECT email FROM customer_basic WHERE email = ? """
 
-    data, cursor = execute(query, True, tup)
+    data, cursor = db.execute(query, True, tup)
 
     data = cursor.fetchall()
     cursor.close()
@@ -313,6 +313,30 @@ def tactic(tactic_id):
     return render_template(
         'core/tactics.html',
         page=vm
+    )
+
+@app.route('/audit/<url>', methods=['GET'])
+def audit(url):
+    query = """SELECT
+                audit_string,
+                (select audit_string from audit_results WHERE url = ar.comp_1) as comp_1,
+                (select audit_string from audit_results WHERE url = ar.comp_2) as comp_2,
+                (select audit_string from audit_results WHERE url = ar.comp_3) as comp_3,
+                (select top 3 title, description from join_tactics where tag_val like '%any%' ORDER BY NEWID() for json path, root('tactics'))
+                as tactics
+
+                FROM audit_results as ar WHERE url = ?
+            """
+    results, cursor = db.execute(query, True, (url,))
+    results = cursor.fetchone()
+    page = eval(results[0])
+    competitors = [eval(results[1]), eval(results[2]), eval(results[3])]
+    tactics = eval(results[4])
+    return render_template(
+        'branding/audit.html',
+        page=page,
+        competitors=competitors,
+        tactics=tactics
     )
 
 

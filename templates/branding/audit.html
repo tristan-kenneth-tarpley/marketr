@@ -1,0 +1,166 @@
+{% from 'macros/dashboard_macros.html' import google %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+	<link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/favicon.png">
+	<link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
+	<!--     Fonts and icons     -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/styles.css">
+</head>
+<body id="audit">
+    <div class="flex-row">
+        <div class="flex-col">
+            <nav>
+                <ul>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="flex-col center_it">
+            <div class="flex-logo_container">
+                <img src="//logo.clearbit.com/{{page['url']}}"><br>
+                <h6>Audit for {{ page['url'] }}</h6>
+                <br>
+                <a target="__blank" href="{{ url_for('index') }}" class="small_txt">Audit provided by Market(r)</a>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="center_it flex-col">
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>Estimated Costs</label>
+                <div class="input-group">
+                    <label>If I spend 
+                    $<input class="form-control" type="text">
+                    <span class="form-control-border"></span>
+                    in ads then I will get x clicks
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>Site load time: {{ page["load_time"]['load_time'] }} seconds</label>
+                <h5>{{ page['load_time']['improvement_headline'] }}</h5>
+                <p>{{ page['load_time']['improvement_copy'] }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>What does this mean?</label>
+                <p>Your emotional tone is important for a number of reasons. Every customer feels a set of emotions before they purchase, and a set of emotions after purchasing. Are you aligning those two sets of emotions with the proper incentives and motivation?</p>
+                <p>Better yet, do even know what emotions you are currently targeting?</p>
+            </div>
+        </div>
+        <div class="flex-col _20">
+            <div class="flex-card">
+                <label>Brand emotions</label>
+                <canvas id="emotion_chart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="flex-col _20">
+            <div class="flex-card ">
+                    
+                {% if page['ads'] %}
+                    <label>Ad Analysis</label>
+                    {% for ad_parent in page['ad_analysis'] %}
+                        <p>Ad score: {{ ad_parent['analysis']['score'] }}</p>
+                        {% for ad in ad_parent %}
+                            {% set base = ad_parent[ad] %}
+                            {% for rec in base['recommendations'] %}
+                                <p>{{ rec['title'] }}</p>
+                                <p>{{ rec['description'] if rec['description'] }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <label>Messaging Analysis</label>
+                {% endif %}
+            </div>
+        </div>
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>Recent Ads</label>
+                {% if page['ads'] %}
+                    {% for ad in page['ad_analysis'] %}
+                        {{ google(headline=ad['ad_headline'], website=page['url'], description=ad['ad_body']) }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>Potential Keywords</label>
+                <table class="table table_striped">
+                    <thead>
+                        <th>Keyword</th>
+                        <th>Cost per click</th>
+                        <th>Est. clicks per day</th>
+                        <th>Advertisers bidding on this keyword</th>
+                    </thead>
+                    
+                    {% for keyword in page['keywords'] %}
+                        {% if loop.index < 15 %}
+                        <tr>   
+                            <td>{{ keyword['term'] }}</td>
+                            <td class="center_it">${{ keyword['phrase_cost_per_click'] }}</td>
+                            <td class="center_it">{{ keyword['phrase_clicks_per_day'] }}</td>
+                            <td class="center_it">{{ keyword['advertisers'] }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+
+                </table>
+      
+            </div>
+        </div>
+        <div class="flex-col">
+            <div class="flex-card">
+                <label>Growth tactics</label>
+                {% for tactic in tactics['tactics'] %}
+                    <p>{{loop.index}}: {{ tactic['title'] }}</p>
+                    <p>{{ tactic['description'] }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div class="center_it flex-col">
+            <a target="__blank" href="https://clearbit.com">Logos provided by Clearbit</a>
+        </div>
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+    <script src="/static/core-js/audit.js"></script>
+    <script>
+        const labels = [{% for emotion in page['scent'] %}
+                            '{{ emotion }}',
+                        {% endfor %}]
+        const data = [{% for emotion in page['scent'] %}
+                        {{ page['scent'][emotion]['score'][0] * 100 }},
+                    {% endfor %}
+                    ]
+        let emotional_chart = new BarChart('emotion_chart', labels, data, 'Strength of emotion')
+        emotional_chart.render()
+    </script>
+</body>
+</html>
