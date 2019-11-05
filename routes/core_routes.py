@@ -330,12 +330,15 @@ def audit(url):
     results, cursor = db.execute(query, True, (url,))
     results = cursor.fetchone()
     page = eval(results[0])
-    competitors = [eval(results[1]), eval(results[2]), eval(results[3])]
+    if results[1]:
+        competitors = [eval(results[1]), eval(results[2]), eval(results[3])]
+    else:
+        competitors = None
     tactics = eval(results[4])
     return render_template(
         'branding/audit.html',
         page=page,
-        competitors=competitors,
+        competitors=competitors if competitors else None,
         tactics=tactics
     )
 
