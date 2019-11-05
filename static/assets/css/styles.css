@@ -9690,6 +9690,9 @@ ul#product {
   .bottom_logo {
     width: 80% !important;
   }
+  .keyword_table {
+    width: 80%;
+  }
   .audit_cta {
     padding: 1% 4% 4% !important;
   }

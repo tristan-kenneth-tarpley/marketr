@@ -97,8 +97,8 @@
                 <p>What if online marketing was as easy as knowing exactly how much to spend and where to spend it?</p>
                 <p>With Market(r), it is.</p>
                 <br>
-                <a style="text-decoration: none;" href="{{ url_for('index') }}" class="btn btn-primary">Visit Marketr.life</a>
-                <a style="margin-left: 3%;" href="{{ url_for('schedule') }}">Schedule a call</a>
+                <a style="text-decoration: none;" href="{{ url_for('index') }}" class="btn btn-primary">Visit Marketr.life</a><br><br>
+                <a href="{{ url_for('schedule') }}">Schedule a call</a>
             </div>
         </div>
     </div>
@@ -264,8 +264,8 @@
                 <p>We did this only your domain name. Take 10 minutes to give us some more information, and see what else we can come up with.</p>
                 <p>Market(r) is an app where you press some buttons and in a few minutes we superpower your entire online marketing.</p>
                 <br>
-                <a style="text-decoration: none;" href="{{ url_for('index') }}" class="btn btn-primary">Visit Marketr.life</a>
-                <a style="margin-left: 3%;" href="{{ url_for('schedule') }}">Schedule a call</a>
+                <a style="text-decoration: none;" href="{{ url_for('index') }}" class="btn btn-primary">Visit Marketr.life</a><br><br>
+                <a href="{{ url_for('schedule') }}">Schedule a call</a>
             </div>
         </div>
     </div><br>
@@ -286,7 +286,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
     <script src="/static/core-js/audit.js"></script>
     <script>
-        init()
+        //init()
         const labels = [{% for emotion in page['scent'] %}
                             '{{ emotion }}',
                         {% endfor %}]

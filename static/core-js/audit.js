@@ -14,6 +14,7 @@ const BarChart = class {
                 datasets: [{
                     label: this.legend,
                     data: this.data,
+                    responsive: true,
                     backgroundColor: [
                         'rgba(202, 125, 102, 0.7)',
                         'rgba(98, 205, 224, 0.7)',
