@@ -9616,7 +9616,6 @@ ul#product {
   font-weight: 400 !important;
   line-height: 1.6 !important;
   overflow-x: hidden !important;
-  padding: 1%;
 }
 #audit button,
 #audit input,
@@ -9681,7 +9680,21 @@ ul#product {
   flex: 7.5 !important;
 }
 
+.bottom_logo {
+  width: 30% !important;
+}
+@media screen and (max-width: 800px) {
+  .flex-logo_container {
+    width: 80%;
+  }
+  .bottom_logo {
+    width: 80% !important;
+  }
+  .audit_cta {
+    padding: 1% 4% 4% !important;
+  }
 
+}
 @media screen and (min-width: 800px) {
   .flex-col {
     flex: 1;
@@ -9696,4 +9709,95 @@ ul#product {
 .keyword_table tr {
   text-align:center;
   border-bottom: 1px solid rgba(0,0,0,.7);
+}
+
+.responsive_chart {
+  width: 100%;
+}
+
+.audit_label {
+  font-weight: 500 !important;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+.audit_cta {
+  width:100%;
+  text-align:center;
+  padding: 1% 2% 2%;
+  /* border-top: 5px solid var(--primary); */
+  border-bottom: 5px solid var(--primary);
+  box-shadow: var(--md-box-shadow);
+}
+.audit_cta-secondary {
+  /* border: 5px solid var(--secondary) !important; */
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 5px solid var(--primary);
+}
+.audit_cta p:first-of-type {
+  font-weight: 500 !important;
+  font-size: 1.2em;
+}
+
+.tactic_row {
+  margin-bottom: 7%;
+}
+
+#audit p {
+  font-weight: 300;
+}
+.keyword_table {
+  width: 100%;
+}
+.keyword_table th {
+  font-size: 12pt !important;
+  font-weight: 500 !important;
+}
+.keyword_table td {
+  font-weight: 300;
+}
+#audit li {
+  font-weight: 300;
+}
+
+.ad_score {
+  font-size: 1.2em;
+  background-color: var(--panel-bg);
+  padding: 2%;
+  text-align:center;
+  width: 30%;
+  border-radius: 5px;
+  margin: 0 auto;
+  box-shadow: var(--sm-box-shadow);
+}
+
+#click_est {
+  font-size: 200%;
+  font-weight: bold !important;
+}
+
+.load_time {
+  font-size: 300%;
+  font-weight: bold !important;
+}
+
+.green_back {
+  background-color: #18ce0f !important;
+}
+.yellow_back {
+  background-color: #ffff00 !important;
+}
+.red_back {
+  background-color: #ff3636 !important;
+}
+
+.ad_insight p {
+  text-align:center;
+}
+.ad_insight {
+  /* border: 2px solid rgba(161, 109, 109, 0.2); */
+  background-color: var(--panel-bg);
+  padding: 2%;
+  border-radius: 5px;
 }
