@@ -66,6 +66,35 @@ const CostEstimator = class {
     }
 }
 
+const secondary_load_time_check = (load_time) => {
+    let load_headline = document.querySelector('#load_headline')
+    let load_body = document.querySelector('#load_body')
+    if (load_time <= 1) {
+        load_headline.textContent = "Wow! Much fast. Very wow."
+        load_body.textContent = "Your site's load time is best in class. This can help website conversions by more than 123%! Make sure to keep an eye on this and figure out what other meat you can add to your website to further increase it."
+    }
+    else if (load_time > 1 && load_time <= 3) {
+        load_headline.textContent = "Consider me impressed!"
+        load_body.textContent = "The recommended site load time is less than 3 seconds... And guess what... You passed! If you wanted to really go Superman mode, try to get it under 1 second for a 21% reduction in bounce rate."
+    }
+    else if (load_time > 3 && load_time <= 5) {
+        load_headline.textContent = "The site better be good given how long you made us wait!"
+        load_body.textContent = "You can decrease the number of users that leave immediately by 32% if your site loaded in less than 3 seconds."
+    }
+    else if (load_time > 5 && load_time <= 6) {
+        load_headline.textContent = "The site better be good given how long you made us wait!"
+        load_body.textContent = "You can decrease the number of users that leave immediately by 90% if your site loaded in less than 5 seconds."
+    }
+    else if (load_time > 6 && load_time <= 10) {
+        load_headline.textContent = "Ah! The anticipation was KILLING me."
+        load_body.textContent = "You can decrease the number of users that leave immediately by 106% if your site loaded in less than 6 seconds."
+    }
+    else if (load_time > 10) {
+        load_headline.textContent = "Hold on, we're still waiting on... Oh wait. It just loaded."
+        load_body.textContent = "You can decrease the number of users that leave immediately by 123% if your site loaded in less than 10 seconds."
+    }
+}
+
 
 var canvas;
 var canvasWidth;

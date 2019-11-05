@@ -67,8 +67,8 @@
                 {% endif %}
                 <p><span class="load_time {{ class }}">{{ page["load_time"]['load_time'] }}</span> seconds</p>
                 <div class="separator"></div>
-                <h5 style="font-size: 110%;">{{ page['load_time']['improvement_headline'] }}</h5>
-                <p>{{ page['load_time']['improvement_copy'] }}</p>
+                <h5 id="load_headline" style="font-size: 110%;">{{ page['load_time']['improvement_headline'] }}</h5>
+                <p id="load_body">{{ page['load_time']['improvement_copy'] }}</p>
             </div>
         </div>
     </div>
@@ -288,7 +288,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
     <script src="/static/core-js/audit.js"></script>
     <script>
-        //init()
+        secondary_load_time_check({{page['load_time']['load_time']}})
+
         const labels = [{% for emotion in page['scent'] %}
                             '{{ emotion }}',
                         {% endfor %}]
