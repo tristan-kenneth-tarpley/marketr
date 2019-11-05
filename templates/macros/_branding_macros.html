@@ -31,7 +31,8 @@
                 <p><strong>Transparent, flat-rate pricing</strong></p>
                 <p>$0-$250: $1/month</p>
                 <p>$250-$4,999: $395/month</p>
-                <p>$5,000+: $1,495/month</p>
+                <p>$5,000-$10,000: $1,495/month</p>
+                <p>$10,000+: Contact us for details</p>
             </div>
         </div>
     {% endmacro %}
@@ -80,10 +81,10 @@
     
     <div class="row">
         <div class="center_on_mobile col-lg-6 col-md-6 col-sm-12">
-            <h5>Amount you pay us</h5>
+            <h5>Amount you pay us per month</h5>
         </div>
         <div class="col-lg-6">
-            {% if ads %}<h5>$<span class="ads_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
+            {% if ads %}<h5><span id="dollar">$</span><span class="ads_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
             {% if testing %}<h5>$<span class="testing_marketr_cost"><strong>00</strong>/month</span></h5>{% endif %}
         </div>
     </div>
