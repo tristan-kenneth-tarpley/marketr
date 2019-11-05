@@ -40,7 +40,7 @@
                     <p>If you spend 
                     $<input class="form-control" placeholder="1,000" id="spend_target" type="number">
                     <span class="form-control-border"></span>
-                    in ads then we estimate you will get <span id="click_est">0</span> clicks
+                    in google ads then we estimate you will get <span id="click_est">0</span> visitors to your website
                     </p>
                 </div>
                 <br>
@@ -301,10 +301,19 @@
         emotional_chart.render()
 
   
+        {% if page['keywords'] %}
+            const avg_cpc = [{% for keyword in page['keywords'] %}
+            {{ keyword['broad_cost_per_click'] }}, {{ keyword['phrase_cost_per_click'] }}, {{ keyword['exact_cost_per_click'] }},    
+            {% endfor %}]
+        {% else %}
+            const avg_cpc = [{% for competitor in competitors %}
+                {% for key in competitor['keywords'] %}
+                    {{ key['broad_cost_per_click'] }}, {{ key['phrase_cost_per_click'] }}, {{ key['exact_cost_per_click'] }},
+                {% endfor %}
+            {% endfor %}]
+        {% endif %}
 
-        const cost_estimator = new CostEstimator([{% for keyword in page['keywords'] %}
-        {{ keyword['broad_cost_per_click'] }}, {{ keyword['phrase_cost_per_click'] }}, {{ keyword['exact_cost_per_click'] }},    
-         {% endfor %}])
+        const cost_estimator = new CostEstimator(avg_cpc)
 
         cost_estimator.activate()
  
