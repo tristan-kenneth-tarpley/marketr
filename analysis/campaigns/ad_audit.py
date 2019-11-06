@@ -66,7 +66,17 @@ class ad_audit:
                     'title': 'Is the ad showing at all?',
                     True: {
                         3: {
-                            'action': 'Broaden audience using spyfu or facebook audiences'
+                            'title': 'Is the campaign on a Maximize clicks bid strategy (w/ no max cpc limit), or if not google, is it set to show often?',
+                            True: {
+                                4: {
+                                    'action': 'Add more keywords using spyfu or broaden facebook audiences'
+                                }
+                            },
+                            False: {
+                                4: {
+                                    'action': 'If google: Set bid strategy to maximize clicks w/ no max cpc limit and/or add new keywords.\nIf facebook: broaden audience greatly and then condense it back in.'
+                                }
+                            }
                         }
                     },
                     False: {

@@ -1,31 +1,26 @@
 {% from "macros/_macros.html" import notifications %}
-{% block topbar %}
-<div class="main-panel">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-sm navbar-transparent navbar-absolute bg-primary fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-wrapper">
-        <div class="navbar-toggle">
-          <button type="button" class="navbar-toggler">
-            <span class="navbar-toggler-bar bar1"></span>
-            <span class="navbar-toggler-bar bar2"></span>
-            <span class="navbar-toggler-bar bar3"></span>
-          </button>
-        </div>
+<nav class="navbar navbar-expand-sm navbar-transparent navbar-absolute bg-primary fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-wrapper">
+      <div class="navbar-toggle">
+        <button type="button" class="navbar-toggler">
+          <span class="navbar-toggler-bar bar1"></span>
+          <span class="navbar-toggler-bar bar2"></span>
+          <span class="navbar-toggler-bar bar3"></span>
+        </button>
       </div>
-      {#<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-bar navbar-kebab"></span>
-        <span class="navbar-toggler-bar navbar-kebab"></span>
-        <span class="navbar-toggler-bar navbar-kebab"></span>
-      </button>#}
-
-      {#<div class="collapse navbar-collapse justify-content-end" id="navigation">
-        <ul class="navbar-nav">
-          {{notifications()}}
-        </ul>
-      </div>#}
     </div>
-  </nav>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-bar navbar-kebab"></span>
+      <span class="navbar-toggler-bar navbar-kebab"></span>
+      <span class="navbar-toggler-bar navbar-kebab"></span>
+    </button>
 
-{% endblock %}
+    {#<div class="collapse navbar-collapse justify-content-end" id="navigation">
+      <ul class="navbar-nav">
+        {{notifications()}}
+      </ul>
+    </div>#}
+  </div>
+</nav>
 
