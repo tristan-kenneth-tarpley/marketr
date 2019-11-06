@@ -109,14 +109,15 @@
         </div>
     </div>
     <div class="flex-row">
-        <div class="flex-col _20">
+        <div class="flex-col">
             <div class="flex-card ">
                     
                 {% if page['ads'] %}
-                    <p class="audit_label">Ad Analysis</p>
-                    {% for ad_parent in page['ad_analysis'] %}
-                        {% if ad_parent['analysis']['score'] %}
-                            {% set ad_score = ad_parent['analysis']['score'] | int %}
+                    <p class="audit_label">Ad Analysis & Recent Ads</p>
+                    {% for ad in page['ad_analysis'] %}
+
+                        {% if ad['analysis']['score'] %}
+                            {% set ad_score = ad['analysis']['score'] | int %}
 
                             {% if ad_score <= 60 %}
                                 {% set class = 'red_back' %}
@@ -126,26 +127,29 @@
                                 {% set class = 'green_back' %}
                             {% endif %}
 
-                            <p class="{{class}} ad_score">Ad score: <strong>{{ ad_parent['analysis']['score'] }}</strong></p><br><br>
+                        <div class="flex-row">
+                            <div class="flex-col">
+                                {{ google(headline=ad['ad_headline'], website=page['url'], description=ad['ad_body'] + '...') }}
+                            </div>
+                            <div class="flex-col">
+                                <p style="margin: auto;"class="{{class}} ad_score">Ad score: <strong>{{ ad['analysis']['score'] }}</strong></p>
+                            </div>
+                        </div>
+
                             <p>Ad insights:</p>
-                        {% endif %}
-                        {% for ad in ad_parent %}
-                            {% set base = ad_parent[ad] %}
                             <div class="flex-row">
-                            {% for rec in base['recommendations'] %}
+                            {% for rec in ad['analysis']['recommendations'] %}
                                 <div class="ad_insight flex-col">
                                     <p>{{ rec['title'] }}</p>
                                 </div>
-                                <p>{{ rec['description'] }}</p>
                             {% endfor %}
-                            </div>
-                        {% endfor %}
+                        </div>
+                        <div class="separator"></div>
+                        {% endif %}
                     {% endfor %}
-                {% else %}
-                    <p class="audit_label">Messaging Analysis</p>
+                {% elif page['headlines'] %}
+                    <p class="audit_label">Messaging Analysis & Top Headlines</p>
                     {% for headline in page['ad_analysis'] %}
-                  
-                        
                         {% if headline['analysis']['score'] %}
                             {% set ad_score = headline['analysis']['score'] | int %}
 
@@ -156,35 +160,29 @@
                             {% elif ad_score >= 80 %}
                                 {% set class = 'green_back' %}
                             {% endif %}
-<br>
-                            <p class="{{class}} ad_score">Headline score: <strong>{{ headline['analysis']['score'] }}</strong></p><br><br>
-                            <p>{{ loop.index }}) Ad insights:</p>
+                            <div class="flex-row">
+                                <div class="flex-col">
+                                    <p><strong>{{ headline['headline'] }}</strong></p>
+                                </div>
+                                <div class="flex-col">
+                                    <p style="margin: auto;" class="{{class}} ad_score">Headline score: <strong>{{ headline['analysis']['score'] }}</strong></p><br><br>
+                                </div>
+                            </div>
+                            <p>Headline insights:</p>
                         {% endif %}
+
                         <div class="flex-row">
                             {% for rec in headline['analysis']['recommendations'] %}
-                            <div class="ad_insight flex-col">
-                                <p> {{ rec['title'] }} </p>
-                            </div>
-                            <p>{{ rec['description'] }}</p>
+                                <div class="ad_insight flex-col">
+                                    <p> {{ rec['title'] }} </p>
+                                </div>
                             {% endfor %}
                         </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-        <div class="flex-col">
-            <div class="flex-card">
-                {% if page['ads'] %}
-                    <p class="audit_label">Recent Ads</p>
-                    {% for ad in page['ad_analysis'] %}
-                        {{ google(headline=ad['ad_headline'], website=page['url'], description=ad['ad_body'] + '...') }}
-                    {% endfor %}
-                {% else %}
-                    <p class="audit_label">Top headlines:</p><br>
-                    {% for headline in page['ad_analysis'] %}
-                        <p><strong>{{ loop.index }}. {{ headline['headline'] }}</strong></p>
                         <div class="separator"></div>
                     {% endfor %}
+                {% else %}
+                    <p>We weren't able to find any ads or headlines on your behalf. Either this is because you haven't run ads online yet, you don't have a proper heading structure on your website, or our team of highly-trained hamsters just haven't crawled that far yet.</p>
+                    <p>Regardless, we think that this is an issue. If your site doesn't have the proper header structure, then search engines struggle to index it and most importantly, users on your site have a harder time understanding what you do.</p>
                 {% endif %}
             </div>
         </div>
