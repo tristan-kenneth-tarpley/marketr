@@ -47,7 +47,7 @@
                       {% if redirect and next_step != 'begin' %}              
                         <a style="padding: 2% 5%;" class="continue" href="{{ url_for(next_step, redirect=True, next_step=next_step) }}">CONTINUE</a>
                       {% elif next_step == 'begin' %}
-                        <a style="padding: 2% 5%" class="continue" href="{{ url_for('customer_login') }}">CONTINUE</a>
+                        
                       {% else %}
                         <a style="padding: 2% 5%;" class="continue" href="{{ url_for(next_step, splash=True) }}">CONTINUE</a>
                       {% endif %}
