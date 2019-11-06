@@ -34,7 +34,7 @@ class ad_audit:
                                     }
                                 },
                                 False: {
-                                    6: {
+                                    5: {
                                         'action': 'a/b test audiences'
                                     }
                                 }
