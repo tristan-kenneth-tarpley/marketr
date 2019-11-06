@@ -13,32 +13,35 @@ class ad_audit:
                         3: {
                             'title': 'Is the ad copy and targeting congruent with the landing page copy and graphics?',
                             True: {
-                            4: {
-                                'title': 'Are you a/b testing audiences?',
-                                True: {
-                                    5: {
-                                        'title': 'Are you retargeting and following up via email?',
-                                        True: {
-                                        6: {
-                                            'title': "Are you a/b testing offers?",
+                                4: {
+                                    'title': 'Are you a/b testing audiences?',
+                                    True: {
+                                        5: {
+                                            'title': 'Are you retargeting and following up via email?',
                                             True: {
-                                                'action': 'add more channels'
-                                            }
-                                        }
-                                        },
-                                        False: {
                                             6: {
-                                                'action': 'a/b test audiences'
+                                                'title': "Are you a/b testing offers?",
+                                                True: {
+                                                    'action': 'add more channels'
+                                                },
+                                                False: {
+                                                    'action': 'a/b test offers'
+                                                }
+                                            }
+                                            },
+                                            False: {
+                                                6: {
+                                                    'action': 'a/b test audiences'
+                                                }
                                             }
                                         }
-                                    }
-                                },
-                                False: {
-                                    5: {
-                                        'action': 'a/b test audiences'
+                                    },
+                                    False: {
+                                        5: {
+                                            'action': 'a/b test audiences'
+                                        }
                                     }
                                 }
-                            }
                             },
                             False: {
                                 4: {
