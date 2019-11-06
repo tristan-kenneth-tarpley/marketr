@@ -71,11 +71,15 @@ class ad_audit:
                                 4: {
                                     'title': "Is the daily budget bigger than the required cpc?",
                                     True: {
-                                        'action': 'Add more keywords using spyfu or broaden facebook audiences'
+                                        5: {
+                                            'action': 'Add more keywords using spyfu or broaden facebook audiences'
+                                        }
                                     },
                                     False: {
-                                        'action': 'Run day/time analysis and set a schedule for the campaign to only run on the busiest days. Adjust the daily budget on those days to be 2x the avg. cpc, if possible.'
-                                    }
+                                        5: {
+                                            'action': 'Run day/time analysis and set a schedule for the campaign to only run on the busiest days. Adjust the daily budget on those days to be 2x the avg. cpc, if possible.'
+                                        }
+                                    },
                                 },
                             },
                             False: {
