@@ -19,15 +19,19 @@ class ad_audit:
                                         5: {
                                             'title': 'Are you retargeting and following up via email?',
                                             True: {
-                                            6: {
-                                                'title': "Are you a/b testing offers?",
-                                                True: {
-                                                    'action': 'add more channels'
-                                                },
-                                                False: {
-                                                    'action': 'a/b test offers'
+                                                6: {
+                                                    'title': "Are you a/b testing offers?",
+                                                    True: {
+                                                        7: {
+                                                            'action': 'add more channels'
+                                                        }
+                                                    },
+                                                    False: {
+                                                        7: {
+                                                            'action': 'a/b test offers'
+                                                        }
+                                                    }
                                                 }
-                                            }
                                             },
                                             False: {
                                                 6: {

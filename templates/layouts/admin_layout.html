@@ -10,7 +10,6 @@
 
 {% block content %}
 	<div class="main-panel">
-
 		{{ admin_sidebar('test', owner, admin, manager) }}
 		{% include "/topbar/topbar-admin.html" %}
 		
@@ -18,7 +17,7 @@
 		</div>
 		<div class="content">
 			<div class="append_to">
-
+				<div class="container-fluid">
 
 				<div class="card root-card">
 					<style>
@@ -56,10 +55,11 @@
 								) }}
 
 							{% endif %}
-					{% endblock %}
+						{% endblock %}
 						</div>
 					</div>
 
+					</div>
 				</div>
 			</div>
 		</div>

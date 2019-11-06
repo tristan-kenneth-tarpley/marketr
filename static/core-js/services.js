@@ -344,6 +344,7 @@ const AdAuditService = class {
     answer(answer, level) {
         const args = {'answer': answer, 'level': level}
         $.post('/ad_audit/answer', args, res=>{
+            console.log(level)
             if (res.substring(0, 6).toLowerCase() == 'action') {
                 this.end_audit(res)
             } else {

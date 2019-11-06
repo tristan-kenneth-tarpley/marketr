@@ -367,6 +367,7 @@ def kill_audit():
 def audit_answer():
 	obj = ad_audit()
 	session['audit_state'] = obj.answer(request.form['answer'], session['audit_state'], request.form['level'])
+	
 	return audit_next_question(int(request.form['level'])+1)
 
 
