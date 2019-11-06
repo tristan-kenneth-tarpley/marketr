@@ -457,6 +457,11 @@ def notifications():
     else:
         return None
 
+@app.route('/api/backfall_ppc', methods=['GET'])
+def backfall_ppc():
+    comp = CompetitorService()
+    return str(comp.backfall(request.args.get('url')))
+
 
 @app.route('/error', methods=['POST'])
 @login_required

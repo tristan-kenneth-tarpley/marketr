@@ -22,8 +22,9 @@
             <div class="flex-logo_container ">
                 <br>
                 <p class="audit_label">A beautifully simple audit for you,</p>
-                <img src="//logo.clearbit.com/{{page['url']}}">
-                <br>
+                <img style="margin-bottom:1%;" onerror="this.style.display='none';document.querySelector('#fallback').style.display = 'block';" alt="{{ page['url'] }}" src="//logo.clearbit.com/{{page['url']}}" >
+                <h3 id="fallback" style="display:none;">{{ page['url'] }}</h3>
+                
                 <p>Made with &#x2764;&#xFE0F; by <a target="__blank" href="{{ url_for('index') }}" class="small_txt"> Market(r)</a>.</p>
             </div>
         </div>
@@ -43,9 +44,14 @@
                     in google ads then we estimate you will get <span id="click_est">0</span> visitors to your website
                     </p>
                 </div>
+
                 <br>
+
                 <p>How is this calculated?</p>
                 <p class="small_txt">Based on historical data of your targeted keywords, we estimate your future average cost per click at $<span id="avg_cpc"></span> per click. To estimate clicks, we divid your target spend by the average cost per click.</p>
+                {% if not page['keywords'] and not competitors %}
+                <p class="small_txt">Because we couldn't find any direct competitors for you, this avg. cpc number is based on industry averages and can be highly variable.</p>
+                {% endif %}
             </div>
         </div>
         <div class="flex-col">
@@ -130,6 +136,7 @@
                                 <div class="ad_insight flex-col">
                                     <p>{{ rec['title'] }}</p>
                                 </div>
+                                <p>{{ rec['description'] }}</p>
                             {% endfor %}
                             </div>
                         {% endfor %}
@@ -158,6 +165,7 @@
                             <div class="ad_insight flex-col">
                                 <p> {{ rec['title'] }} </p>
                             </div>
+                            <p>{{ rec['description'] }}</p>
                             {% endfor %}
                         </div>
                     {% endfor %}
@@ -210,21 +218,26 @@
 
                     <p class="audit_label">Top Competitors</p>
                     <table class="table keyword_table">
+                        {% if page['competitors'] | length > 1 %}
                         <thead>
                             <th>Competitor</th>
                             <th>Overlap</th>
                             <th>Common keywords</th>
                         </thead>
-                        
-                        {% for competitor in page['competitors'] %}
-                            {% if loop.index < 15 and competitor['domainName'] != page['url'] %}
-                            <tr>   
-                                <td><a target="__blank" href="https://{{ competitor['domainName'] }}">{{ competitor['domainName'] }}</a></td>
-                                <td class="center_it">{{ competitor['overlap'] | round(2) }}%</td>
-                                <td class="center_it">{{ competitor['commonKeywords'] | add_commas }}</td>
+                            {% for competitor in page['competitors'] %}
+                                {% if loop.index < 15 and competitor['domainName'] != page['url'] %}
+                                <tr>   
+                                    <td><a target="__blank" href="https://{{ competitor['domainName'] }}">{{ competitor['domainName'] }}</a></td>
+                                    <td class="center_it">{{ competitor['overlap'] | round(2) }}%</td>
+                                    <td class="center_it">{{ competitor['commonKeywords'] | add_commas }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>We weren't able to find any direct competitors for your domain. Either that's because you don't have any (unlikely), or our team of highly-trained hamsters hasn't crawled the web that far yet!</td>
                             </tr>
-                            {% endif %}
-                        {% endfor %}
+                        {% endif %}
 
                     </table>
                     
@@ -235,7 +248,7 @@
         <div class="flex-col">
             <div class="flex-card">
                 <p class="audit_label">Proven growth hacks that might work for you.</p>
-                <p>By the way, using Market(r), you'll get a new curated tactic personalized to your business every day.</p>
+                <p>By the way, using Market(r), you'll get a new curated tactic personalized to your business.</p>
                 <div class="separator"></div>
                 {% for tactic in tactics['tactics'] %}
                 <div class="tactic_row">
@@ -305,12 +318,14 @@
             const avg_cpc = [{% for keyword in page['keywords'] %}
             {{ keyword['broad_cost_per_click'] }}, {{ keyword['phrase_cost_per_click'] }}, {{ keyword['exact_cost_per_click'] }},    
             {% endfor %}]
-        {% else %}
+        {% elif competitors %}
             const avg_cpc = [{% for competitor in competitors %}
                 {% for key in competitor['keywords'] %}
                     {{ key['broad_cost_per_click'] }}, {{ key['phrase_cost_per_click'] }}, {{ key['exact_cost_per_click'] }},
                 {% endfor %}
             {% endfor %}]
+        {% else %}
+            const avg_cpc = [2.69]
         {% endif %}
 
         const cost_estimator = new CostEstimator(avg_cpc)

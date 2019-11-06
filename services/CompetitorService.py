@@ -6,6 +6,12 @@ class CompetitorService:
         app.config.from_pyfile('config.cfg')
         self.spyfu = app.config['SPYFU']
 
+    def backfall(self, url):
+        api_url = f'https://www.spyfu.com/apis/leads_api/get_contact_card?domain={url}&api_key={self.spyfu}'
+        backfall = requests.get(api_url)
+        print(backfall)
+        return backfall
+
     def intro(self, url):
         history_url = f'https://www.spyfu.com/apis/ad_history_api/domain_ad_history_json?d={url}&r=10&s=0&isUs=true&api_key={self.spyfu}'
         history = requests.get(history_url).json()
