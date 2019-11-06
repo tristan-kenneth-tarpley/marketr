@@ -5,7 +5,7 @@ class ad_audit:
         self.level = 1
         self.struct =  {
         1: {
-            'title': 'Are they getting impressions?', 
+            'title': 'Are they getting enough impressions?', 
             True: {
                 2: {
                     'title': 'Are they getting clicks?',
@@ -69,12 +69,18 @@ class ad_audit:
                             'title': 'Is the campaign on a Maximize clicks bid strategy (w/ no max cpc limit), or if not google, is it set to show often?',
                             True: {
                                 4: {
-                                    'action': 'Add more keywords using spyfu or broaden facebook audiences'
-                                }
+                                    'title': "Is the daily budget bigger than the required cpc?",
+                                    True: {
+                                        'action': 'Add more keywords using spyfu or broaden facebook audiences'
+                                    },
+                                    False: {
+                                        'action': 'Run day/time analysis and set a schedule for the campaign to only run on the busiest days. Adjust the daily budget on those days to be 2x the avg. cpc, if possible.'
+                                    }
+                                },
                             },
                             False: {
                                 4: {
-                                    'action': 'If google: Set bid strategy to maximize clicks w/ no max cpc limit and/or add new keywords.\nIf facebook: broaden audience greatly and then condense it back in.'
+                                    'action': 'If google: Set bid strategy to maximize clicks w/ no max cpc limit and/or add new keywords.\nIf facebook: broaden audience greatly and then condense it back in as you get data.'
                                 }
                             }
                         }
