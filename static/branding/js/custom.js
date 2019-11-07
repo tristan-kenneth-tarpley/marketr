@@ -152,8 +152,8 @@
                 $navdots = ($this.data('nav-dots')) ? $this.data('nav-dots') : false,
                 $navarrow = ($this.data('nav-arrow')) ? $this.data('nav-arrow') : false,
                 $autoplay = ($this.attr('data-autoplay')) ? $this.data('autoplay') : true,
-                $autospeed = ($this.attr('data-autospeed')) ? $this.data('autospeed') : 5000,
-                $smartspeed = ($this.attr('data-smartspeed')) ? $this.data('smartspeed') : 1000,
+                $autospeed = 1,
+                $smartspeed = 1,
                 $autohgt = ($this.data('autoheight')) ? $this.data('autoheight') : false,
                 $CenterSlider = ($this.data('center')) ? $this.data('center') : false,
                 $space = ($this.attr('data-space')) ? $this.data('space') : 30;    
@@ -177,8 +177,19 @@
                     nav: $navarrow,
                     navText:["<i class='ti-arrow-left'></i>","<i class='ti-arrow-right'></i>"],
                     autoplay: $autoplay,
-                    autoplayHoverPause: true   
-                }); 
+					slideTransition: 'linear',
+					autoplaySpeed: 6000,
+					smartSpeed: 6000,
+                    autoplayHoverPause: false   
+				}); 
+				
+				$(this).trigger('play.owl.autoplay',[2000]);
+
+				function setSpeed(){
+					$(this).trigger('play.owl.autoplay',[6000]);
+				}
+			
+				$(setSpeed, 1000);
            }); 
          });
       }

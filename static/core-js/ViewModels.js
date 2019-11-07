@@ -510,3 +510,6 @@ const WalletViewModel = class {
         })
     }
 }
+
+
+

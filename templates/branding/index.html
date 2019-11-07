@@ -1,5 +1,5 @@
 {% extends "layouts/branding_layout.html" %}
-{% from "macros/_branding_macros.html" import pricing %}
+{% from "macros/_branding_macros.html" import pricing, carousel %}
 {% block content %}
 <!-- Main -->
 <main>
@@ -132,258 +132,44 @@
             <!-- section title -->
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
                 <div class="col-lg-8 col-md-10">
-                    <div class="section-title text-center">
-                        <h1>Online advertising done right.</h1>
-                        <p><strong>You can talk to us as much or as little as you want.</strong></p>
-                        <p style="text-align: left;">Want to set it and forget it?</p>
-                        <p style="text-align: left;"><em>Done.</em></p>
-                        <p style="text-align: left;">Want to augment or replace your in-house marketing team?</p>
-                        <p style="text-align: left;"><em>We can do that, too.</em></p>
-                        <p style="text-align: left;"><a href="/new">Sign up now</a> to get your Market(r) health score.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-style-1 row">
-                <div class="col-lg-2 col-12">
-            <!--end  section title -->
-                    <ul class="nav nav-fill nav-tabs">
-                        <li class="nav-item">
-                            <a href="#tab3_sec1" data-toggle="tab" class="active">
-                                <div class="icon"><i class="ti-dashboard"></i></div>
-                                <span>Paid Ads</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#tab3_sec2" data-toggle="tab">
-                                <div class="icon"><i class="ti-target"></i></div>
-                                <span>Website Optimization</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#tab3_sec3" data-toggle="tab">
-                                <div class="icon"><i class="ti-paint-bucket"></i></div>
-                                <span>Creative and Production</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#tab3_sec4" data-toggle="tab">
-                                <div class="icon"><i class="icon-megaphone"></i></div>
-                                <span>Fractional Marketing Team</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="tab-content col-10">
-                    <!-- start tab content -->
-
-                    <div id="tab3_sec1" class="tab-pane fade in active show">
-                        <div class="row align-items-center p-25px-t md-p-15px-t">
-                                <div class="col-lg-6">
-                                        <div class="side-feature p-70px-l md-p-0px-l md-m-30px-t">
-                                            <h2 class="large dark-color">Use artificial intelligence to get more customers with <span class="border-effect">Paid Ads</span></h2>
-                                            <p class="m-5px-b">All it takes is to spend 10-20 minutes giving us some information, and your ads will be shown on all of the sites your customers go to.
-                                            </p>
-                                            <div class="row">
-                                                <div class="col-md-6 m-15px-tb">
-                                                    <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                        <div class="feature-content">
-                                                            <h5 class="theme-color">$1/month for up to $250/month in ad spend</h5>
-                                                            <p>All you pay is the ad spend. We believe in our product that much.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- col -->
-                                                <div class="col-md-6 m-15px-tb">
-                                                    <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                        <div class="feature-content">
-                                                            <h5 class="theme-color">Serious accountability</h5>
-                                                            <p>No more consultants telling you every month how you "just need more time." We give you hard numbers for which we are held accountable.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- col -->
-                                            </div>
-                                            <!-- row -->
-                                            <div class="btn-bar">
-                                                <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">Get Started</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                            <div class="col-lg-6 text-center">
-                                <h2>Get Your Ads on Hundreds of platforms</h2><br><br><br>
-                                <div class="brand-minus m-100px-b md-m-60px-b sm-m-40px-b ">
-                                    <div class="owl-carousel" data-items="6" data-nav-dots="true" data-md-items="5" data-sm-items="4" data-xs-items="2" data-xx-items="2" data-space="5">
-                                        <div class="brand-item">
-                                            <img src="http://logo.clearbit.com/bbcamerica.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/cnn.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/facebook.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/forbes.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/instagram.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/people.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/yahoo.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/msn.com?size=63" title="" alt="">
-                                        </div>
-                                        <div class="brand-item">
-                                            <img src="//logo.clearbit.com/linkedin.com?size=63" title="" alt="">
-                                        </div>
+                    <div class="section-title ">
+                        <h1 class="text-center ">Online advertising done right.</h1>
+                        <h4 class="text-center large dark-color">Use artificial intelligence to get more customers with <span style="color:#62cde0;" class="border-effect">Paid Ads</span></h4>
+                        <div style="margin-top:10%;" class="row">
+                            <div class="col-lg-12">
+                                {{ carousel() }}
+                            </div>
+                            <div class="col-md-6 m-15px-tb">
+                                <div class="feature-box-04 d-flex flex-row align-items-start">
+                                    <div class="feature-content">
+                                        <h5 class="theme-color">$1/month for up to $250/month in ad spend</h5>
+                                        <p>All you pay is the ad spend. We believe in our product that much.</p>
                                     </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                    </div>
-                    <!-- end tab content -->
-                    <!-- start tab content -->
-                    <div id="tab3_sec2" class="tab-pane fade in">
-                        <div class="row align-items-center p-25px-t md-p-15px-t">
-                            <div class="col-lg-6">
-                                <div class="side-feature p-70px-r md-p-0px-r md-m-30px-t">
-                                    <h2 class="large dark-color">Optimize your site to <span class="border-effect">drive business</span></h2>
-                                    <p class="m-5px-b">Paid ads are most effective when your site is being consistently optimized through a/b testing.
-                                    </p>
-                                    <div class="row">
-                                        <div class="col-md-6 m-15px-tb">
-                                            <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                <div class="feature-content">
-                                                    <h5 class="theme-color">1 test per month for $1</h5>
-                                                    <p>The results will speak for themselves.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- col -->
-                                        <div class="col-md-6 m-15px-tb">
-                                            <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                <div class="feature-content">
-                                                    <h5 class="theme-color">It only takes 20 minutes to start driving sales</h5>
-                                                    <p>Click below to get started.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- col -->
-                                    </div>
-                                    <!-- row -->
-                                    <div class="btn-bar">
-                                        <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">Let's go</a>
+                            <!-- col -->
+                            <div class="col-md-6 m-15px-tb">
+                                <div class="feature-box-04 d-flex flex-row align-items-start">
+                                    <div class="feature-content">
+                                        <h5 class="theme-color">Serious accountability</h5>
+                                        <p>No more consultants telling you every month how you "just need more time." We give you hard numbers for which we are held accountable.</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 order-lg-2 order-first text-center">
-                                <img src="static/branding/img/venn.png" title="" alt="">
-                            </div>
+                            <!-- col -->
                         </div>
                     </div>
-                    <!-- end tab content -->
-                    <!-- start tab content -->
-                    <div id="tab3_sec3" class="tab-pane fade in">
-                        <div class="row align-items-center p-25px-t md-p-15px-t">
-                                <div class="col-lg-6">
-                                        <div class="side-feature p-70px-r md-p-0px-r md-m-30px-t">
-                                            <h2 class="large dark-color">World-Class <span class="border-effect">Creative & Production</span></h2>
-                                            <p class="m-5px-b">Ultimately, the marketers who win are those who can tell the best stories in the most engaging of ways.  Market(r)'s creative team has crafted narratives and told stories of brands all around the world in a myriad of industries.
-                                            </p>
-                                            <div class="row">
-                                                <div class="col-md-6 m-15px-tb">
-                                                    <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                        <div class="feature-content">
-                                                            <h5 class="theme-color">Digital Art</h5>
-                                                            <p>The medium of the web, our digital art is present anywhere our customers are growing their businesses.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- col -->
-                                                <div class="col-md-6 m-15px-tb">
-                                                    <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                        <div class="feature-content">
-                                                            <h5 class="theme-color">Graphic Design</h5>
-                                                            <p>Market(r) gets an unparalleled understanding of your business. This allows us to design ads that <strong>sell.</strong></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- col -->
-                                            </div>
-                                            <!-- row -->
-                                            <div class="btn-bar">
-                                                <a class="m-btn m-btn-radius m-btn-theme2nd" href="#contact">Get a consultation</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                            <div class="col-lg-6">
-                                <img src="static/branding/img/creative.svg" title="" alt="">
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <!-- end tab content -->
-                    <!-- start tab content -->
-                    <div id="tab3_sec4" class="tab-pane fade in">
-                        <div class="row align-items-center p-25px-t md-p-15px-t">
-                            <div class="col-lg-6">
-                                <div class="side-feature p-70px-l md-p-0px-l md-m-30px-t">
-                                    <h2 class="large dark-color">Augment, support, or build your internal team with <span class="border-effect">Fractional Marketing Teams</span></h2>
-                                    <p class="m-5px-b">The funny thing about marketing these days is that it is comprised of hundreds of disciplines, each with an infinite amount of learning to do. The core of fractional marketing teams is that you get a team of specialists often for less money than one full-time employee.
-                                    </p>
-                                    <div class="row">
-                                        <div class="col-md-6 m-15px-tb">
-                                            <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                <div class="feature-content">
-                                                    <h5 class="theme-color">Fractional Team = Fractional Pricing</h5>
-                                                    <p>Get started at a price you can afford and scale as you grow.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- col -->
-                                        <div class="col-md-6 m-15px-tb">
-                                            <div class="feature-box-04 d-flex flex-row align-items-start">
-                                                <div class="feature-content">
-                                                    <h5 class="theme-color">Everything starts with the Market(r) Health Score.</h5>
-                                                    <p>Click below to spend 20 minutes giving us all of the information we need in our self-paced marketing audit.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- col -->
-                                    </div>
-                                    <!-- row -->
-                                    <div class="btn-bar">
-                                        <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">I'm ready</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 text-center">
-                                <img src="static/branding/img/arrow.png" title="" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end tab content -->
-                </div>
                 </div>
             </div>
-        </div>
-
-        <div style="padding-top:2%;" class="row">
-            <div class="col-lg-3">
-                
+            <div style="padding-top:2%;" class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6"><img src="/static/branding/img/campaigns(2).png"></div>
+                <div class="col-lg-3"></div>
             </div>
-            <div class="col-lg-6">
-                <img src="/static/branding/img/campaigns(2).png">
+            <!-- row -->
+            <div class="text-center btn-bar"><br><br>
+                <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">Get Started</a>
             </div>
-            <div class="col-lg-3">
-                
-            </div>
-            
         </div>
     </section>
     <!--  end features tabs -->
