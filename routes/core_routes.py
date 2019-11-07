@@ -13,6 +13,7 @@ from services.LoginHandlers import login_required, admin_required, owner_require
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
+from services.gamify import Achievements, Credits
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel
 import hashlib
 import data.db as db
@@ -461,6 +462,22 @@ def backfall_ppc():
     comp = CompetitorService()
     return str(comp.backfall(request.args.get('url')))
 
+
+@app.route('/api/poll_for_state', methods=['GET'])
+@login_required
+def poll_for_state():
+    ach = Achievements(customer_id=session['user'])
+    return json.dumps(ach.state())
+
+@app.route('/api/achievement_unlocked', methods=['POST'])
+@login_required
+def achievement_unlocked():
+    credits = Credits(customer_id=session['user'])
+    amount = credits.update(request.form.get('amount'))
+
+    ach = Achievements(customer_id=session['user'])
+    ach.save(achievement_id = request.form.get('achievement_id'), frequency = request.form.get('frequency'))
+    return amount
 
 @app.route('/audit_request', methods=['POST'])
 def audit_request():
