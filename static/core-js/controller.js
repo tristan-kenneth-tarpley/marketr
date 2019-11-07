@@ -545,6 +545,8 @@ const PageViewController = class {
 				case 'settings':
 					const pricing = new PriceViewModel()
 					pricing.init()
+					const audit_request = new AuditRequest()
+					audit_request.ready()
 					break
 				case 'home':
 					view_model.dashboard()

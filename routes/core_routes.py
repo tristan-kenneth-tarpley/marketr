@@ -463,6 +463,13 @@ def backfall_ppc():
     return str(comp.backfall(request.args.get('url')))
 
 
+@app.route('/audit_request', methods=['POST'])
+def audit_request():
+    google = GoogleChatService()
+    url = clean(request.form['url'].replace('https://', ''))
+    google.audit_request(url)
+    return 'success'
+
 @app.route('/error', methods=['POST'])
 @login_required
 def error_log():

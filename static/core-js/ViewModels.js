@@ -286,11 +286,26 @@ const CoreViewModels = class {
 
 
 
-
+const AuditRequest = class {
+    constructor(){
+        this.init = true
+    }
+    ready(){
+        document.querySelector("#audit_submit").addEventListener('click', e=>{
+            const website = document.querySelector("#audit_url").value
+            if (website != ''){
+                $.post('/audit_request', {'url': website}, ()=>{
+                    document.querySelector('#audit_section').innerHTML = "<p style='text-align:center;'><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours."
+                    document.querySelector('#audit_gif').style.display = 'none'
+                })
+            }
+        })
+    }
+}
 
 const PriceViewModel = class {
     constructor(){
-        $('input').on('change, keyup', e => {
+        $('#ad_spend').on('change, keyup', e => {
             let currentInput = $(e.currentTarget).val();
             let fixedInput = currentInput.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             $(e.currentTarget).val(fixedInput);

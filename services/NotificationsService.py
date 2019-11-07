@@ -28,6 +28,13 @@ class GoogleChatService:
         }
         self.send(url, msg)
 
+    def audit_request(self, url):
+        webhook_url = "https://chat.googleapis.com/v1/spaces/AAAAGDGzT7Q/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=4tzuGln9HBgiS_AWn7ze7D-W6yOTTIWLjbiTVY_81bw%3D"
+        msg = {
+            'text': f'Audit request for {url}'
+        }
+        self.send(webhook_url, msg)
+
     def chat(self, email=None, admin_added=False, msg=None):
         url = "https://chat.googleapis.com/v1/spaces/AAAAJlefMSU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=jb61xPyoYwkE9S5gsf-XeUrDZlFcu_cgEzWBK_oLtxA%3D"
         append = 'Manager needs to be assigned!' if not admin_added else ''
