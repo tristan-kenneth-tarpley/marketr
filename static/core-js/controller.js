@@ -543,6 +543,7 @@ const PageViewController = class {
 				case 'pricing':
 				case 'index':
 				case 'settings':
+						
 					const pricing = new PriceViewModel()
 					pricing.init()
 					const audit_request = new AuditRequest()
