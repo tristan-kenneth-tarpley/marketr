@@ -295,7 +295,7 @@ const AuditRequest = class {
             const website = document.querySelector("#audit_url").value
             if (website != ''){
                 $.post('/audit_request', {'url': website}, ()=>{
-                    document.querySelector('#audit_section').innerHTML = "<p style='text-align:center;'><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours."
+                    document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
                     document.querySelector('#audit_gif').style.display = 'none'
                 })
             }

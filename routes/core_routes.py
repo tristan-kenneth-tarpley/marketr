@@ -214,7 +214,6 @@ def cancel():
     return 'cancelled'
 
 @app.route('/schedule')
-@login_required
 def schedule():
     return render_template('core/schedule.html')
 
@@ -466,7 +465,8 @@ def backfall_ppc():
 @app.route('/audit_request', methods=['POST'])
 def audit_request():
     google = GoogleChatService()
-    url = clean(request.form['url'].replace('https://', ''))
+    post_url = request.form.get('url')
+    url = clean('https://' + request.form.get('url').replace('https://', '')) if post_url else 'error'
     google.audit_request(url)
     return 'success'
 
