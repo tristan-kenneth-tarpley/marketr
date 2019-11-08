@@ -1,4 +1,5 @@
 {% from "macros/_macros.html" import notifications %}
+{% from "macros/gamification_macros.html" import credit_amount %}
 <nav class="navbar navbar-expand-sm navbar-transparent navbar-absolute bg-primary fixed-top">
   <div class="container-fluid">
     <div class="navbar-wrapper">
@@ -15,6 +16,8 @@
       <span class="navbar-toggler-bar navbar-kebab"></span>
       <span class="navbar-toggler-bar navbar-kebab"></span>
     </button>
+
+    {{ credit_amount(30) }}
 
     {#<div class="collapse navbar-collapse justify-content-end" id="navigation">
       <ul class="navbar-nav">

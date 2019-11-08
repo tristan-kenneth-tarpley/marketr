@@ -9805,3 +9805,24 @@ ul#product {
   padding: 2%;
   border-radius: 5px;
 }
+
+
+
+/* gamification */
+.coin {
+  border-radius: 15px;
+  background-color: #FAFAD2;
+  width: 55px;
+  padding: 5px 0;
+  border: 1px solid rgba(152, 152, 80, .2);
+}
+.coin-container {
+  width: 25px;
+  margin: 0 auto;
+}
+
+.credit_amount {
+  background-color: rgba(0,0,0,.1);
+  padding: 4% 6% 0;
+  border-radius: 15px;
+}

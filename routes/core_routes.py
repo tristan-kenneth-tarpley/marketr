@@ -237,12 +237,22 @@ def customer_core():
 @login_required
 @onboarding_required
 def home():
-
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
     return render_template(
         'layouts/home_layout.html',
         page=view_model
     )
+
+@app.route('/home/achievements', methods=['GET', 'POST'])
+@login_required
+@onboarding_required
+def achievements():
+    view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
+    return render_template(
+        'layouts/gamification_layout.html',
+        page=view_model
+    )
+
 
 @app.route('/home/settings', methods=['GET', 'POST'])
 @login_required

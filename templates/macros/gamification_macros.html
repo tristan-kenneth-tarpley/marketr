@@ -1,0 +1,44 @@
+{% macro game_tab_bar() %}
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="tab-link nav-link active" id="achievements-tab" data-toggle="tab" href="#achievements" role="tab" aria-controls="achievements" aria-selected="true">
+            Achievements
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="tab-link nav-link" id="store-tab" data-toggle="tab" href="#store" role="tab" aria-controls="store" aria-selected="false">
+            Store 
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="tab-link nav-link" id="rewards-tab" data-toggle="tab" href="#rewards" role="tab" aria-controls="rewards" aria-selected="false">
+            Rewards
+        </a>
+    </li>
+</ul>
+{% endmacro %}
+
+{% macro coin() %}
+<div class="coin">
+    <div class="coin-container">
+        <img src="//logo.clearbit.com/marketr.life">
+    </div>
+</div>
+{% endmacro %}
+
+{% macro credit_amount(amount) %}
+<div style="width: 120px;" class="center_it">
+    <p style="font-size:80%;">Credits:</p>
+    <div class="credit_amount">
+        <div class="row">
+            <div class="col-lg-6">
+                {{ coin() }}
+            </div>
+            <div class="col-lg-5">
+                <p class="small_txt" style="padding-top:1px;">{{ amount }}</p>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

@@ -10,7 +10,9 @@
 {% endblock %}
 
 {% block content %}
-    {% include "core/navbar/settings-sidebar.html" %}
+    {% with settings = 'active' %}
+        {% include "core/navbar/settings-sidebar.html" %}
+    {% endwith %}
     {% include "/topbar/topbar-customer.html" %}
     
     <div class="panel-header panel-header-sm">
