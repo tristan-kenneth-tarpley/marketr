@@ -509,8 +509,10 @@ def claim():
 def audit_request():
     google = GoogleChatService()
     post_url = request.form.get('url')
+    post_email = request.form.get('email')
     url = clean('https://' + request.form.get('url').replace('https://', '')) if post_url else 'error'
-    google.audit_request(url)
+    email = clean(request.form.get('email')) if post_email else 'error'
+    google.audit_request(url, email)
     return 'success'
 
 @app.route('/error', methods=['POST'])

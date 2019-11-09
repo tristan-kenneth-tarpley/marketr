@@ -35,10 +35,10 @@ class GoogleChatService:
         }
         self.send(url, msg_txt)
 
-    def audit_request(self, url):
+    def audit_request(self, url, email):
         webhook_url = "https://chat.googleapis.com/v1/spaces/AAAAGDGzT7Q/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=4tzuGln9HBgiS_AWn7ze7D-W6yOTTIWLjbiTVY_81bw%3D"
         msg = {
-            'text': f'Audit request for {url}'
+            'text': f'Audit request for {url}\n{email}'
         }
         self.send(webhook_url, msg)
 
