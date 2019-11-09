@@ -497,10 +497,22 @@ const PageViewController = class {
 		} else {
 			const init = new InitFuncs()
 			const view_model = new CoreViewModels(this.url_path)
+			const game = new Achievements()
+			const store = new Store()
 
 			switch(this.url_path.slice(15)) {
 				case 'profile':
 					view_model.score()
+					break
+			}
+
+			switch(this.url_path){
+				case '/home':
+				case '/home/achievements':
+				case '/home/settings':
+					game.lets_play()
+					game.poll()
+					store.init()
 					break
 			}
 

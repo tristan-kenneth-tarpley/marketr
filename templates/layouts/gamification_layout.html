@@ -1,5 +1,5 @@
 {% extends "layouts/layout.html" %}
-{% from "macros/gamification_macros.html" import game_tab_bar, coin %}
+{% from "macros/gamification_macros.html" import game_tab_bar, coin, achievement, pack, credit_amount %}
 
 {% block title %}
 <title>Market(r) - Home</title>
@@ -13,13 +13,6 @@
     {% endwith %}
     {% include "/core/navbar/topbar.html" %}
 
-	<style type="text/css">
-		.card {
-			padding: 3%;
-			/*border-top: 6px solid #62cde0;*/
-		}
-	</style>
-
 	<div class="panel-header panel-header-sm">
 	</div>
 	<div class="content">
@@ -31,7 +24,7 @@
 					</div><br><br>
 					<div id="content-ready" style="visibility:hidden;">
                         {{ game_tab_bar() }}<br>
-                        <div class="card">
+                        <div class="game_card card">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="achievements" role="tabpanel" aria-labelledby="achievements-tab">
                                     {% with page=page %}

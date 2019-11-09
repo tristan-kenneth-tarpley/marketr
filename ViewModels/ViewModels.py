@@ -486,7 +486,10 @@ class CustomerDataViewModel:
 			'insights': eval(core_data[9]) if core_data[9] else "",
 			'temp_ad_data': eval(core_data[10]) if core_data[10] else None,
 			'clicks_per_1000': clicks_per_1000,
-			'tactics': self.compile_tactics()
+			'tactics': self.compile_tactics(),
+			'achievements': eval(core_data[11]) if core_data[11] else None,
+			'all_tactics': eval(core_data[12]) if core_data[12] else None,
+			'rewards': eval(core_data[13]) if core_data[13] else None,
 		}
 		print(return_data['tactics'])
 

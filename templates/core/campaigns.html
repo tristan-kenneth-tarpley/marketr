@@ -114,6 +114,24 @@
 {% endif %}
 
 
+{% macro all_tactics(page) %}
+    {% for tactic in page.data['all_tactics']['all_tactics'] %}
+        <p><strong>{{ tactic['title'] }}</strong></p>
+        <p class="small_txt">{{ tactic['description'] }}</p>
+        <div class="separator"></div>
+    {% endfor%}
+
+{% endmacro %}
+{% if page.data['all_tactics']['all_tactics'] %}
+    {{ section(
+        link=None,
+        title="Tactics Library",
+        body=all_tactics(page),
+        hash="tactics",
+        admin=page.admin)}}
+{% endif %}
+
+
 
 
 

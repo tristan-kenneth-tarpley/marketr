@@ -13,7 +13,7 @@ from services.LoginHandlers import login_required, admin_required, owner_require
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
-from services.gamify import Achievements, Credits
+from services.gamify import Achievements, Credits, Rewards
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel
 import hashlib
 import data.db as db
@@ -479,15 +479,31 @@ def poll_for_state():
     ach = Achievements(customer_id=session['user'])
     return json.dumps(ach.state())
 
-@app.route('/api/achievement_unlocked', methods=['POST'])
+
+
+@app.route('/api/drop', methods=['POST'])
+def drop():
+    req = request.get_json()
+    reward_service = Rewards(customer_id=session['user'])
+    reward = reward_service.drop(req.get('type'))
+
+    return json.dumps(reward)
+
+@app.route('/api/claim', methods=['POST'])
 @login_required
-def achievement_unlocked():
-    credits = Credits(customer_id=session['user'])
-    amount = credits.update(request.form.get('amount'))
+def claim():
+    req = request.get_json()
 
     ach = Achievements(customer_id=session['user'])
-    ach.save(achievement_id = request.form.get('achievement_id'), frequency = request.form.get('frequency'))
-    return amount
+    ach.acknowledge(achievement_id = req.get('achievement_id'))
+
+    credits_system = Credits(customer_id=session['user'])
+    amount = credits_system.update(req.get('amount'))
+    returned = {
+        'amount': amount
+    }
+
+    return json.dumps(returned)
 
 @app.route('/audit_request', methods=['POST'])
 def audit_request():

@@ -21,7 +21,7 @@
 {% macro coin() %}
 <div class="coin">
     <div class="coin-container">
-        <img src="//logo.clearbit.com/marketr.life">
+        <img src="/static/assets/img/marketr_credit_logo.png">
     </div>
 </div>
 {% endmacro %}
@@ -30,14 +30,105 @@
 <div style="width: 120px;" class="center_it">
     <p style="font-size:80%;">Credits:</p>
     <div class="credit_amount">
-        <div class="row">
-            <div class="col-lg-6">
+        <div class="row align-self-center">
+            <div class="col-6">
                 {{ coin() }}
             </div>
-            <div class="col-lg-5">
-                <p class="small_txt" style="padding-top:1px;">{{ amount }}</p>
+            <div class="col-5">
+                <p class="total_credits small_txt">{{ amount }}</p>
             </div>
-            <div class="col-lg-1"></div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro achievement(title="", body="", credits=0, completed=False, claimed=False, id=None) %}
+<div class="achievement_parent row align-self-center">
+    <div class="col achievement_row {{ 'complete' if completed }}">
+        <div class="row align-self-center">
+            <div class="col-6">
+                <p>{{ title | clean_chars }}</p>
+            </div>
+            <div class="col-sm-3 col-6">
+                <div class="cost_container row row_cancel align-self-center">
+                    <div class="col-4">
+                        {{ coin() }}
+                    </div>
+                    <div class="col-8">
+                        <span class="credit_cost"><strong>x{{credits}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="center_it col-sm-3 col-12">
+                {% if completed %}
+                    {% if not claimed %}
+                        <button id="{{credits}}_{{id}}" class="claim_credits btn-rounded btn btn-primary">
+                            CLAIM
+                        </button>
+                    {% else %}
+                        <p class="small_txt">claimed</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro pack(type) %}
+<div class="row">
+    <div class="col">
+        <div class="card pack">
+            <div class="row">
+                <div class="col-6">
+                    {% if type == 'helper' %}
+                        <p>Helper pack</p>
+                    {% elif type == 'booster' %}
+                        <p>Booster Pack</p>
+                    {% elif type == 'rocket' %}
+                        <p>Rocket Pack</p>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <div style="text-align:right;">
+                        {#<button data-toggle="modal" data-target="{{type}}_modal" id="{{type}}" style="margin-top:-5%;" class="pack_modal btn btn-outline btn-outline-secondary">?</button>#}
+                        
+                        {% if type == 'helper' %}
+                            <p class="small_txt">200 credits</p>
+                        {% elif type == 'booster' %}
+                            <p class="small_txt">2,000 credits</p>
+                        {% elif type == 'rocket' %}
+                            <p class="small_txt">40,000 credits</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div style="text-align:center;" class="col">
+                    <button id="{{type}}" class="pack_purchase btn btn-rounded btn-primary">Get</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="{{type}}_modal" tabindex="-1" role="dialog" aria-labelledby="{{type}}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{type}}_modal_header exampleModalLongTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span class="{{type}}_modal_body"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Got it!</button>
+            </div>
         </div>
     </div>
 </div>
