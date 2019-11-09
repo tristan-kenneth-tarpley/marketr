@@ -10143,5 +10143,12 @@ h6 {
     text-align: center;
   }
 }
-
+.left_center_on_mobile {
+  text-align:right !important;
+}
+@media screen and (max-width: 990px) {
+  .left_center_on_mobile {
+    text-align: center !important;
+  }
+}
 
