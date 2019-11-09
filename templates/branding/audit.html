@@ -294,6 +294,7 @@
             </div>
         </div>
     </div>
+
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
@@ -318,9 +319,13 @@
             {% endfor %}]
         {% elif competitors %}
             const avg_cpc = [{% for competitor in competitors %}
+            {% if competitor.get('keywords') %}
                 {% for key in competitor['keywords'] %}
                     {{ key['broad_cost_per_click'] }}, {{ key['phrase_cost_per_click'] }}, {{ key['exact_cost_per_click'] }},
                 {% endfor %}
+            {% else %}
+                .90,
+            {% endif%}
             {% endfor %}]
         {% else %}
             const avg_cpc = [2.69]

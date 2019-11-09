@@ -49,8 +49,10 @@ const BarChart = class {
 
 const CostEstimator = class {
     constructor(avg_cpc){
+
         const avg = avg_cpc => (avg_cpc.reduce((a,b) => a + b, 0) / avg_cpc.length).toFixed(2)
         this.avg_cpc = avg(avg_cpc)
+
     }
     activate(){
         document.querySelector('#avg_cpc').textContent = this.avg_cpc
