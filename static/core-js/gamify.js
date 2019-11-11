@@ -144,9 +144,34 @@ const Store = class {
         })
     }
 
-    notify_after_buy(data, amount, target){
+    coin_celebration(){
+        /* html*/
+        const splash_markup = `
+            <div id="splash_cont" class="hide">
+                    <svg height="400" width="400" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="circle" cx="200" cy="200" r="195">
+                    </svg>
+                <img id="ruby" src="https://i.ibb.co/xf9sYXm/marketr-credit-logo.png" alt="" />
+            </div>
+        `
+        document.querySelector('.store_container').insertAdjacentHTML("afterbegin", splash_markup)
+        var splash = el("#splash_cont").addClass("animate").rmClass("hide");
+
+        splash.rmClass("animate").addClass("hide");
+        setTimeout(function(){
+            splash.rmClass("hide").addClass("animate");
+        }, 50);
+
+        setTimeout(()=>{
+            document.querySelector('#splash_cont').remove()
+        }, 3000)
+    }
+    update_amount(amount){
         const credits = document.querySelectorAll('.total_credits')
         credits.forEach(el=>el.textContent = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+    }
+
+    notify_after_buy(data, amount, target){
 
         let copy;
         switch(data['type']){
@@ -155,6 +180,16 @@ const Store = class {
                 copy = `<h5>${data['title']}</h5> <p>You won more tactics...Nice! Your tactic has been added to your <a href="/home?view=campaigns">library.</a></p>`
                 break
             case 'credit_reward':
+                this.coin_celebration()
+                this.update_amount(amount)
+
+                setTimeout(()=>{
+                    document.querySelector('.total_credits').classList.add('pulse')
+                }, 3000)
+                setTimeout(()=>{
+                    document.querySelector('.total_credits').classList.remove('pulse')
+                }, 4000)
+
                 /*html*/
                 copy = `<h5>${data['title']}</h5> </h5><p>Don't spend it all in one place! Your credits have been added to your account. Refresh the page if you don't see them right away.</p>`
                 break
