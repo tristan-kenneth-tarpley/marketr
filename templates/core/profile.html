@@ -491,27 +491,29 @@
 				<div class="col-1"></div>
 				<div class="col-3">
 					<h6>
-						<span class="platform_img">
+						<span class="center_it platform_img">
 							{{ state['platform_name']}}
 						</span>
 					</h6>
 				</div>
 				<div class="col-3 results_img">
-					<span>
+					<span  class="center_it">
 						{{ state['results'] }}
 					</span>
 				</div>
 				
 				{% if state['currently_using'] == 'yes' %}
-				<div class="col-2 center_it alert alert-success">
-					ACTIVE
+				<div class="col-2 center_it alert">
+					<p class="platform_status text-success small_txt"><strong>ACTIVE</strong></p>
 				</div>
 				{% elif state['currently_using'] == 'no' %}
-				<div class="col-2 center_it alert alert-secondary">
-					INACTIVE
+				<div class="col-2 center_it alert">
+					<p class="platform_status text-danger small_txt"><strong>INACTIVE</strong></p>
 				</div>
 				{% endif %}
+				
 			</div>
+			{% if loop.index != page.data['platforms']['platforms'] | length %}<hr style="width:90%;">{% endif %}
 		{% endfor %}
 	{% endif %}
 	{% if core['history_freeform'] %}

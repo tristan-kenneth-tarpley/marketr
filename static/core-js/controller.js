@@ -498,7 +498,8 @@ const PageViewController = class {
 			const init = new InitFuncs()
 			const view_model = new CoreViewModels(this.url_path)
 			const game = new Achievements()
-			const store = new Store()
+			const rewards = new Rewards()
+			const store = new Store(rewards)
 
 			switch(this.url_path.slice(15)) {
 				case 'profile':

@@ -4344,6 +4344,10 @@ li.breadcrumb-item.active a {
 .platform_row {
   width: 100%;
 }
+.platform_row span {
+  text-transform: capitalize;
+  font-size: 85%;
+}
 .platform_row div {
   /*border: 1px dashed black;*/
   display: inline-block;
@@ -4353,12 +4357,15 @@ li.breadcrumb-item.active a {
   height: inherit;
   cursor: pointer;
   transition-duration: .7s;
+  border: 1px solid transparent;
 }
 .platform_row img:hover {
   box-shadow: -1px 1px 3px rgba(0,0,0,0.12), -1px 1px 2px rgba(0,0,0,0.24);
+  border: 1px solid var(--primary);
 }
 .platform_row_img_active {
   box-shadow: -1px 1px 3px rgba(0,0,0,0.12), -1px 1px 2px rgba(0,0,0,0.24);
+  border: 1px solid var(--primary);
 }
 .stage_containers {
   width: 100%;
@@ -4834,8 +4841,23 @@ li.breadcrumb-item.active a {
 }
 
 .smilesHome {
-  height: 10%;
+  height: 100%;
 }
+.platform_status {
+  border: 3px solid black;
+  padding: 1% 4%;
+  border-radius: 100px;
+  color:white !important;
+}
+.platform_status.text-success {
+  border-color: #93e9be;
+  background-color: #93e9be;
+}
+.platform_status.text-danger {
+  border-color: #f2b195;
+  background-color: #f2b195;
+}
+
 
 
 .sub_nav {
@@ -9824,7 +9846,7 @@ ul#product {
 
 .credit_amount {
   background-color: rgba(0,0,0,.1);
-  padding: 4% 6% 0;
+  padding: 2% 6% 0;
   border-radius: 15px;
 }
 
@@ -9834,6 +9856,7 @@ ul#product {
   width: 50% !important;
   height: 50%;
   border: 1px solid rgba(0,0,0,.1);
+  box-shadow: var(--inset-box-shadow);
 }
 .achievement_row.complete {
   background-color: var(--panel-bg);
@@ -9853,6 +9876,11 @@ ul#product {
 .cost_container {
   padding:3% 0;
   margin:4% 0 0;
+}
+.credits_container {
+  max-width: 250px;
+  border-radius: 15px;
+  box-shadow: var(--inset-box-shadow);
 }
 .credit_cost {
   opacity: .4;
@@ -10079,4 +10107,46 @@ left: -6px;
   border: 1px solid rgba(0,0,0,.1);
   box-shadow: var(--sm-box-shadow);
   border-radius: 15px;
+}
+
+.pack_img_container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.scrollable {
+  font-weight: 300;
+  font-size: 80%;
+  padding: 1% !important;
+  background-color: #f5f8fd !important;
+  border-radius: 5px;
+  overflow-y: scroll;
+  max-height: 150px;
+  box-shadow: var(--inset-box-shadow);
+}
+.scrollable ul {
+  list-style-type: none;
+}
+.scrollable li {
+  line-height: 2em;
+  margin-bottom: 2%;
+}
+
+
+
+
+
+
+
+
+/* rewards reveal */
+#possibilities_canv {
+  position: static;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-radius: 100px;
+  font-family: var(--body-copy);
 }

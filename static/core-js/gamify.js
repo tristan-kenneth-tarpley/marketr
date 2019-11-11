@@ -1,6 +1,5 @@
 const Achievements = class {
     constructor(){
-
     }
 
     claim(target){
@@ -121,9 +120,17 @@ const Achievements = class {
     }
 }
 
-const Store = class {
-    constructor(){
 
+
+
+
+
+
+
+
+const Store = class {
+    constructor(rewards_obj){
+        this.rewards = rewards_obj
     }
 
     init(){
@@ -138,32 +145,32 @@ const Store = class {
     }
 
     notify_after_buy(data, amount, target){
-        console.log(data)
         const credits = document.querySelectorAll('.total_credits')
-        credits.forEach(el=>el.textContent = amount)
+        credits.forEach(el=>el.textContent = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
 
         let copy;
         switch(data['type']){
             case 'tactics_rewards':
                 /*html*/
-                copy = `<p>Nice! Your tactic has been added to your <a href="/home?view=campaigns">library.</a></p>`
+                copy = `<h5>${data['title']}</h5> <p>You won more tactics...Nice! Your tactic has been added to your <a href="/home?view=campaigns">library.</a></p>`
                 break
             case 'credit_reward':
                 /*html*/
-                copy = `<p>Nice! Your credits have been added to your account. Refresh the page if you don't see them right away.</p>`
+                copy = `<h5>${data['title']}</h5> </h5><p>Don't spend it all in one place! Your credits have been added to your account. Refresh the page if you don't see them right away.</p>`
                 break
             case 'manual_reward':
                 /*html*/
-                copy = `<p>Nice! Check your <a href="/home?view=campaigns">messages</a> tab for your next instructions!</p>`
+                copy = `<h5>${data['title']}</h5><p>Nice! Check your <a href="/home?view=campaigns">messages</a> tab for your next instructions!</p>`
                 break
         }
 
-        alert(data['title'])
-        target.parentNode.innerHTML = copy
+        target.parentNode.insertAdjacentHTML("afterbegin", copy)
+        target.textContent = "Buy another!"
     }
 
     buy(id, target){
-        const current_amount = parseInt(document.querySelector('.total_credits').textContent)
+        const current_amount = parseInt(document.querySelector('.total_credits').textContent.replace(/\,/g, ''))
+        
         let max;
         switch (id){
             case 'helper':
@@ -177,7 +184,8 @@ const Store = class {
                 break
         }
         if (current_amount >= max){
-            target.innerHTML = '<div class="quigly"></div>'
+            confirm(`Are you sure you want to buy the ${id} pack for ${max} credits?`)
+            this.rewards.excite()
 
             fetch('/api/drop', {
                 method: 'POST',
@@ -190,12 +198,14 @@ const Store = class {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    this.rewards.reveal()
                     this.notify_after_buy(data, (current_amount-max), target)
-                    
+                    this.rewards.get()
                 })
                 .catch((err)=>console.log(err))
+
         } else {
-            alert("You don't have enough credits to purchase this pack.")
+            target.innerHTML = "You don't have enough credits to buy this pack."
         }
     }
 
@@ -231,5 +241,185 @@ const Store = class {
                 this.modal_shell(id)
             })
         })
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+const Rewards = class {
+    constructor(){
+        this.container = document.querySelector('.rewards_container')
+    }
+    reveal(){
+        document.querySelector("#possibilities_canv").remove()
+        document.querySelector('.store_container').style.display = 'block'
+    }
+    excite(){
+        document.querySelector('.store_container').style.display = 'none'
+        const words = [
+              "influencer shout out",
+              "Credits (125 gp)",
+              "New ad creative",
+              "Tactic",
+              "New ad test",
+              "1% Discount on monthly bill (one-time)",
+              "Credits (2,500)",
+              "Web page audit",
+              "Competitive data enhancement",
+              "Add competitor",
+              "Article (2000 words)",
+              "Negative keyword research",
+              "Ad spend boost (+$25)",
+              "Tactic steps guide",
+              "5% Discount on monthly bill (one-time)",
+              "Influencer (2,500+ followers) mention",
+              "Influencer (10,000+ followers) mention",
+              "Pricing analysis",
+              "Lead gen tool",
+              "A/B test executed",
+              "5% Discount on all services (3 months)",
+              "Real-time monitoring competitor site (each)",
+              "Customer feedback tracking",
+              "Unlock Insights",
+              "New Insight",
+              "Tactics x3",
+              "30 min consultation call"
+        ];
+            document.querySelector('.excite_container').innerHTML += `<canvas id="possibilities_canv"></canvas>`
+            var canvas = document.getElementById("possibilities_canv");
+            var ctx = canvas.getContext("2d");
+            // Utilities
+            function randomColor() {
+              return '#' + Math.random().toString(16).slice(2, 8);
+            }
+            
+            function randomWord() {
+            var word = words[Math.floor(Math.random() * words.length)];
+            return word;
+          }
+            
+            function randomInt(min, max) {
+              return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            //Make the canvas occupy the full page
+            var W = window.innerWidth,
+              H = window.innerHeight;
+            canvas.width = W;
+            canvas.height = H;
+            var particles = [];
+            var mouse = {};
+            //Lets create some particles now
+            var particle_count = 100;
+            for (var i = 0; i < particle_count; i++) {
+              particles.push(new particle());
+            }
+            canvas.addEventListener('mousedown', track_mouse, false);
+            canvas.addEventListener('touch', track_mouse, false);
+          
+            function track_mouse(e) {
+              mouse.x = e.pageX;
+              mouse.y = e.pageY;
+          
+              for (var i = 0; i < particle_count; i++) {
+                particles.push(new particle());
+              }
+            }
+          
+            function particle() {
+              //speed, life, location, life, colors
+              //speed range = -2.5 to 2.5
+              this.speed = {
+                x: -2.5 + Math.random() * 5,
+                y: -2.5 + Math.random() * 5
+              };
+              //location = center of the screen
+              if (mouse.x && mouse.y) {
+                this.location = {
+                  x: mouse.x,
+                  y: mouse.y
+                };
+              } else {
+                this.location = {
+                  x: W / 2,
+                  y: H / 2
+                };
+              }
+              this.color = randomColor()
+          
+              this.font = {
+                size: randomInt(3, 15)
+              }
+              
+              this.word = randomWord()
+            }
+          
+            function draw() {
+              ctx.globalCompositeOperation = "source-over";
+              //Painting the canvas black
+              ctx.fillStyle = "black";
+              ctx.fillRect(0, 0, W, H);
+              ctx.globalCompositeOperation = "lighter";
+              for (var i = 0; i < particles.length; i++) {
+                var p = particles[i];
+                ctx.beginPath();
+                ctx.font = p.font.size + "vh Luckiest Guy";
+                ctx.textAlign = "center";
+                ctx.transition = "all 2s ease";
+                ctx.fillStyle = p.color;
+                ctx.fillText(p.word, p.location.x, p.location.y);
+                ctx.fill();
+                ctx.stroke();
+          
+                //lets move the particles
+                p.location.x += p.speed.x;
+                p.location.y += p.speed.y;
+                
+                p.speed.x += randomInt(-0.01, 0.01);
+                p.speed.y += randomInt(-0.01, 0.01);
+                
+                // Make 'em big and small
+                // Warning: Causes extreme lag
+                //p.font.size += randomInt(-0.1, 0.1)
+              }
+            }
+            setInterval(draw, 10);
+        
+          
+          
+
+    }
+
+    refresh(res){
+        console.log(res)
+        let rewards = "";
+        for (let reward in res){
+            /*html*/
+            rewards += `
+            <div style="padding:1%;margin-bottom: 1%;" class="card negative_card">
+                <p class="small_txt"><strong>${res[reward]['date']}</strong></p>
+                <p>${res[reward]['achievement']}</p>
+            </div>
+            `
+        }
+        this.container.innerHTML = rewards
+    }
+    get(){
+        fetch('/api/rewards')
+            .then(res=>res.json())
+            .then(res=>{
+                this.refresh(res)
+            })
+            .catch(e=>{
+                console.log(e)
+            })
     }
 }

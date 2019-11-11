@@ -1,11 +1,13 @@
 <p class="small_txt"><strong>Past rewards</strong></p>
-{% if page.data['rewards']['rewards'] %}
-    {% for reward in page.data['rewards']['rewards'] %}
-    <div class="card negative_card">
-        <p class="small_txt"><strong>{{ reward['added'] }}</strong></p>
-        <p>{{loop.index}}) {{ reward['reward_title'] }}</p>
-    </div>
-    {% endfor %}
-{% else %}
-    <p>Looks like you haven't recevied any awards yet! Once you do, you will see them listed here.</p>
-{% endif %}
+<div class="rewards_container">
+    {% if page.data['rewards']['rewards'] %}
+        {% for reward in page.data['rewards']['rewards'] %}
+        <div style="padding:1%;margin-bottom: 1%;" class="card negative_card">
+            <p class="small_txt"><strong>{{ reward['added'] }}</strong></p>
+            <p>{{ reward['reward_title'] }}</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Looks like you haven't recevied any awards yet! Once you do, you will see them listed here.</p>
+    {% endif %}
+</div>

@@ -240,7 +240,7 @@ class Rewards:
         query = "SELECT current_plan FROM customer_basic WHERE id = ?"
         data, cursor = db.execute(query, True, (customer_id,))
         data = cursor.fetchone()
-        if int(data[0]) == 1:
+        if data[0] and int(data[0]) == 1:
             self.plan = True
         else:
             self.plan = False

@@ -505,6 +505,20 @@ def claim():
 
     return json.dumps(returned)
 
+@app.route('/api/rewards', methods=['GET'])
+@login_required
+def rewards():
+    query = "select reward_title, cast(added as date) as added from rewards_log where customer_id = ? order by added desc"
+    data, cursor = db.execute(query, True, (session['user'],))
+    data = cursor.fetchall()
+    returned = []
+    for row in data:
+        returned.append({
+            'achievement': row[0],
+            'date': str(row[1])
+        })
+    return json.dumps(returned)
+
 @app.route('/audit_request', methods=['POST'])
 def audit_request():
     google = GoogleChatService()

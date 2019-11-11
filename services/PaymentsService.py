@@ -69,7 +69,9 @@ class PaymentsService:
         stripe.api_key = self.sk
         customer = stripe.Customer.retrieve(self.customer_id)
         plans = {}
+        print(customer)
         for i in range(len(customer['subscriptions']['data'])):
+            print(customer['subscriptions']['data'][i])
             plans[i] = {
                 'nickname': customer['subscriptions']['data'][i]['plan']['nickname'],
                 'plan_id': customer['subscriptions']['data'][i]['id'],

@@ -1,14 +1,38 @@
 <p class="small_txt"><strong>Business Enhancement Packs</strong></p>
-
-{{ credit_amount(page.data['core']['core'][0]['credits']) }}
-
-<div class="row">
-    <div class="col-lg-6 col-12">
-        {{ pack(type='helper') }}
-        {{ pack(type='booster') }}
-        {{ pack(type='rocket') }}
+<div class="store_container">
+    <div class="row">
+        <div class="col">
+            {% set credits = page.data['core']['core'][0]['credits'] if page.data['core']['core'] else 0 %}
+            {{ credit_amount(credits) }}
+        </div>
+        <div class="col">
+            <p class="small_txt">FYI, when we manage your ads, these packs will be upgraded to include valuable ad management perks and bonuses. </p>
+        </div>
     </div>
-    <div class="col-lg-6 col-12">
-        <p class="small_txt">FYI, when we manage your ads, these packs will be upgraded to include valuable ad management perks and bonuses. </p>
+
+    <div class="row">
+        <div class="col-lg-6 col-12">
+            {{ pack(type='helper') }}
+        </div>
+        <div class="col-lg-6 col-12">
+            {{ inside_pack(page, type="helper") }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-12">
+            {{ pack(type='booster') }}
+        </div>
+        <div class="col-lg-6 col-12">
+            {{ inside_pack(page, type="booster") }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-12">
+            {{ pack(type='rocket') }}
+        </div>
+        <div class="col-lg-6 col-12">
+            {{ inside_pack(page, type="rocket") }}
+        </div>
     </div>
 </div>
+<div class="excite_container"></div>
