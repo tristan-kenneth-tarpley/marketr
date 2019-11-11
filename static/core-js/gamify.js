@@ -6,7 +6,6 @@ const Achievements = class {
         const id = target.getAttribute('id').split('_')
         const amount = parseInt(id[0])
         const achievement_id = parseInt(id[1])
-        console.log(amount)
 
         fetch('/api/claim', {
             method: 'POST',
@@ -25,7 +24,7 @@ const Achievements = class {
 
                 const amount = document.querySelectorAll(".total_credits")
                 amount.forEach(el=>{
-                    el.textContent = data.amount
+                    el.textContent = data.amount.replace(/\,/g, '')
                 })
             })
             .catch((err)=>console.log(err))
