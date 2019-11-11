@@ -177,7 +177,7 @@ const Store = class {
                 max = 200
                 break
             case 'booster':
-                max = 2000
+                max = 4000
                 break
             case 'rocket':
                 max = 40000
