@@ -4,4 +4,5 @@ data/__pycache__/db.cpython-35.pyc
 helpers/__pycache__/
 main.py
 routes/__pycache__/
+analysis/integrations
 *.cfg

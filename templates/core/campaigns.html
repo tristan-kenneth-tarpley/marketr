@@ -33,10 +33,17 @@
     <div class="col-lg-6 col-sm-12">
         <div class="row">
             <div class="col-lg-12">
+                {% macro tactics_empty() %}
+                    <div class="tactics_loading" id="loading">
+                        <div class="load-circle"><span class="one"></span></div>
+                    </div>
+                    <div id='tactics_mount'></div>
+                {% endmacro %}
+
                 {{ section(
                     link=None,
                     title="Tactic of the Day",
-                    body=tactics(page),
+                    body=tactics_empty(),
                     hash="tactics",
                     admin=page.admin
                 ) }}
@@ -122,6 +129,7 @@
     {% endfor%}
 
 {% endmacro %}
+
 {% if page.data['all_tactics']['all_tactics'] %}
     {{ section(
         link=None,
@@ -133,24 +141,4 @@
 
 
 
-
-
-{# ab testing or almost free #}
-{#{% if ab_plan or almost_free %}
-    {{ section(
-        link=None,
-        title="A/B Testing Performance",
-        body=test_performance(page),
-        hash="tests",
-        admin=page.admin
-    ) }}
-{% else %}
-    {{ section(
-        link=None,
-        title="A/B Testing <i class='fa fa-lock'></i>",
-        body=locked(type="testing"),
-        hash="tests",
-        admin=page.admin
-    ) }}
-{% endif%}#}
 

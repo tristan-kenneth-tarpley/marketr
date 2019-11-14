@@ -208,14 +208,7 @@ const CoreViewModels = class {
         })
     }
 
-    tactics(){
-        const tactics = new TacticService()
-        $("#add_tactic").click(e=>{
-            const target = e.currentTarget
-            const title = $(target).siblings('#tactic_title').text()
-            tactics.add_tactic(target.value, title)
-        })
-    }
+  
     
 
 	tasks() {

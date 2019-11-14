@@ -424,28 +424,9 @@ class CustomerDataViewModel:
 
 	def compile_all(self) -> None:
 		core = self.compile_core()
-		competitors = CompetitorService()
 		core_data = core
 		core_values = eval(core[0])
 
-		def clean_urls():
-			def clean(val):
-				core_values['core'][0][val] = core_values['core'][0][val].replace('\\', '').replace('http://', '').replace('/','')
-
-			clean_list = ['comp_1_website', 'comp_2_website']
-			for url in clean_list:
-				clean(url)
-
-		clean_urls()
-
-		try:
-			core_values['core'][0].update([('competitor_intro_1', competitors.intro(core_values['core'][0].get('comp_1_website')))])
-		except:
-			core_values['core'][0].update([('competitor_intro_1', "")])
-		try:
-			core_values['core'][0].update([('competitor_intro_2', competitors.intro(core_values['core'][0].get('comp_2_website')))])
-		except:
-			core_values['core'][0].update([('competitor_intro_2', "")])
 
 		def clean_salescycle(row):
 			if row:
@@ -486,12 +467,10 @@ class CustomerDataViewModel:
 			'insights': eval(core_data[9]) if core_data[9] else "",
 			'temp_ad_data': eval(core_data[10]) if core_data[10] else None,
 			'clicks_per_1000': clicks_per_1000,
-			'tactics': self.compile_tactics(),
 			'achievements': eval(core_data[11]) if core_data[11] else None,
 			'all_tactics': eval(core_data[12]) if core_data[12] else None,
 			'rewards': eval(core_data[13]) if core_data[13] else None,
 		}
-		print(return_data['tactics'])
 
 		self.data = return_data
 
@@ -674,3 +653,62 @@ class TacticViewModel:
 			'description': data[1],
 			'id': data[2]
 		}
+
+class TacticOfTheDay:
+	def __init__(self, customer_id):
+		self.customer_id = customer_id
+
+	def get(self):
+		query = """EXEC get_tactics @customer_id = ?"""
+		data, cursor = db.execute(query, True, (self.customer_id,))
+		data = cursor.fetchone()
+		returned = {
+			'title': data[0] if data else None,
+			'description': data[1] if data else None,
+			'id': data[2] if data else None
+		}
+		return returned
+
+
+class CompetitorViewModel:
+	def __init__(self, customer_id=None):
+		self.customer_id = customer_id
+
+	def get_meta(self):
+		query = "SELECT comp_1_name, comp_1_website, comp_1_type, comp_2_name, comp_2_website, comp_2_type FROM competitors WHERE customer_id = ?"
+		data, cursor = db.execute(query, True, (self.customer_id,))
+		data = cursor.fetchone()
+		returned = {
+			'comp_1_name': data[0],
+			'comp_1_website': data[1],
+			'comp_1_type': data[2],
+			'comp_2_name': data[3],
+			'comp_2_website': data[4],
+			'comp_2_type': data[5]
+		}
+		return returned
+
+	def get(self, service):
+		def clean_urls(struct):
+			def clean(val):
+				struct[val] = struct[val].replace('\\', '').replace('http://', '').replace('/','')
+
+			clean_list = ['comp_1_website', 'comp_2_website']
+			for url in clean_list:
+				clean(url)
+				
+
+		core_values = self.get_meta()
+		clean_urls(core_values)
+
+		try:
+			core_values.update([('competitor_intro_1', service.intro(core_values.get('comp_1_website')))])
+		except:
+			core_values.update([('competitor_intro_1', "")])
+		try:
+			core_values.update([('competitor_intro_2', service.intro(core_values.get('comp_2_website')))])
+		except:
+			core_values.update([('competitor_intro_2', "")])
+
+		return core_values
+

@@ -49,11 +49,13 @@ class Credits:
         query = "SELECT credits FROM customer_basic WHERE id = ?"
         data, cursor = db.execute(query, True, (self.customer_id,))
         data = cursor.fetchone()
+        returned = data[0] if data[0] else 0
         return data[0]
 
     def update(self, amount):
-        current = self.get() if self.get else 0
-        new = current + amount
+        current = self.get()
+        current_amt = current if current else 0
+        new = current_amt + amount
         query = """
                 UPDATE customer_basic SET credits = ? WHERE id = ?;commit;
                 """
@@ -252,6 +254,14 @@ class Rewards:
         query = "UPDATE customer_basic SET credits = ? WHERE id = ?"
         db.execute(query, False, (new, self.customer_id), commit=True)
 
+    def add_to_balance(self, amount):
+        credits_service = Credits(customer_id=self.customer_id)
+        current = credits_service.get()
+        new = current + amount
+        query = "UPDATE customer_basic SET credits = ? WHERE id = ?"
+        db.execute(query, False, (new, self.customer_id), commit=True)
+
+
     def drop(self, drop_type):
         drops = []
         weights = []
@@ -278,6 +288,7 @@ class Rewards:
         return_reward = {
             'title': pack['title'],
             'type': pack['type'],
+            'parameter': pack.get('parameter'),
             'reward': reward
         }
 

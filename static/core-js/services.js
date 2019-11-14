@@ -66,17 +66,20 @@ const NotificationsService = class {
         if (Object.keys(data).length > 0){
             let notification_length = messages.length + tasks_and_insights.length
             if (notification_length > 0){
+                $(".notification_count").css('display', 'inline')
                 $(".notification_count").text(notification_length)
             } else {
                 $(".notification_count").remove()
             }
         }
         if (tasks_and_insights.length > 0) {
+            $(".tab_and_insight_count").css('display', 'inline')
             $(".tab_and_insight_count").text(tasks_and_insights.length)
         } else {
             $(".tab_and_insight_count").remove()
         }
         if (messages.length > 0){
+            $(".message_count").css('display', 'inline')
             $(".message_count").text(messages.length)
         } else {
             $(".message_count").remove()

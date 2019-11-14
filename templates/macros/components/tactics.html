@@ -1,0 +1,30 @@
+
+{% macro tactics(base, tasks) %}
+
+    <div>
+        {% if base and base.get('title') %}
+            <p id="tactic_title"><strong>{{ base['title'] }}</strong></p>
+            <p class="small_txt">{{ base['description'] }}</p>
+
+            {% for x in tasks if x['tactic_id'] %}
+                {% if x['tactic_id'] == base['tactic_id'] %}
+                    <div class="separator"></div>
+                    <p>This tactic is added to your to-do list. Reach out to your Market(r) guide if you have questions!</p>
+                {% else %}
+                    <button id="add_tactic" value="{{ base['tactic_id'] }}" class="btn btn-outline btn-outline-primary">
+                        + add tactic to to-do list
+                    </button> 
+                {% endif %}
+            {% else %}
+                <button id="add_tactic" value="{{ base['tactic_id'] }}" class="btn btn-outline btn-outline-primary">
+                    + add tactic to to-do list
+                </button>
+            {% endfor %}
+        {% else %}
+            <p>Looks like we had trouble getting your tactic today. Sorry about that! We've been notified and we're working on it.</p>
+        {% endif %}
+    </div>
+
+{% endmacro %}
+
+{{ tactics(base, tasks) }}

@@ -146,96 +146,100 @@
 
 
 {% macro ad_spend_dash(page) %}
-<label>Ad Spend Wallet</label>
-<p>Load funds to your account in order to run your ads.</p>
-<p class="small_txt">Note: 100% of this money goes straight to the ad platforms and is only for your ad spend. We don't pocket any of this.</p>
-<div class="fine_print_container">
-    <div class="card negative_card">
-        <div class="row">
-            <div class="col-lg-4 col-sm-12">
-                <p>
-                    <strong>Funds Remaining</strong>
-                </p>
-                <h4><strong>${{ page.customer['funds_remaining'] | float | currency }}</strong></h4>
-                <p class="small_txt">Added too much? <a href="/home?view=messages">Message us</a> to reduce</p>
-                {% if page.customer['spend_rate'] | float > page.customer['funds_remaining'] | float %}
-                <h5 class="text-danger">More funds needed</h5>
-                <p class="small_txt">You don't have enough in your Market(r) wallet.  We can only spend what you fund. If funds are not available, your ad spend will drop below the rate you specified below.</p>
-                {% endif %}
-            </div>
-            <div class="col-lg-8 col-sm-12">
-                <p><strong>Add funds to your Market(r) wallet. 100% of this goes towards your ad spend.</strong></p>
-                <p>You won't be charged right now. Instead, keep an eye out for it on your next bill.</p>
-                <div class="row">
-                    <div class="col">
-                        <form method="POST" action="{{ url_for('add_balance') }}">
-                            <div class="form-group">
-                                <input type="text" name="amount" min="1" step="1" style="background:#fff;" class="form-control">
-                                <span class="form-control-border"></span>
-                            </div>
-                            <div class="form-group">   
-                                <!-- <input id="one_time" class="form-control" type="radio" name="spend_rate" value="">
-                                <label for="one_time" class="small_txt">One time</p>
-                
-                                <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
-                                <label for="auto" class="small_txt">Set for auto-deposit</p> -->
-                                <label class="small_txt" style="text-transform:lowercase;"><input type="checkbox">&nbsp; By clicking "+ add funds", I understand that this amount will be added to my wallet, and billed to my credit card on file in the next billing cycle.</label>
-                                <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                </div>   
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-12">
-                <p>
-                    <strong>Current Advertising Spend Rate</strong>
-                </p>
-                <h4><strong>${{ page.customer['spend_rate'] | currency }}</strong>/month</h4>
-            </div>
-            <div class="col-lg-8 col-md-12">
-                <form method="POST" action="{{ url_for('spend_rate') }}">
-                    <p><Strong>Need to change the spend rate?</Strong></p>
-                    <p class="small_txt">This is the amount that we will spend for you every month for advertising.</p>
+    {% set funds_remaining = page.customer['funds_remaining'] | float if page.customer.get('funds_remaining') else 0 %}
+    {% set spend_rate = page.customer['spend_rate'] | float if page.customer.get('spend_rate') else 0 %}
+
+
+    <label>Ad Spend Wallet</label>
+    <p>Load funds to your account in order to run your ads.</p>
+    <p class="small_txt">Note: 100% of this money goes straight to the ad platforms and is only for your ad spend. We don't pocket any of this.</p>
+    <div class="fine_print_container">
+        <div class="card negative_card">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12">
+                    <p>
+                        <strong>Funds Remaining</strong>
+                    </p>
+                    <h4><strong>${{ funds_remaining | currency }}</strong></h4>
+                    <p class="small_txt">Added too much? <a href="/home?view=messages">Message us</a> to reduce</p>
+                    {% if spend_rate > funds_remaining %}
+                        <h5 class="text-danger">More funds needed</h5>
+                        <p class="small_txt">You don't have enough in your Market(r) wallet.  We can only spend what you fund. If funds are not available, your ad spend will drop below the rate you specified below.</p>
+                    {% endif %}
+                </div>
+                <div class="col-lg-8 col-sm-12">
+                    <p><strong>Add funds to your Market(r) wallet. 100% of this goes towards your ad spend.</strong></p>
+                    <p>You won't be charged right now. Instead, keep an eye out for it on your next bill.</p>
                     <div class="row">
                         <div class="col">
-                            <div class="input-group">
-                                {% if page.customer['almost_free'] %}
-                                    {% set spend_validation = 'almost_free_val' %}
-                                {% elif page.customer['ad_mid'] %}
-                                    {% set spend_validation = 'ad_mid_val' %}
-                                {% elif page.customer['ad_premium'] %}
-                                    {% set spend_validation = 'ad_premium_val' %}
-                                {% endif %}
-                                <div style="background-color: white;" class="input-group-prepend">
-                                    <span class="input-group-text">$</span>
+                            <form method="POST" action="{{ url_for('add_balance') }}">
+                                <div class="form-group">
+                                    <input type="text" name="amount" min="1" step="1" style="background:#fff;" class="form-control">
+                                    <span class="form-control-border"></span>
                                 </div>
-                                <input type="text" name="spend_rate" value="{{ page.customer['spend_rate'] }}" style="background:#fff;" class="{{ spend_validation }} form-control">
-                                <span class="form-control-border"></span>
+                                <div class="form-group">   
+                                    <!-- <input id="one_time" class="form-control" type="radio" name="spend_rate" value="">
+                                    <label for="one_time" class="small_txt">One time</p>
+                    
+                                    <input id="auto" class="form-control" type="radio" name="spend_rate" value="">
+                                    <label for="auto" class="small_txt">Set for auto-deposit</p> -->
+                                    <label class="small_txt" style="text-transform:lowercase;"><input type="checkbox">&nbsp; By clicking "+ add funds", I understand that this amount will be added to my wallet, and billed to my credit card on file in the next billing cycle.</label>
+                                    <button type="submit" class="btn btn-outline btn-outline-primary">+ Add Funds</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-12">
+                    <p>
+                        <strong>Current Advertising Spend Rate</strong>
+                    </p>
+                    <h4><strong>${{ spend_rate | currency }}</strong>/month</h4>
+                </div>
+                <div class="col-lg-8 col-md-12">
+                    <form method="POST" action="{{ url_for('spend_rate') }}">
+                        <p><Strong>Need to change the spend rate?</Strong></p>
+                        <p class="small_txt">This is the amount that we will spend for you every month for advertising.</p>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group">
+                                    {% if page.customer['almost_free'] %}
+                                        {% set spend_validation = 'almost_free_val' %}
+                                    {% elif page.customer['ad_mid'] %}
+                                        {% set spend_validation = 'ad_mid_val' %}
+                                    {% elif page.customer['ad_premium'] %}
+                                        {% set spend_validation = 'ad_premium_val' %}
+                                    {% endif %}
+                                    <div style="background-color: white;" class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" name="spend_rate" value="{{ spend_rate }}" style="background:#fff;" class="{{ spend_validation }} form-control">
+                                    <span class="form-control-border"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <p>per month</p>
                             </div>
                         </div>
-                        <div class="col">
-                            <p>per month</p>
-                        </div>
-                    </div>
-        
-                    <button type="submit" class="spend_submit btn btn-outline btn-outline-primary">Submit Change</button>
-                    <p id="plan_info"></p>
-                    
-                </form>
+            
+                        <button type="submit" class="spend_submit btn btn-outline btn-outline-primary">Submit Change</button>
+                        <p id="plan_info"></p>
+                        
+                    </form>
+                </div>
             </div>
         </div>
+        <div class="fine_print">
+            <ol>
+                <li style="opacity: .7; font-size: 75%;">Does not include ad spend scheduled for today, 11:59 pm CST.</li>
+                <li style="opacity: .7; font-size: 75%;">Monthly spend will be consistent per month however may fluctuate day-by-day based on ad-spend optimizations.  Any funds not used in current month will be applied as a credit for the next month.</li>
+                <li style="opacity: .7; font-size: 75%;">Change requests may take up to 24 hours to process</li>
+            </ol>
+        </div>
     </div>
-    <div class="fine_print">
-        <ol>
-            <li style="opacity: .7; font-size: 75%;">Does not include ad spend scheduled for today, 11:59 pm CST.</li>
-            <li style="opacity: .7; font-size: 75%;">Monthly spend will be consistent per month however may fluctuate day-by-day based on ad-spend optimizations.  Any funds not used in current month will be applied as a credit for the next month.</li>
-            <li style="opacity: .7; font-size: 75%;">Change requests may take up to 24 hours to process</li>
-        </ol>
-    </div>
-</div>
 
 {% endmacro %}
 

@@ -10,8 +10,8 @@
 	<div class="sidebar-wrapper tab-content">
 		<div id="profile-nav">
 			<ul class="nav">
-				{{ profile() }}
 				{{ campaigns() }}
+				{{ profile() }}
 				{{ messages() }}
 				{{ achievements(target=achieved if achieved else None) }}
 				{{ settings_link(target=settings if settings else None) }}

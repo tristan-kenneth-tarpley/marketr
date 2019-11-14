@@ -35,7 +35,7 @@
                 {{ coin() }}
             </div>
             <div class="col-5">
-                <p class="total_credits small_txt">{{ amount | add_commas }}</p>
+                <p class="total_credits small_txt">{{ amount | add_commas if amount else 0 }}</p>
             </div>
             <div class="col-1"></div>
         </div>

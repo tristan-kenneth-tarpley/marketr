@@ -14,7 +14,7 @@ from services.AdminService import AdminService, AdminActions, MessagingService, 
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
 from services.gamify import Achievements, Credits, Rewards
-from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel
+from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
 from bleach import clean
@@ -529,9 +529,38 @@ def audit_request():
     google.audit_request(url, email)
     return 'success'
 
+
+
+@app.route('/api/tactic_of_day', methods=['GET'])
+@login_required
+def tactic_of_day():
+    service = TacticOfTheDay(session['user'])
+    tactic = service.get()
+    tasksservice = TaskService(session['user'], user='customer')
+    tasks = tasksservice.get_tasks()
+    return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
+
+
+@app.route('/api/competitive_intel', methods=['GET'])
+@login_required
+def get_competitors():
+    service = CompetitorService()
+    vm = CompetitorViewModel(customer_id=session['user'])
+    struct = vm.get(service)
+    return render_template('core/competitors.html', core=struct)
+
 @app.route('/error', methods=['POST'])
 @login_required
 def error_log():
     google = GoogleChatService()
     google.error(request.form['type'], session['user'])
     return 'success'
+
+
+
+@app.route('/google_test', methods=['GET'])
+def google():
+    
+    return 'success'
+
+

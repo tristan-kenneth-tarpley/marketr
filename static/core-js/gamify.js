@@ -19,13 +19,17 @@ const Achievements = class {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data)
                 target.parentNode.innerHTML = "<p class='small_txt'>claimed</p>"
 
                 const amount = document.querySelectorAll(".total_credits")
+                const total = data['amount']
                 amount.forEach(el=>{
-                    el.textContent = data.amount.replace(/\,/g, '')
+                    el.textContent = total.toString().replace(/\,/g, '')
                 })
+
+                setTimeout(()=>{
+                    this.render_unclaimed()
+                }, 1000)
             })
             .catch((err)=>console.log(err))
     }
@@ -35,7 +39,14 @@ const Achievements = class {
         claim.forEach(el=>{
             el.addEventListener('click', e=>{
                 const $this = e.currentTarget
-                $this.innerHTML = '<div class="quigly"></div>'
+                $this.style.background = '#fff'
+                $this.innerHTML = `<div class="loading_dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>`
                 this.claim($this)
             })
         })
@@ -72,7 +83,7 @@ const Achievements = class {
         const body = document.querySelector('body')
         let notifications = document.createElement("div")
         notifications.classList.add('push_to_front')
-        if (res.length > 0){
+        if (res.length > 1){
             /* html */
             notifications.innerHTML += `
                 <br><button id="clear_notifications">x clear all notifications</button><br>
@@ -107,7 +118,19 @@ const Achievements = class {
         }
     }
 
+    render_unclaimed(){
+        const unclaimed = document.querySelectorAll('.claim_credits').length
+        const ach_note = document.querySelector('.ach_note')
+        if (unclaimed > 0){
+            ach_note.textContent = unclaimed
+            ach_note.style.display = 'inline-block'
+        } else {
+            ach_note.style.display = 'none'
+        }
+    }
+
     poll(){
+        this.render_unclaimed()
         fetch('/api/poll_for_state')
             .then(res=>res.json())
             .then(res=>{
@@ -133,7 +156,6 @@ const Store = class {
     }
 
     init(){
-        this.modals()
         const buy_button = document.querySelectorAll('.pack_purchase')
         buy_button.forEach(el=>{
             el.addEventListener('click', e=>{
@@ -143,7 +165,7 @@ const Store = class {
         })
     }
 
-    coin_celebration(){
+    coin_celebration(amount){
         /* html*/
         const splash_markup = `
             <div id="splash_cont" class="hide">
@@ -158,6 +180,7 @@ const Store = class {
 
         splash.rmClass("animate").addClass("hide");
         setTimeout(function(){
+            this.update_amount(amount)
             splash.rmClass("hide").addClass("animate");
         }, 50);
 
@@ -165,6 +188,7 @@ const Store = class {
             document.querySelector('#splash_cont').remove()
         }, 3000)
     }
+
     update_amount(amount){
         const credits = document.querySelectorAll('.total_credits')
         credits.forEach(el=>el.textContent = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
@@ -179,8 +203,8 @@ const Store = class {
                 copy = `<h5>${data['title']}</h5> <p>You won more tactics...Nice! Your tactic has been added to your <a href="/home?view=campaigns">library.</a></p>`
                 break
             case 'credit_reward':
-                this.coin_celebration()
-                this.update_amount(amount)
+                let current = parseInt(document.querySelector('.total_credits').textContent.replace(/\,/g, ''))
+                this.coin_celebration(data['parameter'] + current)
 
                 setTimeout(()=>{
                     document.querySelector('.total_credits').classList.add('pulse')
@@ -219,6 +243,7 @@ const Store = class {
         }
         if (current_amount >= max){
             confirm(`Are you sure you want to buy the ${id} pack for ${max} credits?`)
+            this.update_amount(current_amount-max)
             this.rewards.excite()
 
             fetch('/api/drop', {
@@ -233,6 +258,7 @@ const Store = class {
                 .then((res) => res.json())
                 .then((data) => {
                     this.rewards.reveal()
+                    console.log(data)
                     this.notify_after_buy(data, (current_amount-max), target)
                     this.rewards.get()
                 })
@@ -241,40 +267,6 @@ const Store = class {
         } else {
             target.innerHTML = "You don't have enough credits to buy this pack."
         }
-    }
-
-    modal_shell(type){
-        let title;
-        let body;
-        
-        switch (type){
-            case 'helper':
-                title = "Helper Pack"
-                body = "This guarantees one of the following:"
-                break
-            case 'booster':
-                title = "Booster Pack"
-                body = "This guarantees one of the following:"
-                break
-            case 'rocket':
-                title = "Rocket Pack"
-                body = "This guarantees one of the following:"
-                break
-        }
-        console.log(`#${type}_modal_header`)
-        document.querySelector(`#${type}_modal_header`).textContent = title
-        document.querySelector(`#${type}_modal_body`).textContent = body
-    }
-
-    modals(){
-        const buttons = document.querySelectorAll('.pack_modal')
-        buttons.forEach(el=>{
-            el.addEventListener('click', e=>{
-                const $this = e.currentTarget
-                const id = $this.getAttribute('id')
-                this.modal_shell(id)
-            })
-        })
     }
 }
 
@@ -294,146 +286,19 @@ const Rewards = class {
         this.container = document.querySelector('.rewards_container')
     }
     reveal(){
-        document.querySelector("#possibilities_canv").remove()
+        document.querySelector(".material_load").remove()
         document.querySelector('.store_container').style.display = 'block'
     }
     excite(){
         document.querySelector('.store_container').style.display = 'none'
-        const words = [
-              "influencer shout out",
-              "Credits (125 gp)",
-              "New ad creative",
-              "Tactic",
-              "New ad test",
-              "1% Discount on monthly bill (one-time)",
-              "Credits (2,500)",
-              "Web page audit",
-              "Competitive data enhancement",
-              "Add competitor",
-              "Article (2000 words)",
-              "Negative keyword research",
-              "Ad spend boost (+$25)",
-              "Tactic steps guide",
-              "5% Discount on monthly bill (one-time)",
-              "Influencer (2,500+ followers) mention",
-              "Influencer (10,000+ followers) mention",
-              "Pricing analysis",
-              "Lead gen tool",
-              "A/B test executed",
-              "5% Discount on all services (3 months)",
-              "Real-time monitoring competitor site (each)",
-              "Customer feedback tracking",
-              "Unlock Insights",
-              "New Insight",
-              "Tactics x3",
-              "30 min consultation call"
-        ];
-            document.querySelector('.excite_container').innerHTML += `<canvas id="possibilities_canv"></canvas>`
-            var canvas = document.getElementById("possibilities_canv");
-            var ctx = canvas.getContext("2d");
-            // Utilities
-            function randomColor() {
-              return '#' + Math.random().toString(16).slice(2, 8);
-            }
-            
-            function randomWord() {
-            var word = words[Math.floor(Math.random() * words.length)];
-            return word;
-          }
-            
-            function randomInt(min, max) {
-              return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
-            //Make the canvas occupy the full page
-            var W = window.innerWidth,
-              H = window.innerHeight;
-            canvas.width = W;
-            canvas.height = H;
-            var particles = [];
-            var mouse = {};
-            //Lets create some particles now
-            var particle_count = 100;
-            for (var i = 0; i < particle_count; i++) {
-              particles.push(new particle());
-            }
-            canvas.addEventListener('mousedown', track_mouse, false);
-            canvas.addEventListener('touch', track_mouse, false);
-          
-            function track_mouse(e) {
-              mouse.x = e.pageX;
-              mouse.y = e.pageY;
-          
-              for (var i = 0; i < particle_count; i++) {
-                particles.push(new particle());
-              }
-            }
-          
-            function particle() {
-              //speed, life, location, life, colors
-              //speed range = -2.5 to 2.5
-              this.speed = {
-                x: -2.5 + Math.random() * 5,
-                y: -2.5 + Math.random() * 5
-              };
-              //location = center of the screen
-              if (mouse.x && mouse.y) {
-                this.location = {
-                  x: mouse.x,
-                  y: mouse.y
-                };
-              } else {
-                this.location = {
-                  x: W / 2,
-                  y: H / 2
-                };
-              }
-              this.color = randomColor()
-          
-              this.font = {
-                size: randomInt(3, 15)
-              }
-              
-              this.word = randomWord()
-            }
-          
-            function draw() {
-              ctx.globalCompositeOperation = "source-over";
-              //Painting the canvas black
-              ctx.fillStyle = "black";
-              ctx.fillRect(0, 0, W, H);
-              ctx.globalCompositeOperation = "lighter";
-              for (var i = 0; i < particles.length; i++) {
-                var p = particles[i];
-                ctx.beginPath();
-                ctx.font = p.font.size + "vh Luckiest Guy";
-                ctx.textAlign = "center";
-                ctx.transition = "all 2s ease";
-                ctx.fillStyle = p.color;
-                ctx.fillText(p.word, p.location.x, p.location.y);
-                ctx.fill();
-                ctx.stroke();
-          
-                //lets move the particles
-                p.location.x += p.speed.x;
-                p.location.y += p.speed.y;
-                
-                p.speed.x += randomInt(-0.01, 0.01);
-                p.speed.y += randomInt(-0.01, 0.01);
-                
-                // Make 'em big and small
-                // Warning: Causes extreme lag
-                //p.font.size += randomInt(-0.1, 0.1)
-              }
-            }
-            setInterval(draw, 10);
-        
-          
-          
-
+        document.querySelector('.excite_container').innerHTML = `
+        <div class="material_load">
+            <div class="dot"></div>
+            <div class="outline"><span></span></div>
+        </div>`
     }
 
     refresh(res){
-        console.log(res)
         let rewards = "";
         for (let reward in res){
             /*html*/

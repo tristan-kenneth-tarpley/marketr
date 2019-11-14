@@ -35,12 +35,15 @@
 							</div>
 						{% endif %}
 						{{ form_open(page.title, request.args.get('home'), form, view_id=request.args.get('view_id')) }}
+							
 							<div class="card-header">
 									{{ breadcrumb(page.title, page.stage, page.title) }}
-								<div class="yellow_border">						
+								<div class="yellow_border">		
 									{{ intro_copy(1, page) }}
 									{{ intro_copy(2, page) }}
+									<input type="submit" name="submit_button" class="btn btn-neutral" value="skip">				
 								</div>
+								
 							</div>
 		                    <div class="">
 								<div class="card-body all-icons">
@@ -65,7 +68,6 @@
 								</div>
 							</div>
 							<div class="onward">
-								<input type="submit" name="submit_button" class="btn btn-neutral" value="skip">
 								{% if page.title == 'audience' %}
 									<input type="submit" name="submit_button" class="btn btn-outline-primary btn-lg" value="+ save and add another audience">
 								{% elif page.title == 'product_2' %}

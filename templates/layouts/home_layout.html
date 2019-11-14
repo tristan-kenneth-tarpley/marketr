@@ -46,7 +46,7 @@
 						{{ tab_bar(page) }}
 						<br>
 						<div class="tab-content">
-							<div class="tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
+							<div class="render_tactics tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
 								{% with page=page %}
 									{% include "core/campaigns.html" %}
 								{% endwith %}
@@ -62,9 +62,10 @@
 								{% endwith %}
 							</div>
 							<div class="tab-pane" id="competitors" role="tabpanel" aria-labelledby="competitors-tab">
-								{% with page=page %}
-									{% include "core/competitors.html" %}
-								{% endwith %}
+								<div class="competitor_loading" id="loading">
+									<div class="load-circle"><span class="one"></span></div>
+								</div>
+								<div id="mount_competitors"></div>
 							</div>
 						</div>
 

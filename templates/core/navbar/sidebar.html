@@ -13,14 +13,14 @@
 <li class="{{ campaigns }}">
 	<a href="/home?view=campaigns">
 		<i class="now-ui-icons business_chart-pie-36"></i>
-		<p>Campaigns</p>
+		<p>Marketing</p>
 	</a>	
 </li>
 {% endmacro %}
 
 {% macro profile() %}
 <li class="{{ profile }}">
-	<a href="{{ url_for('home', view='profile') }}">
+	<a class="render_tactics" href="{{ url_for('home', view='profile') }}">
 		<i class="now-ui-icons business_badge"></i>
 		<p>Market(r) Profile</p>
 	</a>
@@ -30,7 +30,7 @@
 <li class="{{ target }}">
 	<a href="/home/achievements">
 		<i class="now-ui-icons business_money-coins"></i>
-		<p>Achievements & Store</p>
+		<p>Achievements & Store <span style="display:none;" class="pulse ach_note"></span></p>
 	</a>	
 </li>
 {% endmacro %}
@@ -46,7 +46,7 @@
 
 {% macro competitive_intelligence() %}
 <li>
-	<a href="/home?view=competitors">
+	<a class="render_competitors" href="/home?view=competitors">
 		<i class="now-ui-icons business_globe"></i>
 		<p>Competitive Intelligence</p>
 	</a>	
@@ -104,7 +104,7 @@
 				<li class="{{ plan }}">
 					<a href="{{ url_for('home', view='campaigns') }}">
 						<i class="now-ui-icons business_chart-pie-36"></i>
-						<p>Campaigns</p>
+						<p>Marketing</p>
 					</a>	
 					<ul class="sub_nav nav">
 						<li><a class="profile_information targeted" href="#to_do">To Do</a></li>

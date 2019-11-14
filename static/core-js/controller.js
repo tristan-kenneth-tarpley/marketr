@@ -1,3 +1,6 @@
+import Competitors from './competitors.js';
+import Tactics from './tactics.js';
+
 const InitFuncs = class {
 
 	container(title){
@@ -563,11 +566,14 @@ const PageViewController = class {
 					audit_request.ready()
 					break
 				case 'home':
+					const competitors = new Competitors(this.params)
+					const tactics = new Tactics(this.params)
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()
 					view_model.tactics()
 					view_model.tasks()
+
 					$(function () {
 						$('[data-toggle="popover"]').popover()
 					})

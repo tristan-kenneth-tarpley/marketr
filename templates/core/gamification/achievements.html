@@ -13,7 +13,12 @@
         )}}
     {% endmacro %}
     {% for ach in achievements %}
-        {% if ach.get('customer_id') %}
+        {% if ach.get('customer_id') and not ach.get('claimed') %}
+            {{ achievement_call(ach) }}
+        {% endif %}
+    {% endfor %}
+    {% for ach in achievements %}
+        {% if ach.get('customer_id') and ach.get('claimed') %}
             {{ achievement_call(ach) }}
         {% endif %}
     {% endfor %}
