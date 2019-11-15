@@ -1,4 +1,4 @@
-const Achievements = class {
+export class Achievements {
     constructor(){
     }
 
@@ -150,7 +150,7 @@ const Achievements = class {
 
 
 
-const Store = class {
+export class Store {
     constructor(rewards_obj){
         this.rewards = rewards_obj
     }
@@ -281,7 +281,7 @@ const Store = class {
 
 
 
-const Rewards = class {
+export class Rewards {
     constructor(){
         this.container = document.querySelector('.rewards_container')
     }

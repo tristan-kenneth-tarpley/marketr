@@ -1,4 +1,4 @@
-const PaymentsService = class {
+export class PaymentsService {
     constructor() {
         this.stripe = Stripe('pk_live_tZr8rAfnEIUi4pZQLhKqa8VF00aOM5wPNc');
         let url_string = window.location.href,
@@ -25,7 +25,7 @@ const PaymentsService = class {
 }
 
 
-const NotificationsService = class {
+export class NotificationsService {
     constructor(url_path, admin=false) {
         this.url_path = url_path
         this.admin = admin
@@ -72,15 +72,9 @@ const NotificationsService = class {
                 $(".notification_count").remove()
             }
         }
-        if (tasks_and_insights.length > 0) {
-            $(".tab_and_insight_count").css('display', 'inline')
-            $(".tab_and_insight_count").text(tasks_and_insights.length)
-        } else {
-            $(".tab_and_insight_count").remove()
-        }
-        if (messages.length > 0){
-            $(".message_count").css('display', 'inline')
-            $(".message_count").text(messages.length)
+        if (messages.length > 0 || tasks_and_insights.length > 0){
+            $(".message_cmessage_task_insight_countount").css('display', 'inline')
+            $(".message_task_insight_count").text(messages.length + tasks_and_insights.length)
         } else {
             $(".message_count").remove()
         }
@@ -101,7 +95,7 @@ const NotificationsService = class {
     }
 }
 
-const ScoreService = class {
+export class ScoreService {
     constructor(url_path, admin=false) {
         this.url_path = url_path
         this.admin = admin
@@ -165,7 +159,7 @@ const ScoreService = class {
 }
 
 
-const MessagingService = class {
+export class MessagingService {
     constructor(url_path) {
         this.url_path = url_path
         this.customer_id = this.url_path.substring(11)
@@ -221,7 +215,7 @@ const MessagingService = class {
 
 
 
-const TaskService = class {
+export class TaskService {
     constructor (url_path) {
         this.url_path = url_path
         this.customer_id = this.url_path.substring(11)
@@ -319,7 +313,7 @@ const TaskService = class {
 }
 
 
-const TacticService = class {
+export class TacticService {
     constructor(){
 
     }
@@ -335,7 +329,7 @@ const TacticService = class {
 }
 
 
-const AdAuditService = class {
+export class AdAuditService {
     constructor() {
         
     }

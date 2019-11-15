@@ -1,3 +1,5 @@
+import {TacticService} from './services.js'
+
 export default class Tactics {
     constructor(params){
         this.mount = document.querySelector('#tactics_mount')

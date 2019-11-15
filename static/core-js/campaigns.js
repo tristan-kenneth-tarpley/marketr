@@ -12,7 +12,7 @@ export default class Portfolio {
             {
                 platform: 'pinterest',
                 cpl: 300,
-	            spend: 2,
+	            spend: 200,
 	            clicks: 2.34,
 	            ctr: 2.59,
 	            rpc: 'coming soon'
@@ -37,42 +37,60 @@ export default class Portfolio {
 
         this.ctx = document.querySelector('#portfolio_mix')
         this.mix_container = document.querySelector('.portfolio_container')
-        this.home()
+        this.metric = 'spend'
+        this.home(this.metric)
     }
 
-    home(){
+    home(metric=this.metric){
         const inspector = document.querySelector('.inspect_container')
+        const active_metric = document.querySelectorAll('.active_metric')
+        active_metric.forEach(el=>{
+            if (el.textContent == this.metric){
+                el.style.opacity = '.5'
+            } else {
+                el.style.opacity = '1'
+            }
+            el.addEventListener('click', e=>{
+                this.metric = e.currentTarget.textContent
+                this.home(e.currentTarget.textContent)
+            })
+        })
         inspector.style.display = 'none'
 
         this.mix_container.style.display = 'block'
         let labels = []
         for (let index in this.campaign_data){labels.push(this.campaign_data[index].platform)}
-        let values = []
-        for (let index in this.campaign_data){values.push(this.campaign_data[index].spend)}
 
+        
+        const values = metric => {
+            let values = [];
+            for (let index in this.campaign_data){
+                values.push(this.campaign_data[index][metric])
+            }
+            return values
+        }
+        
         const data = {
             labels: labels,
             datasets: [{
-                label: "Ad Spend (usd)",
-                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                data: values,
+                label: "",
+                backgroundColor: ["#01d4b4", "#ff9c00","#62cde0","#699fa1","#a5d6d9"],
+                data: values(metric),
                 responsive:true
             }]
         }
         const options = {
             title: {
                 display: true,
-                text: 'Advertising spend (usd)'
+                text: ''
             }
         }
-
         const mix = new Chart(this.ctx, {
             type: 'pie',
             data: data,
             options: options
         });
 
-    
         this.ctx.addEventListener('click', e=> this.inspect(mix.getElementsAtEvent(e)[0]._index)) 
     }
 
@@ -83,6 +101,25 @@ export default class Portfolio {
                 others.push(this.campaign_data[i].platform)
             }
         }
+        let platform_icon;
+        switch(dataset.platform){
+            case 'google ads':
+                platform_icon = 'google.com'
+                break
+            case 'facebook':
+                platform_icon = 'facebook.com'
+                break
+            case 'twitter':
+                platform_icon = 'twitter.com'
+                break
+            case 'pinterest':
+                platform_icon = 'pinterest.com'
+                break
+            case 'linkedin':
+                platform_icon = 'linkedin.com'
+                break
+        }
+        const platform_url = `http://logo.clearbit.com/${platform_icon}`
         /*html*/
         const el = `
             <div class="row row_cancel">
@@ -97,20 +134,63 @@ export default class Portfolio {
                 <div class="col">
                     <ul class="inline-list">
                         ${Object.keys(others).map(key=>{
-                            return `<li><button class="sum_list btn btn-outline btn-outline-primary">${others[key]}</button></li>`
+                            return `<li class="small_txt"><button style="margin:0;" class="sum_list btn btn-neutral">${others[key]}</button></li>`
                         }).join("")}
                     </ul>
           
                 </div>
             </div>
-            <div class="card">
-                <h5>${dataset.platform}</h5>
-                <p>Cost per lead: ${dataset.cpl}</p>
-                <p>Total spent: ${dataset.spend}</p>
-                <p>Clicks: ${dataset.clicks}</p>
-                <p>Click through rate: ${dataset.ctr}</p>
-                <p>Revenue per click: ${dataset.rpc}</p>
-            </div>
+                <h5 class="center_it">${dataset.platform}</h5>
+                <div class="row row_cancel">
+                    <div style="text-align:left;" class="col"></div>
+                    <div style="text-align:left;" class="col">
+                        <p>Cost per lead:</p>
+                    </div>
+                    <div style="text-align:right;" class="col">
+                        <p>$${dataset.cpl.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div style="text-align:left;" class="col"></div>
+                </div>
+                <div class="row row_cancel">
+                    <div style="text-align:left;" class="col"></div>
+                    <div style="text-align:left;" class="col">
+                        <p>Total spent:</p>
+                    </div>
+                    <div style="text-align:right;" class="col">
+                        <p>$${dataset.spend.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div style="text-align:left;" class="col"></div>
+                </div>
+                <div class="row row_cancel">
+                    <div style="text-align:left;" class="col"></div>
+                    <div style="text-align:left;" class="col">
+                        <p>Clicks:</p>
+                    </div>
+                    <div style="text-align:right;" class="col">
+                        <p>${dataset.clicks.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div style="text-align:left;" class="col"></div>
+                </div>
+                <div class="row row_cancel">
+                    <div style="text-align:left;" class="col"></div>
+                    <div style="text-align:left;" class="col">
+                        <p>Click through rate:</p>
+                    </div>
+                    <div style="text-align:right;" class="col">
+                        <p>${dataset.ctr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div style="text-align:left;" class="col"></div>
+                </div>
+                <div class="row row_cancel">
+                    <div style="text-align:left;" class="col"></div>
+                    <div style="text-align:left;" class="col">
+                        <p>Revenue per click:</p>
+                    </div>
+                    <div style="text-align:right;" class="col">
+                        <p>${dataset.rpc.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+                    </div>
+                    <div style="text-align:left;" class="col"></div>
+                </div>
         `
         return el
     }
@@ -126,7 +206,7 @@ export default class Portfolio {
         this.mix_container.style.display = 'none'
         document.querySelector('.inspect_container').style.display = 'block'
         document.querySelector('.inspect_container').innerHTML = el
-        document.querySelector('#nav_up').addEventListener('click', e=>this.home())
+        document.querySelector('#nav_up').addEventListener('click', e=>this.home(this.metric))
 
         const others = document.querySelectorAll('.sum_list')
 
@@ -138,4 +218,12 @@ export default class Portfolio {
             })
         });
     }
+}
+
+
+export class Spend {
+    constructor(){
+
+    }
+    
 }

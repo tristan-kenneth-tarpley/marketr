@@ -1,6 +1,9 @@
 import Competitors from './competitors.js';
 import Tactics from './tactics.js';
 import Portfolio from './campaigns.js';
+import {Achievements, Store, Rewards} from './gamify.js'
+import {IntakeProgressMeter, CoreViewModels, AuditRequest, PriceViewModel, AuditViewModel, WalletViewModel} from './ViewModels.js'
+import {PaymentsService} from './services.js'
 
 const InitFuncs = class {
 

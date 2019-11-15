@@ -1,4 +1,6 @@
-const IntakeProgressMeter = class {
+import {NotificationsService, ScoreService, MessagingService, TaskService, AdAuditService} from './services.js'
+
+export class IntakeProgressMeter {
     constructor() {
         $('.progress_meter-container').css('display', 'block')
     }
@@ -11,7 +13,7 @@ const IntakeProgressMeter = class {
     }
 }
 
-const CoreViewModels = class {
+export class CoreViewModels {
 
 	constructor(url_path) {
         this.url_path = url_path
@@ -279,7 +281,7 @@ const CoreViewModels = class {
 
 
 
-const AuditRequest = class {
+export class AuditRequest {
     constructor(){
         this.init = true
     }
@@ -301,7 +303,7 @@ const AuditRequest = class {
     }
 }
 
-const PriceViewModel = class {
+export class PriceViewModel {
     constructor(){
         $('#ad_spend').on('change, keyup', e => {
             let currentInput = $(e.currentTarget).val();
@@ -429,7 +431,7 @@ const PriceViewModel = class {
     }
 }
 
-class AuditViewModel {
+export class AuditViewModel {
     constructor() {
         this.audit_service = new AdAuditService()
         this.level = 0
@@ -453,7 +455,7 @@ class AuditViewModel {
 }
 
 
-const WalletViewModel = class {
+export class WalletViewModel {
     constructor(){
     }
     

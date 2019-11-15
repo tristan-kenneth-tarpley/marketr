@@ -1,6 +1,189 @@
-<div class="center_it portfolio_container">
-    <p>Click on a platform to view more details</p>
-    <canvas id="portfolio_mix"></canvas>
+
+{% from "macros/dashboard_macros.html" import goals, tactics, insights, ads_performance, ad_metrics, test_performance %}
+{% from "macros/home_macros.html" import locked %}
+
+
+{% macro animation() %}
+<a class="dl-button" href="">
+        <div>
+          <div class="label">
+            <div class="show default">Do it<br>for me</div>
+            <div class="state">
+              <div class="counter">
+                <ul>
+                  <li></li>
+                  <li>1</li>
+                </ul>
+                <ul>
+                  <li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li>
+                </ul>
+                <ul>
+                  <li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li>
+                </ul><span>%</span>
+              </div><span>Done</span>
+            </div>
+          </div>
+          <div class="progress"></div>
+        </div></a>
+{% endmacro %}
+
+
+{% set current_plan = page.data['core']['core'][0]['current_plan'] %}
+{% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
+{% set almost_free = page.data['core']['core'][0]['almost_free_binary'] %}
+{% set ad_plan = page.data['core']['core'][0]['ad_binary'] %}
+{% set ad_premium = page.data['core']['core'][0][''] %}
+{% set company_name = page.data['core']['company_name'] %}
+
+<div class="row">
+    <div class="col-lg-4 col-md-5 col-sm-12">
+        <div style="">
+
+            <div class="rec_container">
+                <div class="row">
+                    <div class="col">
+                        <p>You should increase your spend!</p>
+                    </div>
+                    <div class="col">
+                        
+                        {{ animation() }}
+                    </div>
+                </div>
+            </div>
+            <div class="rec_container">
+                
+            </div>
+            <div class="rec_container">
+                
+            </div>
+            <div class="rec_container">
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8 col-md-7 col-sm-12">
+        <div style="height: 100%;" class="card">
+            <div class="center_it portfolio_container">
+                <div class="row">
+                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">spend</button></div>
+                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">ctr</button></div>
+                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">cpl</div>
+                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">clicks</button></div>
+                </div>
+                <p class="small_txt">Click on a platform to view more details</p>
+                <canvas id="portfolio_mix"></canvas>
+            </div>
+            <div class="inspect_container">
+            </div>
+        </div>  
+    </div> 
 </div>
-<div class="inspect_container">
-</div>
+
+        
+<div class="row">  
+        <div class="col-lg-6 col-sm-12">                   
+            {% if current_plan %}
+            {{ section(
+                link=None,
+                title="Insights",
+                body=insights(page),
+                hash="insights",
+                admin=page.admin
+            ) }}
+            {% else %}
+            {{ section(
+                link=None,
+                title="Insights <i class='fa fa-lock'></i>",
+                body=locked(type="insights"),
+                hash="insights",
+                admin=page.admin
+            ) }}
+            {% endif %}
+        </div>
+    
+        <div class="col-lg-6 col-sm-12">
+            {% macro tactics_empty() %}
+                <div class="tactics_loading" id="loading">
+                    <div class="load-circle"><span class="one"></span></div>
+                </div>
+                <div id='tactics_mount'></div>
+            {% endmacro %}
+    
+            {{ section(
+                link=None,
+                title="Tactic of the Day",
+                body=tactics_empty(),
+                hash="tactics",
+                admin=page.admin
+            ) }}
+        </div>
+    </div> 
+
+
+
+
+    <script>
+            $('.dl-button').on('click', e => {
+
+                let btn = $(e.currentTarget),
+                    label = btn.find('.label'),
+                    counter = label.find('.counter');
+            
+                if(!btn.hasClass('active') && !btn.hasClass('done')) {
+            
+                    btn.addClass('active');
+            
+                    setLabel(label, label.find('.default'), label.find('.state'));
+            
+                    setTimeout(() => {
+                        counter.addClass('hide');
+                        counter.animate({
+                            width: 0
+                        }, 400, function() {
+                            label.width(label.find('.state > span').width());
+                            counter.removeAttr('style');
+                        });
+                        btn.removeClass('active').addClass('done');
+                    }, getComputedStyle(btn[0]).getPropertyValue('--duration'));
+            
+                }
+            
+                return false;
+            
+            });
+            
+            $('.restart').on('click', e => {
+            
+                let btn = $('.dl-button'),
+                    label = btn.find('.label'),
+                    counter = label.find('.counter');
+            
+                setLabel(label, label.find('.state'), label.find('.default'), function() {
+                    counter.removeClass('hide');
+                    btn.removeClass('done');
+                });
+            
+                return false;
+            
+            });
+            
+            function setLabel(div, oldD, newD, callback) {
+                oldD.addClass('hide');
+                div.animate({
+                    width: newD.outerWidth()
+                }, 200, function() {
+                    oldD.removeClass('show hide');
+                    newD.addClass('show');
+                    div.removeAttr('style');
+                    if(typeof callback === 'function') {
+                        callback();
+                    }
+                });
+            }
+            
+    </script>
+
+
+
+
+

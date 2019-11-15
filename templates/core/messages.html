@@ -5,13 +5,14 @@
         {{ messages(page.data['messages']['messages'], page=page) }}
     </div>
     <div class="col-lg-4 col-sm-12"> 
-        {{ score() }}
+                 
         {{ section(
-            link="goals",
-            title="Marketing Goal",
-            body=goals(page),
-            hash="goal",
+            link=None,
+            title='To-Do List',
+            body=todo(page, admin=False),
+            hash=None,
             admin=page.admin
         ) }}
+
     </div>
 </div>
