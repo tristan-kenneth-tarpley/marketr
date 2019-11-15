@@ -523,3 +523,59 @@
 	</div>
 
 {% endmacro %}
+
+
+{% macro all_tactics(page) %}
+    {% macro build(page) %}
+    <div id="carouselExampleIndicators" class="text-carousel carousel slide">
+        <ol class="carousel-indicators">
+            {% for insight in page.data['all_tactics']['all_tactics'] %}
+                {% set index = loop.index - 1 %}
+                <li data-target="#carouselExampleIndicators" data-slide-to="{{ index }}" class="{{'active' if index == 0 else ''}}"></li>
+            {% endfor %}
+        </ol>
+        <div class="carousel-inner">
+            {% for insight in page.data['all_tactics']['all_tactics'] %}
+                <div class="carousel-item {{'active' if loop.index-1 == 0 else ''}}">
+                    <p style="margin-bottom: 0;"><strong>{{ loop.index }} of {{ page.data['all_tactics']['all_tactics'] | length }}</strong></p>
+                    <p class="small_txt">{{ insight['title'] }}</p>
+                    <p>{{ insight['description'] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="false"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    <div style="width: 80%; margin: 7% auto 3%;" class="separator"></div>
+    <div style="text-align:center;">
+        <p class="small_txt">Want to discuss these tactics? Head over to the <a href="/home?view=messages">messages</a> tab.</p>
+    </div>
+
+    {% endmacro %}
+    <div class="row">
+    {% if page.data['all_tactics']['all_tactics'] %}
+        <div class="col">
+            {{ build(page) }}
+        </div>
+    {% else %}
+        <div style="padding: 5% 5% 3%;">
+            <h6>Sweet, looks like you recently signed up for Market(r) services.</h6>
+            <p>You can expect to see specific improvement insights here within the next week.</p>
+            <p>Don't worry, we'll send you an email when your Market(r) guide adds the first insights. </p>
+        </div>
+    {% endif %}
+    </div>
+
+
+{% endmacro %}
+
+
+
+
+

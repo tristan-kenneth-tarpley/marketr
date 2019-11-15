@@ -5077,14 +5077,10 @@ ul#product {
 
 
 .nav-tabs {
-  width: 100% !important;
+  width: 70% !important;
   border-bottom: none;
 }
 .nav-tabs .nav-link {
-  border-bottom-left-radius: .5rem !important;
-  border-bottom-right-radius: .5rem !important;
-  border-top-left-radius: .5rem !important;
-  border-top-right-radius: .5rem !important;
   transition-duration: .3s;
 }
 .nav-tabs .nav-link:hover {
@@ -5097,6 +5093,9 @@ ul#product {
   border-bottom: 0;
 }
 @media only screen and (max-width: 770px) {
+  .nav-tabs {
+    width: 100% !important;
+  }
   .nav-tabs li {
     width: 100% !important;
   }
@@ -5105,15 +5104,17 @@ ul#product {
 }
 .tab-link {
   border-radius: none !important;
-  text-transform: uppercase;
-  border-bottom: none;
-  font-weight: bold;
-  color: var(--primary) !important;
+  text-transform: capitalize;
+  background-color: transparent !important;
+  border: 2px solid transparent !important;
+  font-weight: 500;
+  color: rgba(0,0,0,.2) !important;
   font-size: 90%;
 }
 .tab-link.active {
-  background-color: var(--primary) !important;
-  color: white !important;
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid var(--primary) !important;
 }
 .card .tab-content {
   margin-top: 4%;
@@ -5253,12 +5254,18 @@ ul#product {
   white-space: pre-wrap;
 }
 .notification_count {
-  background-color: #ff5751;
-  color: white;
-  padding: 2% 4%;
-  position: relative;
-  left: 10%;
-  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  padding: 2% 5%;
+  text-align: center;
+  border: 1px solid var(--plum);
+  background-color: var(--plum);
+  box-shadow: var(--md-box-shadow);
+  font-weight: 500;
+  margin-left: 4px;
+  font-size: 95%;
 }
 
 .message_count,
