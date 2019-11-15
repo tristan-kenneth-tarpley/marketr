@@ -243,6 +243,16 @@ def home():
         page=view_model
     )
 
+@app.route('/home_test', methods=['GET', 'POST'])
+@login_required
+@onboarding_required
+def home_test():
+    view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
+    return render_template(
+        'layouts/home_layout_2.html',
+        page=view_model
+    )
+
 @app.route('/home/achievements', methods=['GET', 'POST'])
 @login_required
 @onboarding_required

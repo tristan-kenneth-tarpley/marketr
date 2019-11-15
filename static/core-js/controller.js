@@ -1,5 +1,6 @@
 import Competitors from './competitors.js';
 import Tactics from './tactics.js';
+import Portfolio from './campaigns.js';
 
 const InitFuncs = class {
 
@@ -518,6 +519,9 @@ const PageViewController = class {
 					game.poll()
 					store.init()
 					break
+				case '/home_test':
+					const portfolio = new Portfolio(this.params)
+					break
 			}
 
 			if (this.url_path.slice(15) == 'profile' || this.url_path.slice(1,5) =='home') {
@@ -571,7 +575,6 @@ const PageViewController = class {
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()
-					view_model.tactics()
 					view_model.tasks()
 
 					$(function () {

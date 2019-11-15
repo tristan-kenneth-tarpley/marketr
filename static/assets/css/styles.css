@@ -11073,3 +11073,20 @@ left: -6px;
   box-shadow: var(--md-box-shadow);
   font-weight: 500;
 }
+
+.portfolio_container {
+  width: 90%;
+  margin:auto;
+}
+#portfolio_mix {
+  width: 100%;
+}
+.inline-list {
+}
+.inline-list li {
+  display: inline;
+  list-style-type: none;
+  margin: 2% 5% 0 0;
+  opacity: .7;
+  text-align:right;
+}
