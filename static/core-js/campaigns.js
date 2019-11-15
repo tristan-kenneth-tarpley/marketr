@@ -55,15 +55,15 @@ export default class Portfolio {
             datasets: [{
                 label: "Ad Spend (usd)",
                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                data: values
+                data: values,
+                responsive:true
             }]
         }
         const options = {
             title: {
                 display: true,
                 text: 'Advertising spend (usd)'
-            },
-            responsive: true
+            }
         }
 
         const mix = new Chart(this.ctx, {
