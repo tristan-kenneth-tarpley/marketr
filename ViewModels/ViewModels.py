@@ -9,6 +9,8 @@ from services.SharedService import CoreService, InsightsService
 from services.AdminService import AdminService, AdminUserService, MessagingService, TaskService, TacticService
 from services.CompetitorService import CompetitorService
 from services.TacticsService import TacticsService
+from services.AdSpend import GetRec
+from services.Blog import Blog
 import services.forms as forms
 import json
 import itertools
@@ -246,58 +248,12 @@ class CustomerDataViewModel:
 			self.compile_all()
 	
 	def compile_core(self) -> dict:
-		# data = self.core_service.customer_core()
-
-		# core_data = {}
-		# columns = [
-		# 	'customer_id', 'company_name',
-		# 	'first_name', 'last_name',
-		# 	'email', 'stage',
-		# 	'city', 'state', 'current_plan',
-		# 	'selling_to', 'biz_model',
-		# 	'rev_channel_freeform', 'storefront_perc',
-		# 	'direct_perc', 'online_perc',
-		# 	'tradeshows_perc', 'other_perc',
-		# 	'industry', 'comp_1_name',
-		# 	'comp_1_type', 'comp_1_website',
-		# 	'comp_2_name', 'comp_2_type',
-		# 	'comp_2_website', 'gen_description',
-		# 	'quantity', 'link',
-		# 	'segment_1', 'segment_2',
-		# 	'segment_3', 'segment_4',
-		# 	'segment_5', 'segment_6',
-		# 	'segment_7', 'segment_8',
-		# 	'segment_9', 'segment_10',
-		# 	'source_1', 'source_2',
-		# 	'source_3', 'source_4',
-		# 	'source_freeform', 'goal',
-		# 	'current_avg', 'target_avg',
-		# 	'timeframe', 'digital_spend',
-		# 	'history_freeform'
-		# ]
-
-		# for i in range(len(data)):
-		# 	core_data.update([(columns[i], data[i])])
 		query = "select * from compile_home_page(?)"
 		core_data, cursor = db.execute(query, True, (self.customer_id,))
 		core_data = cursor.fetchone()
 		return_dict = {} #anchor2
 		for i in range(len(core_data)):
 			return_dict[i] = core_data[i]
-
-		# for i in range(len(core_data)):
-		# 	return_dict.update([(core_data[i], core_data[i])])
-
-		# competitors = CompetitorService()
-		# try:
-		# 	core_data['competitor_intro_1'] = competitors.intro(core_data.get('comp_1_website'))
-		# except:
-		# 	core_data['competitor_intro_1'] = ""
-		
-		# try:
-		# 	core_data['competitor_intro_2'] = competitors.intro(core_data.get('comp_2_website'))
-		# except:
-		# 	core_data['competitor_intro_2'] = ""
 
 		return return_dict
 	
@@ -454,6 +410,13 @@ class CustomerDataViewModel:
 			ctr = ''
 			clicks_per_1000 = None
 
+		spend_base = eval(core_data[14]).get('spend_rec')[0]
+		spend_rec = GetRec(
+			spend_base.get('revenue'),
+			spend_base.get('stage'),
+			spend_base.get('model')
+		)
+
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -470,6 +433,7 @@ class CustomerDataViewModel:
 			'achievements': eval(core_data[11]) if core_data[11] else None,
 			'all_tactics': eval(core_data[12]) if core_data[12] else None,
 			'rewards': eval(core_data[13]) if core_data[13] else None,
+			'spend_rec': spend_rec.get()
 		}
 
 		self.data = return_data

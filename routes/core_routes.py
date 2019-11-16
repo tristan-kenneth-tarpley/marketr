@@ -295,6 +295,8 @@ def change_password():
     )
 
 
+
+
 @app.route('/home/settings/<plan_id>', methods=['GET', 'POST'])
 @login_required
 def plan_view(plan_id):
@@ -416,6 +418,7 @@ def messages():
     messaging.post_message(request.form.get('msg'))
 
     return 'sent'
+
 
 
 

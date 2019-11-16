@@ -15,14 +15,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/favicon.png">
 	<link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
-    <link href="static/branding/plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/branding/plugin/font-awesome/css/all.min.css" rel="stylesheet">
-    <link href="static/branding/plugin/et-line/style.css" rel="stylesheet">
-    <link href="static/branding/plugin/themify-icons/themify-icons.css" rel="stylesheet">
-    <link href="static/branding/plugin/owl-carousel/css/owl.carousel.min.css" rel="stylesheet">
-    <link href="static/branding/plugin/magnific/magnific-popup.css" rel="stylesheet">
+    <link href="/static/branding/plugin/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/branding/plugin/font-awesome/css/all.min.css" rel="stylesheet">
+    <link href="/static/branding/plugin/et-line/style.css" rel="stylesheet">
+    <link href="/static/branding/plugin/themify-icons/themify-icons.css" rel="stylesheet">
+    <link href="/static/branding/plugin/owl-carousel/css/owl.carousel.min.css" rel="stylesheet">
+    <link href="/static/branding/plugin/magnific/magnific-popup.css" rel="stylesheet">
     <!-- theme css -->
-    <link href="static/branding/style/master.css" rel="stylesheet">
+    <link href="/static/branding/style/master.css" rel="stylesheet">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139164161-3"></script>
     <script>
@@ -49,8 +49,8 @@
                 <div class="col-auto p-0px-l">
                     <!-- logo -->
                     <a class="navbar-brand" href="/">
-                        <img class="light-logo" src="static/branding/img/white-logo.svg" title="" alt="">
-                        <img class="dark-logo" src="static/branding/img/black-logo.svg" title="" alt="">
+                        <img class="light-logo" src="/static/branding/img/white-logo.svg" title="" alt="">
+                        <img class="dark-logo" src="/static/branding/img/black-logo.svg" title="" alt="">
                     </a>
                     <!-- end logo -->
                 </div>
@@ -69,6 +69,7 @@
                                 <li><a class="nav-link" href="#team">Team</a></li>
                                 <li><a class="nav-link" href="#price">Price</a></li>
                                 <li><a class="nav-link" href="#contact">Contact Us</a></li>
+                                <li><a class="nav-link" href="/blog">Blog</a></li>
                             {% endif %}
                             {% if not logged_in %}
                                 <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/new">Sign Up</a></li>
@@ -127,7 +128,7 @@
                         <div class="footer-about">
                             <div class="fot-logo">
                                 <a href="#">
-                                    <img src="static/branding/img/white-logo.svg" title="" alt="">
+                                    <img src="/static/branding/img/white-logo.svg" title="" alt="">
                                 </a>
                             </div>
                         </div>
@@ -199,19 +200,19 @@
         <!-- end footer bottom -->
     </footer>
 
-    <script src="static/branding/js/jquery-3.2.1.min.js"></script>
-    <script src="static/branding/js/jquery-migrate-3.0.0.min.js"></script>
+    <script src="/static/branding/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/branding/js/jquery-migrate-3.0.0.min.js"></script>
     <!-- end jquery -->
     <!-- appear -->
-    <script src="static/branding/plugin/appear/jquery.appear.js"></script>
+    <script src="/static/branding/plugin/appear/jquery.appear.js"></script>
     <!-- end appear -->
     <!--bootstrap-->
-    <script src="static/branding/plugin/bootstrap/js/popper.min.js"></script>
-    <script src="static/branding/plugin/bootstrap/js/bootstrap.js"></script>
+    <script src="/static/branding/plugin/bootstrap/js/popper.min.js"></script>
+    <script src="/static/branding/plugin/bootstrap/js/bootstrap.js"></script>
     <!--end bootstrap-->
     <!-- End -->
     <!-- custom js -->
-    <script src="static/branding/js/custom.js"></script>
+    <script src="/static/branding/js/custom.js"></script>
     {% include "layouts/imports/imports.html" %}
 </body>
 </html>

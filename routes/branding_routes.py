@@ -1,5 +1,6 @@
 from app import app
 from flask import render_template, session
+from services.Blog import Blog
 
 @app.route('/')
 def index():
@@ -9,6 +10,16 @@ def index():
 		home=True
 	)
 
+
+@app.route('/blog')
+def blog():
+	blog = Blog()
+	return render_template('branding/blog.html', posts=blog.all_stories())
+
+@app.route('/blog/<slug>')
+def article(slug):
+	blog = Blog()
+	return render_template('branding/post.html', post=blog.single_story(slug))
 
 
 @app.route('/privacy')

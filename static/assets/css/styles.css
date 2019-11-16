@@ -5262,7 +5262,7 @@ ul#product {
   text-align: center;
   border: 1px solid var(--plum);
   background-color: var(--plum);
-  box-shadow: var(--md-box-shadow);
+  box-shadow: var(--inset-box-shadow);
   font-weight: 500;
   margin-left: 4px;
   font-size: 95%;
