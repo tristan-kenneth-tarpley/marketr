@@ -760,7 +760,7 @@
 				</div>
 			</div>
 			<div class="col-lg-6 col-md-6 col-sm-12 col-12">
-				{{ messages(page.data['messages']['messages'], page=page) }}
+				<div id="talkjs-container"></div>
 			</div>
 		</div>
 
@@ -777,6 +777,39 @@
 				{{ ab_testing(page, form=ab_form) }}	
 			</div>
 		</div>#}
+	<script>
+		(function(t,a,l,k,j,s){
+			s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
+			;k=t.Promise;t.Talk={v:2,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
+			.push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
+		</script>
+		<script>
+			Talk.ready.then(function(){
+				var me = new Talk.User({
+					id: "{{page.chat['user_id']}}",
+					role: 'Admin',
+					name: "{{page.chat['admin_name']}}",
+					email: "{{page.chat['email']}}"
+				});
+				window.talkSession = new Talk.Session({
+					appId: "S9ifmqxv",
+					me: me,
+					signature: "{{page.chat['hash']}}"
+				});
+	
+				var operator = new Talk.User({
+					name: "{{page.chat['customer_name']}}",
+					id: "{{page.chat['customer_id']}}",
+					email: "{{page.chat['customer_email']}}",
+					role: "User"
+				}); 
+				var conversation = window.talkSession.getOrCreateConversation("item_2493");
+				conversation.setParticipant(me);
+				conversation.setParticipant(operator);
+				var chatbox = window.talkSession.createChatbox(conversation);
+				chatbox.mount(document.getElementById("talkjs-container"));
+			});
+		</script>
 	{% endmacro %}
 
 

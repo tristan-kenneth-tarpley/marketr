@@ -13,6 +13,7 @@ from services.LoginHandlers import login_required, admin_required, owner_require
 from services.AdminService import AdminService, AdminActions, MessagingService, AdminUserService
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
+from services.ChatService import ChatService
 from services.gamify import Achievements, Credits, Rewards
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
@@ -238,9 +239,12 @@ def customer_core():
 @onboarding_required
 def home():
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
+    chat = ChatService('User', session['email'], session['user'])
+    chat.run()
     return render_template(
         'layouts/home_layout.html',
-        page=view_model
+        page=view_model,
+        chat=chat
     )
 
 @app.route('/home_test', methods=['GET', 'POST'])

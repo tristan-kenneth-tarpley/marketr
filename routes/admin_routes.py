@@ -8,6 +8,7 @@ import pandas as pd
 import services.helpers as helpers
 from services.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
 from services.AdminService import TempDataService, AdminService, AdminActions, MessagingService, AdminUserService, TacticService
+from services.ChatService import ChatService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, AdminViewFuncs, AdAuditViewModel
 from analysis.campaigns.ad_audit import ad_audit
 import hashlib
@@ -46,6 +47,7 @@ def company_view(customer_id):
     page = request.args.get('page')
     basics_df = db.sql_to_df("""SELECT * FROM dbo.customer_basic WHERE ID = """ + customer_id)
     company_name = basics_df['company_name'][0]
+
 
 
     if page == "profile":
@@ -202,6 +204,8 @@ def acct_mgmt(customer_id):
 	insight_form = forms.InsightForm()
 	temp_form = forms.TempData()
 
+		
+
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
 		session['account_rep'] = True
@@ -239,6 +243,7 @@ def acct_mgmt(customer_id):
 				return redirect(url_for('acct_mgmt', customer_id=customer_id))
 
 		elif request.method == 'GET':
+
 			page = AdminViewModel(
 				session['permissions'],
 				'acct_mgmt',
@@ -246,6 +251,19 @@ def acct_mgmt(customer_id):
 				user=customer_id,
 				view="dashboard"
 			)
+
+			chat = ChatService('Admin', session['admin'], session['admin'], customer_id=customer_id)
+			chat.run()
+			page.chat = {
+				'type': chat.type,
+				'email': chat.email,
+				'user_id': str(chat.user_id),
+				'hash': chat.hash,
+				'customer_email': chat.customer_email,
+				'admin_name': chat.admin_name,
+				'customer_name': chat.customer_name,
+				'customer_id': str(chat.customer_id)
+			}
 
 			return ViewFuncs.view_admin(
 				page=page,
