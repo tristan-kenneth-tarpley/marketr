@@ -501,7 +501,7 @@ def poll_for_state():
 @app.route('/api/drop', methods=['POST'])
 def drop():
     req = request.get_json()
-    reward_service = Rewards(customer_id=session['user'])
+    reward_service = Rewards(customer_id=session['user'], email=session['email'])
     reward = reward_service.drop(req.get('type'))
 
     return json.dumps(reward)

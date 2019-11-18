@@ -218,7 +218,7 @@ export class Store {
                 break
             case 'manual_reward':
                 /*html*/
-                copy = `<h5>${data['title']}</h5><p>Nice! Check your <a href="/home?view=campaigns">messages</a> tab for your next instructions!</p>`
+                copy = `<h5>${data['title']}</h5><p>Nice! Your Market(r) guide has been notified and will be in touch with you soon. If you JUST CAN'T WAIT, head over to <a href="/home?view=messages">messages</a> and start a conversation about it.</p>`
                 break
         }
 

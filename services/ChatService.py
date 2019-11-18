@@ -1,6 +1,8 @@
 import hashlib
 import hmac
 import data.db as db
+import requests
+import json
 
 class ChatService:
     def __init__(self, u_type, email, user_id, customer_id=None):
@@ -33,3 +35,15 @@ class ChatService:
 
     def run(self):
         self.hash = self.auth()
+
+    def send(self, customer_id, message):
+        url = f'https://api.talkjs.com/v1/S9ifmqxv/conversations/marketr-{customer_id}/messages'
+        data = [{
+            'text': message,
+            'sender': f'admin-6',
+            'type': "UserMessage",
+            'custom': { message: message }
+        }]
+        print(data)
+
+        requests.post(url, data = json.dumps(data))

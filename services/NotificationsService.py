@@ -28,12 +28,12 @@ class GoogleChatService:
         }
         self.send(url, msg)
 
-    def manual_rewards(self, msg_txt):
+    def manual_rewards(self, msg_txt, customer_id, email):
         url = "https://chat.googleapis.com/v1/spaces/AAAA4S0c7y8/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=T0M1Cg56rlUj1dTNT4FsYs-dMpqm_C7O6SgYc0Tl9fU%3D"
         msg = {
-            'text': msg_txt
+            'text': f'{msg_txt}\nCustomer id: {str(customer_id)}\nEmail: {email}'
         }
-        self.send(url, msg_txt)
+        self.send(url, msg)
 
     def audit_request(self, url, email):
         webhook_url = "https://chat.googleapis.com/v1/spaces/AAAAGDGzT7Q/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=4tzuGln9HBgiS_AWn7ze7D-W6yOTTIWLjbiTVY_81bw%3D"

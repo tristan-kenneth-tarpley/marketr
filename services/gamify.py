@@ -3,6 +3,7 @@ from random import choices
 from services.NotificationsService import GoogleChatService
 from services.SharedService import MessagingService
 import json
+from services.ChatService import ChatService
 
 class Achievements:
     def __init__(self, customer_id=None):
@@ -64,8 +65,9 @@ class Credits:
 
 
 class Rewards:
-    def __init__(self, customer_id = None):
+    def __init__(self, customer_id = None, email=None):
         self.customer_id = customer_id
+        self.email = email
         self.rewards = [{
                 'title': 'Credits (+225)',
                 'parameter': 225,
@@ -300,7 +302,7 @@ class Rewards:
         return return_reward
 
     def credit_reward(self, amount):
-        self.update_balance(amount)
+        self.add_to_balance(amount)
 
         return None
 
@@ -328,9 +330,9 @@ class Rewards:
 
     def manual_reward(self, message):
         google = GoogleChatService()
-        google.manual_rewards(message)
+        google.manual_rewards(message, self.customer_id, self.email)
 
-        messaging = MessagingService(self.customer_id, admin_id=6, user='admin')
-        messaging.post_message(message)
+        # chat = ChatService('Admin', None, 6, customer_id=self.customer_id)
+        # chat.send(self.customer_id, message)
 
         return None
