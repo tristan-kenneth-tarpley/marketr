@@ -257,7 +257,7 @@ def acct_mgmt(customer_id):
 			page.chat = {
 				'type': chat.type,
 				'email': chat.email,
-				'user_id': str(chat.user_id),
+				'user_id': f"admin-{str(chat.user_id)}",
 				'hash': chat.hash,
 				'customer_email': chat.customer_email,
 				'admin_name': chat.admin_name,

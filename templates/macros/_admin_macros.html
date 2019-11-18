@@ -784,26 +784,30 @@
 			.push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
 		</script>
 		<script>
-			Talk.ready.then(function(){
+			Talk.ready.then(function() {
 				var me = new Talk.User({
-					id: "{{page.chat['user_id']}}",
-					role: 'Admin',
+					id: "admin-6",
+					role: "Admin",
 					name: "{{page.chat['admin_name']}}",
-					email: "{{page.chat['email']}}"
+					email: "{{page.chat['email']}}",
+					photoUrl: "https://marketr.life/static/branding/img/tristan.jpg",
+					welcomeMessage: "Welcome to Market(r)! Do you have any particular place in which you'd like to start your marketing journey with us?"
 				});
+				
 				window.talkSession = new Talk.Session({
 					appId: "S9ifmqxv",
 					me: me,
 					signature: "{{page.chat['hash']}}"
 				});
-	
+
+
 				var operator = new Talk.User({
 					name: "{{page.chat['customer_name']}}",
 					id: "{{page.chat['customer_id']}}",
 					email: "{{page.chat['customer_email']}}",
 					role: "User"
-				}); 
-				var conversation = window.talkSession.getOrCreateConversation("item_2493");
+				});
+				var conversation = window.talkSession.getOrCreateConversation("marketr-{{page.chat['customer_id']}}");
 				conversation.setParticipant(me);
 				conversation.setParticipant(operator);
 				var chatbox = window.talkSession.createChatbox(conversation);

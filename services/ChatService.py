@@ -7,7 +7,7 @@ class ChatService:
         self.type = u_type
         if u_type == 'User':
             self.email = email
-        else:
+        elif u_type == 'Admin':
             query = """select email, first_name, last_name from customer_basic where id = ?
                         union
                         select email, first_name, last_name from admins where id = ?"""
@@ -24,7 +24,9 @@ class ChatService:
         self.user_id = str(user_id)
 
     def auth(self):
-        userID = bytes(self.user_id, 'utf-8')
+        user_id = self.user_id if self.type == 'User' else f"admin-{self.user_id}"
+        print(user_id)
+        userID = bytes(user_id, 'utf-8')
         secret = bytes('sk_live_as2RRYrVsNz8buYoKNSu8v8v', 'utf-8')
         hash = hmac.new(secret, userID, hashlib.sha256)
         return hash.hexdigest()
