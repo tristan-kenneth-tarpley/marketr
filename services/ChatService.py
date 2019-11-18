@@ -14,9 +14,9 @@ class ChatService:
             db_email, cursor = db.execute(query, True, (customer_id, user_id))
             db_email = cursor.fetchall()
             self.customer_email = db_email[0][0]
-            self.customer_name = str(db_email[0][1]) + str(db_email[0][2])
+            self.customer_name = str(db_email[0][1]) + " " + str(db_email[0][2])
             self.email = db_email[1][0]
-            self.admin_name = str(db_email[1][1]) + str(db_email[1][2])
+            self.admin_name = str(db_email[1][1]) + " " + str(db_email[1][2])
 
         if customer_id:
             self.customer_id = customer_id
