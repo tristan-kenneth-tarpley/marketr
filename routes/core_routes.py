@@ -548,8 +548,10 @@ def spend_allocation():
     actual_budget = req.get('actual_budget')
     input_budget = float(actual_budget) if actual_budget else budget
 
+    user = session.get('user') if session.get('user') else session.get('customer_id')
+
     spend = SpendAllocation(
-        session['user'], req.get('revenue'), input_budget,
+        user, req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
         req.get('selling_to'), req.get('biz_model')
     )

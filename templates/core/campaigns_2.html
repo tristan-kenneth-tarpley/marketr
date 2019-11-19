@@ -66,11 +66,33 @@
                 <div class="col-md-2 col-6">
                     <p class="small_txt">Brand strength</p>
                     {% set options = ['high', 'medium', 'low'] %}
-                    <select id="brand_strength" class="considerations_select form-control">
-                            {% if page.data['core']['core'][0].get('brand_strength') %}
-                                <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
+                    {% if not page.admin %}
+                        <select id="brand_strength" class="considerations_select form-control">
+                                {% if page.data['core']['core'][0].get('brand_strength') %}
+                                    <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
+                                    {% for option in options %}
+                                        {% if option != page.data['core']['core'][0].get('brand_strength') %}
+                                        <option>{{ option }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% for option in options %}
+                                    <option>{{option}}</option>
+                                    {% endfor %}
+                                {% endif %}
+                        </select>
+                    {% else %}
+                        <p class="small_txt">{{ page.data['core']['core'][0].get('brand_strength') }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-2 col-6">
+                    <p class="small_txt">Growth needs</p>
+                    {% if not page.admin %}
+                        <select id="growth_needs" class="considerations_select form-control">
+                            {% if page.data['core']['core'][0].get('growth_needs') %}
+                                <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
                                 {% for option in options %}
-                                    {% if option != page.data['core']['core'][0].get('brand_strength') %}
+                                    {% if option != page.data['core']['core'][0].get('growth_needs') %}
                                     <option>{{ option }}</option>
                                     {% endif %}
                                 {% endfor %}
@@ -79,27 +101,14 @@
                                 <option>{{option}}</option>
                                 {% endfor %}
                             {% endif %}
-                    </select>
-                </div>
-                <div class="col-md-2 col-6">
-                    <p class="small_txt">Growth needs</p>
-                    <select id="growth_needs" class="considerations_select form-control">
-                        {% if page.data['core']['core'][0].get('growth_needs') %}
-                            <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
-                            {% for option in options %}
-                                {% if option != page.data['core']['core'][0].get('growth_needs') %}
-                                <option>{{ option }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            {% for option in options %}
-                            <option>{{option}}</option>
-                            {% endfor %}
-                        {% endif %}
-                    </select>
+                        </select>
+                    {% else %}
+                        <p class="small_txt">{{ page.data['core']['core'][0].get('growth_needs') }}</p>
+                    {% endif %}
                 </div>
                 <div class="col-md-2 col-6">
                     <p class="small_txt">Market Competitiveness</p>
+                    {% if not page.admin %}
                     <select id="competitiveness" class="considerations_select form-control">
                             {% if page.data['core']['core'][0].get('growth_needs') %}
                                 <option>{{ page.data['core']['core'][0].get('competitiveness') }}</option>
@@ -114,6 +123,9 @@
                                 {% endfor %}
                             {% endif %}
                     </select>
+                    {% else %}
+                    <p class="small_txt">{{ page.data['core']['core'][0].get('competitiveness') }}</p>
+                    {% endif %}
                 </div>
                 <div class="col-md-3">
                     <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>

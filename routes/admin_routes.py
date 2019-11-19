@@ -287,6 +287,7 @@ def customer_profile_view_admin(customer_id):
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
 		view_model = CustomerDataViewModel(customer_id=customer_id, init=True, admin=True)
+		session['customer_id'] = customer_id
 		return render_template(
 			'layouts/home_layout.html',
 			owner=session['owner_logged_in'],
