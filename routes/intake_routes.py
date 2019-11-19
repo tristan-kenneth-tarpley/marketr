@@ -157,7 +157,7 @@ def company():
             session['onboarding_complete'] = True
             
 
-        return redirect(url_for('home', view='profile'))
+        return redirect(url_for('home', view='campaigns'))
 
     return ViewFuncs.view_page(user=session['user'],
                                 user_name=session['user_name'],
