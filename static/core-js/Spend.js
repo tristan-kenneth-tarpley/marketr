@@ -1,5 +1,5 @@
 export default class AdSpend {
-    constructor(type, stage, revenue, brand_strength, growth_needs, competitiveness, biz_type, biz_model){
+    constructor(type, stage, revenue, brand_strength, growth_needs, competitiveness, biz_type, biz_model, ){
         this.type = type
         this.stage = stage
         this.revenue = parseInt(revenue.replace(/\,/g, ''))
@@ -8,6 +8,8 @@ export default class AdSpend {
         this.competitiveness = competitiveness
         this.biz_type = biz_type
         this.biz_model = biz_model
+        this.actual_budget = null
+        this.custom = false
 
         this.perc_or_usd = 'perc'
 
@@ -25,6 +27,16 @@ export default class AdSpend {
                 this.mount_chart()
             })
         });
+
+        document.querySelector('#typical').addEventListener('keyup', e=>{
+            this.change_budget(e.currentTarget)
+        })
+        document.querySelectorAll('.considerations_select').forEach(el=>{
+            el.onchange = e => {
+                document.querySelector("#recalc_considerations").classList.remove('hidden')
+                this.change_considerations()
+            }
+        }) 
     }
 
     sum(arr){
@@ -38,12 +50,41 @@ export default class AdSpend {
         return this.sum(val)
     }
 
-    metrics_state(data, perc_or_usd){
-        const budget = data.budget
+    change_budget(target){
+        document.querySelector("#recalc").classList.remove("hidden")
+        document.querySelector("#recalc").addEventListener('click', e=>{
+            e.currentTarget.innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+            this.actual_budget = target.value
+            this.custom = true
+            this.get()
+        })
+        document.querySelectorAll(".viewed_budget").forEach(element => {
+            element.textContent = this.actual_budget
+        });
+    }
 
-        let budget_display = "$" + budget.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    change_considerations(target){
+        this.brand_strength = document.querySelector("#brand_strength").value
+        this.growth_needs = document.querySelector("#growth_needs").value
+        this.competitiveness = document.querySelector("#competitiveness").value
+
+        document.querySelector("#recalc_considerations").classList.remove("hidden")
+        document.querySelector("#recalc_considerations").addEventListener('click', e=>{
+            e.currentTarget.innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+            this.get()
+        })
+    }
+
+
+    metrics_state(data, perc_or_usd){
+        const budget = this.actual_budget != undefined ? parseInt(this.actual_budget) : data.budget
+        let budget_display = budget => "$" + budget.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
         document.querySelectorAll(".rec_budget").forEach(element => {
-            element.textContent = budget_display
+            element.textContent = budget_display(data.budget)
+        });
+        document.querySelectorAll(".viewed_budget").forEach(element => {
+            element.textContent = budget_display(budget)
         });
         document.querySelector("#typical").value = budget.toFixed(0)
 
@@ -89,14 +130,18 @@ export default class AdSpend {
 
         const display = value => this.perc_or_usd == 'usd' ? `$${value}` : `${value}%`
         const budget_ = data.budget
+
         let awareness_val;
         let evaluation_val;
         let conversion_val;
+        let display_length;
+        
         switch(this.perc_or_usd){
             case 'perc':
-                awareness_val = key => data.stage_detailed[0][key].spend_per_tactic/data.stage_meta.awareness
-                evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic/data.stage_meta.evaluation
-                conversion_val = key => data.stage_detailed[2][key].spend_per_tactic/data.stage_meta.conversion
+                display_length = key => Array.isArray(data.stage_detailed[key]) ? data.stage_detailed[key].length : 1
+                awareness_val = key => 1/display_length(0)*100
+                evaluation_val = key => 1/display_length(1)*100
+                conversion_val = key => 1/display_length(2)*100
                 break
             case 'usd':
                 awareness_val = key => data.stage_detailed[0][key].spend_per_tactic
@@ -213,7 +258,8 @@ export default class AdSpend {
             growth_needs: (this.growth_needs != null) ? this.growth_needs : 'medium',
             competitiveness: (this.competitiveness != null) ? this.competitiveness : 'medium',
             biz_type: this.biz_type,
-            biz_model: this.biz_model
+            biz_model: this.biz_model,
+            actual_budget: this.actual_budget
         })
         fetch('/api/spend_allocation', {
             method: 'POST',
@@ -227,6 +273,8 @@ export default class AdSpend {
                 this.data = data
                 this.mount_chart()
                 this.update_breakdown()
+                document.querySelector("#recalc").classList.add("hidden")
+                document.querySelector("#recalc_considerations").classList.add('hidden')
             })
             .catch((err)=>console.log(err))
     }

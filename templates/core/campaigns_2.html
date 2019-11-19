@@ -44,7 +44,7 @@
                 <h5><strong><span class="rec_budget"></span></strong>/month</h5>
             </div>
         </div>
-        <div style="visibility:hidden;" class="col-md-4 col-12">
+        <div class="col-md-4 col-12">
             <p class="small_txt">I typically <strong>actually</strong> spend this:</p>
             <div class="form-group">
                 <input type="number" id="typical" value="$1,500/month" class="form-control">
@@ -52,13 +52,73 @@
             </div>
             <p class="small_txt"><em>Changing this will affect the marketing mix spend below</em></p>
         </div>
-        <div class="col-md-2 col-12"></div>
+        <div class="col-md-2 col-12">
+            <button id="recalc" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+        </div>
     </div>
 </div>
 <div class="row">
     <div class="col">
         <div class="card">
-            <p class="center_it">Below is your custom <strong>marketing investment mix.</strong></p>
+            <p class="center_it">Below is your custom <strong>marketing investment mix </strong> based on a budget of <span class="viewed_budget"></span>.</p>
+            <div class="row center_it">
+                <div class="col-md-3"></div>
+                <div class="col-md-2 col-6">
+                    <p class="small_txt">Brand strength</p>
+                    {% set options = ['high', 'medium', 'low'] %}
+                    <select id="brand_strength" class="considerations_select form-control">
+                            {% if page.data['core']['core'][0].get('brand_strength') %}
+                                <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
+                                {% for option in options %}
+                                    {% if option != page.data['core']['core'][0].get('brand_strength') %}
+                                    <option>{{ option }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for option in options %}
+                                <option>{{option}}</option>
+                                {% endfor %}
+                            {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <p class="small_txt">Growth needs</p>
+                    <select id="growth_needs" class="considerations_select form-control">
+                        {% if page.data['core']['core'][0].get('growth_needs') %}
+                            <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
+                            {% for option in options %}
+                                {% if option != page.data['core']['core'][0].get('growth_needs') %}
+                                <option>{{ option }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for option in options %}
+                            <option>{{option}}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <p class="small_txt">Market Competitiveness</p>
+                    <select id="competitiveness" class="considerations_select form-control">
+                            {% if page.data['core']['core'][0].get('growth_needs') %}
+                                <option>{{ page.data['core']['core'][0].get('competitiveness') }}</option>
+                                {% for option in options %}
+                                    {% if option != page.data['core']['core'][0].get('competitiveness') %}
+                                    <option>{{ option }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for option in options %}
+                                <option>{{option}}</option>
+                                {% endfor %}
+                            {% endif %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-6 col-sm-12">
                     <canvas width="100%" height="60%" id="allocation_canvas"></canvas>
@@ -66,9 +126,8 @@
                 <div class="col-lg-6 col-sm-12">
                     <br>
                     <button class="view_perc small_txt allocation_toggle btn btn-secondary">% of total<br>monthly budget</button>
-                    <button class="view_usd small_txt allocation_toggle allocation_toggle-inactive btn">USD$</button>
+                    <button class="view_usd small_txt allocation_toggle allocation_toggle-inactive btn">USD ($)</button>
                     <div id="stage_breakdown" class="inset">
-                        
                     </div>
                 </div>
             </div>
@@ -84,51 +143,6 @@
             {% endif %}
         </div>
     </div>
-    {% if page.data['core']['core'][0].get('brand_strength') %}
-    <div class="col-lg-4 col-md-5 col-sm-12">
-        <div class="card">
-            
-        </div>
-
-            {#<div class="rec_container">
-                <div class="row">
-                    <div class="col">
-                        <p>You should increase your spend!</p>
-                    </div>
-                    <div class="col">
-                        
-                        {{ animation() }}
-                    </div>
-                </div>
-            </div>
-            <div class="rec_container">
-                
-            </div>
-            <div class="rec_container">
-                
-            </div>
-            <div class="rec_container">
-                
-            </div>#}
-        
-    </div>
-    <div class="col-lg-8 col-md-7 col-sm-12">
-        <div style="height: 100%;" class="card">
-            <div class="center_it portfolio_container">
-                <div class="row">
-                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">spend</button></div>
-                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">ctr</button></div>
-                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">cpl</div>
-                    <div class="col"><button class="active_metric btn btn-outline btn-outline-primary">clicks</button></div>
-                </div>
-                <p class="small_txt">Click on a platform to view more details</p>
-                <canvas id="portfolio_mix"></canvas>
-            </div>
-            <div class="inspect_container">
-            </div>
-        </div>  
-    </div> 
-    {% endif %}
 </div>
 
         

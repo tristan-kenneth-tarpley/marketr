@@ -48,6 +48,13 @@ class SpendAllocation:
             'conversion': .2
         }
 
+        if self.growth_needs or self.competitiveness or self.brand_strength:
+            self.update_considerations()
+
+    def update_considerations(self):
+        query = "UPDATE customer_basic SET brand_strength = ?, growth_needs = ?, competitiveness = ? WHERE id = ?"
+        db.execute(query, False, (self.brand_strength, self.growth_needs, self.competitiveness, self.customer_id), commit=True)
+
     def adjustments(self):
         adjustments = {}
         considerations = ['brand_strength', 'growth_needs', 'competitiveness']

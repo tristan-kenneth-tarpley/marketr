@@ -542,12 +542,14 @@ def rewards():
 @login_required
 def spend_allocation():
     req = request.get_json()
-    print(req)
     rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'))
     budget = rec.get()
 
+    actual_budget = req.get('actual_budget')
+    input_budget = float(actual_budget) if actual_budget else budget
+
     spend = SpendAllocation(
-        session['user'], req.get('revenue'), budget,
+        session['user'], req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
         req.get('selling_to'), req.get('biz_model')
     )
