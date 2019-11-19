@@ -35,11 +35,62 @@
 {% set ad_premium = page.data['core']['core'][0][''] %}
 {% set company_name = page.data['core']['company_name'] %}
 
+<div style="padding-bottom:1%;" class="card">
+    <div class="row row_cancel">
+        <div class="col-md-2 col-12"></div>
+        <div class="col-md-4 col-12">
+            <p><strong>Recommended Advertising Budget:</strong></p>
+            <div style="padding-top:7%;" class="card center_it negative_card">
+                <h5><strong><span class="rec_budget"></span></strong></h5>
+            </div>
+        </div>
+        <div style="visibility:hidden;" class="col-md-4 col-12">
+            <p class="small_txt">I typically <strong>actually</strong> spend this:</p>
+            <div class="form-group">
+                <input type="number" id="typical" value="$1,500/month" class="form-control">
+                <div class="form-control-border"></div>
+            </div>
+            <p class="small_txt"><em>Changing this will affect the marketing mix spend below</em></p>
+        </div>
+        <div class="col-md-2 col-12"></div>
+    </div>
+</div>
 <div class="row">
+    <div class="col">
+        <div class="card">
+            <p class="center_it">Below is your custom <strong>marketing investment mix.</strong></p>
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <canvas width="100%" height="60%" id="allocation_canvas"></canvas>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <br>
+                    <button class="view_perc small_txt allocation_toggle btn btn-secondary">% of total<br>monthly budget</button>
+                    <button class="view_usd small_txt allocation_toggle allocation_toggle-inactive btn">USD$</button>
+                    <div id="stage_breakdown" class="inset">
+                        
+                    </div>
+                </div>
+            </div>
+            {% if not page.data['core']['core'][0].get('current_plan') %}
+            <div class="row row_cancel">
+                <div class="center_it small_txt col card negative_card">
+                    <h5><strong>See how easy it can be?</strong></h5>
+                    <p>Based on your marketing spend recommendations, we suggest <span class="rec_budget"></span> spend/month across 3 campaigns.</p>
+                    <p>Let Market(r) take this off your plate.</p>
+                    <a href="/pricing" class="small_txt btn btn-secondary">Do this for me</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if page.data['core']['core'][0].get('brand_strength') %}
     <div class="col-lg-4 col-md-5 col-sm-12">
-        <div style="">
+        <div class="card">
+            
+        </div>
 
-            <div class="rec_container">
+            {#<div class="rec_container">
                 <div class="row">
                     <div class="col">
                         <p>You should increase your spend!</p>
@@ -58,8 +109,8 @@
             </div>
             <div class="rec_container">
                 
-            </div>
-        </div>
+            </div>#}
+        
     </div>
     <div class="col-lg-8 col-md-7 col-sm-12">
         <div style="height: 100%;" class="card">
@@ -77,112 +128,132 @@
             </div>
         </div>  
     </div> 
+    {% endif %}
 </div>
 
         
 <div class="row">  
-        <div class="col-lg-6 col-sm-12">                   
-            {% if current_plan %}
-            {{ section(
-                link=None,
-                title="Insights",
-                body=insights(page),
-                hash="insights",
-                admin=page.admin
-            ) }}
-            {% else %}
-            {{ section(
-                link=None,
-                title="Insights <i class='fa fa-lock'></i>",
-                body=locked(type="insights"),
-                hash="insights",
-                admin=page.admin
-            ) }}
-            {% endif %}
-        </div>
-    
-        <div class="col-lg-6 col-sm-12">
-            {% macro tactics_empty() %}
-                <div class="tactics_loading" id="loading">
-                    <div class="load-circle"><span class="one"></span></div>
-                </div>
-                <div id='tactics_mount'></div>
-            {% endmacro %}
-    
-            {{ section(
-                link=None,
-                title="Tactic of the Day",
-                body=tactics_empty(),
-                hash="tactics",
-                admin=page.admin
-            ) }}
-        </div>
-    </div> 
+    <div class="col-lg-6 col-sm-12">                   
+        {% if current_plan %}
+        {{ section(
+            link=None,
+            title="Insights",
+            body=insights(page),
+            hash="insights",
+            admin=page.admin
+        ) }}
+        {% else %}
+        {{ section(
+            link=None,
+            title="Insights <i class='fa fa-lock'></i>",
+            body=locked(type="insights"),
+            hash="insights",
+            admin=page.admin
+        ) }}
+        {% endif %}
+    </div>
+
+    <div class="col-lg-6 col-sm-12">
+        {% macro tactics_empty() %}
+            <div class="tactics_loading" id="loading">
+                <div class="load-circle"><span class="one"></span></div>
+            </div>
+            <div id='tactics_mount'></div>
+        {% endmacro %}
+
+        {{ section(
+            link=None,
+            title="Tactic of the Day",
+            body=tactics_empty(),
+            hash="tactics",
+            admin=page.admin
+        ) }}
+    </div>
+</div> 
+
+{% block js %}
+{% set base = page.data['core']['core'][0] %}
+<script type="module">
+    import AdSpend from '/static/core-js/Spend.js'
+    const spendobj = new AdSpend(
+        "{{page.data['spend_rec']['spend_rec'][0]['model']}}",
+        "{{base.get('stage')}}",
+        "{{base.get('revenue')}}",
+        "{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}",
+        "{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}",
+        "{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}",
+        "{{base.get('selling_to')}}",
+        "{{base.get('biz_model')}}"
+    )
+    spendobj.get()
+</script>
+
+{% endblock %}
 
 
 
 
-    <script>
-            $('.dl-button').on('click', e => {
+<script>
 
-                let btn = $(e.currentTarget),
-                    label = btn.find('.label'),
-                    counter = label.find('.counter');
-            
-                if(!btn.hasClass('active') && !btn.hasClass('done')) {
-            
-                    btn.addClass('active');
-            
-                    setLabel(label, label.find('.default'), label.find('.state'));
-            
-                    setTimeout(() => {
-                        counter.addClass('hide');
-                        counter.animate({
-                            width: 0
-                        }, 400, function() {
-                            label.width(label.find('.state > span').width());
-                            counter.removeAttr('style');
-                        });
-                        btn.removeClass('active').addClass('done');
-                    }, getComputedStyle(btn[0]).getPropertyValue('--duration'));
-            
-                }
-            
-                return false;
-            
+$('.dl-button').on('click', e => {
+
+    let btn = $(e.currentTarget),
+        label = btn.find('.label'),
+        counter = label.find('.counter');
+
+    if(!btn.hasClass('active') && !btn.hasClass('done')) {
+
+        btn.addClass('active');
+
+        setLabel(label, label.find('.default'), label.find('.state'));
+
+        setTimeout(() => {
+            counter.addClass('hide');
+            counter.animate({
+                width: 0
+            }, 400, function() {
+                label.width(label.find('.state > span').width());
+                counter.removeAttr('style');
             });
-            
-            $('.restart').on('click', e => {
-            
-                let btn = $('.dl-button'),
-                    label = btn.find('.label'),
-                    counter = label.find('.counter');
-            
-                setLabel(label, label.find('.state'), label.find('.default'), function() {
-                    counter.removeClass('hide');
-                    btn.removeClass('done');
-                });
-            
-                return false;
-            
-            });
-            
-            function setLabel(div, oldD, newD, callback) {
-                oldD.addClass('hide');
-                div.animate({
-                    width: newD.outerWidth()
-                }, 200, function() {
-                    oldD.removeClass('show hide');
-                    newD.addClass('show');
-                    div.removeAttr('style');
-                    if(typeof callback === 'function') {
-                        callback();
-                    }
-                });
-            }
-            
-    </script>
+            btn.removeClass('active').addClass('done');
+        }, getComputedStyle(btn[0]).getPropertyValue('--duration'));
 
+    }
+
+    return false;
+
+});
+
+$('.restart').on('click', e => {
+
+    let btn = $('.dl-button'),
+        label = btn.find('.label'),
+        counter = label.find('.counter');
+
+    setLabel(label, label.find('.state'), label.find('.default'), function() {
+        counter.removeClass('hide');
+        btn.removeClass('done');
+    });
+
+    return false;
+
+});
+
+function setLabel(div, oldD, newD, callback) {
+    oldD.addClass('hide');
+    div.animate({
+        width: newD.outerWidth()
+    }, 200, function() {
+        oldD.removeClass('show hide');
+        newD.addClass('show');
+        div.removeAttr('style');
+        if(typeof callback === 'function') {
+            callback();
+        }
+    });
+}
+        
+</script>
 
 
 

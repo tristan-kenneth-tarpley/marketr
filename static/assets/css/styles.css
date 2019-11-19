@@ -11574,3 +11574,29 @@ left: -6px;
   vertical-align: top;
 }
 
+.allocation_headers {
+  color: var(--primary);
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-left: 3%;
+  text-decoration: underline;
+}
+.allocation_tactics p {
+  margin-bottom: 0;
+}
+
+.allocation_toggle {
+  font-size: 60% !important;
+  box-shadow: var(--inset-box-shadow);
+  height: 50px !important;
+  width: 130px !important;
+  margin-bottom: 4%;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 0 !important;
+}
+.allocation_toggle-inactive {
+  box-shadow: var(--sm-box-shadow);
+  background-color: rgba(0,0,0,.3);
+  opacity: .8;
+}

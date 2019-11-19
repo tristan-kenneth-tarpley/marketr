@@ -14,6 +14,7 @@ from services.AdminService import AdminService, AdminActions, MessagingService, 
 from services.SharedService import MessagingService, TaskService, ScoreService, NotificationsService, CoreService, GoogleChatService
 from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
+from services.AdSpend import GetRec, SpendAllocation
 from services.gamify import Achievements, Credits, Rewards
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
@@ -535,6 +536,29 @@ def rewards():
             'date': str(row[1])
         })
     return json.dumps(returned)
+
+
+@app.route('/api/spend_allocation', methods=['POST'])
+@login_required
+def spend_allocation():
+    req = request.get_json()
+    print(req)
+    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'))
+    budget = rec.get()
+
+    spend = SpendAllocation(
+        session['user'], req.get('revenue'), budget,
+        req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
+        req.get('selling_to'), req.get('biz_model')
+    )
+
+    returned = {
+        'budget': budget,
+        'allocation': spend.allocation()
+    }
+    return json.dumps(returned)
+
+
 
 @app.route('/audit_request', methods=['POST'])
 def audit_request():

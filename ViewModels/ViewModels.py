@@ -410,13 +410,6 @@ class CustomerDataViewModel:
 			ctr = ''
 			clicks_per_1000 = None
 
-		spend_base = eval(core_data[14]).get('spend_rec')[0]
-		spend_rec = GetRec(
-			spend_base.get('revenue'),
-			spend_base.get('stage'),
-			spend_base.get('model')
-		)
-
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -433,7 +426,7 @@ class CustomerDataViewModel:
 			'achievements': eval(core_data[11]) if core_data[11] else None,
 			'all_tactics': eval(core_data[12]) if core_data[12] else None,
 			'rewards': eval(core_data[13]) if core_data[13] else None,
-			'spend_rec': spend_rec.get()
+			'spend_rec': eval(core_data[14] if core_data[14] else None)
 		}
 
 		self.data = return_data
