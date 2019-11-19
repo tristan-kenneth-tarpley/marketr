@@ -6,7 +6,12 @@ from app import app
 class CampaignData:
     def __init__(self):
         app.config.from_pyfile('config.cfg')
-        postgres_str = f'postgresql://{app.config['POSTGRES_USERNAME']}:{app.config['POSTGRES_PASSWORD']}@{app.config['POSTGRES_ADDRESS']}:{app.config['POSTGRES_PORT']}/{app.config['POSTGRES_DBNAME']}'
+        username = app.config['POSTGRES_USERNAME']
+        password = app.config['POSTGRES_PASSWORD']
+        address = app.config['POSTGRES_ADDRESS']
+        port = app.config['POSTGRES_PORT']
+        name = app.config['POSTGRES_DBNAME']
+        postgres_str = f'postgresql://{username}:{password}@{address}:{port}/{name}'
         self.cnx = create_engine(postgres_str)
 
     
