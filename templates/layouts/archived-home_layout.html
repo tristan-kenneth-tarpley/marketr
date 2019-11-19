@@ -8,6 +8,10 @@
 <title>Market(r) - Home</title>
 {% endblock %}
 
+{% block css %}
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+{% endblock %}
+
 {% block content %}
 
 <div class="main-panel">
@@ -48,7 +52,7 @@
 						<div class="tab-content">
 							<div class="render_tactics tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
 								{% with page=page %}
-									{% include "core/campaigns_2.html" %}
+									{% include "core/campaigns.html" %}
 								{% endwith %}
 							</div>
 							<div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -57,7 +61,7 @@
 								{% endwith %}
 							</div>
 							<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-								{% with page=page %}
+								{% with page=page, chat=chat if chat else None %}
 									{% include "core/messages.html" %}
 								{% endwith %}
 							</div>
@@ -78,3 +82,4 @@
 </div>
 
 {% endblock %}
+

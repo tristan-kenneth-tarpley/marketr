@@ -243,7 +243,7 @@ def home():
     chat = ChatService('User', session['email'], session['user'])
     chat.run()
     return render_template(
-        'layouts/home_layout_2.html',
+        'layouts/home_layout.html',
         page=view_model,
         chat=chat
     )
