@@ -285,6 +285,7 @@ class UserService:
 			# live mode
 			'plan_FfI9OI02wob7Wl': 'ab_binary',
 			'plan_FxJImVg8UME2BU':'ad_binary',
+            'plan_GDRUIQvA5OEUgK': 'ad_binary',
 			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
 			'plan_FxJJZ1sUDZ0550': 'ad_premium',
 			# test mode
@@ -294,8 +295,8 @@ class UserService:
 		}
 		if plan_table[plan_id] != 'almost_free_binary':
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1, almost_free_binary = null WHERE id = ?"
-			payments = PaymentsService('test@test.com')
-			payments.delete_subscriptions(sub_id=plan_id, customer_id=customer_id)
+			#payments = PaymentsService('test@test.com')
+			#payments.delete_subscriptions(sub_id=plan_id, customer_id=customer_id)
 		else:
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1 WHERE id = ?"
 		db.execute(query, False, (customer_id,), commit=True)

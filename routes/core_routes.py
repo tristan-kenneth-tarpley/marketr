@@ -154,6 +154,19 @@ def inspect():
     customer = service.get_plan_meta(plan_id='sub_FhE3gUPeN4xjE4') 
     return json.dumps(customer)
 
+
+@app.route('/checkout/single_campaign', methods=['GET', 'POST'])
+@login_required
+def single_campaign():
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
+    obj.single_campaign()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="ab")
+    else:
+        return redirect(url_for('single_campaign', session_id=obj.id))
+
+
+
 @app.route('/checkout/ab_testing', methods=['GET', 'POST'])
 @login_required
 def ab_checkout():
@@ -205,6 +218,7 @@ def success():
     plans = payments.get_plan()
     for plan in plans:
         gchat.new_customer(email=session['email'], customer_type=plan)
+        print(plan)
         # update db with plan id
         UserService.update_plan(session['user'], plan)
 

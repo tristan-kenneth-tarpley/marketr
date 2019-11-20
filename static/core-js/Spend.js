@@ -199,6 +199,7 @@ export default class AdSpend {
 
     mount_chart(){
         const ctx = document.querySelector('#allocation_canvas')
+        ctx.innerHTML = ""
         const data = this.metrics_state(this.data, this.perc_or_usd)
         const stage_meta = data.stage_meta
 

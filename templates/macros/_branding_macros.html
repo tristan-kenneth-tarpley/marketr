@@ -127,8 +127,52 @@
             </div>
         </div>
     {% endmacro %}
-
     <section id="price" class="section gray-bg">
+        <div class="container">
+            <!-- section title -->
+            <div class="row justify-content-center sm-m-25px-b m-45px-b">
+                <div class="col-lg-8 col-md-10">
+                    <div class="section-title text-center">
+                        <h2>Flat-Rate Pricing</h2>
+                        <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
+                        {% if not logged_in %}<a href="/new">Sign up here.</a>{%endif%}</p>
+                        <p>Only pay us if we manage your ad campaigns.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- end section title -->
+            <div class="row align-items-center">
+                <div class="col-md-3 col-lg-2 m-15px-tb">                    
+                </div>
+                <!-- price table -->
+                <div class="col-md-6 col-lg-8 m-15px-tb">
+                    <div class="price-table">
+                        <div class="pt-head">
+                            <h5><span>$</span>85/month*</h5>
+                        </div>
+                        <div class="pt-body">
+                            <h4>*per campaign.</h4>
+                            <p>Your Market(r) guide will help you figure out how many campaigns to run. Get started now with no obligation.</p>
+                            <ul class="list-type-02">
+                                <li><i class="fas fa-check"></i> Unlimited ad spend for no additional fees</li>
+                                <li><i class="fas fa-check"></i> Real-time ad spend recommendations</li>
+                                <li><i class="fas fa-check"></i> Fully-managed digital campaigns</li>
+                                <li><i class="fas fa-check"></i> Artificial Intelligence-based tools and resources</li>
+                                <li><i class="fas fa-check"></i> Daily targeted growth marketing tactics</li>
+                            </ul>
+                        </div>
+                        <div class="pt-footer">
+                            <a class="m-btn m-btn-theme m-btn-round" href="{{'/new' if not logged_in else '/checkout/single_campaign' }}">Sign Up - Free for 7 days</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- end price table -->
+                <div class="col-md-3 col-lg-2 m-15px-tb">                    
+                </div>
+            </div>
+        </div>
+    </section>
+    {#<section id="price" class="section gray-bg">
         <div class="container">
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
                 <div class="col-lg-8 col-md-8">
@@ -155,9 +199,9 @@
                     body=ab_body(),
                     footer=calculator(testing=True)
                 )}}#}
-            </div>
+            {#</div>
         </div>
-    </section>
+    </section>#}
 {% endmacro %}
 
 {% macro carousel() %}
@@ -165,31 +209,31 @@
     <p style="margin-bottom:4%;" class="m-5px-b">All it takes is to spend 10-20 minutes giving us some information, and your ads will be shown on all of the sites your customers go to.</p>
     <div class="owl-carousel" data-items="6" data-md-items="5" data-sm-items="4" data-xs-items="2" data-xx-items="2" data-space="5">
         <div class="brand-item">
-            <img class="lazy" data-src="http://logo.clearbit.com/bbcamerica.com?size=63" title="" alt="">
+            <img src="http://logo.clearbit.com/bbcamerica.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/cnn.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/cnn.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/facebook.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/facebook.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/forbes.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/forbes.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/instagram.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/instagram.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/people.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/people.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/yahoo.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/yahoo.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/msn.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/msn.com?size=63" title="" alt="">
         </div>
         <div class="brand-item">
-            <img class="lazy" data-src="//logo.clearbit.com/linkedin.com?size=63" title="" alt="">
+            <img src="//logo.clearbit.com/linkedin.com?size=63" title="" alt="">
         </div>
     </div>
 </div>
