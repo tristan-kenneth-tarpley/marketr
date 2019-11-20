@@ -501,7 +501,7 @@ export class WalletViewModel {
                 this.disable('mid')
             } else if ($this < 250) {
                 setTimeout(e=>{
-                    this.suggest_downgrade()
+                    //this.suggest_downgrade()
                 },1000)
             }
             else {

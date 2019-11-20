@@ -537,10 +537,10 @@ const PageViewController = class {
 				payments.process()
 			}
 
-			if (this.url_path.includes('settings')) {
-				let Wallet = new WalletViewModel()
-				Wallet.add_validation()
-			}
+			// if (this.url_path.includes('settings')) {
+			// 	let Wallet = new WalletViewModel()
+			// 	Wallet.add_validation()
+			// }
 						
 			switch(PageMap(this.url_path)) {
 				case 'admin':
