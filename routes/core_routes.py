@@ -16,7 +16,7 @@ from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
 from services.gamify import Achievements, Credits, Rewards
-from services.CampaignsService import GoogleORM
+# from services.CampaignsService import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
