@@ -16,7 +16,7 @@ from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
 from services.gamify import Achievements, Credits, Rewards
-from services.CampaignsService import CampaignData
+from services.CampaignsService import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -240,6 +240,9 @@ def customer_core():
 @login_required
 @onboarding_required
 def home():
+    data = GoogleORM('musicmaker')
+    print(data.campaigns())
+    # campaign.google_meta()
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
     chat = ChatService('User', session['email'], session['user'])
     chat.run()
