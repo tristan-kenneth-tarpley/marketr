@@ -240,8 +240,7 @@ def customer_core():
 @login_required
 @onboarding_required
 def home():
-    data = GoogleORM('musicmaker')
-    print(data.campaigns())
+    # data = GoogleORM('musicmaker')
     # campaign.google_meta()
     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
     chat = ChatService('User', session['email'], session['user'])
