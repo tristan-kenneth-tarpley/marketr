@@ -16,7 +16,7 @@ from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
 from services.gamify import Achievements, Credits, Rewards
-# from services.CampaignsService import GoogleORM
+from services.CampaignsService import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -218,7 +218,6 @@ def success():
     plans = payments.get_plan()
     for plan in plans:
         gchat.new_customer(email=session['email'], customer_type=plan)
-        print(plan)
         # update db with plan id
         UserService.update_plan(session['user'], plan)
 
