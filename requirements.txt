@@ -11,7 +11,6 @@ WTForms==2.2.1
 itsdangerous==0.24
 nlglib==0.2.1
 typing==3.6.2
-en_core_web_sm==2.2.5
 stripe==2.35.0
 markovify==0.7.2
 Flask_WTF==0.14.2
