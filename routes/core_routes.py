@@ -15,6 +15,7 @@ from services.SharedService import MessagingService, TaskService, ScoreService, 
 from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
+from services.tools.ad_grouper import KeywordService, AdGrouper
 from services.gamify import Achievements, Credits, Rewards
 from services.CampaignsService import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
