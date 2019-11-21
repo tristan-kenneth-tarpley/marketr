@@ -15,7 +15,7 @@ from services.SharedService import MessagingService, TaskService, ScoreService, 
 from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
-from services.tools.ad_grouper import KeywordService, AdGrouper
+from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
 from services.CampaignsService import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
@@ -602,6 +602,27 @@ def tactic_of_day():
     tasks = tasksservice.get_tasks()
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
+
+@app.route('/api/create_campaign')
+def create_campaign():
+    keywords = ["digital signage", "digital menu", "digital menu boards"]
+    market = MarketResearch()
+
+    grouper = AdGrouper(market, keywords)
+    groups = grouper.full_groups()
+    
+    for group in enumerate(groups):  
+        ad_history = market.ad_history(group[1]['group'])
+
+        if len(ad_history) > 0:
+            ad_history = ad_history[ad_history.position < 10]
+            ad_obj = CopyWriter()
+            ads = ad_obj.Google(ad_history)
+
+            if ads:
+                group[1].update(ads = [ad for ad in ads])
+
+    return json.dumps(groups)
 
 @app.route('/api/competitive_intel', methods=['GET'])
 @login_required
