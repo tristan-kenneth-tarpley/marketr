@@ -298,6 +298,32 @@ def customer_profile_view_admin(customer_id):
 	else:
 		return 'You do not have permission to view this client.'
 
+
+@app.route('/customers/<customer_id>/campaigns', methods=['GET'])
+@admin_required
+def admin_campaigns(customer_id):
+	vf = AdminViewFuncs(customer_id)
+	if vf.ValidView():
+		page = AdminViewModel(
+			session['permissions'],
+			'campaigns',
+			admin=session['admin'],
+			user=customer_id,
+			view="campaigns"
+		)
+		return render_template(
+			'layouts/admin_layout.html',
+			view="campaigns",
+			owner=session['owner_logged_in'],
+			admin=session['admin_logged_in'],
+			manager=session['manager_logged_in'],
+			page=page,
+			customer_id=customer_id
+		)
+	else:
+		return 'You do not have permission to view this client.'
+
+
 @app.route('/customers/<customer_id>/tactics', methods=['GET'])
 @admin_required
 def admin_tactics_view(customer_id):

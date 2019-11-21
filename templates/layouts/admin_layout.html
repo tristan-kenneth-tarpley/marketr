@@ -1,5 +1,6 @@
 {% extends "/layouts/layout.html" %}
-{% from "macros/_admin_macros.html" import admin_sidebar, render_page %}
+{% from "macros/_admin_macros.html" import admin_sidebar, render_page, personnel, customers, customer_level, create_form, form_modal, admin_breadcrumb, insights %}
+{% from "macros/dashboard_macros.html" import todo, messages %}
 
 
 {% block title %}
@@ -22,7 +23,7 @@
 				<div class="card root-card">
 					<style>
 						.card {
-							padding: 5%;
+							padding: 2%;
 						}
 					</style>
 
@@ -33,7 +34,7 @@
 					<div id="content-ready" style="visibility: hidden;">
 						<div class="container-fluid">
 						{% block admin_content %}
-							{% if sub %}
+
 								
 								{% with messages = get_flashed_messages() %}
 									{% if messages %}
@@ -45,16 +46,28 @@
 									{% endif %}
 								{% endwith %}
 
-								{{ render_page(
-									page,
-									form=form,
-									csv_form=csv_form,
-									ab_form=ab_form,
-									insight_form=insight_form,
-									temp_form=temp_form
-								) }}
+								{% if page.page == 'personnel' %}
+									{% with page=page %}
+										{% include 'admin_view/personnel.html' %}
+									{% endwith %}
+								{% elif page.page == 'customers' %}
+									{% with page=page %}
+										{% include 'admin_view/customers.html' %}
+									{% endwith %}
+								{% elif page.page == 'campaigns' %}
+									{% with page=page %}
+										{% include 'admin_view/campaigns.html' %}
+									{% endwith %}
+								{% elif page.page == 'acct_mgmt' %}
+									{% with page=page, csv_form=csv_form, ab_form=ab_form, temp_form=temp_form, insight_form=insight_form %}
+										{% include 'admin_view/customer_level.html' %}
+									{% endwith %}
+								{% elif page.page == 'tags' %}
+									{% with page = page, form = form %}
+										{% include "admin_view/tags.html" %}
+									{% endwith %}
+								{% endif %}
 
-							{% endif %}
 						{% endblock %}
 						</div>
 					</div>

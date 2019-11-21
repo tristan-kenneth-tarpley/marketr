@@ -151,9 +151,14 @@ class AdminViewModel:
 			"customers": self.customers,
 			"home": self.home,
 			"acct_mgmt": self.acct_mgmt,
-			"tags": self.tags
+			"tags": self.tags,
+			"campaigns": self.campaigns,
+			"None": True
 		}
 		return switcher[case]
+
+	def campaigns(self):
+		pass
 	
 	def tags(self):
 		tags = TacticService(tag_id=self.tag_id)
@@ -185,7 +190,7 @@ class AdminViewModel:
 		elif returned[4]:
 			plan = 'Ads Premium'
 		else:
-			plan = 'No Active Plan' #anchor
+			plan = 'No Active Plan'
 
 		now = UserService.now()
 		temp_data = eval(returned[5]) if returned[5] else None

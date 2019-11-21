@@ -1,0 +1,115 @@
+{% macro shell(header=None, body=None, footer=None) %}
+<div class="card">
+    <div class="card-header">
+        {{ header if header }}
+    </div>
+    <div class="card-body">
+        {{ body if body }}
+    </div>
+    <div class="card-footer">
+        {{ footer if footer }}
+    </div>
+</div>
+{% endmacro %}
+
+
+{# dashboard layout#}
+{% macro dashboard(page, csv_form=None, temp_form=temp_form, ab_form=ab_form, insight_form=None) %}
+
+
+    {{ admin_breadcrumb(page, view="dashboard") }}
+    <h4>{{ page.customer_name }}</h4>
+    <div class="row">
+        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+            <p class="small_txt">Funds remaining</p>
+            {% if page.data['customer']['funds_remaining'] %}
+            <h5>${{ page.data['customer']['funds_remaining'] }}</h5>
+            {% else %}
+            <h5>Wallet empty</h5>
+            {% endif %}
+        </div> 
+        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+            <p class="small_txt">Spend Rate</p>
+            {% if page.data['customer']['spend_rate'] %}
+            <h5>${{ page.data['customer']['spend_rate'] }}/month</h5>
+            {% else %}
+            <h5>Spend rate not set</h5>
+            {% endif %}
+        </div> 
+        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
+            <p class="small_txt">Current Plan</p>
+            <h5>{{ page.data['customer']['plan'] }}</h5>
+        </div> 
+
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">	
+            <div class="card">
+                {{ todo(page) }}
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+            <div id="talkjs-container"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">	
+            {{ insights(page, form=insight_form) }}	
+        </div>
+    </div>
+<script>
+    (function(t,a,l,k,j,s){
+        s=a.createElement('script');s.async=1;s.src="https://cdn.talkjs.com/talk.js";a.head.appendChild(s)
+        ;k=t.Promise;t.Talk={v:2,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
+        .push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
+    </script>
+    <script>
+        Talk.ready.then(function() {
+            var me = new Talk.User({
+                id: "admin-6",
+                role: "Admin",
+                name: "{{page.chat['admin_name']}}",
+                email: "{{page.chat['email']}}",
+                photoUrl: "https://marketr.life/static/branding/img/tristan.jpg",
+                welcomeMessage: "Welcome to Market(r)! Do you have any particular place in which you'd like to start your marketing journey with us?"
+            });
+            
+            window.talkSession = new Talk.Session({
+                appId: "S9ifmqxv",
+                me: me,
+                signature: "{{page.chat['hash']}}"
+            });
+
+
+            var operator = new Talk.User({
+                name: "{{page.chat['customer_name']}}",
+                id: "{{page.chat['customer_id']}}",
+                email: "{{page.chat['customer_email']}}",
+                role: "User"
+            });
+            var conversation = window.talkSession.getOrCreateConversation("marketr-{{page.chat['customer_id']}}");
+            conversation.setParticipant(me);
+            conversation.setParticipant(operator);
+            var chatbox = window.talkSession.createChatbox(conversation);
+            chatbox.mount(document.getElementById("talkjs-container"));
+        });
+    </script>
+{% endmacro %}
+
+
+
+
+{% macro intake(page) %}
+    <h1>This is the intake view.</h1>
+{% endmacro %}
+
+
+
+{# page controller #}
+{% if page.view == "dashboard" %}
+    {{ dashboard(page, csv_form=csv_form, temp_form=temp_form, ab_form=ab_form, insight_form=insight_form)}}
+{% elif page.view == "intake" %}
+    {{ intake(page) }}
+{% endif %}

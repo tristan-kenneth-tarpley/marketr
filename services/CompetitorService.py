@@ -9,7 +9,6 @@ class CompetitorService:
     def backfall(self, url):
         api_url = f'https://www.spyfu.com/apis/leads_api/get_contact_card?domain={url}&api_key={self.spyfu}'
         backfall = requests.get(api_url)
-        print(backfall)
         return backfall
 
     def intro(self, url):

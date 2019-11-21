@@ -1,0 +1,114 @@
+<table id="display" style="width:100%;" class="table table-striped">
+    <thead>
+        <tr>
+        <th style="cursor:pointer;"></th>
+        <th style="cursor:pointer;">Company Name</th>
+        <th style="cursor:pointer;">Primary Contact</th>
+        <th style="cursor:pointer;">Email</th>
+        <th style="cursor:pointer;">Account Mgr.</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for row in page.data %}
+                {% set data = page.data %}
+            <tr>
+                {% set id = data[row]['customer_id'] %}
+                {% set primary_contact = data[row]['name'] %}
+                {% set email = data[row]['email'] %}
+                {% set company_name = data[row]['company_name'] %}
+                {% set account_rep = data[row]['mgr'] %}
+                {% set admin_id = data[row]['admin_id'] %}
+                
+
+                <td style="color: white;text-transform: uppercase;font-weight:bold;">
+                    {% if page.permission_level == 'owner' %}
+                        <button type="button" class="btn btn-icon btn-round btn-primary" id="account_reps" data-toggle="modal" data-target="#customer_info_{{id}}">
+                            <i class="now-ui-icons users_single-02"></i>
+                        </button>
+
+                        <div class="modal fade" id="customer_info_{{id}}" tabindex="-1" role="dialog" aria-labelledby="customer_info_{{id}}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="color:var(--body-copy);">
+                                        <h6>{{ company_name }} reps</h6>
+                                        <div class="separator"></div>
+                                        <ul id="current_reps">
+                                        </ul>
+                                        <form action="/customers/{{id}}/add_rep" method="POST">
+                                            <div class="row">
+                                                
+                                                <div class="col-lg-2"></div>
+                                                <div class="col-lg-8 col-md-8 col-sm-12">
+                                                    <p class="text-danger">FRAGILE: only submit if you are making changes.</p>
+                                                    <p class="text-danger">If you do submit, make sure to select acct. manager.</p>
+                                                    <h6 class="center_it">Select Acct. Mgr.</h6>
+                                                    {% for i in range(page.admins | length) %}
+                                                        <div class="form-group">
+                                                            <input  name="account_mgr"
+                                                                    type="radio"
+                                                                    value="{{page.admins[i]['id']}}">
+                                                            <label for="account_mgr">{{page.admins[i]['name']}}</label>
+                                                        </div>
+                                                    {% endfor %}
+
+                                                    <div class="separator"></div>
+
+                                                    <h6 class="center_it">Who else do you want on the account?</h6>
+
+                                                    {% for i in range(page.admins | length) %}
+                                                        <div class="form-group">
+                                                            <input  value="{{page.admins[i]['id']}}"
+                                                                    name="add_admin[{{loop.index-1}}]"
+                                                                    type="checkbox">
+
+                                                            <label for="test">{{page.admins[i]['name']}}</label>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="col-lg-2"></div>
+                                            </div>
+                                            <div style="text-align:center;" class="container">
+                                                <input type="submit" value="add" class="btn btn-primary">
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </td>
+                <td><a href="/customers/{{id}}">{{ company_name }}</a></td>
+                <td>{{ primary_contact }}</td>
+                <td>{{ email }}</td>
+                <td>{{ account_rep if account_rep | not_none else "" }}</td>
+            </tr>
+        {% endfor %}
+        
+    </tbody>
+    </table>
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" defer></script>
+    <script>
+
+    $(document).ready( function () {
+        $('#display').DataTable({
+        "order": [[ 0, "asc" ]]
+        });
+
+        $(".dataTables_filter input").addClass("form-control")
+        $(".dataTables_filter input").unwrap()
+        $(".dataTables_filter input").parent().addClass("searcher")
+        $(".dataTables_filter input").attr("placeholder", "Type company name...");
+        $('.searcher').contents().eq(0).remove()
+        $(".searcher").addClass("input-group")
+        $(".searcher").addClass("no-border")
+        $(".searcher").append("<div class='input-group-append'><div class='input-group-text'><i class='now-ui-icons ui-1_zoom-bold'></i></div></div>")
+
+    } );
+    </script>

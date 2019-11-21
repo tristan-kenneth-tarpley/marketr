@@ -5,5 +5,5 @@ helpers/__pycache__/
 main.py
 routes/__pycache__/
 analysis/integrations
-services/CampaignsService.ipynb
+*.ipynb
 *.cfg
