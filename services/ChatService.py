@@ -27,7 +27,6 @@ class ChatService:
 
     def auth(self):
         user_id = self.user_id if self.type == 'User' else f"admin-{self.user_id}"
-        print(user_id)
         userID = bytes(user_id, 'utf-8')
         secret = bytes('sk_live_as2RRYrVsNz8buYoKNSu8v8v', 'utf-8')
         hash = hmac.new(secret, userID, hashlib.sha256)

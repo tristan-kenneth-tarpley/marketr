@@ -122,3 +122,22 @@ function updateURLParameter(url, param, paramVal)
     var rows_txt = temp + "" + param + "=" + paramVal;
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
+
+
+
+function el(elemName, props, ...children) {
+    const elem = document.createElement(elemName);
+    if (props) {
+        Object.assign(elem, props);
+    }
+    if (children) {
+        children.forEach(child => {
+        if (typeof child === 'object') {
+            elem.appendChild(child);
+        } else {
+            elem.appendChild(document.createTextNode(child));
+        }
+        });
+    }
+    return elem;
+}
