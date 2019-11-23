@@ -90,6 +90,7 @@ async function prep_first(customer_id){
     }
 
     let personas = await get_personas()
+    console.log(personas)
     let products = await get_products()
 
     for (let i in personas){
