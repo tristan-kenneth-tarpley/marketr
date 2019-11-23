@@ -556,11 +556,14 @@ const PageViewController = class {
 					view_model.tasks()
 					view_model.messages()
 					view_model.dashboard()
+					view_model.dashboard()
+					
 					break
 				case 'audit':
 					view_model.tasks()
 					view_model.messages()
 					view_model.dashboard()
+					
 					const audit = new AuditViewModel()
 					break
 				case 'pricing':

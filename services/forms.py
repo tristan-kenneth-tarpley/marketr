@@ -359,3 +359,8 @@ class TempData(FlaskForm):
     facebook = BooleanField('facebook')
     bing = BooleanField('bing')
     capterra = BooleanField('capterra')
+
+class AccountForm(FlaskForm):
+    facebook_id = StringField('facebook_id')
+    google_id = StringField('google_id')
+    twitter_id = StringField('twitter_id')

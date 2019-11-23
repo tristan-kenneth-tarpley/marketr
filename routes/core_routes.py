@@ -390,6 +390,24 @@ def audit(url):
 
 # api
 # core actions
+@app.route('/api/products', methods=['GET'])
+def get_personas():
+    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    query = "select name from product_list where customer_id = ? and name is not null"
+    data, cursor = db.execute(query, True, (customer_id,))
+    data = cursor.fetchall()
+    returned = [{'product_name': row[0]} for row in data]
+    return json.dumps(returned)
+
+@app.route('/api/personas', methods=['GET'])
+def get_products():
+    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    query = "SELECT persona_name, audience_id from audience WHERE persona_name is not null and customer_id = ?"
+    data, cursor = db.execute(query, True, (customer_id,))
+    data = cursor.fetchall()
+    returned = [{'persona_name': row[0], 'audience_id': row[1]} for row in data]
+    return json.dumps(returned)
+
 @app.route('/api/remove_product', methods=['POST'])
 @admin_required
 @account_rep_required
@@ -603,9 +621,10 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
-@app.route('/api/create_campaign')
+@app.route('/api/create_campaign', methods=['POST'])
 def create_campaign():
-    keywords = ["digital signage", "digital menu", "digital menu boards"]
+    req = request.get_json()
+    keywords = req.get('keywords')
     market = MarketResearch()
 
     grouper = AdGrouper(market, keywords)

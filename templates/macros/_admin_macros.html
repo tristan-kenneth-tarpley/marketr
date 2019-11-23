@@ -307,3 +307,27 @@
 </div>
 {% endmacro %}
 
+{% macro auth_form(page, account_form) %}
+<form method="POST" action="{{url_for('admin_campaigns', customer_id=page.user)}}">
+	{{ account_form.csrf_token }}
+	<div class="row">
+		<div class="col">
+			<label>Facebook ads id:</label>
+			{{ account_form.facebook_id(class_="form-control", value=page.accounts.get('facebook_id') if page.accounts.get('facebook_id') else '' ) }}
+		</div>
+
+		<div class="col">
+			<label>Google ads id:</label>
+			{{ account_form.google_id(class_="form-control", value=page.accounts.get('google_id') if page.accounts.get('google_id') else '' ) }}
+		</div>
+
+		<div class="col">
+			<label>Twitter ads id:</label>
+			{{ account_form.twitter_id(class_="form-control", value=page.accounts.get('twitter_id') if page.accounts.get('twitter_id') else '' ) }}
+		</div>
+		<div class="col">
+			<input type="submit" class="btn btn-primary" value="update">
+		</div>
+	</div>
+</form>
+{% endmacro %}

@@ -279,6 +279,10 @@ class UserService:
 		else:
 			return 'Current password does not match records'
 
+	def update_id(facebook_id=None, google_id=None, twitter_id=None, customer_id=None):
+		query = "UPDATE customer_basic SET facebook_id = ?, google_id = ?, twitter_id = ? where id = ?"
+		db.execute(query, False, (facebook_id, google_id, twitter_id, customer_id), commit=True)
+
 		
 	def update_plan(customer_id, plan_id):
 		plan_table = {

@@ -1,11 +1,61 @@
+{% from "macros/_admin_macros.html" import auth_form %}
+
 {{ admin_breadcrumb(page, view="campaigns") }}
 
-<div id="root"></div>
-<social-stats name='twitter' oldnum='107' newnum='120' target='1000' colour='#1f78b4'></social-stats>
-<social-stats name='facebook' oldnum='238' newnum='250' target='500' colour='#33a02c'></social-stats>
-<social-stats name='instagram' oldnum='9000' newnum='7000' target='10000' colour='#fb9a99'></social-stats>
-<social-stats name='reddit' oldnum='4' newnum='8' target='10' colour='#FF00FF'></social-stats>
+<div style="padding-top: 0;" id="accordion" role="tablist" aria-multiselectable="true" class="card-collapse">
+    <div class="card-header" role="tab" id="headingOne">
+        <a data-toggle="collapse" class="btn btn-neutral" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Ad Account IDs
+        <i class="now-ui-icons arrows-1_minimal-down"></i>
+        </a>
+    </div>
+    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div class="card-body">
+            {{ auth_form(page, account_form) }}
+        </div>
+    </div>
+</div>
+
+<div id="root">
+    <div class="row">
+        <div class="col">
+            <a class="campaign_controller" id="new_campaign" href="#">
+                <div class="hover_box">
+                    <div class="center_it" style="margin: auto;padding: 5% 2%;">
+                        <thead><strong>Create new campaign</strong></thead>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a class="campaign_controller" id="existing" href="#">
+                <div class="hover_box">
+                    <div class="center_it" style="margin: auto;padding: 5%;">
+                        <thead><strong>Analyze existing campaigns</strong></thead>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="hidden views" id="existing_view">
+    existing
+</div>
+
+<div class="hidden views" id="new">
+    <campaign-creator customer-id="{{page.user}}"></campaign-creator>
+</div>
+
+
 
 {% block js %}
-<script src="/static/core-js/components/account_auth.js" type="module"></script>
+<script type="module">
+    //import {CampaignInitial} from '/static/core-js/components/campaign-initial.js'
+    import CampaignCreator from '/static/core-js/components/campaign_creator.js'
+    import CampaignViewModel from '/static/core-js/CampaignViewModel.js'
+
+    const vm = new CampaignViewModel()
+    vm.run()
+</script>
 {% endblock %}

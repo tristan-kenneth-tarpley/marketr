@@ -125,7 +125,7 @@ function updateURLParameter(url, param, paramVal)
 
 
 
-function el(elemName, props, ...children) {
+function html(elemName, props, ...children) {
     const elem = document.createElement(elemName);
     if (props) {
         Object.assign(elem, props);
@@ -141,3 +141,15 @@ function el(elemName, props, ...children) {
     }
     return elem;
 }
+
+const setQueryString = (name, value) => {
+	const params = new URLSearchParams(location.search);
+	params.set(name, value);
+	window.history.replaceState({}, "", decodeURIComponent(`${location.pathname}?${params}`));
+}
+
+const params = () => new URLSearchParams(location.search);
+
+// Create a new event
+const query_change = new CustomEvent('query_change');
+

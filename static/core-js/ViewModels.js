@@ -176,7 +176,10 @@ export class CoreViewModels {
         });
         
         $(window).on('hashchange', () => {
-            change_nav_active()
+            let param = params()
+            if (!param.has('campaign_view')){
+                change_nav_active()    
+            }
         });
         
         $(window).on('load', e => {

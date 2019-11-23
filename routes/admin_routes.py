@@ -9,6 +9,7 @@ import services.helpers as helpers
 from services.LoginHandlers import admin_required, owner_required, manager_required, account_rep_required
 from services.AdminService import TempDataService, AdminService, AdminActions, MessagingService, AdminUserService, TacticService
 from services.ChatService import ChatService
+from services.UserService import UserService
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, AdminViewFuncs, AdAuditViewModel
 from analysis.campaigns.ad_audit import ad_audit
 import hashlib
@@ -299,11 +300,21 @@ def customer_profile_view_admin(customer_id):
 		return 'You do not have permission to view this client.'
 
 
-@app.route('/customers/<customer_id>/campaigns', methods=['GET'])
+@app.route('/customers/<customer_id>/campaigns', methods=['GET', 'POST'])
 @admin_required
 def admin_campaigns(customer_id):
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
+		account_form = forms.AccountForm()
+		
+		if request.method == 'POST' and account_form.validate_on_submit():
+			UserService.update_id(
+				facebook_id=account_form.facebook_id.data,
+				google_id=account_form.google_id.data,
+				twitter_id=account_form.twitter_id.data,
+				customer_id=customer_id
+			)
+
 		page = AdminViewModel(
 			session['permissions'],
 			'campaigns',
@@ -318,7 +329,8 @@ def admin_campaigns(customer_id):
 			admin=session['admin_logged_in'],
 			manager=session['manager_logged_in'],
 			page=page,
-			customer_id=customer_id
+			customer_id=customer_id,
+			account_form = account_form
 		)
 	else:
 		return 'You do not have permission to view this client.'

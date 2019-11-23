@@ -158,7 +158,14 @@ class AdminViewModel:
 		return switcher[case]
 
 	def campaigns(self):
-		pass
+		query = "select facebook_id, google_id, twitter_id from customer_basic where id = ?"
+		data, cursor = db.execute(query, True, (self.user,))
+		data = cursor.fetchone()
+		self.accounts = {
+			'facebook_id': data[0],
+			'google_id': data[1],
+			'twitter_id': data[2]
+		}
 	
 	def tags(self):
 		tags = TacticService(tag_id=self.tag_id)

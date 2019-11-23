@@ -55,7 +55,7 @@
 										{% include 'admin_view/customers.html' %}
 									{% endwith %}
 								{% elif page.page == 'campaigns' %}
-									{% with page=page %}
+									{% with page=page, account_form=account_form %}
 										{% include 'admin_view/campaigns.html' %}
 									{% endwith %}
 								{% elif page.page == 'acct_mgmt' %}
