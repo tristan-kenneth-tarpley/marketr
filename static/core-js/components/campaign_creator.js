@@ -78,11 +78,10 @@ async function prep_first(customer_id){
     async function get_personas(id=customer_id){
         const personas = await fetch(`/api/personas?customer_id=${id}`)
         const personas_json = await personas.json()
-
+        console.log(personas_json)
         return personas_json
     }
 
-    const new_el = await get_personas()
     async function get_products(id=customer_id){
         const products = await fetch(`/api/products?customer_id=${id}`)
         const products_json = await products.json()
@@ -90,7 +89,6 @@ async function prep_first(customer_id){
     }
 
     let personas = await get_personas()
-    console.log(personas)
     let products = await get_products()
 
     for (let i in personas){
