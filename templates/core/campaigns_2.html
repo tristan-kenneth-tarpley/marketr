@@ -200,7 +200,7 @@
 {% block js %}
 {% set base = page.data['core']['core'][0] %}
 <script type="module">
-    import AdSpend from '/static/core-js/Spend.js'
+    import AdSpend from '/static/src/Spend.js'
     const spendobj = new AdSpend(
         "{{page.data['spend_rec']['spend_rec'][0]['model']}}",
         "{{base.get('stage')}}",

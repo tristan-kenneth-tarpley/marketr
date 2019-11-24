@@ -13,8 +13,6 @@ $.fn.digits = function(){
     })
 }
 
-const print = copy => console.log(copy)
-
 const smilesMapper = (name) => {
 	let path = "/static/assets/img/"
 	let map = {
@@ -33,47 +31,6 @@ const smilesMapper = (name) => {
 	return url
 }
 
-const PageMap = (route) => {
-	const map = {
-		"/begin": "begin",
-		"/competitors": "competitors",
-		"/competitors/company": "company",
-		"/competitors/company/audience": "audience",
-		"/competitors/company/audience/product": "product",
-		"/competitors/company/audience/product/product_2": "product_2",
-		"/competitors/company/audience/product/product_2/salescycle": "salescycle",
-		"/goals": "goals",
-		"/history": "history",
-		"/history/platforms": "platforms",
-		"/history/platforms/past": "past",
-		// done with intake routes
-		"/home": "home",
-		"/customers": "customers",
-		"/admin": "admin",
-		"/personnel": "personnel",
-		"/new": "new",
-		"/create": "create",
-		"/payments": "payments",
-		"/pricing": "pricing",
-		'/': 'index',
-		'/home/settings': 'settings'
-	}
-
-	function hasNumber(myString) {
-		return /\d/.test(myString);
-	}
-	
-	if (route.substring(0, 10) == "/customers" && hasNumber(route)){
-		if (route.substring(27) == '/ad_audit' && hasNumber(route)) {
-			return 'audit'
-		} else {
-			return 'customers'
-		}
-	}
-	else {
-		return map[route]
-	}
-}
 
 const isNumber = input => typeof input == 'number'
 
