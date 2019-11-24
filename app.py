@@ -19,6 +19,7 @@ from routes.branding_routes import *
 from routes.intake_routes import *
 from routes.admin_routes import *
 from routes.core_routes import *
+from routes.api_routes import *
 from services.filters import *
 
 @app.errorhandler(404)
