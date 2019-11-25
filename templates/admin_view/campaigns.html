@@ -40,7 +40,7 @@
 </div>
 
 <div class="hidden views" id="existing_view">
-    existing
+    <campaign-analyzer customer-id="{{page.user}}"></campaign-analyzer>
 </div>
 
 <div class="hidden views" id="new">
@@ -53,6 +53,7 @@
 <script type="module">
     //import {CampaignInitial} from '/static/src/components/campaign-initial.js'
     import CampaignCreator from '/static/src/components/campaign_creator.js'
+    import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
     import CampaignViewModel from '/static/src/CampaignViewModel.js'
 
     const vm = new CampaignViewModel()

@@ -5,6 +5,7 @@ const styles = () => {
       `
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
         .accordion-toggle {
             display: block;
           }
@@ -16,7 +17,6 @@ const styles = () => {
         .accordion-content.acc-active {
             display: block;
         }
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
       `
     );
 }
@@ -63,7 +63,7 @@ async function prep_first(customer_id){
         </div>
         <div class="row">
             <div class="col-lg-6 col-12">
-                <p>Give us a few (2-5) keyword or keyword phrases separated by a commas to get started.</p>
+                <p>Give us a few (2-5) keyword or keyword phrases separated by a comma to get started.</p>
             </div>
             <div class="col-lg-6 col-12">
                 <textarea id="keywords" rows="6" class="form-control"></textarea>
@@ -124,11 +124,11 @@ const prep_second = keywords => {
                 <div class="ad-group-group">
                 <hr>
                     <p>
-                        <a style="color:#62cde0;" href="#content-${keywords[i].group.replace(" ", "_")}" class="accordion-toggle">${keywords[i].group}</a>
-                        <button id="${keywords[i].group.replace(" ", "_")}" class="btn btn-outline btn-outline-primary remove">remove</button>
+                        <a style="color:#62cde0;" href="#content-${keywords[i].group.replace(/ /g, '_')}" class="accordion-toggle">${keywords[i].group}</a>
+                        <button id="${keywords[i].group.replace(/ /g, '_')}" class="btn btn-outline btn-outline-primary remove">remove</button>
                     </p>
-                    <div class="accordion-content" id="content-${keywords[i].group.replace(" ", "_")}">
-                        <table style="text-align:center;" class="table table-striped">
+                    <div class="accordion-content" id="content-${keywords[i].group.replace(/ /g, '_')}">
+                        <table id="${keywords[i].group.replace(/ /g, '_')}-table" style="text-align:center;" class="table table-striped">
                             <thead>
                                 <th style="font-size:80%;">Include?</th>
                                 <th style="font-size:80%;">Keyword</th>
@@ -144,17 +144,17 @@ const prep_second = keywords => {
                             <tbody>
                         ${Object.keys(keywords[i].keywords).map((x) => {
                              return `
-                                <tr style="text-align:center;">
-                                <td><input type="checkbox" class="form-control"></td>
-                                <td>${keywords[i].keywords[x].keyword}</td>
-                                <td>${keywords[i].keywords[x].advertisers}</td>
-                                <td>${keywords[i].keywords[x].costperday}</td>       
-                                <td>${keywords[i].keywords[x].broad_cpc}</td>
-                                <td><input type="checkbox" class="form-control"></td>
-                                <td>${keywords[i].keywords[x].phrase_cpc}</td>
-                                <td><input type="checkbox" class="form-control"></td>
-                                <td>${keywords[i].keywords[x].exact_cpc}</td>
-                                <td><input type="checkbox" class="form-control"></td>
+                                <tr id="${keywords[i].keywords[x].keyword.replace(/ /g, '_')}" style="text-align:center;">
+                                    <td><input type="checkbox" data-ad_group="${keywords[i].group.replace(/ /g, '_')}" class="include form-control" value="${keywords[i].keywords[x].keyword.replace(/ /g, '_')}"></td>
+                                    <td>${keywords[i].keywords[x].keyword}</td>
+                                    <td>${keywords[i].keywords[x].advertisers}</td>
+                                    <td>${keywords[i].keywords[x].costperday}</td>       
+                                    <td>${keywords[i].keywords[x].broad_cpc}</td>
+                                    <td><input type="checkbox" class="broad form-control"></td>
+                                    <td>${keywords[i].keywords[x].phrase_cpc}</td>
+                                    <td><input type="checkbox" class="phrase form-control"></td>
+                                    <td>${keywords[i].keywords[x].exact_cpc}</td>
+                                    <td><input type="checkbox" class="exact form-control"></td>
                                 </tr>
                              `.trim()
                         }).join('')}
@@ -165,9 +165,65 @@ const prep_second = keywords => {
                 </div>` : returned = ''
                 return returned
             }).join('')}
+            <button id="format" class="btn btn-primary format">Continue</button>
         </div>
     </div>
     `.trim()
+}
+
+const formatting_template = recs => {
+    let printed = []
+    const _print = (group, _printed=printed) => {
+        let returned = !_printed.includes(group) ? `ad group: ${group}` : ``
+        _printed.push(group)
+        return returned
+    }
+    /*html */
+    return `
+    ${Object.keys(recs).map(rec=>{
+        /*html*/
+        let returned = `
+        <p><strong>${_print(recs[rec].ad_group)}</strong></p>
+        <div class="row">
+            <div class="col-lg-6 col-12">
+                <div class="inset">
+                ${recs[rec].meta.match_types.map(met=>{ 
+                    let _returned = ""
+                    switch(met){
+                        case 'broad':
+                            _returned += "<p>+" + recs[rec].meta.keyword.replace(/ /g, ' +') + "</p>"
+                        break
+                        case 'exact':
+                            _returned += "<p>[" + recs[rec].meta.keyword + ']</p>'
+                        break
+                        case 'phrase':
+                            _returned += '<p>"' + recs[rec].meta.keyword + '"</p>'
+                        break
+                        default:
+                            _returned += '<p>' + recs[rec].meta.keyword + '</p>'
+                        break
+                    }
+                    return _returned
+                }).join('')}
+                </div>
+            </div>
+            <div class="col-lg-6 col-12">
+                <p><strong>Ad possibilities</strong></p>
+                <div class="inset">
+                    ${recs[rec].meta.ads.map(ad=>{
+                        return `
+                        <div class="google_ad_preview_container">
+                            <h5 class="small_txt">${ad.headline}</h5>
+                            <p class="small_txt website"><span>ad</span> www.example.com</p>
+                            <p class="small_txt">${ad.body}</p>
+                        </div>
+                        `.trim()
+                    }).join('')}
+                </div>
+            </div>
+        </div>`
+        return returned
+    }).join('')}`.trim()
 }
 
 
@@ -185,7 +241,8 @@ export default class CampaignCreator extends HTMLElement {
             brand_or_product: "",
             persona: "",
             stage: "",
-            recs: []
+            recs: [],
+            accepted_recs: []
         }
 
         this.css = styles()
@@ -236,15 +293,91 @@ export default class CampaignCreator extends HTMLElement {
         el.querySelectorAll(".remove").forEach(el=>{
             el.addEventListener('click', e=>{
                 const id = e.currentTarget.getAttribute('id')
-                const new_state = this.state.recs.filter(rec => rec.group != id.replace("_", " "));
+                const new_state = this.state.recs.filter(rec => rec.group != id.replace(/_/g, ' '));
                 this.state.recs = [...new_state]
                 this.edit_res(this.state.recs)
             })
+        })
+        el.querySelectorAll('.include').forEach(el_=>{
+            el_.addEventListener('change', e=>{
+                const keyword = e.currentTarget.value.replace(/_/g, ' ')
+                const table = el.querySelector(`#${e.currentTarget.dataset.ad_group}-table`)
+                const tr = table.querySelector(`#${e.currentTarget.value}`)
+                const phrase = tr.querySelector(`.phrase`)
+                const broad = tr.querySelector(`.broad`)
+                const exact = tr.querySelector(`.exact`)
+                if (e.target.checked) {
+                    const ad_group = e.currentTarget.dataset.ad_group.replace(/_/g, ' ')
+                    const packet = {
+                        ad_group,
+                        meta: {
+                            keyword, match_types: [],
+                            ads: (this.state.recs.filter(rec=>rec.group == ad_group))[0].ads
+                        }
+                    }
+                    console.log(packet)
+                    let mt = packet.meta.match_types
+
+                    const add_mt = (e, type, iterable=mt) => {
+                        if(e.target.checked){
+                            if (!iterable.includes(type)){
+                                iterable.push(type)
+                            }
+                        } else {
+                            for(let i = 0; i < iterable.length; i++){ 
+                                if (iterable[i] === type) {
+                                    iterable.splice(i, 1); 
+                                }
+                            }
+                        }
+                    }
+
+                    phrase.addEventListener('click', e=>add_mt(e, 'phrase'))
+                    broad.addEventListener('click', e=>add_mt(e, 'broad'))
+                    exact.addEventListener('click', e=>add_mt(e, 'exact'))
+
+                    this.state.accepted_recs.push(packet)
+                } else {
+                    const removed = this.state.accepted_recs.filter(_keyword => _keyword.keyword != keyword)
+                    this.state.accepted_recs = [...removed]
+                }
+            })
+        })
+        el.querySelector('#format').addEventListener('click', e=>{
+            this.formatting()
         })
 
 
         this.shadow.appendChild(this.css);
         this.shadow.appendChild(el)
+    }
+
+    formatting(){
+        this.shadow.innerHTML = ""
+        const template = formatting_template(this.state.accepted_recs)
+        const el = document.createElement('div')
+        el.innerHTML = template
+        this.shadow.appendChild(this.css);
+        this.shadow.appendChild(el)  
+    }
+
+    inspect(index){
+        const dataset = this.filter_dataset(index)
+        const el = this.platform_chart(dataset)
+        this.mix_container.style.display = 'none'
+        document.querySelector('.inspect_container').style.display = 'block'
+        document.querySelector('.inspect_container').innerHTML = el
+        document.querySelector('#nav_up').addEventListener('click', e=>this.home(this.metric))
+
+        const others = document.querySelectorAll('.sum_list')
+
+        others.forEach(el => {
+            el.addEventListener('click', e=>{
+                const platform = e.currentTarget.textContent
+                let index = this.campaign_data.findIndex(ind => ind.platform == platform)
+                this.inspect(index)
+            })
+        });
     }
 
     connectedCallback() {

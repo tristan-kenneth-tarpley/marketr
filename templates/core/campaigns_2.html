@@ -59,61 +59,19 @@
 </div>
 <div class="row">
     <div class="col">
-        <div class="card">
-            <p class="center_it">Below is your custom <strong>marketing investment mix </strong> based on a budget of <span class="viewed_budget"></span>.</p>
-            <div class="row center_it">
-                <div class="col-md-3"></div>
-                <div class="col-md-2 col-6">
-                    <p class="small_txt">Brand<br>Strength</p>
-                    {% set options = ['high', 'medium', 'low'] %}
-                    {% if not page.admin %}
-                        <select id="brand_strength" class="considerations_select form-control">
-                                {% if page.data['core']['core'][0].get('brand_strength') %}
-                                    <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
-                                    {% for option in options %}
-                                        {% if option != page.data['core']['core'][0].get('brand_strength') %}
-                                        <option>{{ option }}</option>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% else %}
-                                    {% for option in options %}
-                                    <option>{{option}}</option>
-                                    {% endfor %}
-                                {% endif %}
-                        </select>
-                    {% else %}
-                        <p class="small_txt">{{ page.data['core']['core'][0].get('brand_strength') }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-2 col-6">
-                    <p class="small_txt">Growth<br>Needs</p>
-                    {% if not page.admin %}
-                        <select id="growth_needs" class="considerations_select form-control">
-                            {% if page.data['core']['core'][0].get('growth_needs') %}
-                                <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
+        {% macro spend_allocation(page) %}
+        <p class="center_it">Below is your custom <strong>marketing investment mix </strong> based on a budget of <span class="viewed_budget"></span>.</p>
+        <div class="row center_it">
+            <div class="col-md-3"></div>
+            <div class="col-md-2 col-6">
+                <p class="small_txt">Brand<br>Strength</p>
+                {% set options = ['high', 'medium', 'low'] %}
+                {% if not page.admin %}
+                    <select id="brand_strength" class="considerations_select form-control">
+                            {% if page.data['core']['core'][0].get('brand_strength') %}
+                                <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
                                 {% for option in options %}
-                                    {% if option != page.data['core']['core'][0].get('growth_needs') %}
-                                    <option>{{ option }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                {% for option in options %}
-                                <option>{{option}}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
-                    {% else %}
-                        <p class="small_txt">{{ page.data['core']['core'][0].get('growth_needs') }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-2 col-6">
-                    <p class="small_txt">Market<br>Competitiveness</p>
-                    {% if not page.admin %}
-                    <select id="competitiveness" class="considerations_select form-control">
-                            {% if page.data['core']['core'][0].get('growth_needs') %}
-                                <option>{{ page.data['core']['core'][0].get('competitiveness') }}</option>
-                                {% for option in options %}
-                                    {% if option != page.data['core']['core'][0].get('competitiveness') %}
+                                    {% if option != page.data['core']['core'][0].get('brand_strength') %}
                                     <option>{{ option }}</option>
                                     {% endif %}
                                 {% endfor %}
@@ -123,40 +81,103 @@
                                 {% endfor %}
                             {% endif %}
                     </select>
-                    {% else %}
-                    <p class="small_txt">{{ page.data['core']['core'][0].get('competitiveness') }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-3">
-                    <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
-                </div>
+                {% else %}
+                    <p class="small_txt">{{ page.data['core']['core'][0].get('brand_strength') }}</p>
+                {% endif %}
             </div>
-            <div class="row">
-                <div class="col-lg-6 col-sm-12">
-                    <canvas width="100%" height="60%" id="allocation_canvas"></canvas>
-                </div>
-                <div class="col-lg-6 col-sm-12">
-                    <br>
-                    <button class="view_perc small_txt allocation_toggle btn btn-secondary">% of total<br>monthly budget</button>
-                    <button class="view_usd small_txt allocation_toggle allocation_toggle-inactive btn">USD ($)</button>
-                    <div id="stage_breakdown" class="inset">
-                    </div>
-                </div>
+            <div class="col-md-2 col-6">
+                <p class="small_txt">Growth<br>Needs</p>
+                {% if not page.admin %}
+                    <select id="growth_needs" class="considerations_select form-control">
+                        {% if page.data['core']['core'][0].get('growth_needs') %}
+                            <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
+                            {% for option in options %}
+                                {% if option != page.data['core']['core'][0].get('growth_needs') %}
+                                <option>{{ option }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for option in options %}
+                            <option>{{option}}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                {% else %}
+                    <p class="small_txt">{{ page.data['core']['core'][0].get('growth_needs') }}</p>
+                {% endif %}
             </div>
-            {% if not page.data['core']['core'][0].get('current_plan') %}
-            <div class="row row_cancel">
-                <div class="center_it small_txt col card negative_card">
-                    <h5><strong>See how easy it can be?</strong></h5>
-                    <p>Based on your marketing spend recommendations, we suggest <span class="rec_budget"></span> spend/month across 3 campaigns.</p>
-                    <p>Let Market(r) take this off your plate.</p>
-                    <a href="/pricing" class="small_txt btn btn-primary">Do this for me</a>
-                </div>
+            <div class="col-md-2 col-6">
+                <p class="small_txt">Market<br>Competitiveness</p>
+                {% if not page.admin %}
+                <select id="competitiveness" class="considerations_select form-control">
+                        {% if page.data['core']['core'][0].get('growth_needs') %}
+                            <option>{{ page.data['core']['core'][0].get('competitiveness') }}</option>
+                            {% for option in options %}
+                                {% if option != page.data['core']['core'][0].get('competitiveness') %}
+                                <option>{{ option }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {% for option in options %}
+                            <option>{{option}}</option>
+                            {% endfor %}
+                        {% endif %}
+                </select>
+                {% else %}
+                <p class="small_txt">{{ page.data['core']['core'][0].get('competitiveness') }}</p>
+                {% endif %}
             </div>
-            {% endif %}
+            <div class="col-md-3">
+                <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+            </div>
         </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <canvas width="100%" height="60%" id="allocation_canvas"></canvas>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <br>
+                <button class="view_perc small_txt allocation_toggle btn btn-secondary">% of total<br>monthly budget</button>
+                <button class="view_usd small_txt allocation_toggle allocation_toggle-inactive btn">USD ($)</button>
+                <div id="stage_breakdown" class="inset">
+                </div>
+            </div>
+        </div>
+        {% if not page.data['core']['core'][0].get('current_plan') %}
+        <div class="row row_cancel">
+            <div class="center_it small_txt col card negative_card">
+                <h5><strong>See how easy it can be?</strong></h5>
+                <p>Based on your marketing spend recommendations, we suggest <span class="rec_budget"></span> spend/month across 3 campaigns.</p>
+                <p>Let Market(r) take this off your plate.</p>
+                <a href="/pricing" class="small_txt btn btn-primary">Do this for me</a>
+            </div>
+        </div>
+        {% endif %}
+        {% endmacro %}
+        {{ section(
+            link=None,
+            title="Ad spend recommendation",
+            body=spend_allocation(page),
+            hash="Allocation",
+            admin=page.admin
+        ) }}
     </div>
 </div>
 
+{% if page.data['core']['core'][0]['current_plan'] and page.data['core']['core'][0]['id'] == 200 %}
+<div class="row">
+    <div class="col">
+        {% macro campaign_perf(page) %}<campaign-analyzer customer-id="{{page.data['core']['core'][0]['id']}}"></campaign-analyzer>{% endmacro %}
+        {{ section(
+            link=None,
+            title="Campaign Performance",
+            body=campaign_perf(page),
+            hash="Campaigns",
+            admin=page.admin
+        ) }}
+    </div>
+</div>
+{% endif %}
         
 <div class="row">  
     <div class="col-lg-6 col-sm-12">                   
@@ -197,90 +218,26 @@
     </div>
 </div> 
 
+
 {% block js %}
-{% set base = page.data['core']['core'][0] %}
-<script type="module">
-    import AdSpend from '/static/src/Spend.js'
-    const spendobj = new AdSpend(
-        "{{page.data['spend_rec']['spend_rec'][0]['model']}}",
-        "{{base.get('stage')}}",
-        "{{base.get('revenue')}}",
-        "{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}",
-        "{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}",
-        "{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}",
-        "{{base.get('selling_to')}}",
-        "{{base.get('biz_model')}}"
-    )
-    spendobj.get()
-</script>
+    <script type="module">
+        import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
+        import AdSpend from '/static/src/Spend.js'
 
+        {% set base = page.data['core']['core'][0] %}
+        const spendobj = new AdSpend(
+            "{{page.data['spend_rec']['spend_rec'][0]['model']}}",
+            "{{base.get('stage')}}",
+            "{{base.get('revenue')}}",
+            "{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}",
+            "{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}",
+            "{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}",
+            "{{base.get('selling_to')}}",
+            "{{base.get('biz_model')}}"
+        )
+        spendobj.get()
+    </script>
 {% endblock %}
-
-
-
-
-<script>
-
-$('.dl-button').on('click', e => {
-
-    let btn = $(e.currentTarget),
-        label = btn.find('.label'),
-        counter = label.find('.counter');
-
-    if(!btn.hasClass('active') && !btn.hasClass('done')) {
-
-        btn.addClass('active');
-
-        setLabel(label, label.find('.default'), label.find('.state'));
-
-        setTimeout(() => {
-            counter.addClass('hide');
-            counter.animate({
-                width: 0
-            }, 400, function() {
-                label.width(label.find('.state > span').width());
-                counter.removeAttr('style');
-            });
-            btn.removeClass('active').addClass('done');
-        }, getComputedStyle(btn[0]).getPropertyValue('--duration'));
-
-    }
-
-    return false;
-
-});
-
-$('.restart').on('click', e => {
-
-    let btn = $('.dl-button'),
-        label = btn.find('.label'),
-        counter = label.find('.counter');
-
-    setLabel(label, label.find('.state'), label.find('.default'), function() {
-        counter.removeClass('hide');
-        btn.removeClass('done');
-    });
-
-    return false;
-
-});
-
-function setLabel(div, oldD, newD, callback) {
-    oldD.addClass('hide');
-    div.animate({
-        width: newD.outerWidth()
-    }, 200, function() {
-        oldD.removeClass('show hide');
-        newD.addClass('show');
-        div.removeAttr('style');
-        if(typeof callback === 'function') {
-            callback();
-        }
-    });
-}
-        
-</script>
-
 
 
 

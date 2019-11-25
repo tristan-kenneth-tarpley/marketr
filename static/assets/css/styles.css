@@ -1249,6 +1249,9 @@ textarea.form-control {
   width: 200%;
   resize: none;
   border-bottom: 3px solid rgba(0,0,0,.3);
+  border-left: none;
+  border-top: none;
+  border-right: none;
   box-shadow: var(--sm-box-shadow);
   border-radius: 5px 5px 0 0;
   line-height: 2; }

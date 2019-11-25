@@ -35,12 +35,6 @@ export default class Portfolio {
             }
         ]
 
-        this.ctx = document.querySelector('#portfolio_mix')
-        this.mix_container = document.querySelector('.portfolio_container')
-        this.metric = 'spend'
-        if (this.mix_container != null){
-            this.home(this.metric)
-        }
     }
 
     home(metric=this.metric){
@@ -223,9 +217,5 @@ export default class Portfolio {
 }
 
 
-export class Spend {
-    constructor(){
 
-    }
-    
-}
+
