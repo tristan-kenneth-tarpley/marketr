@@ -64,7 +64,7 @@
             <div class="row center_it">
                 <div class="col-md-3"></div>
                 <div class="col-md-2 col-6">
-                    <p class="small_txt">Brand strength</p>
+                    <p class="small_txt">Brand<br>Strength</p>
                     {% set options = ['high', 'medium', 'low'] %}
                     {% if not page.admin %}
                         <select id="brand_strength" class="considerations_select form-control">
@@ -86,7 +86,7 @@
                     {% endif %}
                 </div>
                 <div class="col-md-2 col-6">
-                    <p class="small_txt">Growth needs</p>
+                    <p class="small_txt">Growth<br>Needs</p>
                     {% if not page.admin %}
                         <select id="growth_needs" class="considerations_select form-control">
                             {% if page.data['core']['core'][0].get('growth_needs') %}
@@ -107,7 +107,7 @@
                     {% endif %}
                 </div>
                 <div class="col-md-2 col-6">
-                    <p class="small_txt">Market Competitiveness</p>
+                    <p class="small_txt">Market<br>Competitiveness</p>
                     {% if not page.admin %}
                     <select id="competitiveness" class="considerations_select form-control">
                             {% if page.data['core']['core'][0].get('growth_needs') %}

@@ -237,6 +237,10 @@ def spend_allocation():
     return json.dumps(returned)
 
 
+
+#views
+
+
 @app.route('/api/tactic_of_day', methods=['GET'])
 @login_required
 def tactic_of_day():
@@ -247,6 +251,18 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
+@app.route('/api/competitive_intel', methods=['GET'])
+@login_required
+def get_competitors():
+    service = CompetitorService()
+    vm = CompetitorViewModel(customer_id=session['user'])
+    struct = vm.get(service)
+    return render_template('core/competitors.html', core=struct)
+
+
+
+
+#tools 
 @app.route('/api/create_campaign', methods=['POST'])
 def create_campaign():
     req = request.get_json()
@@ -268,11 +284,3 @@ def create_campaign():
                 group[1].update(ads = [ad for ad in ads])
 
     return json.dumps(groups)
-
-@app.route('/api/competitive_intel', methods=['GET'])
-@login_required
-def get_competitors():
-    service = CompetitorService()
-    vm = CompetitorViewModel(customer_id=session['user'])
-    struct = vm.get(service)
-    return render_template('core/competitors.html', core=struct)
