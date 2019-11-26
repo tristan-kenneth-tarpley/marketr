@@ -235,7 +235,6 @@ export default class CampaignCreator extends HTMLElement {
     }
     constructor() {
         super();
-        console.log('called')
         this.shadow = this.attachShadow({ mode: 'open' });
         this.customer_id = this.getAttribute('customer-id')
         this.state = {

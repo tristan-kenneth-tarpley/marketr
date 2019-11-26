@@ -5109,7 +5109,10 @@ ul#product {
   border-radius: none !important;
   text-transform: capitalize;
   background-color: transparent !important;
-  border: 2px solid transparent !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: 2px solid transparent !important;
   font-weight: 500;
   color: rgba(0,0,0,.2) !important;
   font-size: 90%;
