@@ -165,7 +165,7 @@ export default class CampaignAnalyzer extends HTMLElement {
     }    
 
     home(metric=this.metric){
-
+        this.ctx.innerHTML = ""
         const inspector = this.shadow.querySelector('.inspect_container')
         const active_metric = this.shadow.querySelectorAll('.active_metric')
         active_metric.forEach(el=>{
