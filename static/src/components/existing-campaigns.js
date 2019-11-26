@@ -125,32 +125,32 @@ export default class CampaignAnalyzer extends HTMLElement {
                 platform: 'facebook',
                 cpl: 24,
 	            spend: 2050,
-	            clicks: 2.34,
-	            ctr: 2.59,
+	            clicks: 1708,
+	            ctr: 3.98,
 	            rpc: 'coming soon'
             },
             {
                 platform: 'pinterest',
-                cpl: 300,
+                cpl: 18,
 	            spend: 200,
-	            clicks: 2.34,
-	            ctr: 2.59,
+	            clicks: 222,
+	            ctr: 2.23,
 	            rpc: 'coming soon'
             },
             {
                 platform: 'twitter',
-                cpl: 3500,
+                cpl: 25,
 	            spend: 590,
-	            clicks: 2.34,
-	            ctr: 2.59,
+	            clicks: 472,
+	            ctr: 1.59,
 	            rpc: 'coming soon'
             },
             {
                 platform: 'google ads',
-                cpl: 930,
+                cpl: 29,
 	            spend: 590,
-	            clicks: 2.34,
-	            ctr: 2.59,
+	            clicks: 406,
+	            ctr: 5.59,
 	            rpc: 'coming soon'
             }
         ]
