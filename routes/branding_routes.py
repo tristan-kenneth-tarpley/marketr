@@ -14,7 +14,9 @@ def index():
 @app.route('/blog')
 def blog():
 	blog = Blog()
-	return render_template('branding/blog.html', posts=blog.all_stories())
+	posts = blog.all_stories()
+	#return str(posts)
+	return render_template('branding/blog.html', posts=posts)
 
 @app.route('/blog/<slug>')
 def article(slug):
