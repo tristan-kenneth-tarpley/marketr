@@ -9,7 +9,7 @@ class Blog:
 
     def single_story(self, slug):
         url = f"{self.endpoint}/posts/{slug}"
-        querystring = {"token":self.key, "version": "published"}
+        querystring = {"token":self.key, "version": "published", "cv": "1"}
         return self.fetch(url, querystring)
 
     def all_stories(self):
