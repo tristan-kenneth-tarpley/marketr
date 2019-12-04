@@ -9,6 +9,18 @@ class Achievements:
     def __init__(self, customer_id=None):
         self.customer_id = customer_id
 
+    def count_unclaimed(self):
+        query = "select * from raw_achievements(?)"
+        data, cursor = db.execute(query, True, (self.customer_id,))
+        data = cursor.fetchall()
+        count = 0
+        for row in data:
+            cid = row[4]
+            claimed = row[5]
+            if cid and not claimed:
+                count += 1
+        return count
+
     def history(self):
         query = "select * from achievement_state(?)"
         data, cursor = db.execute(query, True, (self.customer_id,))
@@ -32,7 +44,6 @@ class Achievements:
         db.execute(query, False, tup, commit=True)
 
     def acknowledge(self, achievement_id = None):
-
         query = "UPDATE achievement_log SET claimed = 1 WHERE achievement_id = ? and customer_id = ?"
         db.execute(query, False, (achievement_id, self.customer_id), commit=True)
 

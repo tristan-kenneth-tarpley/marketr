@@ -238,6 +238,12 @@ def spend_allocation():
 
 
 
+@app.route('/api/unclaimed_achievements', methods=['GET'])
+@login_required
+def get_achievements():
+    ach = Achievements(customer_id=session['user'])
+    return json.dumps(ach.count_unclaimed())
+
 #views
 
 
@@ -258,6 +264,7 @@ def get_competitors():
     vm = CompetitorViewModel(customer_id=session['user'])
     struct = vm.get(service)
     return render_template('core/competitors.html', core=struct)
+
 
 
 

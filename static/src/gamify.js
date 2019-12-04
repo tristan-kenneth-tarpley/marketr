@@ -119,14 +119,24 @@ export class Achievements {
     }
 
     render_unclaimed(){
-        const unclaimed = document.querySelectorAll('.claim_credits').length
-        const ach_note = document.querySelector('.ach_note')
-        if (unclaimed > 0){
-            ach_note.textContent = unclaimed
-            ach_note.style.display = 'inline-block'
-        } else {
-            ach_note.style.display = 'none'
-        }
+        fetch('/api/unclaimed_achievements')
+            .then(res=>res.json())
+            .then(unclaimed=>{
+                let ach_note = document.querySelectorAll('.ach_note')
+                if (unclaimed > 0){
+                    ach_note.forEach(el=>{
+                        el.textContent = unclaimed
+                        el.style.display = 'inline-block'
+                    })
+                } else {
+                    ach_note.forEach(el=>{
+                        el.style.display = 'none'
+                    })
+                }
+            })
+            .catch(e=>{
+                console.log(e)
+            })
     }
 
     poll(){
