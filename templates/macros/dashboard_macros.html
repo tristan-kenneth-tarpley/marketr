@@ -254,7 +254,7 @@
                 <div class="carousel-item {{'active' if loop.index-1 == 0 else ''}}">
                     <p style="margin-bottom: 0;"><strong>{{ loop.index }} of {{ page.data['insights']['insights'] | length }}</strong></p>
                     <p class="small_txt">{{ insight['time'] }}</p>
-                    <p>{{ insight['body'] }}</p>
+                    <p class="insight_body">{{ insight['body'] }}</p>
                 </div>
             {% endfor %}
         </div>

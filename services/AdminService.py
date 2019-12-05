@@ -8,6 +8,7 @@ from passlib.hash import sha256_crypt
 from bleach import clean
 from flask_mail import Mail, Message
 from services.UserService import UserService, encrypt_password
+from services.NotificationsService import NotificationsService
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 from typing import Any, TypeVar, AnyStr, Optional, overload, Union, Tuple, List
 from services.SharedService import MessagingService, TaskService
@@ -181,7 +182,9 @@ class AdminActions(object):
                 else:
                     print(rep_query)
     
-    def send_insight(self, insight, admin_id=None):
+    def send_insight(self, insight, customer_id=None, admin_id=None):
+        note = NotificationsService(customer_id)
+        note.Insight(insight)
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         query = """

@@ -118,21 +118,25 @@ export class CoreViewModels {
         
         $('.results_img').each(function(){
             var val = parseInt($(this).text())
-            if (val == 2){
-                $(this).html('<img class="smilesHome" src="/static/assets/img/frown.png">')
-            } else if (val == 3){
-                $(this).html('<img class="smilesHome" src="/static/assets/img/neutral.png">')
-            } else if (val == 4){
-                $(this).html('<img class="smilesHome" src="/static/assets/img/smile.png">')
-            } else if (val == 5){
-                $(this).html('<img class="smilesHome" src="/static/assets/img/grin.png">')
+            if (!isNaN(val)){
+                if (val == 2){
+                    $(this).html('<img class="smilesHome" src="/static/assets/img/frown.png">')
+                } else if (val == 3){
+                    $(this).html('<img class="smilesHome" src="/static/assets/img/neutral.png">')
+                } else if (val == 4){
+                    $(this).html('<img class="smilesHome" src="/static/assets/img/smile.png">')
+                } else if (val == 5){
+                    $(this).html('<img class="smilesHome" src="/static/assets/img/grin.png">')
+                }
             }
         })
         
         $(".platform_img").each(function(){
             var platform = $(this).text().replace(/^\s+/g, '').replace(/\s+$/g, '');
-            var img = smilesMapper(platform)
-            $(this).html(`<img class="smilesHome" src='${img}'>`)
+            if (platform){
+                var img = smilesMapper(platform)
+                $(this).html(`<img class="smilesHome" src='${img}'>`)
+            }
         })
         
         $('.meter').each(function(){

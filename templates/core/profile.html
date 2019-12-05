@@ -487,6 +487,7 @@
 
 		{% for index in page.data['platforms']['platforms'] %}
 			{% set state = index %}
+			{% if state['platform_name'] != 'none' %}
 			<div class="row">
 				<div class="col-1"></div>
 				<div class="col-3">
@@ -511,9 +512,11 @@
 					<p class="platform_status text-danger small_txt"><strong>INACTIVE</strong></p>
 				</div>
 				{% endif %}
-				
-			</div>
-			{% if loop.index != page.data['platforms']['platforms'] | length %}<hr style="width:90%;">{% endif %}
+
+				</div>
+				{% if loop.index != page.data['platforms']['platforms'] | length %}<hr style="width:90%;">{% endif %}
+			{% endif %}
+			
 		{% endfor %}
 	{% endif %}
 	{% if core['history_freeform'] %}

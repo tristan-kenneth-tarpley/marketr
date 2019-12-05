@@ -114,6 +114,18 @@ class NotificationsService:
             message=message
         )
 
+    def Insight(self, insight):
+        query = "SELECT email FROM customer_basic WHERE id = ?"
+        data, cursor = db.execute(query, True, (self.customer_id,))
+        data = cursor.fetchone()
+        mailman = EmailService(to=data[0])
+        subject = "You have a new insight in Market(r)!"
+        message = "Login here to view the message: https://marketr.life/home?view=campaigns"
+
+        mailman.send(
+            subject=subject,
+            message=message
+        )
     
     def onboarding_started(self):
         tristan = EmailService(to='tristan@marketr.life')

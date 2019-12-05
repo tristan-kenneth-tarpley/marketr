@@ -205,7 +205,6 @@ def acct_mgmt(customer_id):
 	insight_form = forms.InsightForm()
 	temp_form = forms.TempData()
 
-		
 
 	vf = AdminViewFuncs(customer_id)
 	if vf.ValidView():
@@ -223,7 +222,7 @@ def acct_mgmt(customer_id):
 
 			elif request.form['submit_button'] == 'submit insight' and insight_form.validate_on_submit():
 				service = AdminActions(customer_id, session['admin'])
-				service.send_insight(insight_form.body.data)
+				service.send_insight(insight_form.body.data, customer_id=customer_id)
 				return redirect(url_for('acct_mgmt', customer_id=customer_id))
 
 			elif request.form['submit_button'] == 'submit ab test' and ab_form.validate_on_submit():
