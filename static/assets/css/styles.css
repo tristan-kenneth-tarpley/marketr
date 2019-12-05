@@ -1242,6 +1242,19 @@ label {
 .input-group-btn:last-child > .btn {
   margin-left: 0; }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.annotation {
+  color: var(--primary) !important;
+  background: none;
+  border: none;
+  box-shadow: none;
+  text-decoration: underline;
+  cursor:pointer;
+}
 textarea.form-control {
   max-width: 100%;
   max-height: 80px;
@@ -11592,17 +11605,27 @@ left: -6px;
 }
 
 .allocation_toggle {
-  font-size: 60% !important;
-  box-shadow: var(--inset-box-shadow);
+  font-size: 100% !important;
+  box-shadow: var(--sm-box-shadow);
   height: 50px !important;
-  width: 130px !important;
+  width: 90px !important;
   margin-bottom: 4%;
   margin-left: 0;
   margin-right: 0;
-  border-radius: 0 !important;
+}
+.allocation_toggle:nth-of-type(1){
+  border-radius: 100px 0 0 100px;
+}
+.allocation_toggle:nth-of-type(2){
+  border-radius: 0 100px 100px 0;
+  margin-left: -1%;
 }
 .allocation_toggle-inactive {
-  box-shadow: var(--sm-box-shadow);
-  background-color: rgba(0,0,0,.3);
+  box-shadow: var(--inset-box-shadow);
+  background-color: white;
+  color: rgba(0,0,0,.3);
+  border: 1px solid rgba(0,0,0,.3);
   opacity: .8;
 }
+
+
