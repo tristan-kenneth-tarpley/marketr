@@ -4,6 +4,7 @@ export class PaymentsService {
         let url_string = window.location.href,
             url = new URL(url_string)
         this.session_id = url.searchParams.get("session_id");
+        this.quantity = url.searchParams.get('quantity')
 
         $("#checkout").click(e=>{
             this.process()

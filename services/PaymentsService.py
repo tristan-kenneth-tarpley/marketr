@@ -116,14 +116,15 @@ class PaymentsService:
         return session
             # Fulfill the purchase...
 
-    def single_campaign(self):
+    def single_campaign(self, quantity=1):
         stripe.api_key = self.sk
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_GDRUIQvA5OEUgK'
+                    'plan': 'plan_GDRUIQvA5OEUgK',
+                    'quantity': quantity
                 }],
             },
             success_url = self.success_url,
@@ -170,7 +171,7 @@ class PaymentsService:
             customer=self.customer_id,
             subscription_data={
                 'items': [{
-                'plan': 'plan_FxJImVg8UME2BU'
+                    'plan': 'plan_FxJImVg8UME2BU'
                 }],
             },
             success_url = self.success_url,

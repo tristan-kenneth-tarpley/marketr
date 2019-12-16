@@ -146,7 +146,8 @@ def pricing():
     return render_template(
 		'branding/pricing.html',
 		logged_in = True if session.get('logged_in') == True else False,
-		home=True
+		home=True,
+        quantity = request.args.get('quantity') if request.args.get('quantity') else 1
 	)
 
 @app.route('/inspect')
@@ -160,11 +161,13 @@ def inspect():
 @login_required
 def single_campaign():
     obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
-    obj.single_campaign()
+    quantity = request.args.get('quantity') if request.args.get('quantity') else 1
+    obj.single_campaign(quantity=quantity)
+
     if request.args.get('session_id'):
         return render_template('core/checkout.html', plan="ab")
     else:
-        return redirect(url_for('single_campaign', session_id=obj.id))
+        return redirect(url_for('single_campaign', session_id=obj.id, quantity=quantity))
 
 
 

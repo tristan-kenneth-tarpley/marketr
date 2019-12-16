@@ -1,4 +1,4 @@
-{% macro pricing(logged_in, settings_view=False) %}
+{% macro pricing(logged_in, settings_view=False, quantity=1) %}
     {% macro feature(copy) %}
         <li><i class="fas fa-check"></i> {{copy | safe}}</li>
     {% endmacro %}
@@ -162,7 +162,7 @@
                             </ul>
                         </div>
                         <div class="pt-footer">
-                            <a class="m-btn m-btn-theme m-btn-round" href="{{'/new' if not logged_in else '/checkout/single_campaign' }}">Sign Up - Free for 30 days</a>
+                            <a class="m-btn m-btn-theme m-btn-round" href="{{'/new' if not logged_in else url_for('single_campaign', quantity=quantity) }}">Sign Up - Free for 30 days</a>
                         </div>
                     </div>
                 </div>

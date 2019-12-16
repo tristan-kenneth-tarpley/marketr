@@ -136,8 +136,9 @@ export default class AdSpend {
                     }
                 }
                 break
-        }
+        } 
         let data_ = {
+            num_campaigns: awareness_ref.length + evaluation_ref.length + conversion_ref.length,
             budget: budget,
             stage_meta: stage_meta,
             stage_detailed: [
@@ -148,12 +149,18 @@ export default class AdSpend {
         return data_
     }
 
+    update_cta(total){
+        document.querySelectorAll('.campaign_cta').forEach(el=>el.setAttribute('href', `/pricing?quantity=${total}`))
+        document.querySelectorAll('.num_campaigns').forEach(el=>el.textContent = total)
+    }
+
     update_breakdown(){
         const data = this.metrics_state(this.data, this.perc_or_usd)
         const target = document.querySelector('#stage_breakdown')
 
         const display = value => this.perc_or_usd == 'usd' ? `$${value}` : `${value}%`
-        const budget_ = data.budget
+        const budget_ = data.budget 
+        this.update_cta(data.num_campaigns)
 
         let awareness_val;
         let evaluation_val;
