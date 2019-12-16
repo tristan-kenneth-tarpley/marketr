@@ -53,14 +53,23 @@ export default class AdSpend {
     change_budget(target){
         document.querySelector("#recalc").classList.remove("hidden")
         document.querySelector("#recalc").addEventListener('click', e=>{
-            e.currentTarget.innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
-            this.actual_budget = target.value
+            e.stopImmediatePropagation()
             this.custom = true
+            this.actual_budget = target.value
             this.get()
+            this.toggle_button(e.currentTarget)
         })
         document.querySelectorAll(".viewed_budget").forEach(element => {
             element.textContent = this.actual_budget
         });
+    }
+
+    toggle_button(target){
+        const $this = target
+        $this.innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+        setTimeout((target=$this) => {
+            target.innerHTML = `recalculate`
+        }, 3000);
     }
 
     change_considerations(target){
@@ -70,7 +79,7 @@ export default class AdSpend {
 
         document.querySelector("#recalc_considerations").classList.remove("hidden")
         document.querySelector("#recalc_considerations").addEventListener('click', e=>{
-            e.currentTarget.innerHTML = `<i class="fa fa-spinner fa-spin"></i>`
+            this.toggle_button(e.currentTarget)
             this.get()
         })
     }
@@ -100,16 +109,31 @@ export default class AdSpend {
         switch(perc_or_usd){
             case 'perc':
                 stage_meta = {
-                    awareness: (awareness/budget * 100).toFixed(2),
-                    evaluation: (evaluation / budget * 100).toFixed(2),
-                    conversion: (conversion / budget * 100).toFixed(2)
+                    awareness: {
+                        perc: (awareness / budget * 100).toFixed(2),
+                        total: awareness
+                    },
+                    evaluation:  {
+                        perc: (evaluation / budget * 100).toFixed(2),
+                        total: evaluation
+                    },
+                    conversion:  {
+                        perc: (conversion / budget * 100).toFixed(2),
+                        total: conversion
+                    },
                 }
                 break
             case 'usd':
                 stage_meta = {
-                    awareness: awareness,
-                    evaluation: evaluation,
-                    conversion: conversion
+                    awareness: {
+                        total: awareness
+                    },
+                    evaluation: {
+                        total: evaluation
+                    },
+                    conversion: {
+                        total: conversion
+                    }
                 }
                 break
         }
@@ -134,16 +158,19 @@ export default class AdSpend {
         let awareness_val;
         let evaluation_val;
         let conversion_val;
-        let display_length;
+        let stage_budget;
+        let stage;
         
         switch(this.perc_or_usd){
             case 'perc':
-                display_length = key => Array.isArray(data.stage_detailed[key]) ? data.stage_detailed[key].length : 1
-                awareness_val = key => 1/display_length(0)*100
-                evaluation_val = key => 1/display_length(1)*100
-                conversion_val = key => 1/display_length(2)*100
+                stage_budget = key => parseInt(data.stage_meta[key].total)
+                stage = key => (stage_budget(key) / budget_ * 100).toFixed(0)
+                awareness_val = key => data.stage_detailed[0][key].spend_per_tactic / stage_budget('awareness') * 100
+                evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic / stage_budget('evaluation') * 100
+                conversion_val = key => data.stage_detailed[2][key].spend_per_tactic / stage_budget('conversion') * 100
                 break
             case 'usd':
+                stage = key => data.stage_meta[key].total
                 awareness_val = key => data.stage_detailed[0][key].spend_per_tactic
                 evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic
                 conversion_val = key => data.stage_detailed[2][key].spend_per_tactic
@@ -151,7 +178,7 @@ export default class AdSpend {
         }
         /*html*/
         const el = `
-            <p>${display(data.stage_meta.awareness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">awareness</span></p>
+            <p>${display(stage('awareness')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">awareness</span></p>
             <div class="row inset">
                 <div class="col small_txt allocation_tactics awareness_tactics">
                     ${Object.keys(data.stage_detailed[0]).map(key=>{
@@ -165,7 +192,7 @@ export default class AdSpend {
                         }).join("")}
                 </div>
             </div>
-            <p>${display(data.stage_meta.evaluation).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">evaluation</span></p>
+            <p>${display(stage('evaluation')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">evaluation</span></p>
             <div class="row inset">
                 <div class="col small_txt allocation_tactics evaluation_tactics">
                     ${Object.keys(data.stage_detailed[1]).map(key=>{
@@ -179,7 +206,7 @@ export default class AdSpend {
                         }).join("")}
                 </div>
             </div>
-            <p>${display(data.stage_meta.conversion).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">conversion</span></p>
+            <p>${display(stage('conversion')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">conversion</span></p>
             <div class="row inset">
                 <div class="col small_txt allocation_tactics awareness_tactics">
                     ${Object.keys(data.stage_detailed[2]).map(key=>{
@@ -199,10 +226,9 @@ export default class AdSpend {
 
     mount_chart(){
         const ctx = document.querySelector('#allocation_canvas')
-        ctx.innerHTML = ""
+        ctx.innerHTML = ''
         const data = this.metrics_state(this.data, this.perc_or_usd)
         const stage_meta = data.stage_meta
-
 
         const chart_data = {
             labels: ["Awareness", "Evaluation", "Conversion"],
@@ -210,7 +236,7 @@ export default class AdSpend {
                 label: "Ad Spend (USD)",
                 backgroundColor: ["#01d4b4", "#ff9c00","#62cde0","#699fa1","#a5d6d9"],
                 data: [
-                    stage_meta.awareness, stage_meta.evaluation, stage_meta.conversion
+                    stage_meta.awareness.total, stage_meta.evaluation.total, stage_meta.conversion.total
                 ],
                 responsive:true
             }]
@@ -272,6 +298,8 @@ export default class AdSpend {
             .then((res) => res.json())
             .then((data) => {
                 this.data = data
+            })
+            .then(()=>{
                 this.mount_chart()
                 this.update_breakdown()
                 document.querySelector("#recalc").classList.add("hidden")
