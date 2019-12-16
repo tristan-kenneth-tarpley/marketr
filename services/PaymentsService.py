@@ -126,6 +126,7 @@ class PaymentsService:
                     'plan': 'plan_GDRUIQvA5OEUgK',
                     'quantity': quantity
                 }],
+                'trial_from_plan': True
             },
             success_url = self.success_url,
             cancel_url = self.cancel_url
