@@ -1,6 +1,7 @@
 import Competitors from './competitors.js';
 import Tactics from './tactics.js';
 import Portfolio from './campaigns.js';
+import cta from './campaign_cta.js';
 import {Achievements, Store, Rewards} from './gamify.js'
 import {IntakeProgressMeter, CoreViewModels, AuditRequest, PriceViewModel, AuditViewModel, WalletViewModel} from './ViewModels.js'
 import {PaymentsService} from './services.js'
@@ -176,6 +177,8 @@ const Controller = class {
 				case 'pricing':
 				case 'index':
 				case 'settings':
+					const _cta = new cta()
+					_cta.init()
 					const pricing = new PriceViewModel()
 					pricing.init()
 					const audit_request = new AuditRequest()

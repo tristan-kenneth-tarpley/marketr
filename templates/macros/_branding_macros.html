@@ -148,11 +148,9 @@
                 <div class="col-md-6 col-lg-8 m-15px-tb">
                     <div class="price-table">
                         <div class="pt-head">
-                            <h5><span>$</span>85/month*</h5>
+                            <h5><span>$</span>85/month/campaign</h5>
                         </div>
                         <div class="pt-body">
-                            <h4>*per campaign.</h4>
-                            <p>Your Market(r) guide will help you figure out how many campaigns to run. Get started now with no obligation.</p>
                             <ul class="list-type-02">
                                 <li><i class="fas fa-check"></i> Unlimited ad spend for no additional fees</li>
                                 <li><i class="fas fa-check"></i> Real-time ad spend recommendations</li>
@@ -161,8 +159,29 @@
                                 <li><i class="fas fa-check"></i> Daily targeted growth marketing tactics</li>
                             </ul>
                         </div>
+                        <hr>
+                        <div class="row">
+                            <br>
+                            <div class="col">
+                                <h4>Total you pay us: $<span id="cost"></span>/month*</h4>
+                                <p>This doesn't include your advertising spend. That goes straight to where you're advertising.</p>
+                            </div>
+                            <div class="col">
+                                
+                                <div class="input-group">
+                                    <input min="1" pattern="[0-9]" type="number" class="form-control" id="quantity" value="{{quantity}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">campaigns</span>
+                                    </div>
+                                </div>
+                                <p>This is based on what our AI tells us you need to spend in order to achieve the results you desire. You can always change it now, or later, though.</p>
+                            </div>
+                            <br>
+                        </div>
                         <div class="pt-footer">
-                            <a class="m-btn m-btn-theme m-btn-round" href="{{'/new' if not logged_in else url_for('single_campaign', quantity=quantity) }}">Sign Up - Free for 30 days</a>
+                            <a id="cta" class="m-btn m-btn-theme m-btn-round" href="{{'/new' if not logged_in else url_for('single_campaign', quantity=quantity) }}">Sign Up - Free for 30 days</a>
+                            <br><p>You won't be charged until <span id="charge_date"></span> and you can cancel any time before that.</p>
+                            <p>We hate those silly games that companies play just as much as you do.</p>
                         </div>
                     </div>
                 </div>
