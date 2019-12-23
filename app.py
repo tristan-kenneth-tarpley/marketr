@@ -11,6 +11,9 @@ from functools import wraps
 
 app = Flask(__name__)
 
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('error.html', first=5, second=0,third=0), 500
 # from helpers.UserService import *
 # from helpers.ViewModels import *
 # from helpers.LoginHandlers import *
@@ -25,10 +28,6 @@ from services.filters import *
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', first=4, second=0,third=4), 404
-
-@app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('error.html', first=5, second=0,third=0), 500
 
 if __name__ == '__main__':
 	app.config.from_pyfile('config.cfg')

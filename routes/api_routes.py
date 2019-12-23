@@ -17,7 +17,7 @@ from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
 from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
-from services.CampaignsService import GoogleORM
+from services.BigQuery import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -32,10 +32,10 @@ import datetime
 @app.route('/api/products', methods=['GET'])
 def get_personas():
     customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
-    query = "select name from product_list where customer_id = ? and name is not null"
+    query = "select name, p_id from product_list where customer_id = ? and name is not null"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
-    returned = [{'product_name': row[0]} for row in data]
+    returned = [{'product_name': row[0], 'p_id': row[1]} for row in data]
     return json.dumps(returned)
 
 @app.route('/api/personas', methods=['GET'])

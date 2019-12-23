@@ -56,7 +56,7 @@ class ad_audit:
                     },
                     False: {
                         3: {
-                            'action': 'optimize creative and copy'
+                            'action': 'optimize creative and copy. 1) Check search terms for terms to add and 2) Check search terms for "negative" keywords to add.'
                         }
                     }
                 }
@@ -91,7 +91,17 @@ class ad_audit:
                     },
                     False: {
                         3: {
-                            'action': 'Optimize bids'
+                            'title': 'Check the ad is enagbled, keywords are enabled, and there are no status issues. Did that fix it?',
+                            True: {
+                                4: {
+                                    'action': 'Good! Check other campaigns to make sure this issue was not prevalent elsewhere.'
+                                }
+                            },
+                            False: {
+                                4: {
+                                    'action': 'Optimize bids by reviewing keywords avg. CPC and making sure it is below the max bid CPC value'
+                                }
+                            }
                         }
                     }
                 }
