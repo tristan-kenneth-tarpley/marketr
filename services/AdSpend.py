@@ -3,33 +3,44 @@ import data.db as db
 import pandas as pd
 
 class GetRec:
-    def __init__(self, revenue, stage, model):
-        self.revenue = revenue if revenue > 99999 else 100000
-        self.stage = stage
+    def __init__(self, revenue, stage, model, sales_model, growth_needs):
+        self.revenue = revenue
+        self.stage = stage.lower()
         self.model = model
-        print(self.revenue)
-        print(self.stage)
-        print(self.model)
+        self.sales_model = sales_model
+        self.growth_needs = growth_needs.lower()
 
     def get(self):
-        table_1 = {
-            'Launch': 2.00,
-            'Growth': 1.60,
-            'Shake-out': 1.40,
-            'Maturity': 1.00,
-            'Decline / Recession': .8
+        stage_table = {
+            'launch': 2.50,
+            'growth': 1.75,
+            'shake-out': 1.40,
+            'maturity': 1.00,
+            'decline / recession': .8
         }
-        table_2 = {
-            'B2B - product': 1.72,
-            'B2B - services': 1.74,
-            'B2C - product': 1.96,
-            'B2C - services': 3.12
+        tag_table = {
+            'B2B - product': 1.26,
+            'B2B - services': 1.38,
+            'B2C - product': 1.92,
+            'B2C - services': 2.36
         }
+        sales_table = {
+            'ecommerce': 4,
+            'saas': 8,
+            'other': 1
+        }
+        growth_needs_table = {
+            'low': .5,
+            'medium': 1,
+            'high': 2
+        }
+        
         base = .05
-        avg = (table_1.get(self.stage) + table_2.get(self.model)) / 2
-
-        formula = self.revenue * base * avg /12
+        sales_multiplier = 2 if self.sales_model != 'other' else 1
+        avg = (stage_table.get(self.stage) + (sales_table.get(self.sales_model) * sales_multiplier) + tag_table.get(self.model)) / 3 + (growth_needs_table.get(self.growth_needs) - 1)
+        formula = self.revenue * base * avg / 12
         return formula
+
 
 class SpendAllocation:
     def __init__(self, customer_id, revenue, budget, brand_strength, growth_needs, competitiveness, biz_type, biz_model):
@@ -117,15 +128,16 @@ class SpendAllocation:
         elif self.budget > 1000 and self.budget <= 3000:
             tactics = 4
         elif self.budget > 3000 and self.budget <= 5000:
-            tactics = 6
+            tactics = 5
         elif self.budget > 5000 and self.budget <= 10000:
-            tactics = 8
+            tactics = 6
         elif self.budget > 10000:
-            tactics = 10
+            tactics = 8
             
         return math.floor(tactics)
 
     def get_tags(self):
+        # db = db_obj()
         tags_db, cursor = db.execute("exec get_spend_tags @customer_id = ?", True, (self.customer_id,))
         tags_db = cursor.fetchall()
         cursor.close()

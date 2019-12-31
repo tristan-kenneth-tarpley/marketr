@@ -15,6 +15,7 @@ from services.SharedService import MessagingService, TaskService, ScoreService, 
 from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
+from services.Portfolio import Portfolio
 from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
 from services.BigQuery import GoogleORM
@@ -216,14 +217,13 @@ def rewards():
 @login_required
 def spend_allocation():
     req = request.get_json()
-    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'))
+    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
     budget = rec.get()
 
     actual_budget = req.get('actual_budget')
     input_budget = float(actual_budget) if actual_budget else budget
 
     user = session.get('user') if session.get('user') else session.get('customer_id')
-
     spend = SpendAllocation(
         user, req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
@@ -236,7 +236,15 @@ def spend_allocation():
     }
     return json.dumps(returned)
 
+@app.route('/api/portfolio_metrics', methods=['POST'])
+def portfolio_metrics():
+    req = request.get_json()
+    orm = GoogleORM(req.get('company_name'))
+    df = orm.agg()
 
+    portfolio = Portfolio(agg=df)
+
+    return portfolio.group()
 
 @app.route('/api/unclaimed_achievements', methods=['GET'])
 @login_required

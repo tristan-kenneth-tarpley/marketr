@@ -41,3 +41,16 @@ class GoogleORM(BigQuery):
         SELECT impressions, ctr, clicks, reach, cpc, cpm, spend, frequency, date_start FROM `{self.project_id}.{self.company_name}_facebook.ads_insights` 
         """
         return self.get(sql)
+
+    def agg(self):
+        sql = f"""
+        SELECT ctr, clicks, cost, conversions, impressions, interactions, week, null as date_stop
+
+        FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT`
+
+        union all
+
+        SELECT ctr, clicks, spend, null, impressions, reach, CAST(EXTRACT(DATE FROM date_start) AS string), CAST(EXTRACT(DATE FROM date_stop) AS string)
+        FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`
+        """
+        return self.get(sql)
