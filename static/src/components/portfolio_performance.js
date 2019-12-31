@@ -24,7 +24,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.company_name = 'o3'//this.getAttribute('company-name')
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
-        console.log(this.spend_rate)
+ 
         // console.log(this.company_name)
         this.state = {
             data: null
@@ -36,6 +36,7 @@ export default class PortfolioPerformance extends HTMLElement {
     summary(){
         const data = this.state.data
         const handle = (key, value) => data == null ? '...' : data[key][value]
+
         /* html */
         const el = `
         <div class="row">
@@ -43,7 +44,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 <h5 class="small_txt center_it">Awareness</h5>
                 <div class="negative_card">
                     <div class="col-lg-6">
-                        <h5>${handle('awareness', 'engagement')}</h5>
+                        <h5>${number(handle('awareness', 'engagement'))}</h5>
                     </div>
                     <div class="col-lg-6">
                         <p class="small_txt">Engagement</p>
@@ -152,28 +153,29 @@ export default class PortfolioPerformance extends HTMLElement {
 
     connectedCallback() {
         this.render()
+        setTimeout(()=>{
+            fetch('/api/portfolio_metrics', {
+                method: 'POST',
+                headers : new Headers({
+                    "content-type": "application/json"
+                }),
+                body:  JSON.stringify({
+                    customer_id: this.customer_id,
+                    company_name: this.company_name,
+                    google: this.google_id,
+                    facebook: this.facebook_id
+                })
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    this.state.data = data
+                    this.render()
+                    // this.state.recs = [...data]
+                    // this.edit_res(this.state.recs)
+                })
+                .catch((err)=>console.log(err))
+        }, 1000)
 
-        fetch('/api/portfolio_metrics', {
-            method: 'POST',
-            headers : new Headers({
-                "content-type": "application/json"
-            }),
-            body:  JSON.stringify({
-                customer_id: this.customer_id,
-                company_name: this.company_name,
-                google: this.google_id,
-                facebook: this.facebook_id
-            })
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                this.state.data = data
-                console.log(data)
-                this.render()
-                // this.state.recs = [...data]
-                // this.edit_res(this.state.recs)
-            })
-            .catch((err)=>console.log(err))
     }
 }
   

@@ -121,7 +121,7 @@ class SpendAllocation:
             + adjustments['competitiveness'][self.competitiveness]['conversion']
         )
         return awareness, evaluation, conversion
-
+        
     def num_tactics(self):
         if self.budget <= 1000:
             tactics = 3
@@ -147,46 +147,38 @@ class SpendAllocation:
                 'tag': tag[0],
                 'tactic': tag[1],
                 'category': tag[2],
-                'priority_scale': tag[3]
+                'priority_scale': tag[3],
+                'bucket': tag[4]
             })
 
         return pd.DataFrame(tags).sort_values(by=['priority_scale'], ascending=False)
 
     def allocation(self):
-        base_table = self.base_mix
-        awareness_adj, evaluation_adj, conversion_adj = self.adjustments()
+#         base_table = self.base_mix
+#         awareness_adj, evaluation_adj, conversion_adj = self.adjustments()
         
-        awareness, evaluation, conversion = (
-            (base_table['awareness'] + awareness_adj),
-            (base_table['evaluation'] + evaluation_adj),
-            (base_table['conversion'] + conversion_adj)
-        )
-        awareness_spend, evaluation_spend, conversion_spend = (
-            awareness * self.budget,
-            evaluation * self.budget,
-            conversion * self.budget
-        )
+#         awareness, evaluation, conversion = (
+#             (base_table['awareness'] + awareness_adj),
+#             (base_table['evaluation'] + evaluation_adj),
+#             (base_table['conversion'] + conversion_adj)
+#         )
+#         awareness_spend, evaluation_spend, conversion_spend = (
+#             awareness * self.budget,
+#             evaluation * self.budget,
+#             conversion * self.budget
+#         )
         
-        tactics = self.num_tactics()
-        awareness_tactics, evaluation_tactics, conversion_tactics = (
-            math.floor(base_table['awareness'] * tactics),
-            round(base_table['evaluation'] * tactics),
-            round(base_table['conversion'] * tactics)
-        )
-        
+#         tactics = self.num_tactics()
+#         awareness_tactics, evaluation_tactics, conversion_tactics = (
+#             math.floor(base_table['awareness'] * tactics),
+#             round(base_table['evaluation'] * tactics),
+#             round(base_table['conversion'] * tactics)
+#         )
+        num_tactics = self.num_tactics()
         tags = self.get_tags()
-        awareness = tags[tags['category'] == 'Awareness'][:awareness_tactics]
-        evaluation = tags[tags['category'] == 'Evaluation'][:evaluation_tactics]
-        conversion = tags[tags['category'] == 'Conversion'][:conversion_tactics]
-        
-        def tactic_spend(priority, cat_spend, sum):
-            return round(cat_spend*priority/sum)
-        
-        for tup in [(awareness, awareness_spend), (evaluation, evaluation_spend), (conversion, conversion_spend)]:
-            df = tup[0]
-            spend = tup[1]
-            df['spend_per_tactic'] = df['priority_scale'].apply(
-                lambda x: tactic_spend(x, spend, df['priority_scale'].sum())
-            )
+        tags = tags[:num_tactics]
+        tags['num_campaigns'] = len(tags.priority_scale)
+        tags['spend_per_tactic'] = self.budget * tags['priority_scale'] / tags['priority_scale'].sum()
+        tags['spend_percent'] = tags['spend_per_tactic'] / self.budget * 100
 
-        return (awareness.to_json(orient='records'), evaluation.to_json(orient='records'), conversion.to_json(orient='records'))
+        return (tags.to_json(orient='records'))

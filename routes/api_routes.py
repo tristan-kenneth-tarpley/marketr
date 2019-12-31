@@ -232,7 +232,7 @@ def spend_allocation():
 
     returned = {
         'budget': budget,
-        'allocation': spend.allocation()
+        'allocation': json.loads(spend.allocation())
     }
     return json.dumps(returned)
 
