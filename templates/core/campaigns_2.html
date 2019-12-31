@@ -200,7 +200,6 @@
     </div>
     {% endif %}
 {% endmacro %}
-
 <div class="card">
     <portfolio-performance
         google_id="{{page.data['core']['core'][0]['google_id']}}"
@@ -208,7 +207,8 @@
         company-name="{{page.data['core']['core'][0]['company_name']}}"
         customer-id="{{page.data['core']['core'][0]['id']}}"
         spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
-        funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}">
+        funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+        insights="{{page.data['insights']['insights']}}">
     </portfolio-performance>
 </div>
 
@@ -244,7 +244,7 @@
 {% endif %}#}
         
 <div class="row">  
-    <div class="col-lg-6 col-sm-12">                   
+{#    <div class="col-lg-6 col-sm-12">                   
         {% if current_plan %}
         {{ section(
             link=None,
@@ -263,7 +263,7 @@
         ) }}
         {% endif %}
     </div>
-
+#}
     <div class="col-lg-6 col-sm-12">
         {% macro tactics_empty() %}
             <div class="tactics_loading" id="loading">

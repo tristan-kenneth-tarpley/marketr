@@ -7,13 +7,16 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
 
+        .insight_body {
+            
+        }
       `
     );
 }
 
 export default class PortfolioPerformance extends HTMLElement {
     static get observedAttributes() {
-        return ['customer-id', 'company-name', 'facebook_id', 'google_id', 'spend_rate', 'funds_remaining'];
+        return ['customer-id', 'company-name', 'facebook_id', 'google_id', 'spend_rate', 'funds_remaining', 'insights'];
     }
     constructor() {
         super();
@@ -24,8 +27,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.company_name = 'o3'//this.getAttribute('company-name')
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
- 
-        // console.log(this.company_name)
+        this.insights_json = eval(this.getAttribute('insights'))
         this.state = {
             data: null
         }
@@ -34,72 +36,116 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     summary(){
-        const data = this.state.data
-        const handle = (key, value) => data == null ? '...' : data[key][value]
+        const handle = (key, value) => {
+            const data = this.state.data
+            let returned;
+            if (data == null){
+                returned = "..."
+            } else {
+                let _value = data[key][value]
+                switch (value) {
+                    case 'engagement':
+                        returned = percent(_value)
+                        break
+                    case 'impressions':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'ctr':
+                        returned = percent(_value)
+                        break
+                    case 'cpc':
+                        returned = currency(_value)
+                        break
+                    case 'cta':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'site_visits':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'end':
+                    case 'start': 
+                        returned = _value
+                        break
+                    case 'cost':
+                        returned = currency(data.cost)
+                        break
+                    
+                }
+            }
+            return returned
+        }
 
-        /* html */
+        const column_packets = [
+            {
+                'category': 'Awareness',
+                'columns': [
+                    {
+                        'metric': handle('awareness', 'engagement'),
+                        'label': 'Engagement'
+                    },
+                    {
+                        'metric': handle('awareness', 'impressions'),
+                        'label': 'Impressions'
+                    },
+                ]
+            },
+            {
+                'category': 'Evaluation',
+                'columns': [
+                    {
+                        'metric': handle('evaluation', 'ctr'),
+                        'label': 'Click-through rate'
+                    },
+                    {
+                        'metric': handle('evaluation', 'cpc'),
+                        'label': 'Cost per click'
+                    },
+                ]
+            },
+            {
+                'category': 'Conversion',
+                'columns': [
+                    {
+                        'metric': handle('conversion', 'cta'),
+                        'label': 'Conversions'
+                    },
+                    {
+                        'metric': handle('conversion', 'site_visits'),
+                        'label': 'Site visits'
+                    },
+                ]
+            }
+        ]
+        /*html */
         const el = `
         <div class="row">
-            <div class="col">
-                <h5 class="small_txt center_it">Awareness</h5>
-                <div class="negative_card">
-                    <div class="col-lg-6">
-                        <h5>${number(handle('awareness', 'engagement'))}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">Engagement</p>
-                    </div>
-                    <div class="col-lg-6">
-                        <h5>${handle('awareness', 'impressions')}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">Impressions</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <h5 class="small_txt center_it">Evaluation</h5>
-                <div class="negative_card">
-                    <div class="col-lg-6">
-                        <h5>${handle('evaluation', 'ctr')}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">CTR</p>
-                    </div>
-                    <div class="col-lg-6">
-                        <h5>${handle('evaluation', 'cpc')}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">Cost per click</p>
+            ${column_packets.map(packet=>{
+                /*html */
+                return `
+                <div class="col">
+                    <h5 class="small_txt center_it">${packet.category}</h5>
+                    <div class="negative_card small_txt">
+                        ${packet.columns.map(column=>{
+                            /*html */
+                            return `                                  
+                                <div class="col">
+                                    <h5>${column.metric}
+                                    <span class="small_txt">${column.label}</span>
+                                    </h5>
+                                </div>
+                            `
+                        }).join("")}
                     </div>
                 </div>
-            </div>
-            <div class="col">
-                <h5 class="small_txt center_it">Conversion</h5>
-                <div class="negative_card">
-                    <div class="col-lg-6">
-                        <h5>${handle('conversion', 'cta')}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">Conversions</p>
-                    </div>
-                    <div class="col-lg-6">
-                        <h5>${handle('conversion', 'site_visits')}</h5>
-                    </div>
-                    <div class="col-lg-6">
-                        <p class="small_txt">Site visits</p>
-                    </div>
-                </div>
-            </div>
+                `
+            }).join("")}
         </div>
+        
         <div class="row">
-            <div class="col">
-                <h5 class="small_txt">Funds remaining: $${this.funds_remaining}</h5>
-            </div>
-            <div class="col">
-                <h5 class="small_txt">Spend per month: $${this.spend_rate}</h5>
-            </div>
-            <div class="col">
+            <div style="text-align:left;" class="col-lg-6 col-12">
+                <p><label class="small_txt">Amount spent between ${handle('range', 'start')} and ${handle('range', 'end')}</label>: ${handle('cost', 'cost')}</p>
+                <p><label class="small_txt">Funds remaining:</label> $${this.funds_remaining}</p>
+                <p><label class="small_txt">Target spend per month:</label> $${this.spend_rate}/month</p>
                 <a href="/home/settings">Add funds | Modify spend per week</a>
             </div>
         </div>
@@ -124,17 +170,39 @@ export default class PortfolioPerformance extends HTMLElement {
             container.innerHTML = this.summary()
         })
         el.querySelector("#insights").addEventListener('click', e=>{
-            container.innerHTML = this.insights()
+            container.innerHTML = ""
+            this.insights(container)
         })
 
         return el
     }
 
-    insights(){
-        const el = `
-            <p>these are the insights</p>
-        `.trim()
-        return el
+    insights(target){
+        let returned = `<p>Insights the week of ${this.state.data.range.start}</p>`
+        fetch('/api/insights', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                start_date: this.state.data.range.start,
+                end_date: this.state.data.range.end,
+                customer_id: this.customer_id
+            })
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                returned += data.length > 0 
+                    ? `${data.map((insight, index)=>{
+                        return `<div style="text-align:left; class="insight_container">
+                            <label>Insight #${index + 1} of ${data.length}</label>
+                            <label class="small_txt">${insight.time}</label>
+                            <p class="inset insight_body">${insight.body}</p>
+                        </div>`}).join("")}`
+                    : '<p>No insights were received this week</p>'
+            })
+            .then(()=>target.innerHTML = returned)
+            .catch((err)=>console.log(err))
     }
 
     render(){
@@ -143,7 +211,7 @@ export default class PortfolioPerformance extends HTMLElement {
         el.innerHTML = `
             <div style="text-align:center;">
                 <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
-                <button id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
+                <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
                 <div id="container"></div>
             </div>
         `
@@ -160,6 +228,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     "content-type": "application/json"
                 }),
                 body:  JSON.stringify({
+                    start_date: now(),
                     customer_id: this.customer_id,
                     company_name: this.company_name,
                     google: this.google_id,
@@ -170,11 +239,10 @@ export default class PortfolioPerformance extends HTMLElement {
                 .then((data) => {
                     this.state.data = data
                     this.render()
-                    // this.state.recs = [...data]
-                    // this.edit_res(this.state.recs)
                 })
+                .then(()=> this.shadow.querySelector('#insights').disabled = false)
                 .catch((err)=>console.log(err))
-        }, 1000)
+        }, 500)
 
     }
 }

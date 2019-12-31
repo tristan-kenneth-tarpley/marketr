@@ -44,7 +44,7 @@ class GoogleORM(BigQuery):
 
     def agg(self):
         sql = f"""
-        SELECT ctr, clicks, cost, conversions, impressions, interactions, week, null as date_stop
+        SELECT ctr, clicks, cost/1000000 as cost, conversions, impressions, interactions, week, null as date_stop
 
         FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT`
 

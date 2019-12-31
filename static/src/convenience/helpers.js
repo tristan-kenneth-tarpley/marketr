@@ -110,7 +110,16 @@ const params = () => new URLSearchParams(location.search);
 // Create a new event
 const query_change = new CustomEvent('query_change');
 
-const currency = num => `$${parseInt(num).toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-const number = num => parseInt(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-const percent = num => `${parseInt(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`
-const remove_commas = num => parseInt(num.toFixed(2).replace(/\,/g, ''))
+const currency = num => `$${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+const number = num => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+const number_no_commas = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+const percent = num => `${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`
+const remove_commas = num => num.toFixed(2).replace(/\,/g, '')
+
+const now = () => {
+    let date = new Date();
+    let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
+                        .toISOString()
+                        .split("T")[0];
+    return dateString
+} 

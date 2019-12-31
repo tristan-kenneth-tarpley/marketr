@@ -244,7 +244,7 @@ def portfolio_metrics():
 
     portfolio = Portfolio(agg=df)
 
-    return portfolio.group()
+    return portfolio.group(req.get('start_date'))
 
 @app.route('/api/unclaimed_achievements', methods=['GET'])
 @login_required
@@ -273,7 +273,16 @@ def get_competitors():
     struct = vm.get(service)
     return render_template('core/competitors.html', core=struct)
 
-
+@app.route('/api/insights', methods=['POST'])
+@login_required
+def range_insights():
+    req = request.get_json()
+    tup = (req.get('customer_id'), req.get('start_date'), req.get('end_date'))
+    query = "SELECT * FROM ranged_insights (?, ?, ?)"
+    insights, cursor = db.execute(query, True, tup)
+    insights = cursor.fetchall()
+    returned = [{'body': row[0],'time': str(row[1])} for row in insights]
+    return json.dumps(returned)
 
 
 
