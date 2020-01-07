@@ -2,6 +2,7 @@ GalaxyCodes/
 __pycache__/app.cpython-35.pyc
 data/__pycache__/db.cpython-35.pyc
 helpers/__pycache__/
+__pycache__/
 main.py
 routes/__pycache__/
 services/__pycache__/
@@ -10,3 +11,4 @@ analysis/integrations
 *.ipynb
 *.cfg
 *.pyc
+*.py[cod]

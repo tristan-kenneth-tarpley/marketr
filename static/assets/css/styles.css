@@ -11611,7 +11611,7 @@ left: -6px;
 }
 
 .allocation_toggle {
-  font-size: 100% !important;
+  font-size: 75% !important;
   box-shadow: var(--sm-box-shadow);
   height: 50px !important;
   width: 90px !important;
@@ -11619,10 +11619,10 @@ left: -6px;
   margin-left: 0;
   margin-right: 0;
 }
-.allocation_toggle:nth-of-type(1){
+.allocation_toggle:nth-child(1){
   border-radius: 100px 0 0 100px;
 }
-.allocation_toggle:nth-of-type(2){
+.allocation_toggle:nth-child(2){
   border-radius: 0 100px 100px 0;
   margin-left: -1%;
 }

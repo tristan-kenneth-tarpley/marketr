@@ -15,9 +15,10 @@ from services.SharedService import MessagingService, TaskService, ScoreService, 
 from services.PaymentsService import PaymentsService
 from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
+from services.Portfolio import Portfolio
 from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
-from services.CampaignsService import GoogleORM
+from services.BigQuery import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -32,10 +33,10 @@ import datetime
 @app.route('/api/products', methods=['GET'])
 def get_personas():
     customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
-    query = "select name from product_list where customer_id = ? and name is not null"
+    query = "select name, p_id from product_list where customer_id = ? and name is not null"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
-    returned = [{'product_name': row[0]} for row in data]
+    returned = [{'product_name': row[0], 'p_id': row[1]} for row in data]
     return json.dumps(returned)
 
 @app.route('/api/personas', methods=['GET'])
@@ -216,14 +217,13 @@ def rewards():
 @login_required
 def spend_allocation():
     req = request.get_json()
-    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'))
+    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
     budget = rec.get()
 
     actual_budget = req.get('actual_budget')
     input_budget = float(actual_budget) if actual_budget else budget
 
     user = session.get('user') if session.get('user') else session.get('customer_id')
-
     spend = SpendAllocation(
         user, req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
@@ -232,11 +232,19 @@ def spend_allocation():
 
     returned = {
         'budget': budget,
-        'allocation': spend.allocation()
+        'allocation': json.loads(spend.allocation())
     }
     return json.dumps(returned)
 
+@app.route('/api/portfolio_metrics', methods=['POST'])
+def portfolio_metrics():
+    req = request.get_json()
+    orm = GoogleORM(req.get('company_name'))
+    df = orm.agg()
 
+    portfolio = Portfolio(agg=df)
+    returned = portfolio.group(req.get('start_date'))
+    return returned
 
 @app.route('/api/unclaimed_achievements', methods=['GET'])
 @login_required
@@ -265,7 +273,16 @@ def get_competitors():
     struct = vm.get(service)
     return render_template('core/competitors.html', core=struct)
 
-
+@app.route('/api/insights', methods=['POST'])
+@login_required
+def range_insights():
+    req = request.get_json()
+    tup = (req.get('customer_id'), req.get('start_date'), req.get('end_date'))
+    query = "SELECT * FROM ranged_insights (?, ?, ?)"
+    insights, cursor = db.execute(query, True, tup)
+    insights = cursor.fetchall()
+    returned = [{'body': row[0],'time': str(row[1])} for row in insights]
+    return json.dumps(returned)
 
 
 

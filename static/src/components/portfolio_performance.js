@@ -1,0 +1,266 @@
+const styles = () => {
+    /*html*/
+    return `
+    <style>
+        @import url('/static/assets/css/bootstrap.min.css');
+        @import url('/static/assets/css/styles.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        .metric_display {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 120%;
+        }
+
+        .metric_labels {
+            font-weight: 300;
+            font-size: 95%;
+        }
+
+    </style>
+    `.trim()
+}
+
+export default class PortfolioPerformance extends HTMLElement {
+    static get observedAttributes() {
+        return ['customer-id', 'company-name', 'facebook_id', 'google_id', 'spend_rate', 'funds_remaining', 'insights'];
+    }
+    constructor() {
+        super();
+        this.shadow = this.attachShadow({ mode: 'open' });
+        this.customer_id = this.getAttribute('customer-id')
+        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
+        this.google_id = this.getAttribute('google_id') != null ? true : false
+        this.company_name = this.getAttribute('company-name')
+        this.spend_rate = this.getAttribute('spend_rate')
+        this.funds_remaining = this.getAttribute('funds_remaining')
+        this.insights_json = eval(this.getAttribute('insights'))
+        this.state = {
+            data: null
+        }
+
+        this.css = styles()
+    }
+
+    summary(){
+        const handle = (key, value) => {
+            const data = this.state.data
+            let returned;
+            if (data == null){
+                returned = "..."
+            } else {
+                let _value = data[key][value]
+                switch (value) {
+                    case 'engagement':
+                        returned = percent(_value)
+                        break
+                    case 'impressions':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'ctr':
+                        returned = percent(_value)
+                        break
+                    case 'cpc':
+                        returned = currency(_value)
+                        break
+                    case 'cta':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'site_visits':
+                        returned = number_no_commas(_value)
+                        break
+                    case 'end':
+                    case 'start': 
+                        returned = _value
+                        break
+                    case 'cost':
+                        returned = currency(data.cost)
+                        break
+                    
+                }
+            }
+            return `<span class="metric_display">${returned}</span>`
+        }
+
+        const column_packets = [
+            {
+                'category': 'Awareness',
+                'columns': [
+                    {
+                        'metric': handle('awareness', 'engagement'),
+                        'label': 'Engagement'
+                    },
+                    {
+                        'metric': handle('awareness', 'impressions'),
+                        'label': 'Impressions'
+                    },
+                ]
+            },
+            {
+                'category': 'Evaluation',
+                'columns': [
+                    {
+                        'metric': handle('evaluation', 'ctr'),
+                        'label': 'Click-through rate'
+                    },
+                    {
+                        'metric': handle('evaluation', 'cpc'),
+                        'label': 'Cost per click'
+                    },
+                ]
+            },
+            {
+                'category': 'Conversion',
+                'columns': [
+                    {
+                        'metric': handle('conversion', 'cta'),
+                        'label': 'Conversions'
+                    },
+                    {
+                        'metric': handle('conversion', 'site_visits'),
+                        'label': 'Site visits'
+                    },
+                ]
+            }
+        ]
+        /*html */
+        const el = `
+        <div class="row">
+            <div class="col">
+                <h5 class="small_txt">For the week of ${handle('range', 'start')} through ${handle('range', 'end')}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <div class="inset" style="text-align:left;">
+                    <p class="metric_labels">Funds remaining:</p>
+                    <h5 class="metric_display">$${this.funds_remaining}</h5>
+                    <a class="small_txt" href="/home/settings">Add funds | Modify spend per week</a>
+                    <br><br>
+                    <p class="metric_labels">Amount spent:</p>
+                    <h5 class="metric_display">${handle('cost', 'cost')}</h5>
+
+                    <p class="metric_labels">Targeted spend per week:</p>
+                    <h5 class="metric_display">${this.spend_rate != null ? currency(this.spend_rate*12/52) : currency(0)}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                ${column_packets.map(packet=>{
+                    /*html */
+                    return `
+                    <div class="separator"></div>
+                    <h5 class="small_txt">${packet.category}</h5>
+                    <div class="row">
+                        ${packet.columns.map((column, index)=>{
+                            /*html */
+                            return `                                  
+                                <div class="col-lg-6">
+                                    <h5>${column.metric}</h5>
+                                    <span class="small_txt">${column.label}</span>
+                                </div>
+                            `
+                        }).join("")}
+                    </div>
+                    `
+                }).join("")}
+            </div>
+        </div>
+        `.trim()
+
+        return el
+    }
+
+    summary_handlers(el){
+        el.querySelectorAll('.allocation_toggle').forEach(ele=>{
+            ele.addEventListener('click', e=>{
+                el.querySelector('.allocation_toggle:not(.allocation_toggle-inactive)').classList.remove('btn-secondary')
+                el.querySelector('.allocation_toggle:not(.allocation_toggle-inactive)').classList.add('allocation_toggle-inactive')
+                e.currentTarget.classList.remove('allocation_toggle-inactive')
+                e.currentTarget.classList.add('btn-secondary')
+            })
+        })
+
+        const container = el.querySelector("#container")
+        container.innerHTML = this.summary()
+        el.querySelector("#details").addEventListener('click', e=>{
+            container.innerHTML = this.summary()
+        })
+        el.querySelector("#insights").addEventListener('click', e=>{
+            container.innerHTML = ""
+            this.insights(container)
+        })
+
+        return el
+    }
+
+    insights(target){
+        let returned = `<p>Insights the week of ${this.state.data.range.start}</p>`
+        fetch('/api/insights', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                start_date: this.state.data.range.start,
+                end_date: this.state.data.range.end,
+                customer_id: this.customer_id
+            })
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                returned += data.length > 0 
+                    ? `${data.map((insight, index)=>{
+                        return `<div style="text-align:left; class="insight_container">
+                            <label>Insight #${index + 1} of ${data.length}</label>
+                            <label class="small_txt">${insight.time}</label>
+                            <p class="inset insight_body">${insight.body}</p>
+                        </div>`}).join("")}`
+                    : '<p>No insights were received this week</p>'
+            })
+            .then(()=>target.innerHTML = returned)
+            .catch((err)=>console.log(err))
+    }
+
+    render(){
+        this.shadow.innerHTML = ""
+        const el = document.createElement('div')
+        
+        el.innerHTML = `
+            ${this.css}
+            <div style="text-align:center;">
+                <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
+                <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
+                <div id="container"></div>
+            </div>
+        `
+        this.shadow.appendChild(this.summary_handlers(el));
+    }
+
+    connectedCallback() {
+        this.render()
+        setTimeout(()=>{
+            fetch('/api/portfolio_metrics', {
+                method: 'POST',
+                headers : new Headers({
+                    "content-type": "application/json"
+                }),
+                body:  JSON.stringify({
+                    start_date: now(),
+                    customer_id: this.customer_id,
+                    company_name: this.company_name,
+                    google: this.google_id,
+                    facebook: this.facebook_id
+                })
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    this.state.data = data
+                    this.render()
+                })
+                .then(()=> this.shadow.querySelector('#insights').disabled = false)
+                .catch((err)=>console.log(err))
+        }, 100)
+
+    }
+}
+  
+document.addEventListener( 'DOMContentLoaded', customElements.define('portfolio-performance', PortfolioPerformance))

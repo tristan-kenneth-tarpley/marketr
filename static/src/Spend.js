@@ -96,57 +96,6 @@ export default class AdSpend {
             element.textContent = budget_display(budget)
         });
         document.querySelector("#typical").value = budget.toFixed(0)
-
-        const awareness_ref = JSON.parse(data.allocation[0])
-        const evaluation_ref = JSON.parse(data.allocation[1])
-        const conversion_ref = JSON.parse(data.allocation[2])
-
-        const awareness = this.prep_values(awareness_ref)
-        const evaluation = this.prep_values(evaluation_ref)
-        const conversion = this.prep_values(conversion_ref)
-
-        let stage_meta;
-        switch(perc_or_usd){
-            case 'perc':
-                stage_meta = {
-                    awareness: {
-                        perc: (awareness / budget * 100).toFixed(2),
-                        total: awareness
-                    },
-                    evaluation:  {
-                        perc: (evaluation / budget * 100).toFixed(2),
-                        total: evaluation
-                    },
-                    conversion:  {
-                        perc: (conversion / budget * 100).toFixed(2),
-                        total: conversion
-                    },
-                }
-                break
-            case 'usd':
-                stage_meta = {
-                    awareness: {
-                        total: awareness
-                    },
-                    evaluation: {
-                        total: evaluation
-                    },
-                    conversion: {
-                        total: conversion
-                    }
-                }
-                break
-        } 
-        let data_ = {
-            num_campaigns: awareness_ref.length + evaluation_ref.length + conversion_ref.length,
-            budget: budget,
-            stage_meta: stage_meta,
-            stage_detailed: [
-                awareness_ref, evaluation_ref, conversion_ref
-            ]
-        }
-
-        return data_
     }
 
     update_cta(total){
@@ -155,102 +104,83 @@ export default class AdSpend {
     }
 
     update_breakdown(){
-        const data = this.metrics_state(this.data, this.perc_or_usd)
+        this.metrics_state(this.data, this.perc_or_usd)
         const target = document.querySelector('#stage_breakdown')
 
         const display = value => this.perc_or_usd == 'usd' ? `$${value}` : `${value}%`
-        const budget_ = data.budget 
-        this.update_cta(data.num_campaigns)
-
-        let awareness_val;
-        let evaluation_val;
-        let conversion_val;
-        let stage_budget;
-        let stage;
+        const budget_ = this.data.budget
+        this.update_cta(this.data.allocation[0].num_campaigns)
+        const data = this.data
+        // let awareness_val;
+        // let evaluation_val;
+        // let conversion_val;
+        // let stage_budget;
+        // let stage;
         
-        switch(this.perc_or_usd){
-            case 'perc':
-                stage_budget = key => parseInt(data.stage_meta[key].total)
-                stage = key => (stage_budget(key) / budget_ * 100).toFixed(0)
-                awareness_val = key => data.stage_detailed[0][key].spend_per_tactic / stage_budget('awareness') * 100
-                evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic / stage_budget('evaluation') * 100
-                conversion_val = key => data.stage_detailed[2][key].spend_per_tactic / stage_budget('conversion') * 100
-                break
-            case 'usd':
-                stage = key => data.stage_meta[key].total
-                awareness_val = key => data.stage_detailed[0][key].spend_per_tactic
-                evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic
-                conversion_val = key => data.stage_detailed[2][key].spend_per_tactic
-                break
-        }
+        // switch(this.perc_or_usd){
+        //     case 'perc':
+        //         stage_budget = key => parseInt(data.stage_meta[key].total)
+        //         stage = key => (stage_budget(key) / budget_ * 100).toFixed(0)
+        //         awareness_val = key => data.stage_detailed[0][key].spend_per_tactic / stage_budget('awareness') * 100
+        //         evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic / stage_budget('evaluation') * 100
+        //         conversion_val = key => data.stage_detailed[2][key].spend_per_tactic / stage_budget('conversion') * 100
+        //         break
+        //     case 'usd':
+        //         stage = key => data.stage_meta[key].total
+        //         awareness_val = key => data.stage_detailed[0][key].spend_per_tactic
+        //         evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic
+        //         conversion_val = key => data.stage_detailed[2][key].spend_per_tactic
+        //         break
+        // }
+        
         /*html*/
         const el = `
-            <p>${display(stage('awareness')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">awareness</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics awareness_tactics">
-                    ${Object.keys(data.stage_detailed[0]).map(key=>{
-                        return `
-                        <p>
-                            <strong>${display((awareness_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[0][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>
-            <p>${display(stage('evaluation')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">evaluation</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics evaluation_tactics">
-                    ${Object.keys(data.stage_detailed[1]).map(key=>{
-                        return `
-                        <p>
-                            <strong>${display((evaluation_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[1][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>
-            <p>${display(stage('conversion')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">conversion</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics awareness_tactics">
-                    ${Object.keys(data.stage_detailed[2]).map(key=>{
-                        return `
-                        <p>
-                            <strong>${display((conversion_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[2][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>
-        `
+            ${this.data.allocation.map(set=>{
+                const display_num = this.perc_or_usd == 'perc' ?
+                                        percent(set.spend_percent) :
+                                        currency(set.spend_per_tactic)
+                /*html */
+                return `
+                    <p>${display_num} <span class="allocation_headers">${set.bucket}</span></p>
+                    <div class="row inset">
+                        <div class="col small_txt allocation_tactics awareness_tactics">
+                            <p>${set.tactic}</p>
+                        </div>
+                    </div>
+                `.trim()
+            }).join("")}
+        `.trim()
         target.innerHTML = el
     }
 
     mount_chart(){
         const ctx = document.querySelector('#allocation_canvas')
         ctx.innerHTML = ''
-        const data = this.metrics_state(this.data, this.perc_or_usd)
-        const stage_meta = data.stage_meta
+        this.metrics_state(this.data, this.perc_or_usd)        
+        let data = []
+        let labels = []
+        for (let i in this.data.allocation){
+            if (this.perc_or_usd == 'perc'){
+                data.push(remove_commas(this.data.allocation[i]['spend_percent']))
+            } else if (this.perc_or_usd == 'usd') {
+                data.push(remove_commas(this.data.allocation[i]['spend_per_tactic']))
+            }
+            
+            labels.push(this.data.allocation[i].bucket)
+        }
 
         const chart_data = {
-            labels: ["Awareness", "Evaluation", "Conversion"],
+            labels,
             datasets: [{
                 label: "Ad Spend (USD)",
                 backgroundColor: ["#01d4b4", "#ff9c00","#62cde0","#699fa1","#a5d6d9"],
-                data: [
-                    stage_meta.awareness.total, stage_meta.evaluation.total, stage_meta.conversion.total
-                ],
+                data,
                 responsive:true
             }]
         }
         const options = {
             legend: {
-               display: false
+               display: true
             },
             tooltips: {
                enabled: false
@@ -261,8 +191,7 @@ export default class AdSpend {
             plugins: {
                 datalabels:{
                     formatter: (value, context)=> {
-                        return `\n${context.chart.data.labels[context.dataIndex]}
-                                \n${this.perc_or_usd == 'usd' ? "$" : ""}${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${this.perc_or_usd == 'perc' ? "%" : ""}`
+                        return `${this.perc_or_usd == 'usd' ? "$" : ""}${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${this.perc_or_usd == 'perc' ? "%" : ""}`
                     },
                     labels: {
                         title: {
@@ -300,12 +229,10 @@ export default class AdSpend {
             headers : new Headers({
                 "content-type": "application/json"
             }),
-            body: body
+            body
         })
             .then((res) => res.json())
-            .then((data) => {
-                this.data = data
-            })
+            .then((data) => this.data = data)
             .then(()=>{
                 this.mount_chart()
                 this.update_breakdown()
@@ -315,3 +242,55 @@ export default class AdSpend {
             .catch((err)=>console.log(err))
     }
 }
+
+
+
+
+
+/*
+archive
+<p>${display(stage('awareness')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">awareness</span></p>
+            <div class="row inset">
+                <div class="col small_txt allocation_tactics awareness_tactics">
+                    ${Object.keys(data.allocation).map(index=>{
+                        return `
+                        <p>
+                            <strong>${display((awareness_val(key)).toFixed(0))}</strong>
+                            &nbsp;&nbsp;&nbsp;
+                            ${data.stage_detailed[0][key].tactic}
+                        </p>
+                        `
+                        }).join("")}
+                </div>
+            </div>
+            <p>${display(stage('evaluation')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">evaluation</span></p>
+            <div class="row inset">
+                <div class="col small_txt allocation_tactics evaluation_tactics">
+                    ${Object.keys(data.stage_detailed[1]).map(key=>{
+                        return `
+                        <p>
+                            <strong>${display((evaluation_val(key)).toFixed(0))}</strong>
+                            &nbsp;&nbsp;&nbsp;
+                            ${data.stage_detailed[1][key].tactic}
+                        </p>
+                        `
+                        }).join("")}
+                </div>
+            </div>
+            <p>${display(stage('conversion')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">conversion</span></p>
+            <div class="row inset">
+                <div class="col small_txt allocation_tactics awareness_tactics">
+                    ${Object.keys(data.stage_detailed[2]).map(key=>{
+                        return `
+                        <p>
+                            <strong>${display((conversion_val(key)).toFixed(0))}</strong>
+                            &nbsp;&nbsp;&nbsp;
+                            ${data.stage_detailed[2][key].tactic}
+                        </p>
+                        `
+                        }).join("")}
+                </div>
+            </div>-->
+
+
+*/
