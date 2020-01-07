@@ -5,6 +5,7 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
         .metric_display {
             color: var(--primary);
             font-weight: bold;
@@ -14,6 +15,21 @@ const styles = () => {
         .metric_labels {
             font-weight: 300;
             font-size: 95%;
+        }
+        #select_range {
+            position: absolute;
+            right: 10px;
+            top: 20px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 2px solid rgba(0,0,0,.1);
+        }
+        @media only screen and (max-width: 700px) {
+            #select_range {
+                position: static;
+                width: 100%;
+            }
         }
 
     </style>
@@ -189,6 +205,8 @@ export default class PortfolioPerformance extends HTMLElement {
             this.insights(container)
         })
 
+        el.querySelector("#select_range").addEventListener('change', e=>this.connectedCallback(e.currentTarget.value))
+
         return el
     }
 
@@ -223,9 +241,10 @@ export default class PortfolioPerformance extends HTMLElement {
     render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        
+        /*html */
         el.innerHTML = `
             ${this.css}
+            <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
             <div style="text-align:center;">
                 <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
                 <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
@@ -235,7 +254,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.shadow.appendChild(this.summary_handlers(el));
     }
 
-    connectedCallback() {
+    connectedCallback(start=now()) {
         this.render()
         setTimeout(()=>{
             fetch('/api/portfolio_metrics', {
@@ -244,7 +263,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     "content-type": "application/json"
                 }),
                 body:  JSON.stringify({
-                    start_date: now(),
+                    start_date: start,
                     customer_id: this.customer_id,
                     company_name: this.company_name,
                     google: this.google_id,
