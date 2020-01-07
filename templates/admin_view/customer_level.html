@@ -13,12 +13,14 @@
 {% endmacro %}
 
 
+
 {# dashboard layout#}
 {% macro dashboard(page, csv_form=None, temp_form=temp_form, ab_form=ab_form, insight_form=None) %}
 
 
     {{ admin_breadcrumb(page, view="dashboard") }}
     <h4>{{ page.customer_name }}</h4>
+    <p>Customer ID: {{page.user}}</p>
     <div class="row">
         <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
             <p class="small_txt">Funds remaining</p>
@@ -55,6 +57,17 @@
     </div>
 
     <div class="row">
+        <div class="col">
+            <div class="card">                
+                <admin-recommendations
+                    customer-id="{{page.user}}"
+                    admin-id="{{page.admin}}">
+                </admin-recommendations>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col">	
             {{ insights(page, form=insight_form) }}	
         </div>
@@ -65,7 +78,8 @@
         ;k=t.Promise;t.Talk={v:2,ready:{then:function(f){if(k)return new k(function(r,e){l.push([f,r,e])});l
         .push([f])},catch:function(){return k&&new k()},c:l}};})(window,document,[]);
     </script>
-    <script>
+    <script type="module">
+        import AdminRecs from '/static/src/components/admin/recommendations.js'
         Talk.ready.then(function() {
             var me = new Talk.User({
                 id: "admin-{{page.admin}}",
