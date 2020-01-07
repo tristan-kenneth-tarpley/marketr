@@ -43,14 +43,25 @@ class GoogleORM(BigQuery):
         return self.get(sql)
 
     def agg(self):
-        sql = f"""
+        google = f"""
         SELECT ctr, clicks, cost/1000000 as cost, conversions, impressions, interactions, week, null as date_stop
 
-        FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT`
+        FROM `{self.project_id}.marketr_google.ACCOUNT_PERFORMANCE_REPORT`"""
 
-        union all
+        facebook = f"""SELECT ctr, clicks, spend as cost, null as conversions, impressions, reach as interactions, CAST(EXTRACT(DATE FROM date_start) AS string) as week, CAST(EXTRACT(DATE FROM date_stop) AS string) as date_stop
+        FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`"""
 
-        SELECT ctr, clicks, spend, null, impressions, reach, CAST(EXTRACT(DATE FROM date_start) AS string), CAST(EXTRACT(DATE FROM date_stop) AS string)
-        FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`
-        """
-        return self.get(sql)
+        g_fb = google + " union all " + facebook
+        try:
+            return self.get(g_fb)
+        except:
+            try:
+                return self.get(google)
+            except:
+                try:
+                    return self.get(facebook)
+                except:
+                    return None
+
+            
+        

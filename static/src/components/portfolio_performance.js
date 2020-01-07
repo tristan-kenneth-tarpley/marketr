@@ -1,17 +1,23 @@
 const styles = () => {
-    return html(
-      'style',
-      null,
-      `
+    /*html*/
+    return `
+    <style>
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
-
-        .insight_body {
-            
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        .metric_display {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 120%;
         }
-      `
-    );
+
+        .metric_labels {
+            font-weight: 300;
+            font-size: 95%;
+        }
+
+    </style>
+    `.trim()
 }
 
 export default class PortfolioPerformance extends HTMLElement {
@@ -24,7 +30,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.customer_id = this.getAttribute('customer-id')
         this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
         this.google_id = this.getAttribute('google_id') != null ? true : false
-        this.company_name = 'o3'//this.getAttribute('company-name')
+        this.company_name = this.getAttribute('company-name')
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
         this.insights_json = eval(this.getAttribute('insights'))
@@ -72,7 +78,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     
                 }
             }
-            return returned
+            return `<span class="metric_display">${returned}</span>`
         }
 
         const column_packets = [
@@ -119,34 +125,43 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html */
         const el = `
         <div class="row">
-            ${column_packets.map(packet=>{
-                /*html */
-                return `
-                <div class="col">
-                    <h5 class="small_txt center_it">${packet.category}</h5>
-                    <div class="negative_card small_txt">
-                        ${packet.columns.map(column=>{
+            <div class="col">
+                <h5 class="small_txt">For the week of ${handle('range', 'start')} through ${handle('range', 'end')}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+                <div class="inset" style="text-align:left;">
+                    <p class="metric_labels">Funds remaining:</p>
+                    <h5 class="metric_display">$${this.funds_remaining}</h5>
+                    <a class="small_txt" href="/home/settings">Add funds | Modify spend per week</a>
+                    <br><br>
+                    <p class="metric_labels">Amount spent:</p>
+                    <h5 class="metric_display">${handle('cost', 'cost')}</h5>
+
+                    <p class="metric_labels">Targeted spend per week:</p>
+                    <h5 class="metric_display">${this.spend_rate != null ? currency(this.spend_rate*12/52) : currency(0)}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                ${column_packets.map(packet=>{
+                    /*html */
+                    return `
+                    <div class="separator"></div>
+                    <h5 class="small_txt">${packet.category}</h5>
+                    <div class="row">
+                        ${packet.columns.map((column, index)=>{
                             /*html */
                             return `                                  
-                                <div class="col">
-                                    <h5>${column.metric}
+                                <div class="col-lg-6">
+                                    <h5>${column.metric}</h5>
                                     <span class="small_txt">${column.label}</span>
-                                    </h5>
                                 </div>
                             `
                         }).join("")}
                     </div>
-                </div>
-                `
-            }).join("")}
-        </div>
-        
-        <div class="row">
-            <div style="text-align:left;" class="col-lg-6 col-12">
-                <p><label class="small_txt">Amount spent between ${handle('range', 'start')} and ${handle('range', 'end')}</label>: ${handle('cost', 'cost')}</p>
-                <p><label class="small_txt">Funds remaining:</label> $${this.funds_remaining}</p>
-                <p><label class="small_txt">Target spend per month:</label> $${this.spend_rate}/month</p>
-                <a href="/home/settings">Add funds | Modify spend per week</a>
+                    `
+                }).join("")}
             </div>
         </div>
         `.trim()
@@ -208,7 +223,9 @@ export default class PortfolioPerformance extends HTMLElement {
     render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
+        
         el.innerHTML = `
+            ${this.css}
             <div style="text-align:center;">
                 <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
                 <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
@@ -216,7 +233,6 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
         `
         this.shadow.appendChild(this.summary_handlers(el));
-        this.shadow.appendChild(this.css);
     }
 
     connectedCallback() {
@@ -242,7 +258,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 })
                 .then(()=> this.shadow.querySelector('#insights').disabled = false)
                 .catch((err)=>console.log(err))
-        }, 500)
+        }, 100)
 
     }
 }

@@ -243,8 +243,8 @@ def portfolio_metrics():
     df = orm.agg()
 
     portfolio = Portfolio(agg=df)
-
-    return portfolio.group(req.get('start_date'))
+    returned = portfolio.group(req.get('start_date'))
+    return returned
 
 @app.route('/api/unclaimed_achievements', methods=['GET'])
 @login_required

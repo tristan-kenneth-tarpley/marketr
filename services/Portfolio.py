@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+import math
 from services.UserService import UserService
 from datetime import date, datetime, timedelta
 
@@ -24,43 +25,71 @@ class Portfolio:
         year, month, day = (int(x) for x in start_date.split('-'))
         d = date(year, month, day)
 
-        df = self.agg.drop_duplicates(keep='first')
-        start, end = self.last_sunday(d)
-        mask = (df['week'] >= str(start)) & (df['week'] <= str(end))
-        df = df[mask]
-        self.agg = df
+        if self.agg is not None:
+            df = self.agg.drop_duplicates(keep='first')
+            start, end = self.last_sunday(d)
+            mask = (df['week'] >= str(start)) & (df['week'] <= str(end))
+            df = df[mask].fillna(0)
+            self.agg = df
 
     def group(self, start_date):
         self.clean(start_date)
-        impressions = self.agg.impressions.sum()
-        ctr = self.agg.ctr.mean()
-        cost = self.agg.cost.sum()
-        clicks = self.agg.clicks.sum()
-        cpc = cost/clicks
-        interactions = self.agg.interactions.sum()
-        conversions = self.agg.conversions.sum()
+
         d = UserService.now()
         year, month, day = (int(x) for x in start_date.split('-'))
         d = date(year, month, day)
         start, end = self.last_sunday(d)
-        returned = {
-            'range': {
-                'start': str(start),
-                'end': str(end)
-            },
-            'cost': cost,
-            'awareness': {
-                'engagement': impressions/interactions,
-                'impressions': impressions
-            },
-            'evaluation': {
-                'ctr': ctr,
-                'cpc': cpc
-            },
-            'conversion': {
-                'cta': conversions,
-                'site_visits': clicks
+
+        if self.agg is not None:
+            impressions = int(self.agg.impressions.sum())
+            ctr = float(self.agg.ctr.mean()) if not math.isnan(self.agg.ctr.mean()) else 0
+            cost = float(self.agg.cost.sum())
+            clicks = int(self.agg.clicks.sum())
+            interactions = int(self.agg.interactions.sum())
+            conversions = int(self.agg.conversions.sum())
+
+            cpc = cost/clicks if clicks > 0 else 0
+            engagement = impressions/interactions if interactions > 0 else 0
+            
+            returned = {
+                'range': {
+                    'start': str(start),
+                    'end': str(end)
+                },
+                'cost': cost,
+                'awareness': {
+                    'engagement': engagement,
+                    'impressions': impressions
+                },
+                'evaluation': {
+                    'ctr': ctr,
+                    'cpc': cpc
+                },
+                'conversion': {
+                    'cta': conversions,
+                    'site_visits': clicks
+                }
             }
-        }
+        else:
+            returned = {
+                'range': {
+                    'start': str(start),
+                    'end': str(end)
+                },
+                'cost': 0,
+                'awareness': {
+                    'engagement': 0,
+                    'impressions': 0
+                },
+                'evaluation': {
+                    'ctr': 0,
+                    'cpc': 0
+                },
+                'conversion': {
+                    'cta': 0,
+                    'site_visits': 0
+                }
+            }
+        print(returned)
 
         return json.dumps(returned)

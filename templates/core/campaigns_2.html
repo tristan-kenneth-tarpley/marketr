@@ -201,15 +201,17 @@
     {% endif %}
 {% endmacro %}
 <div class="card">
-    <portfolio-performance
-        google_id="{{page.data['core']['core'][0]['google_id']}}"
-        facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
-        company-name="{{page.data['core']['core'][0]['company_name']}}"
-        customer-id="{{page.data['core']['core'][0]['id']}}"
-        spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
-        funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
-        insights="{{page.data['insights']['insights']}}">
-    </portfolio-performance>
+    {% if page.data['core']['core'][0]['current_plan'] %}
+        <portfolio-performance
+            google_id="{{page.data['core']['core'][0]['google_id']}}"
+            facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
+            company-name="{{page.data['core']['core'][0]['company_name']}}"
+            customer-id="{{page.data['core']['core'][0]['id']}}"
+            spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
+            funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+            insights="{{page.data['insights']['insights']}}">
+        </portfolio-performance>
+    {% endif %}
 </div>
 
 <div class="card">
