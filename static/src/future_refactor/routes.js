@@ -26,6 +26,7 @@ const get_account_availability = email => {
 		let available = get_account_availability_handler(data)
 		if (available == false) {
 			$('.submit_button').attr('disabled', true)
+			$("#email_availability").html(`<p>An account already exists with the provided email. <a href="/login">Login here.</a></p>`)
 		} else {
 			$('.submit_button').attr('disabled', false)
 		}

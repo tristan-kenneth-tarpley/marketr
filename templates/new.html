@@ -6,7 +6,7 @@
 
 
 {% block header %}
-<h2>Let's get started.</h2>
+<h2>First, create an account.</h2>
 <div class="authSeparator">
 <hr>
 </div>
@@ -17,8 +17,8 @@
 
     <form class="new_user" id="new_user" action="{{ url_for('new') }}" accept-charset="UTF-8" method="post">
     {{ form.csrf_token }}
+    <div id="email_availability"></div>
       <fieldset>
-        
         <div class="fieldCont">
               {{ render_field(form.email, placeholder="email", id="new_email") }}
         </div>
@@ -33,7 +33,7 @@
 
       <div class="formActions">
         <div class="buttonCont">
-          <input id="hovers" class="submit_button" type="submit" name="commit" value="Let's go" data-disable-with="Log in" disabled>
+          <input id="hovers" class="submit_button" type="submit" name="commit" value="Create account" data-disable-with="Log in" disabled>
         </div>
       </div>
     </form>
@@ -41,5 +41,5 @@
 {% endblock %}
 
 {% block otherLinks %}
-<a href="/login">Customer Login</a>
+<a style="font-size:120%;" href="/login">Already have an account? Login here.</a s>
 {% endblock %}

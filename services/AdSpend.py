@@ -146,9 +146,8 @@ class SpendAllocation:
             tags.append({
                 'tag': tag[0],
                 'tactic': tag[1],
-                'category': tag[2],
-                'priority_scale': tag[3],
-                'bucket': tag[4]
+                'bucket': tag[2],
+                'priority_scale': tag[3]
             })
 
         return pd.DataFrame(tags).sort_values(by=['priority_scale'], ascending=False)

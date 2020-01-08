@@ -1,4 +1,5 @@
 import data.db as db
+import json
 
 class RecommendationService(object):
     def __init__(self, customer_id=None, admin_id=None): 
@@ -31,7 +32,16 @@ class RecommendationService(object):
         for rec in recs:
             rec_list.append(self.struct(rec))
 
-        return rec_list
+        return json.dumps(rec_list)
+
+    def get_all_outstanding(self):
+        recs, cursor = db.execute("SELECT * FROM recommendations WHERE customer_id = ? and accepted is null and dismissed is null", True, (self.customer_id,))
+        recs = cursor.fetchall()
+        rec_list = list()
+        for rec in recs:
+            rec_list.append(self.struct(rec))
+
+        return json.dumps(rec_list)
 
     def new(self, title=None, body=None, label=None):
         db.execute(

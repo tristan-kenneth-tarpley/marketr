@@ -17,9 +17,6 @@ const styles = () => {
             font-size: 95%;
         }
         #select_range {
-            position: absolute;
-            right: 10px;
-            top: 20px;
             border-top: none;
             border-left: none;
             border-right: none;
@@ -150,13 +147,14 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div class="inset" style="text-align:left;">
                     <p class="metric_labels">Funds remaining:</p>
                     <h5 class="metric_display">$${this.funds_remaining}</h5>
-                    <a class="small_txt" href="/home/settings">Add funds | Modify spend per week</a>
+                    <a class="small_txt" href="/home/settings">Add funds</a>
                     <br><br>
                     <p class="metric_labels">Amount spent:</p>
                     <h5 class="metric_display">${handle('cost', 'cost')}</h5>
 
                     <p class="metric_labels">Targeted spend per week:</p>
-                    <h5 class="metric_display">${this.spend_rate != null ? currency(this.spend_rate*12/52) : currency(0)}</p>
+                    <h5 class="metric_display">${this.spend_rate != null ? currency(this.spend_rate*12/52) : currency(0)}</h5>
+                    <a class="small_txt" href="/home/settings">Modify</a>
                 </div>
             </div>
             <div class="col-lg-6 col-sm-12">
@@ -170,8 +168,8 @@ export default class PortfolioPerformance extends HTMLElement {
                             /*html */
                             return `                                  
                                 <div class="col-lg-6">
-                                    <h5>${column.metric}</h5>
                                     <span class="small_txt">${column.label}</span>
+                                    <h5>${column.metric}</h5>
                                 </div>
                             `
                         }).join("")}
@@ -244,7 +242,9 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html */
         el.innerHTML = `
             ${this.css}
+            <div style="text-align:center;">
             <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
+            <div>
             <div style="text-align:center;">
                 <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
                 <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>

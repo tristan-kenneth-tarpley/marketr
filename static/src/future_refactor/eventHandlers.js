@@ -20,12 +20,13 @@ $("#xx, #wogf").on("click",function(event){
 $('#new_email').on("blur", (event) => {
 	let email = $("#new_email").val()
 	if (validateEmail(email)){
-
 		$("#new_email").removeClass('input-danger')
+		document.querySelector('#email_availability').innerHTML = ""
 		get_account_availability(email)
 
 	} else {
 		$("#new_email").addClass('input-danger')
+		document.querySelector("#email_availability").innerHTML = '<p>Email is invalid</p>'
 		$('.submit_button').attr('disabled', true)
 	}
 })

@@ -19,6 +19,7 @@ from services.Portfolio import Portfolio
 from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
 from services.BigQuery import GoogleORM
+from services.RecService import RecommendationService, Recommendation
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -29,6 +30,7 @@ import services.forms as forms
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 import time
 import datetime
+
 
 @app.route('/api/products', methods=['GET'])
 def get_personas():
@@ -251,6 +253,54 @@ def portfolio_metrics():
 def get_achievements():
     ach = Achievements(customer_id=session['user'])
     return json.dumps(ach.count_unclaimed())
+
+@app.route('/api/recommendations', methods=['POST'])
+def new_recommendation():
+
+    req = request.get_json()
+
+    service = RecommendationService(customer_id=req.get('customer_id'), admin_id=req.get('admin_id'))
+
+    title = req.get('title')
+    body = req.get('body')
+
+    if title is not None and body is not None:
+        service.new(title=title, body=body)
+
+    return service.get_all()
+
+@app.route('/api/outstanding_recs', methods=['POST'])
+def outstanding_recs():
+    req = request.get_json()
+    service = RecommendationService(customer_id=req.get('customer_id'))
+
+    return service.get_all_outstanding()
+
+@app.route('/api/recommendation/approve', methods=['POST'])
+def approve_rec():
+    try: 
+        req = request.get_json()
+        rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
+        rec.accept()
+        result = 'success'
+    except:
+        result = 'failure'
+
+    return json.dumps({'result': result})
+
+@app.route('/api/recommendation/dismiss', methods=['POST'])
+def dismiss_rec():
+    try:
+        req = request.get_json()
+        rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
+        rec.dismiss()
+        result = 'success'
+    except:
+        result = 'error'
+
+    return json.dumps({'result': result})
+
+
 
 #views
 
