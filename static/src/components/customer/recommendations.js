@@ -50,13 +50,14 @@ export default class Recommendations extends HTMLElement {
     }
 
     recommendation(rec, index){
-        const el = document.createElement('recommendation-shell')
+        const el = new Rec_shell
         el.setAttribute('rec_id', rec.rec_id)
         el.setAttribute('index', index)
         el.setAttribute('customer_id', this.customer_id)
         el.setAttribute('title', rec.title)
         el.setAttribute('body', rec.body)
 
+        
         return el
     }
 
