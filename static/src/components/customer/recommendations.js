@@ -45,8 +45,55 @@ export default class Recommendations extends HTMLElement {
         this.state = {
             data: null
         }
+        this.observer = new MutationObserver(mutations=>{
+            mutations.forEach(mutation => {
+                if (mutation.type == "attributes") {
+                    if (mutation.attributeName == 'applied') this.apply(mutation.target)
+                    else if (mutation.attributeName == 'dismissed') this.dismiss(mutation.target)
+                }
+            });
+        });
 
         this.css = styles()
+    }
+
+    remove(target){
+        const refresh = async () => this.state.data = this.state.data.filter(rec => rec.rec_id != target.getAttribute('rec_id') );
+        refresh()
+            .then(this.render(true))
+    }
+
+    apply(target){
+        this.remove(target)
+        fetch('/api/recommendation/approve', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                customer_id: this.customer_id,
+                rec_id: target.getAttribute('rec_id')
+            })
+        })
+            .then(res=>res.json())
+            .then( res=> console.log(res) )
+
+    }
+
+    dismiss(target){
+        this.remove(target)
+        fetch('/api/recommendation/dismiss', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                customer_id: this.customer_id,
+                rec_id: target.getAttribute('rec_id')
+            })
+        })
+            .then(res=>res.json())
+            .then( res=> console.log(res) )
     }
 
     recommendation(rec, index){
@@ -57,33 +104,43 @@ export default class Recommendations extends HTMLElement {
         el.setAttribute('title', rec.title)
         el.setAttribute('body', rec.body)
 
+        this.observer.observe(el, {
+            attributes: true
+        });
         
         return el
     }
 
-    render(){
+    render(state = false){
         this.shadow.innerHTML = ""
         let el = document.createElement('div')
 
-        fetch('/api/outstanding_recs', {
-            method: 'POST',
-            headers : new Headers({
-                "content-type": "application/json"
-            }),
-            body:  JSON.stringify({
-                customer_id: this.customer_id,
-                admin_id: this.admin_id
-            })
-        })
-            .then(res=>res.json())
-            .then( res=> this.state.data = res )
-            .then(res=>{
-                /*html */
-                el.innerHTML = `${this.css}`
+        const append = res => {
+            el.innerHTML = `${this.css}`
+            if (this.state.data.length == 0) {
+                el.innerHTML += `<p>You don't currently have any recommendations. We'll email you when you get one!</p>`
+            } else for (let i in res) el.appendChild(this.recommendation(res[i], i))
+        }
 
-                for (let i in res) el.appendChild(this.recommendation(res[i], i))
+        if (state == false) {
+            fetch('/api/outstanding_recs', {
+                method: 'POST',
+                headers : new Headers({
+                    "content-type": "application/json"
+                }),
+                body:  JSON.stringify({
+                    customer_id: this.customer_id,
+                    admin_id: this.admin_id
+                })
             })
-            .then(this.shadow.appendChild(el))
+                .then(res=>res.json())
+                .then( res=> this.state.data = res )
+                .then(res=>append(res))
+                .then(this.shadow.appendChild(el))
+        } else {
+            append(this.state.data)
+            this.shadow.appendChild(el)
+        }
     }
 
     connectedCallback(){

@@ -276,6 +276,30 @@ def outstanding_recs():
 
     return service.get_all_outstanding()
 
+@app.route('/api/recommendation/approve', methods=['POST'])
+def approve_rec():
+    try: 
+        req = request.get_json()
+        rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
+        rec.accept()
+        result = 'success'
+    except:
+        result = 'failure'
+
+    return json.dumps({'result': result})
+
+@app.route('/api/recommendation/dismiss', methods=['POST'])
+def dismiss_rec():
+    try:
+        req = request.get_json()
+        rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
+        rec.dismiss()
+        result = 'success'
+    except:
+        result = 'error'
+
+    return json.dumps({'result': result})
+
 
 
 #views

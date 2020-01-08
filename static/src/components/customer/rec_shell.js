@@ -15,11 +15,12 @@ const styles = () => {
         }
         .dismiss {
             position: relative;
-            right: 15%;
-            top: 10%;
+            left: 85%;
+            top: 0;
         }
         .rec-title {
             margin-bottom: 0;
+            padding-bottom: 0;
         }
         .rec-apply {
             font-size: 75%;
@@ -619,7 +620,6 @@ export default class Rec_shell extends HTMLElement {
         this.state = {
             data: null
         }
-
         this.css = styles()
 
     }
@@ -668,6 +668,29 @@ export default class Rec_shell extends HTMLElement {
         })
     }
 
+    RecEvents(){
+        const x = this.shadow.querySelectorAll(".x")
+        x.forEach(el=>{
+            el.addEventListener('click', e=>{
+                this.style.display = 'none';
+                this.setAttribute('dismissed', 'true')
+            })
+        })
+
+        const apply = this.shadow.querySelectorAll('.rec-apply')
+        
+        apply.forEach(el=>{
+            el.addEventListener('click', e=>{
+                e.currentTarget.textContent = 'Done!'
+                setTimeout(()=>{
+                    this.style.display = 'none'
+                    this.setAttribute('applied', 'true')
+                }, 1000)
+            })
+        })
+        
+    }
+
     render(){
         this.shadow.innerHTML = ''
         const colors = ['#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00']
@@ -678,17 +701,22 @@ export default class Rec_shell extends HTMLElement {
             ${this.modal(this.title, this.body)}
             <div class="rec-container">
                 <div style="border-left: 4px solid ${colors[this.index]}" class="rec">
-                    <h5 class="rec-title">${this.title}</h5>
                     <span class="x dismiss">X</span> 
+                    <h5 class="rec-title">${this.title}</h5>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-md-6 col-12">
                             <div id="six" class="button">Read more</div>
                         </div>
-                        <div class="col-6"><button class="rec-apply btn btn-secondary">Apply</button></div>
+                        <div class="col-md-6 col-12"><button class="rec-apply btn btn-secondary">Apply</button></div>
                     </div>
                 </div>
             </div>
             `.trim()
+        }
+
+        const init = () => {
+            this.RecEvents();
+            this.modal_handlers()
         }
 
         shell()
@@ -699,7 +727,7 @@ export default class Rec_shell extends HTMLElement {
                 return el
             })
             .then(el=> {this.shadow.appendChild(el); return el})
-            .then(el => this.modal_handlers())
+            .then(el => init())
     }
 
     connectedCallback(){
