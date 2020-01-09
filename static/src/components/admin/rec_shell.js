@@ -9,14 +9,10 @@ const styles = () => {
             padding: 1%;
         }
         .rec {
-            border-left: 4px solid gray;
             margin-bottom: 2%;
             padding: 5% 2% 0 5%;
         }
         .dismiss {
-            position: relative;
-            left: 85%;
-            top: 0;
         }
         .rec-title {
             margin-bottom: 0;
@@ -25,6 +21,13 @@ const styles = () => {
         .rec-apply {
             font-size: 75%;
             /*float: right;*/
+        }
+        #toolbar {
+            width: 100%;
+            text-align:left;
+        }
+        #toolbar span {
+            margin-right: 5%;
         }
         .read-more {
             margin: auto;
@@ -610,13 +613,13 @@ const styles = () => {
 
 export default class Rec_shell extends HTMLElement {
     static get observedAttributes() {
-        return ['rec-id', 'customer-id', 'title', 'body', 'index'];
+        return ['rec-id', 'customer-id', 'admin-assigned', 'title', 'body'];
     }
 
     constructor(){
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
-        
+
         this.state = {
             data: null
         }
@@ -624,7 +627,7 @@ export default class Rec_shell extends HTMLElement {
 
     }
 
-    modal(title, body){
+    modal(title, body, id){
         /*html*/
         const shell = `
         <div id="modal-container">
@@ -632,6 +635,7 @@ export default class Rec_shell extends HTMLElement {
                 <div class="modal">
                     <h2>${title}</h2>
                     <p>${body}</p>
+                    <p>Rec id: ${id}</p>
                     <svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
                         <rect x="0" y="0" fill="none" width="226" height="162" rx="3" ry="3"></rect>
                     </svg>
@@ -668,27 +672,25 @@ export default class Rec_shell extends HTMLElement {
         })
     }
 
-    RecEvents(){
-        const x = this.shadow.querySelectorAll(".x")
-        x.forEach(el=>{
-            el.addEventListener('click', e=>{
-                this.style.display = 'none';
-                this.setAttribute('dismissed', 'true')
-            })
-        })
 
-        const apply = this.shadow.querySelectorAll('.rec-apply')
-        
-        apply.forEach(el=>{
-            el.addEventListener('click', e=>{
-                e.currentTarget.textContent = 'Done!'
-                setTimeout(()=>{
-                    this.style.display = 'none'
-                    this.setAttribute('applied', 'true')
-                }, 1000)
-            })
-        })
-        
+    toolbar(){
+        const el = document.createElement('div')
+        /*html*/
+        el.innerHTML = `
+            <span>id: ${this.rec_id}</span>
+            ${this.accepted == true 
+                ? `<span class="small_txt text-success">accepted</span>`
+                : ''
+            }
+
+            ${this.dismissed == true 
+                ? `<span class="small_txt text-danger">dismissed</span>`
+                : ''
+            }
+            <span class="x dismiss">delete</span>
+        `.trim()
+
+        return el
     }
 
     render(){
@@ -698,46 +700,58 @@ export default class Rec_shell extends HTMLElement {
         const shell = async () => {
             return `
             ${this.css}
-            ${this.modal(this.title, this.body)}
+            ${this.modal(this.title, this.body, this.rec_id)}
             <div class="rec-container">
-                <div style="border-left: 4px solid ${colors[this.index]}" class="rec">
-                    <span class="x dismiss">X</span> 
-                    <h5 class="rec-title">${this.title}</h5>
-                    <div class="row">
-                        <div class="col-md-6 col-12">
-                            <div id="six" class="button">Read more</div>
-                        </div>
-                        <div class="col-md-6 col-12"><button class="rec-apply btn btn-secondary">Apply</button></div>
+                <div class="rec">
+                    <div id="six" class="button">
+                        <h5 class="rec-title">
+                            ${this.title}
+                        </h5>
                     </div>
+                    <div id="toolbar"></div>
                 </div>
             </div>
             `.trim()
         }
 
         const init = () => {
-            this.RecEvents();
             this.modal_handlers()
+
+            this.shadow.querySelector(".x").addEventListener('click', e=>{
+                this.style.display = 'none';
+                this.setAttribute('deleted', 'true')
+            })
         }
 
         shell()
             .then(html => {
                 let el = document.createElement('div')
                 el.innerHTML = html
-                this.modal_handlers()
                 return el
             })
-            .then(el=> {this.shadow.appendChild(el); return el})
-            .then(el => init())
+            .then(el => {el.querySelector("#toolbar").appendChild(this.toolbar()); return el})
+            .then(el=> this.shadow.appendChild(el))
+            .then(() => init())
     }
 
     connectedCallback(){
-        this.rec_id = parseInt(this.getAttribute('rec-id'))
+        this.rec_id = this.getAttribute('rec_id')
         this.customer_id = this.getAttribute('customer-id')
+        this.customer_id = this.getAttribute('admin-assigned')
         this.title = this.getAttribute('title')
         this.body = this.getAttribute('body')
-        this.index = parseInt(this.getAttribute('index')) % 4
+
+        const accepted = this.getAttribute('accepted')
+        this.accepted = accepted != null && parseInt(accepted) == 1
+                            ? true
+                            : false
+
+        const dismissed = this.getAttribute('dismissed')
+        this.dismissed = dismissed != null && parseInt(dismissed) == 1
+                            ? true
+                            : false
         this.render()
     }
 }
 
-document.addEventListener( 'DOMContentLoaded', customElements.define('recommendation-shell', Rec_shell))
+document.addEventListener( 'DOMContentLoaded', customElements.define('admin-recommendation-shell', Rec_shell))

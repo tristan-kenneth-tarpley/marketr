@@ -384,7 +384,7 @@ class UserService:
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
-			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in, stripe_id FROM dbo.customer_basic WHERE email = ?"
+			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in, stripe_id, company_name FROM dbo.customer_basic WHERE email = ?"
 			data, cursor = db.execute(query, True, tup)
 			data = cursor.fetchall()
 			cursor.close()
@@ -403,6 +403,7 @@ class UserService:
 					session['email'] = data[0][0]
 					session['user'] = int(uid)
 					session['stripe_id'] = data[0][7]
+					session['company_name'] = data[0][8]
 					session['user_name'] = "%s %s" % (first_name, last_name)
 					session.permanent = True
 					session.remember = True

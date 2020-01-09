@@ -267,14 +267,27 @@ def new_recommendation():
     if title is not None and body is not None:
         service.new(title=title, body=body)
 
-    return service.get_all()
+    if req.get('outstanding') and req.get('outstanding') == True:
+        return service.get_all_outstanding()
+    else:
+        return service.get_all()
 
+    
 @app.route('/api/outstanding_recs', methods=['POST'])
 def outstanding_recs():
     req = request.get_json()
     service = RecommendationService(customer_id=req.get('customer_id'))
 
     return service.get_all_outstanding()
+
+@app.route('/api/recommendation/delete', methods=['POST'])
+def delete_rec():
+    req = request.get_json()
+    rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'), admin_id=req.get('admin_id'))
+    if rec.rec_id and rec.admin_id:
+        rec.delete()
+
+    return rec.get_all_outstanding()
 
 @app.route('/api/recommendation/approve', methods=['POST'])
 def approve_rec():
@@ -283,7 +296,11 @@ def approve_rec():
         rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
         rec.accept()
         result = 'success'
-    except:
+
+        google = GoogleChatService()
+        google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'])
+    except Exception as e:
+        print(e)
         result = 'failure'
 
     return json.dumps({'result': result})
@@ -295,7 +312,11 @@ def dismiss_rec():
         rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
         rec.dismiss()
         result = 'success'
-    except:
+
+        google = GoogleChatService()
+        google.rec_dismissed(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'])
+    except Exception as e:
+        print(e)
         result = 'error'
 
     return json.dumps({'result': result})

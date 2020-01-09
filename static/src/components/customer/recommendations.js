@@ -57,14 +57,14 @@ export default class Recommendations extends HTMLElement {
         this.css = styles()
     }
 
-    remove(target){
+    remove_from_view(target){
         const refresh = async () => this.state.data = this.state.data.filter(rec => rec.rec_id != target.getAttribute('rec_id') );
         refresh()
             .then(this.render(true))
     }
 
     apply(target){
-        this.remove(target)
+        this.remove_from_view(target)
         fetch('/api/recommendation/approve', {
             method: 'POST',
             headers : new Headers({
@@ -81,7 +81,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     dismiss(target){
-        this.remove(target)
+        this.remove_from_view(target)
         fetch('/api/recommendation/dismiss', {
             method: 'POST',
             headers : new Headers({

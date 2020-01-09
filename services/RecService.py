@@ -76,3 +76,7 @@ class Recommendation(RecommendationService):
     def dismiss(self):
         query = "UPDATE recommendations SET dismissed = 1 WHERE rec_id = ?"
         db.execute(query, False, (self.rec_id,), commit=True)
+
+    def delete(self):
+        query = "DELETE FROM recommendations WHERE rec_id = ? and customer_id = ?"
+        db.execute(query, False, (self.rec_id, self.customer_id), commit=True)

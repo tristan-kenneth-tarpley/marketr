@@ -145,16 +145,15 @@ export default class PortfolioPerformance extends HTMLElement {
         <div class="row">
             <div class="col-lg-6 col-sm-12">
                 <div class="inset" style="text-align:left;">
-                    <p class="metric_labels">Funds remaining:</p>
+                    <p class="metric_labels">Funds remaining: <a class="small_txt" href="/home/settings">[Add funds]</a></p>
                     <h5 class="metric_display">$${this.funds_remaining}</h5>
-                    <a class="small_txt" href="/home/settings">Add funds</a>
+                    
                     <br><br>
                     <p class="metric_labels">Amount spent:</p>
                     <h5 class="metric_display">${handle('cost', 'cost')}</h5>
 
-                    <p class="metric_labels">Targeted spend per week:</p>
+                    <p class="metric_labels">Targeted spend per week: <a class="small_txt" href="/home/settings">[Modify]</a></p>
                     <h5 class="metric_display">${this.spend_rate != null ? currency(this.spend_rate*12/52) : currency(0)}</h5>
-                    <a class="small_txt" href="/home/settings">Modify</a>
                 </div>
             </div>
             <div class="col-lg-6 col-sm-12">

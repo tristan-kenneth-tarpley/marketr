@@ -21,6 +21,20 @@ class GoogleChatService:
             body=json.dumps(msg),
         )
 
+    def rec_accepted(self, rec_id=None, user=None, email=None, company=None):
+        url = 'https://chat.googleapis.com/v1/spaces/AAAApItvQ6A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Wg61u0WhI6AY40Z9F4RwUVfmGP6nxtXTbhFECcvFVlE%3D'
+        msg = {
+            'text': f'Recommendation {rec_id} accepted\nCompany: {company}\nEmail: {email}\nUser id: {user}'
+        }
+        self.send(url, msg)
+
+    def rec_dismissed(self, rec_id=None, user=None, email=None, company=None):
+        url = 'https://chat.googleapis.com/v1/spaces/AAAApItvQ6A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Wg61u0WhI6AY40Z9F4RwUVfmGP6nxtXTbhFECcvFVlE%3D'
+        msg = {
+            'text': f'Recommendation {rec_id} dismissed\nCompany: {company}\nEmail: {email}\nUser id: {user}'
+        }
+        self.send(url, msg)
+
     def error(self, e_type, user):
         url = 'https://chat.googleapis.com/v1/spaces/AAAAKn8VwAs/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=hdngqlJ25rMELyt67mftmaKlw62QVRcCN-oxyNP6khA%3D'
         msg = {
