@@ -378,7 +378,7 @@
 		{% set p = None %}
 	{% endif %}
 
-	{% set large_md_sm_col = 'col-lg-3 col-md-3 col-sm-5' %}
+	{% set large_md_sm_col = 'col-lg-3 col-md-4 col-sm-5' %}
 
 	{% macro core(h6, p, tile_type, file_path, sub_name) %}
 
@@ -539,7 +539,8 @@
 	{% else %}
 		<div class="col">
 	{% endif %}
-
+	
+	{% if not type | tiles %}
 		{{ create_label_p(label, 'l', name=name, why=why, what=what, copy=copy, target=target) }}
 		{{ create_label_p(p_label, 'p', p_label=p_label, why=why, what=what, copy=copy, target=target) }}
 
@@ -549,6 +550,18 @@
 			</div>
 		</div>
 	</div>
+
+	{% else %}
+		<div class="tiles-row row">
+			<div class="col">
+				{{ create_label_p(label, 'l', name=name, why=why, what=what, copy=copy, target=target) }}
+				{{ create_label_p(p_label, 'p', p_label=p_label, why=why, what=what, copy=copy, target=target) }}
+				{{ create_element(why, what, copy, target, 'l', label, type, placeholder, format, name, route, required, file_path, sub_name, form, p_label, h6=h6, p=p) }}
+			</div>
+		</div>
+	</div>
+
+	{% endif %}
 
 {% endmacro %}
 
@@ -597,7 +610,6 @@
 				{% if current == 0 or not questions[last_string]['a_format'] | layout %}
 					{{ open_row(debug=False) }}
 				{% endif %}
-	
 
 					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
 						

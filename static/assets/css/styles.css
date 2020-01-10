@@ -732,7 +732,7 @@ html {
 }
 
 .btn-neutral {
-  background-color: #FFFFFF;
+  background-color: transparent;
   font-weight: bold;
   text-transform: uppercase;
   color: var(--secondary); }
@@ -1394,7 +1394,11 @@ p.description {
   font-weight: 300; }
 
 .root-card {
-  box-shadow: none !important;
+  padding: 2%;
+  box-shadow: 0 -1px 8px rgba(255,255,255,1),
+              0 4px 8px rgba(0,0,0,.2),
+              inset 0 2px 4px rgba(255,255,255,1),
+              inset 0 -2px 4px rgba(0,0,0,.2) !important;
 }
 
 .category,
@@ -3898,41 +3902,61 @@ Created using IcoMoon - icomoon.io
 .type .card:nth-of-type(1) {
   border-bottom: 5px solid #ffd8ad;
 }
+.tiles-row {
+  box-shadow: 0 -3px 8px rgba(0,0,0,.2),
+              0 4px 10px rgba(255,255,255,1),
+              inset 0 2px 4px rgba(0,0,0,.2),
+              inset 0 -2px 4px rgba(255,255,255,1);
+  background: var(--panel-bg) !important;
+  padding: 5%;
+  border-radius: 15px;
+}
 .hover_box {
   overflow: hidden !important;
-  border-radius: 20px;
   border: 4px solid transparent;
-  box-shadow: var(--md-box-shadow);
   color: rgba(0,0,0,.7);
   cursor: pointer;
-  /*display: inline-block;*/
   display: flex;
   margin: 1% auto;
   padding: 2% .5%;
   transition-duration: .3s;
 }
 .hover_box > table {
-  padding: 0 !important;
+  padding: 10% !important;
+  border-radius: 50px;
   margin: auto auto;
   text-align: center;
-}
-.hover_box > table > thead {
+  height: 100%;
+  background: var(--panel-bg);
+  text-shadow: 0 2px 0 rgba(255,255,255,1);
+  box-shadow: 0 -3px 8px rgba(255,255,255,1),
+              0 4px 8px rgba(0,0,0,.2),
+              inset 0 2px 4px rgba(255,255,255,1),
+              inset 0 -2px 4px rgba(0,0,0,.2);
+  transition: all .5s ease;
 }
 .hover_box h6 {
-  color: var(--secondary);
   vertical-align: bottom;
 }
-.hover_box p {
+.hover_box_selected > table {
+  transition: all .5s ease;
+  background: #e5e5e5;
+  color: #555;
+  box-shadow: 0 -3px 8px rgba(0,0,0,.2),
+              0 4px 10px rgba(255,255,255,1),
+              inset 0 2px 4px rgba(0,0,0,.2),
+              inset 0 -2px 4px rgba(255,255,255,1);           
 }
-.hover_box:not(.hover_box_selected):hover {
-  border: 4px solid #cdeff5;
+.hover_box:not(.hover_box_selected):hover h6,
+.hover_box:not(.hover_box_selected):hover p {
+  color: #999 !important;
 }
-.hover_box_selected {
+/* .hover_box_selected {
   border: 4px solid var(--secondary);
 }
 .hover_box_selected:hover {
   border: 4px solid #e99980;
-}
+} */
 .hover_box img {
   height: 120px;
   width: 120px;
