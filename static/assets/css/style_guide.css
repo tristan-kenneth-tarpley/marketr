@@ -5,7 +5,7 @@
   --secondary: #ca7d66;
   --plum: #CB2780;
   --body-copy: rgb(87,102,126);
-  --panel-bg: #f0f0f0;
+  --panel-bg: #f3f3f3;
   --label-color: rgba(87,102,126, .9);
 
   /* chat */
@@ -54,4 +54,13 @@
   --sm-box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
   --md-box-shadow: 0 4px 6px 0 hsla(0,0%,0%,0.2);
   --card-box-shadow: 0 1px 5px 1px rgba(39, 39, 39, 0.1);
+  --silicon-raised: 0 -3px 8px rgba(255,255,255,1),
+                    0 4px 8px rgba(0,0,0,.2),
+                    inset 0 2px 4px rgba(255,255,255,1),
+                    inset 0 -2px 4px rgba(0,0,0,.2);
+
+  --silicon-depressed:0 -3px 8px rgba(0,0,0,.2),
+                      0 4px 10px rgba(255,255,255,1),
+                      inset 0 2px 4px rgba(0,0,0,.2),
+                      inset 0 -2px 4px rgba(255,255,255,1);
 }

@@ -1395,10 +1395,13 @@ p.description {
 
 .root-card {
   padding: 2%;
+}
+.intake.root-card {
   box-shadow: 0 -1px 8px rgba(255,255,255,1),
               0 4px 8px rgba(0,0,0,.2),
               inset 0 2px 4px rgba(255,255,255,1),
               inset 0 -2px 4px rgba(0,0,0,.2) !important;
+
 }
 
 .category,
@@ -2822,7 +2825,7 @@ Created using IcoMoon - icomoon.io
     .off-canvas-sidebar .nav li.active > a {
       background-color: transparent;
       /*border-left: 3px solid white;*/
-      box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1); 
+      box-shadow: var(--silicon-depressed)
     }
     .sidebar .nav li > a {
       background-color: transparent;
@@ -3898,11 +3901,13 @@ Created using IcoMoon - icomoon.io
 .type .card {
   padding: 3%;
 }*/
-
+.silicon {
+  background: var(--panel-bg);
+}
 .type .card:nth-of-type(1) {
   border-bottom: 5px solid #ffd8ad;
 }
-.tiles-row {
+/* .tiles-row {
   box-shadow: 0 -3px 8px rgba(0,0,0,.2),
               0 4px 10px rgba(255,255,255,1),
               inset 0 2px 4px rgba(0,0,0,.2),
@@ -3910,7 +3915,7 @@ Created using IcoMoon - icomoon.io
   background: var(--panel-bg) !important;
   padding: 5%;
   border-radius: 15px;
-}
+} */
 .hover_box {
   overflow: hidden !important;
   border: 4px solid transparent;
@@ -3929,10 +3934,7 @@ Created using IcoMoon - icomoon.io
   height: 100%;
   background: var(--panel-bg);
   text-shadow: 0 2px 0 rgba(255,255,255,1);
-  box-shadow: 0 -3px 8px rgba(255,255,255,1),
-              0 4px 8px rgba(0,0,0,.2),
-              inset 0 2px 4px rgba(255,255,255,1),
-              inset 0 -2px 4px rgba(0,0,0,.2);
+  box-shadow: var(--silicon-raised);
   transition: all .5s ease;
 }
 .hover_box h6 {
@@ -3942,10 +3944,7 @@ Created using IcoMoon - icomoon.io
   transition: all .5s ease;
   background: #e5e5e5;
   color: #555;
-  box-shadow: 0 -3px 8px rgba(0,0,0,.2),
-              0 4px 10px rgba(255,255,255,1),
-              inset 0 2px 4px rgba(0,0,0,.2),
-              inset 0 -2px 4px rgba(255,255,255,1);           
+  box-shadow: var(--silicon-depressed);         
 }
 .hover_box:not(.hover_box_selected):hover h6,
 .hover_box:not(.hover_box_selected):hover p {
@@ -4055,6 +4054,8 @@ Created using IcoMoon - icomoon.io
   margin-bottom: 5%;
   text-transform: uppercase;
   font-weight: bold;
+  background: #f0f0f0;
+  box-shadow: var(--silicon-depressed);
 }
 li.breadcrumb-item:not(.active) a {
   color: var(--breadcrumb-not-active);
@@ -4824,7 +4825,7 @@ li.breadcrumb-item.active a {
   }
 }
 .target {
-  box-shadow: var(--card-box-shadow);
+  box-shadow: var(--silicon-raised);
   padding: 0 !important;
   margin-bottom: 20px;
 }
@@ -4843,7 +4844,7 @@ li.breadcrumb-item.active a {
 }
 .target_container {
   position: relative;
-  background-color: hsl(220, 12%, 95%);
+  background-color: var(--panel-bg);
   border-top: 1px solid hsl(220, 12%, 95%);
   height: 60px;
   width: 100%;
@@ -11635,12 +11636,17 @@ left: -6px;
 
 .allocation_toggle {
   font-size: 75% !important;
-  box-shadow: var(--sm-box-shadow);
+  box-shadow: var(--silicon-depressed);
   height: 50px !important;
   width: 90px !important;
   margin-bottom: 4%;
   margin-left: 0;
   margin-right: 0;
+}
+.allocation_toggle:hover {
+  color: #999;
+  background-color: var(--primary);
+  box-shadow: var(--silicon-depressed);
 }
 .allocation_toggle:nth-child(1){
   border-radius: 100px 0 0 100px;
@@ -11650,11 +11656,15 @@ left: -6px;
   margin-left: -1%;
 }
 .allocation_toggle-inactive {
-  box-shadow: var(--inset-box-shadow);
+  box-shadow: var(--silicon-raised);
   background-color: white;
   color: rgba(0,0,0,.3);
-  border: 1px solid rgba(0,0,0,.3);
+  border: none;
   opacity: .8;
+}
+.allocation_toggle-inactive:hover {
+  background-color: white !important;
+  box-shadow: var(--silicon-raised) !important;
 }
 
 
