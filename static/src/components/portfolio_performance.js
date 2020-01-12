@@ -1,3 +1,5 @@
+import PortfolioTrendline from '/static/src/components/portfolio_trendline.js'
+
 const styles = () => {
     /*html*/
     return `
@@ -235,14 +237,25 @@ export default class PortfolioPerformance extends HTMLElement {
             .catch((err)=>console.log(err))
     }
 
-    render(){
+    trendline(){
+        const el = new PortfolioTrendline()
+        el.setAttribute('customer_id', this.customer_id)
+        el.setAttribute('company_name', this.company_name)
+        return el
+    }
+
+    render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
         /*html */
         el.innerHTML = `
             ${this.css}
+            <div class="row">
+                <div id="trendline" class="col">
+                </div>
+            </div>
             <div style="text-align:center;">
-            <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
+                <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
             <div>
             <div style="text-align:center;">
                 <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
@@ -250,21 +263,23 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div id="container"></div>
             </div>
         `
+        if (!init) el.querySelector('#trendline').appendChild(this.trendline())
         this.shadow.appendChild(this.summary_handlers(el));
     }
 
     connectedCallback(start=now()) {
         this.render()
         setTimeout(()=>{
+            this.start_date = start
             fetch('/api/portfolio_metrics', {
                 method: 'POST',
                 headers : new Headers({
                     "content-type": "application/json"
                 }),
                 body:  JSON.stringify({
-                    start_date: start,
+                    start_date: this.start_date,
                     customer_id: this.customer_id,
-                    company_name: this.company_name,
+                    company_name: this.customer_id == 200 ? "o3" : this.company_name,
                     google: this.google_id,
                     facebook: this.facebook_id
                 })
@@ -272,7 +287,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 .then((res) => res.json())
                 .then((data) => {
                     this.state.data = data
-                    this.render()
+                    this.render(false)
                 })
                 .then(()=> this.shadow.querySelector('#insights').disabled = false)
                 .catch((err)=>console.log(err))

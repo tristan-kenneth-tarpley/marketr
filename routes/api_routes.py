@@ -246,7 +246,22 @@ def portfolio_metrics():
 
     portfolio = Portfolio(agg=df)
     returned = portfolio.group(req.get('start_date'))
+
     return returned
+
+@app.route('/api/portfolio/trend_line', methods=['POST'])
+def portfolio_trends():
+    req = request.get_json()
+    orm = GoogleORM(req.get('company_name'))
+    df = orm.agg()
+
+    print(df)
+
+    portfolio = Portfolio(agg=df)
+    returned = portfolio.trendline()
+
+    return returned
+
 
 @app.route('/api/unclaimed_achievements', methods=['GET'])
 @login_required

@@ -235,13 +235,35 @@
         ) }}
     </div>
     <div class="col-lg-4 col-md-5 col-sm-12">
-        {{ section(
-            link=None,
-            title="Recommendations",
-            body=recommendations(page),
-            hash=None,
-            admin=page.admin
-        ) }}
+        <div class="row">
+            <div class="col">
+                {{ section(
+                    link=None,
+                    title="Recommendations",
+                    body=recommendations(page),
+                    hash=None,
+                    admin=page.admin
+                ) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% macro tactics_empty() %}
+                    <div class="tactics_loading" id="loading">
+                        <div class="load-circle"><span class="one"></span></div>
+                    </div>
+                    <div id='tactics_mount'></div>
+                {% endmacro %}
+
+                {{ section(
+                    link=None,
+                    title="Tactic of the Day",
+                    body=tactics_empty(),
+                    hash="tactics",
+                    admin=page.admin
+                ) }}
+            </div>
+        </div>
     </div>
 </div>
 {% endif %}
@@ -262,24 +284,6 @@
     </div>
 </div>
         
-<div class="row">'
-    <div class="col-lg-6 col-sm-12">
-        {% macro tactics_empty() %}
-            <div class="tactics_loading" id="loading">
-                <div class="load-circle"><span class="one"></span></div>
-            </div>
-            <div id='tactics_mount'></div>
-        {% endmacro %}
-
-        {{ section(
-            link=None,
-            title="Tactic of the Day",
-            body=tactics_empty(),
-            hash="tactics",
-            admin=page.admin
-        ) }}
-    </div>
-</div> 
 
 {# wrap script tags in macro #}
 

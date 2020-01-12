@@ -32,6 +32,28 @@ class Portfolio:
             df = df[mask].fillna(0)
             self.agg = df
 
+    def trendline(self):
+        if self.agg is not None:
+            df = self.agg.fillna(0)
+    
+            df['cpc'] = df.cost/df.clicks
+            df['visits_per_thousand'] = 1000 / df.cpc
+            df = df.drop_duplicates(keep='first')
+            df = df.fillna(0)
+
+            df['range'] = pd.to_datetime(df['week']) - pd.to_timedelta(7, unit='d')
+            df = df.groupby(['week', pd.Grouper(key='range', freq='W-MON')])['visits_per_thousand'].sum().reset_index().sort_values('range')
+            df['range'] = df.range.dt.strftime('%Y-%m-%d')
+
+            df = df.groupby(['range'])['visits_per_thousand'].mean().reset_index().sort_values('range')
+
+            return df.to_json(orient='records')
+        else:
+            return json.dumps([
+                {'range': "0000-00-00", "visits_per_thousand": 0}
+            ])
+
+
     def group(self, start_date):
         self.clean(start_date)
 
@@ -90,6 +112,5 @@ class Portfolio:
                     'site_visits': 0
                 }
             }
-        print(returned)
 
         return json.dumps(returned)

@@ -21,6 +21,7 @@ const styles = () => {
         .rec-title {
             margin-bottom: 0;
             padding-bottom: 0;
+            font-size: 97%;
         }
         .rec-apply {
             font-size: 75%;
@@ -46,11 +47,18 @@ const styles = () => {
             position: fixed;
             display: table;
             height: 100%;
-            width: 100%;
+            width: 75%;
+            left: 260px;
+            right: 0;
             top: 0;
-            left: 0;
             transform: scale(0);
-            z-index: 1;
+            z-index: 1000;
+            }
+            @media only screen and (max-width: 990px) {
+            #modal-container {
+                left: 0;
+                width: 100%;
+            }
             }
             #modal-container.one {
             transform: scaleY(0.01) scaleX(0);

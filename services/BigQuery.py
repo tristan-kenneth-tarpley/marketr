@@ -38,7 +38,7 @@ class GoogleORM(BigQuery):
     
     def fb_performance(self):
         sql = f"""
-        SELECT impressions, ctr, clicks, reach, cpc, cpm, spend, frequency, date_start FROM `{self.project_id}.{self.company_name}_facebook.ads_insights` 
+        SELECT impressions, ctr, clicks, reach, cpc, cpm, spend, frequency, date_start as week FROM `{self.project_id}.{self.company_name}_facebook.ads_insights` 
         """
         return self.get(sql)
 
