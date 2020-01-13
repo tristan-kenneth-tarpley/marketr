@@ -54,17 +54,17 @@ class GoogleORM(BigQuery):
         FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`"""
 
         g_fb = google + " union all " + facebook
-        return self.get(g_fb)
-        # try:
-        #     return self.get(g_fb)
-        # except:
-        #     try:
-        #         return self.get(google)
-        #     except:
-        #         try:
-        #             return self.get(facebook)
-        #         except:
-        #             return None
+        # return self.get(g_fb)
+        try:
+            return self.get(g_fb)
+        except:
+            try:
+                return self.get(google)
+            except:
+                try:
+                    return self.get(facebook)
+                except:
+                    return None
 
             
         

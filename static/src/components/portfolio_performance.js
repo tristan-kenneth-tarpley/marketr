@@ -243,10 +243,6 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html */
         el.innerHTML = `
             ${this.css}
-            <div class="row">
-                <div id="trendline" class="col">
-                </div>
-            </div>
             <div style="text-align:center;">
                 <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
             <div>
@@ -256,7 +252,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div id="container"></div>
             </div>
         `
-        el.querySelector('#trendline').appendChild(this.trendline())
         this.shadow.appendChild(this.summary_handlers(el));
     }
 
@@ -286,7 +281,6 @@ export default class PortfolioPerformance extends HTMLElement {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data)
                     this.state.data = data
                     this.render(false)
                 })

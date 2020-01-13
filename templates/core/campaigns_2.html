@@ -203,6 +203,11 @@
 
 
 {% macro performance(page) %}
+<portfolio-trendline
+    customer_id="{{page.data['core']['core'][0]['id']}}"
+    company_name="{{page.data['core']['core'][0]['company_name']}}"
+></portfolio-trendline
+    >
 <portfolio-performance
     google_id="{{page.data['core']['core'][0]['google_id']}}"
     facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
