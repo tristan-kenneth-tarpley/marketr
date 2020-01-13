@@ -23,7 +23,7 @@ class BigQuery(object):
         self.project_id = 'marketr-app'
         
     def get(self, sql):
-        return pandas_gbq.read_gbq(sql, project_id=self.project_id)
+        return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
 
 
 
