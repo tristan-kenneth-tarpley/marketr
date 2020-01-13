@@ -123,6 +123,7 @@ export default class PortfolioTrendline extends HTMLElement {
     connectedCallback() {
         this.customer_id = this.getAttribute('customer-id')
         this.company_name = this.getAttribute('company_name')
+        console.log(this.customer_id == 200 ? "o3" : this.company_name)
         this.render()
 
         setTimeout(()=>{
