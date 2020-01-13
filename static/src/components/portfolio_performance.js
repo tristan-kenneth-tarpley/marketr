@@ -287,6 +287,7 @@ export default class PortfolioPerformance extends HTMLElement {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data)
                     this.state.data = data
                     this.render(false)
                 })
