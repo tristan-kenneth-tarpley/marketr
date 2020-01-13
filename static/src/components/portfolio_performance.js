@@ -268,7 +268,6 @@ export default class PortfolioPerformance extends HTMLElement {
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
         this.insights_json = eval(this.getAttribute('insights'))
-        console.log(this.customer_id == 200 ? "o3" : this.company_name)
         this.render()
         setTimeout(()=>{
             this.start_date = start
