@@ -39,8 +39,6 @@ class Portfolio:
             df['cpc'] = df.cost/df.clicks
             df['visits_per_thousand'] = 1000 / df['cpc']
             df = df.replace([np.inf, -np.inf], 0).drop_duplicates(keep='first').fillna(0)
-
-            print(df[['visits_per_thousand', 'cpc']])
             
             df['range'] = pd.to_datetime(df['week']) - pd.to_timedelta(7, unit='d')
             df = df.groupby(['week', pd.Grouper(key='range', freq='W-MON')])['visits_per_thousand'].sum().reset_index().sort_values('range')
