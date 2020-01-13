@@ -263,7 +263,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div id="container"></div>
             </div>
         `
-        if (!init) el.querySelector('#trendline').appendChild(this.trendline())
+        el.querySelector('#trendline').appendChild(this.trendline())
         this.shadow.appendChild(this.summary_handlers(el));
     }
 

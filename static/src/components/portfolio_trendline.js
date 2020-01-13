@@ -103,14 +103,14 @@ export default class PortfolioTrendline extends HTMLElement {
             el.innerHTML = `
                 ${this.css}
                 <div class="row">  
-                    <div style="margin: 0 auto;" class="col">
-                    <div style="margin: 0 auto;" class="loading_dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                    <div style="text-align:center;margin: 0 auto;" class="col">
+                        <div style="margin: 0 auto;" class="loading_dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
                     </div>
                 </div>
             `
