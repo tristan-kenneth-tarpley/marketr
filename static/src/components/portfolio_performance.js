@@ -42,13 +42,6 @@ export default class PortfolioPerformance extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
-        this.customer_id = this.getAttribute('customer-id')
-        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
-        this.google_id = this.getAttribute('google_id') != null ? true : false
-        this.company_name = this.getAttribute('company-name')
-        this.spend_rate = this.getAttribute('spend_rate')
-        this.funds_remaining = this.getAttribute('funds_remaining')
-        this.insights_json = eval(this.getAttribute('insights'))
         this.state = {
             data: null
         }
@@ -268,6 +261,14 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     connectedCallback(start=now()) {
+        this.customer_id = this.getAttribute('customer-id')
+        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
+        this.google_id = this.getAttribute('google_id') != null ? true : false
+        this.company_name = this.getAttribute('company-name')
+        this.spend_rate = this.getAttribute('spend_rate')
+        this.funds_remaining = this.getAttribute('funds_remaining')
+        this.insights_json = eval(this.getAttribute('insights'))
+        console.log(this.customer_id == 200 ? "o3" : this.company_name)
         this.render()
         setTimeout(()=>{
             this.start_date = start

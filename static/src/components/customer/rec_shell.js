@@ -663,7 +663,6 @@ export default class Rec_shell extends HTMLElement {
                 modal_container.forEach(el=>{
                     el.removeAttribute('class')
                     el.classList.add(buttonId)
-                    document.querySelector(".sidebar").style.zIndex = 0
                 })
 
                 body.classList.add('modal-active')
