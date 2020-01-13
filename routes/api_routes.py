@@ -255,8 +255,6 @@ def portfolio_trends():
     orm = GoogleORM(req.get('company_name'))
     df = orm.agg()
 
-    print(df)
-
     portfolio = Portfolio(agg=df)
     returned = portfolio.trendline()
 

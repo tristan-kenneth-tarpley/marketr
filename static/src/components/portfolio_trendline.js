@@ -132,7 +132,7 @@ export default class PortfolioTrendline extends HTMLElement {
                     "content-type": "application/json"
                 }),
                 body:  JSON.stringify({
-                    company_name: this.company_name == "Acme Widgets" ? "o3" : this.company_name,
+                    company_name: this.customer_id == 200 ? "o3" : this.company_name,
                     customer_id: this.customer_id
                 })
             })

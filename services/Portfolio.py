@@ -18,7 +18,6 @@ class Portfolio:
         next_sunday = timedelta(days=end_offset)
         end = d + next_sunday
 
-        
         return start, end
 
     def clean(self, start_date):
