@@ -46,7 +46,7 @@ class GoogleORM(BigQuery):
         google = f"""
         SELECT ctr, clicks, cost/1000000 as cost, conversions, impressions, interactions, week, null as date_stop
 
-        FROM `{self.project_id}.marketr_google.ACCOUNT_PERFORMANCE_REPORT`"""
+        FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT`"""
 
         facebook = f"""SELECT ctr, clicks, spend as cost, null as conversions, impressions, reach as interactions, CAST(EXTRACT(DATE FROM date_start) AS string) as week, CAST(EXTRACT(DATE FROM date_stop) AS string) as date_stop
         FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`"""
