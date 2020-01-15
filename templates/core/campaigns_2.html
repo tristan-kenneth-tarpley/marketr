@@ -176,7 +176,7 @@
     <p class="center_it">Below is your personalized marketing portfolio mix based on a budget of <strong><span class="viewed_budget"></span></strong>.</p>
     <div class="row">
         <div class="col-lg-6 col-sm-12">
-            <canvas width="100%" height="60%" id="allocation_canvas"></canvas>
+            <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
         </div>
         <div class="col-lg-6 col-sm-12">
             <br>
@@ -188,7 +188,7 @@
             </div>
         </div>
     </div>
-    {% if not page.data['core']['core'][0].get('current_plan') %}
+    {#{% if not page.data['core']['core'][0].get('current_plan') %}
     <div class="row row_cancel">
         <div class="center_it small_txt col card negative_card">
             <h5><strong>See how easy it can be?</strong></h5>
@@ -198,7 +198,7 @@
             <a href="{{url_for('pricing')}}" class="campaign_cta small_txt btn btn-primary">Start campaigns</a>
         </div>
     </div>
-    {% endif %}
+    {% endif %}#}
 {% endmacro %}
 
 
@@ -309,7 +309,8 @@
             "{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}",
             "{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}",
             "{{base.get('selling_to')}}",
-            "{{base.get('biz_model')}}"
+            "{{base.get('biz_model')}}",
+            "{{base.get('current_plan')}}"
         )
         spendobj.get()
     </script>

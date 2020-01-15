@@ -1,6 +1,7 @@
 import math
 import data.db as db
 import pandas as pd
+import json
 
 class GetRec:
     def __init__(self, revenue, stage, model, sales_model, growth_needs):
@@ -40,6 +41,7 @@ class GetRec:
         avg = (stage_table.get(self.stage) + (sales_table.get(self.sales_model) * sales_multiplier) + tag_table.get(self.model)) / 3 + (growth_needs_table.get(self.growth_needs) - 1)
         formula = self.revenue * base * avg / 12
         return formula
+
 
 
 class SpendAllocation:
@@ -124,17 +126,25 @@ class SpendAllocation:
         
     def num_tactics(self):
         if self.budget <= 1000:
+            tactics = 2
+            campaigns = 3
+        elif self.budget > 1000 and self.budget <= 2000:
             tactics = 3
-        elif self.budget > 1000 and self.budget <= 3000:
+            campaigns = 4
+        elif self.budget > 2000 and self.budget <= 3500:
+            tactics = 3
+            campaigns = 5
+        elif self.budget > 3500 and self.budget <= 5500:
+            tactics = 3
+            campaigns = 6
+        elif self.budget > 5500 and self.budget <= 10000:
             tactics = 4
-        elif self.budget > 3000 and self.budget <= 5000:
-            tactics = 5
-        elif self.budget > 5000 and self.budget <= 10000:
-            tactics = 6
+            campaigns = 9
         elif self.budget > 10000:
-            tactics = 8
+            tactics = 5
+            campaigns = 12
             
-        return math.floor(tactics)
+        return math.floor(tactics), math.floor(campaigns)
 
     def get_tags(self):
         # db = db_obj()
@@ -153,31 +163,119 @@ class SpendAllocation:
         return pd.DataFrame(tags).sort_values(by=['priority_scale'], ascending=False)
 
     def allocation(self):
-#         base_table = self.base_mix
-#         awareness_adj, evaluation_adj, conversion_adj = self.adjustments()
-        
-#         awareness, evaluation, conversion = (
-#             (base_table['awareness'] + awareness_adj),
-#             (base_table['evaluation'] + evaluation_adj),
-#             (base_table['conversion'] + conversion_adj)
-#         )
-#         awareness_spend, evaluation_spend, conversion_spend = (
-#             awareness * self.budget,
-#             evaluation * self.budget,
-#             conversion * self.budget
-#         )
-        
-#         tactics = self.num_tactics()
-#         awareness_tactics, evaluation_tactics, conversion_tactics = (
-#             math.floor(base_table['awareness'] * tactics),
-#             round(base_table['evaluation'] * tactics),
-#             round(base_table['conversion'] * tactics)
-#         )
-        num_tactics = self.num_tactics()
+        num_tactics, num_campaigns = self.num_tactics()
         tags = self.get_tags()
-        tags = tags[:num_tactics]
-        tags['num_campaigns'] = len(tags.priority_scale)
-        tags['spend_per_tactic'] = self.budget * tags['priority_scale'] / tags['priority_scale'].sum()
-        tags['spend_percent'] = tags['spend_per_tactic'] / self.budget * 100
+        df = tags[:num_tactics]
+        priority_sum = df['priority_scale'].sum()
+        df['spend_per_tactic'] = self.budget * df['priority_scale'] / priority_sum
+        df['spend_percent'] = df['spend_per_tactic'] / self.budget
+        df['num_campaigns'] = (df['spend_percent'] * num_campaigns).apply(lambda x: 1 if x < 1 else math.floor(x))
 
-        return (tags.to_json(orient='records'))
+        return df.to_json(orient='records')
+    
+    def campaign_allocation(self):
+        buckets = json.loads(self.allocation())
+        campaigns = [{
+                'bucket': 'search',
+                'biz_type': ['all'],
+                'campaigns': [
+                    'Activity keyword targeting',
+                    'Product / service keywords',
+                    'Retargeting search',
+                    'A/B testing Campaign 1',
+                    'A/B testing Campaign 2',
+                    'A/B testing Campaign 3'
+            ]}, {
+                'bucket': 'social',
+                'biz_type': ['b2b'],
+                'campaigns': [
+                    'LinkedIn industry / product keywords',
+                    'LinkedIn retargeting display',
+                    'LinkedIn career-focused targeting',
+                    'Complimentary product targeting',
+                    'A/B testing Campaign 1',
+                    'A/B testing Campaign 2',
+                    'A/B testing Campaign 3'
+            ]},  {
+                'bucket': 'social',
+                'biz_type': ['b2c'],
+                'campaigns': [
+                    'Facebook demographic targeting',
+                    'Facebook retargeting display',
+                    'A/B testing Campaign 1',
+                    'A/B testing Campaign 2',
+                    'A/B testing Campaign 3'
+            ]},  {
+                'bucket': 'seo',
+                'biz_type': ['all'],
+                'campaigns': [
+                    'Primary issue(s) + solution content',
+                    'Lead magnet content',
+                    'Long-tail keyword content'
+            ]},  {
+                'bucket': 'outbound email',
+                'biz_type': ['all'],
+                'campaigns': [
+                    'Lead nurturing drip campaign',
+                    'Inactive customer campaign'
+            ]}, {
+                'bucket': 'display networks',
+                'biz_type': ['all'],
+                'campaigns': [
+                    'Retargeting search',
+                    'Demographic targeting',
+                    'A/B testing Campaign 1',
+                    'A/B testing Campaign 2',
+                    'A/B testing Campaign 3'
+            ]}]
+        
+        
+        def added_campaigns(campaign_list, bucket_name):
+            def add(added, campaign_list=campaign_list):
+                return campaign_list.append(added)
+            
+            if self.budget > 1000:
+                if self.competitiveness in ['high', 'medium']:
+                    if bucket_name == 'search':
+                        add('Direct Competitor Search Campaign')
+                
+                if self.biz_type == 'b2b':
+                    if bucket_name == 'search':
+                        add('Industry keywords')
+                    
+                if self.brand_strength == 'low' and self.biz_type == 'b2c':
+                    if bucket_name == 'social':
+                        add('Additional Facebook Display Campaign')
+                    
+                if self.brand_strength == 'low' and self.biz_type == 'b2b':
+                    if bucket_name == 'social':
+                        add('Additional LinkedIn Display Campaign')
+                if self.brand_strength in ['high', 'medium']:
+                    if bucket_name == 'social':
+                        add('Branded search campaign')
+                    
+            return campaign_list
+
+        allocation = list()
+        
+        for bucket in buckets:
+            num_campaigns = bucket['num_campaigns']
+            bucket_name = bucket['bucket'].lower()
+            sets = [campaign for campaign in campaigns if campaign['bucket'] == bucket_name]
+
+            for set in sets:
+                print(self.biz_type)
+                if self.biz_type.lower() in set.get('biz_type') or set.get('biz_type')[0] == 'all':
+                    campaignset = added_campaigns(set.get('campaigns')[:num_campaigns], bucket_name)
+                    allocation.append({
+                        'bucket': bucket_name,
+                        'spend': bucket['spend_per_tactic'],
+                        'spend_percent': bucket['spend_percent'],
+                        'num_campaigns': len(campaignset),
+                        'campaigns': campaignset
+                    }) 
+
+        
+                    
+        return json.dumps(allocation)
+        
