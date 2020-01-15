@@ -4781,7 +4781,7 @@ li.breadcrumb-item.active a {
   width: 40%;
   display: block;
   position: absolute;
-  height: 4px;
+  height: 3px;
   bottom: 100%;
   background: #e5e5e5;
   left: 30%;
@@ -4790,15 +4790,16 @@ li.breadcrumb-item.active a {
 .perc_width {
   border-radius: 0.1875rem;
   content: "";
-  display: block;
+  display: absolute;
   margin: auto 0;
   position: absolute;
   height: 10px;
+  bottom: -100%;
   background: var(--secondary);
   left: 0;
 }
 .percentages .card {
-  padding-bottom: 12%;
+  padding-bottom: 5%;
   margin: 3% auto;
 }
 

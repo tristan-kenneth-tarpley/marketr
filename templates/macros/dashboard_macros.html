@@ -10,19 +10,19 @@
 
 {% macro goals(page) %}
     {% if page.data['core']['core'][0]['goal'] %}
-        <p><strong>Our primary marketing goal is to improve {{page.data['core']['core'][0]['goal'] | lower | clean_chars }}:</strong></p>
+        <p>The primary marketing goal is to improve {{page.data['core']['core'][0]['goal'] | lower | clean_chars }}:</p>
         <div class="row goal_container">
             <div class="col-lg-4 col-sm-12">
-                <h6>From:</h6>
-                <p><strong>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['current_avg'] }} per month</strong></p>
+                <h6 class="small_txt">From:</h6>
+                <p>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['current_avg'] }} per month</p>
             </div> 
             <div class="col-lg-4 col-sm-12">
-                <h6>To:</h6>
-                <p><strong>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['target_avg'] }} per month</strong></p>   
+                <h6 class="small_txt">To:</h6 class="small_txt">
+                <p>{{ '$' if page.data['core']['core'][0]['goal'] == 'Revenue' }}{{ page.data['core']['core'][0]['target_avg'] }} per month</p>   
             </div>
             <div class="col-lg-4 col-sm-12">
-                <h6>Within:</h6>
-                    <p><strong>{{ page.data['core']['core'][0]['timeframe'] }}{{'s' if page.data['core']['core'][0]['timeframe'] == '2yr' }}</strong></p>   
+                <h6 class="small_txt">Within:</h6>
+                <p>{{ page.data['core']['core'][0]['timeframe'] }}{{'s' if page.data['core']['core'][0]['timeframe'] == '2yr' }}</p>   
             </div>
         </div>
     {% else %}

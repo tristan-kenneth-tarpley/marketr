@@ -9,7 +9,6 @@ export default class cta {
         var future = new Date();
         future.setDate(future.getDate() + 30);
 
-        document.querySelector('#charge_date').textContent = `${future.getMonth()+1}-${future.getDate()}-${future.getFullYear()}`
      }
     init(){
         this.input.addEventListener('keyup', e=>{

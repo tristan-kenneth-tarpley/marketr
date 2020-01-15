@@ -111,6 +111,7 @@ const params = () => new URLSearchParams(location.search);
 const query_change = new CustomEvent('query_change');
 
 const currency = num => `$${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+const currency_rounded = num => `$${num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
 const number = num => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 const number_no_commas = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 const percent = num => `${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`

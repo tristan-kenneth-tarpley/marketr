@@ -39,13 +39,18 @@
 
 {% macro two() %}
 
-	<p>{{core['company_name']}} is a {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p><br><br>
+	{% set classlist = 'card col-lg-2 col-md-3 col-sm-6 center_it' %}
+	{% macro h6(title) %}
+	<h6 class="title" style="font-size: 80%;">{{title}}</h6>
+	{% endmacro %}
 
-	<div class="row percentages">
-		<div class="card col-lg-5 center_it">
+	<p>{{core['company_name']}} is a {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p>
+
+	<div class="row row_cancel percentages">
+		<div class="{{ classlist }}">
 			<div class="">
 				<br>
-				<h6 class="title">Storefront</h6>
+				{{ h6('Storefront') }}
 				<p>(physical store, kiosk, truck, etc.)</p>
 			</div>
 			<p class="meter">
@@ -53,10 +58,10 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-lg-5 center_it">
+		<div class="{{ classlist }}">
 			<div class="">
 				<br>
-				<h6 class="title">Direct</h6>
+				{{ h6('Direct') }}
 				<p>(phone, mailers, email, etc.)</p>
 			</div>
 			<p class="meter">
@@ -64,10 +69,10 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-lg-5 center_it">
+		<div class="{{ classlist }}">
 			<div class="">
 				<br>
-				<h6 class="title">Online</h6>
+				{{ h6('Online') }}
 				<p>(eCommerce, Saas, blog, online ads, blog, etc)</p>
 			</div>
 			<p class="meter">
@@ -75,10 +80,10 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-lg-5 center_it">
+		<div class="{{ classlist }}">
 			<div class="">
 				<br>
-				<h6 class="title">Tradeshows</h6>
+				{{ h6('Tradeshows') }}
 				<p></p>
 			</div>
 			<p class="meter">
@@ -86,10 +91,10 @@
 				<span class="perc_width"></span>
 			</p>
 		</div>
-		<div class="card col-lg-5 center_it">
+		<div class="{{ classlist }}">
 			<div class="">
 				<br>
-				<h6 class="title">Other</h6>
+				{{ h6('Other') }}
 				<p></p>
 				<br><br>
 			</div>
@@ -541,18 +546,11 @@
 
 
 <div class="row">
-	<div class="col-lg-8 col-sm-12">
-		{{ one() }}
-		{{ section(
-			link="company",
-			title="Company Info",
-			body=two(),
-			hash="company",
-			admin=page.admin
-		) }}		
+	<div class="col-lg-7 col-sm-12">
+		{{ one() }}	
 	</div>
-	<div class="col-lg-4 col-sm-12">
-		{{ score() }}
+	<div class="col-lg-5 col-sm-12">
+		{#{{ score() }}#}
 		{{ section(
 			link="goals",
 			title="Marketing Goal",
@@ -561,6 +559,14 @@
 		) }}
 	</div>
 </div>
+
+{{ section(
+	link="company",
+	title="Company Info",
+	body=two(),
+	hash="company",
+	admin=page.admin
+) }}	
 
 {{ section(
 	link="audience",

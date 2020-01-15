@@ -1,15 +1,16 @@
 export default class AdSpend {
-    constructor(type, stage, revenue, brand_strength, growth_needs, competitiveness, biz_type, biz_model, ){
+    constructor(type, stage, revenue, brand_strength, growth_needs, competitiveness, selling_to, biz_model, active_plan){
         this.type = type
         this.stage = stage
         this.revenue = parseInt(revenue.replace(/\,/g, ''))
         this.brand_strength = brand_strength
         this.growth_needs = growth_needs
         this.competitiveness = competitiveness
-        this.biz_type = biz_type
+        this.selling_to = selling_to
         this.biz_model = biz_model
         this.actual_budget = null
         this.custom = false
+        this.active_plan = active_plan
 
         this.perc_or_usd = 'perc'
 
@@ -111,44 +112,42 @@ export default class AdSpend {
         const budget_ = this.data.budget
         this.update_cta(this.data.allocation[0].num_campaigns)
         const data = this.data
-        // let awareness_val;
-        // let evaluation_val;
-        // let conversion_val;
-        // let stage_budget;
-        // let stage;
-        
-        // switch(this.perc_or_usd){
-        //     case 'perc':
-        //         stage_budget = key => parseInt(data.stage_meta[key].total)
-        //         stage = key => (stage_budget(key) / budget_ * 100).toFixed(0)
-        //         awareness_val = key => data.stage_detailed[0][key].spend_per_tactic / stage_budget('awareness') * 100
-        //         evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic / stage_budget('evaluation') * 100
-        //         conversion_val = key => data.stage_detailed[2][key].spend_per_tactic / stage_budget('conversion') * 100
-        //         break
-        //     case 'usd':
-        //         stage = key => data.stage_meta[key].total
-        //         awareness_val = key => data.stage_detailed[0][key].spend_per_tactic
-        //         evaluation_val = key => data.stage_detailed[1][key].spend_per_tactic
-        //         conversion_val = key => data.stage_detailed[2][key].spend_per_tactic
-        //         break
-        // }
         
         /*html*/
         const el = `
             ${this.data.allocation.map(set=>{
                 const display_num = this.perc_or_usd == 'perc' ?
-                                        percent(set.spend_percent) :
-                                        currency(set.spend_per_tactic)
+                                        percent(set.spend_percent * 100) :
+                                        currency_rounded(set.spend)
                 /*html */
                 return `
                     <p>${display_num} <span class="allocation_headers">${set.bucket}</span></p>
                     <div class="row inset">
                         <div class="col small_txt allocation_tactics awareness_tactics">
-                            <p>${set.tactic}</p>
+                            <ul class="campaign_list">
+                                ${set['campaigns'].map(i=>{
+                                    return `<li>${i}</li>`
+                                }).join("")}
+                            </ul>
                         </div>
                     </div>
                 `.trim()
             }).join("")}
+
+            <div class="row">
+                <div class="col">
+                    <h5 class="small_txt"><strong>We recommend:</strong></h5>
+                    <p>${this.num_campaigns} campaigns</p>
+                    <p>${currency_rounded(this.data.budget)} per month to the advertising platforms</p>
+                    
+                    ${ this.active_plan == 'None'
+                        ? `
+                        <a class="btn btn-primary" href="/pricing?quantity=${this.num_campaigns}">Apply recommendations</a>`
+                        : ''
+                    }
+                
+                </div>
+            </div>
         `.trim()
         target.innerHTML = el
     }
@@ -161,9 +160,9 @@ export default class AdSpend {
         let labels = []
         for (let i in this.data.allocation){
             if (this.perc_or_usd == 'perc'){
-                data.push(remove_commas(this.data.allocation[i]['spend_percent']))
+                data.push(remove_commas(this.data.allocation[i]['spend_percent'] * 100))
             } else if (this.perc_or_usd == 'usd') {
-                data.push(remove_commas(this.data.allocation[i]['spend_per_tactic']))
+                data.push(remove_commas(this.data.allocation[i]['spend']))
             }
             
             labels.push(this.data.allocation[i].bucket)
@@ -183,24 +182,26 @@ export default class AdSpend {
                display: true
             },
             tooltips: {
-               enabled: false
+               enabled: true
             },
             title: {
-                display: false,
+                display: true,
             },
             plugins: {
-                datalabels:{
-                    formatter: (value, context)=> {
-                        return `${this.perc_or_usd == 'usd' ? "$" : ""}${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${this.perc_or_usd == 'perc' ? "%" : ""}`
-                    },
-                    labels: {
-                        title: {
-                            color: 'rgba(255,255,255,.9)',
-                            weight: "bold",
-                            size: "30px",
-                            textAlign: "center"
-                        }
-                    }
+                datalabels:
+                {
+                    display: false
+                    // formatter: (value, context)=> {
+                    //     return `${this.perc_or_usd == 'usd' ? "$" : ""}${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${this.perc_or_usd == 'perc' ? "%" : ""}`
+                    // },
+                    // labels: {
+                    //     title: {
+                    //         color: 'rgba(255,255,255,.9)',
+                    //         weight: "bold",
+                    //         size: "30px",
+                    //         textAlign: "center"
+                    //     }
+                    // }
                 }
             }
         }
@@ -220,7 +221,7 @@ export default class AdSpend {
             brand_strength: (this.brand_strength != null) ? this.brand_strength : 'medium',
             growth_needs: (this.growth_needs != null) ? this.growth_needs : 'medium',
             competitiveness: (this.competitiveness != null) ? this.competitiveness : 'medium',
-            biz_type: this.biz_type,
+            selling_to: this.selling_to,
             biz_model: this.biz_model,
             actual_budget: this.actual_budget
         })
@@ -232,8 +233,12 @@ export default class AdSpend {
             body
         })
             .then((res) => res.json())
-            .then((data) => this.data = data)
+            .then((data) => {
+                this.data = data
+                this.num_campaigns = data.allocation.map(item => item.num_campaigns).reduce((prev, next) => prev + next);
+            })
             .then(()=>{
+                console.log(this.data)
                 this.mount_chart()
                 this.update_breakdown()
                 document.querySelector("#recalc").classList.add("hidden")
@@ -242,55 +247,3 @@ export default class AdSpend {
             .catch((err)=>console.log(err))
     }
 }
-
-
-
-
-
-/*
-archive
-<p>${display(stage('awareness')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">awareness</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics awareness_tactics">
-                    ${Object.keys(data.allocation).map(index=>{
-                        return `
-                        <p>
-                            <strong>${display((awareness_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[0][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>
-            <p>${display(stage('evaluation')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">evaluation</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics evaluation_tactics">
-                    ${Object.keys(data.stage_detailed[1]).map(key=>{
-                        return `
-                        <p>
-                            <strong>${display((evaluation_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[1][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>
-            <p>${display(stage('conversion')).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} <span class="allocation_headers">conversion</span></p>
-            <div class="row inset">
-                <div class="col small_txt allocation_tactics awareness_tactics">
-                    ${Object.keys(data.stage_detailed[2]).map(key=>{
-                        return `
-                        <p>
-                            <strong>${display((conversion_val(key)).toFixed(0))}</strong>
-                            &nbsp;&nbsp;&nbsp;
-                            ${data.stage_detailed[2][key].tactic}
-                        </p>
-                        `
-                        }).join("")}
-                </div>
-            </div>-->
-
-
-*/

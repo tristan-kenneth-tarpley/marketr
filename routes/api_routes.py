@@ -232,9 +232,13 @@ def spend_allocation():
         req.get('selling_to'), req.get('biz_model')
     )
 
+    print(req.get('selling_to'))
+
+    allocation = json.loads(spend.campaign_allocation())
+
     returned = {
-        'budget': budget,
-        'allocation': json.loads(spend.allocation())
+        'budget': input_budget,
+        'allocation': allocation
     }
     return json.dumps(returned)
 
@@ -254,8 +258,6 @@ def portfolio_trends():
     req = request.get_json()
     orm = GoogleORM(req.get('company_name'))
     df = orm.agg()
-
-    print(df)
 
     portfolio = Portfolio(agg=df)
     returned = portfolio.trendline()
