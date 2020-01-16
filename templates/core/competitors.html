@@ -1,90 +1,20 @@
 {% from 'macros/dashboard_macros.html' import google %}
 {% from 'macros/home_macros.html' import section %}
 
-{% macro competitors() %}
-    {% macro comp_metrics(pos=1) %}
-        {% set base = core['competitor_intro_1'] if pos == 1 else core['competitor_intro_2'] %}
-        <div class="row comp_metrics">
-            <div style="text-align:center;" class="col-lg-3 col-sm-12">
-                <div class="comp_box comp_box-metrics">
-                    <p>Adwords Budget<br>
-                    {% if base['budget'] %}
-                        <strong>${{ base['budget'] | currency }}/month</strong></p>
-                    {% else %}
-                        <strong>No data available</strong></p>
-                    {% endif %}
-                </div>
-                <div class="comp_box comp_box-metrics">
-                    {% if base['clicks'] %}
-                        <p><strong>{{ base['clicks'] | add_commas }}</strong><br>clicks in past 30 days</p>
-                    {% else %}
-                        <p>No data available</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-8 col-sm-12 comp_box">
-                <h5>Recent Ads</h5>
-                {% if base['ads'] %}
-                    {{ google(
-                        headline=base['ads'][0]['title'],
-                        website=base['ads'][0]['url'],
-                        description=base['ads'][0]['body']
-                    ) }}
-                    {{ google(
-                        headline=base['ads'][1]['title'],
-                        website=base['ads'][1]['url'],
-                        description=base['ads'][1]['body']
-                    ) }}
-                {% endif %}
-            </div>
-        </div>
-    {% endmacro %}
 
-    {% macro comp_header(pos=1) %}
-        <div class="row">
-            <div class="col-lg-4 col-sm-12">
-                <h5>{{ core['comp_1_name'] if pos == 1 else core['comp_2_name'] }}</h5>
-                <a href="https://{{ core['comp_1_website'] if pos == 1 else core['comp_2_website'] }}" target="__blank">{{core['comp_1_website'] if pos == 1 else core['comp_2_website']}}</a>
-            </div>
-            <div class="col-lg-2 col-sm-12">
-                <p class="comp-badge">{{ core['comp_1_type'] if pos ==1 else core['comp_2_type'] }}</p>
-                <p>Competitor type</p>
-            </div>
-        </div>
-    {% endmacro %}
-
-    {% if core['comp_1_name'] %}
-        {{ comp_header() }}
-        {{ comp_metrics() }}
-        <div class="separator"></div>
-        {{ comp_header(pos=2) }}
-        {{ comp_metrics(pos=2) }}
-    {% else %}
-        <div class="row">
-            <div class="col-lg-5 col-sm-12">
-                <img src="/static/assets/img/competitors.jpg">
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-6">
-                <h5>Hey, what's your competition doing over there?..</h5>
-                <p>Give us some info on your competitors and we'll pull some strings and collect valuable intelligence on things like:</p>
-                <ul>
-                    <li>Estimated monthly spend</li>
-                    <li>Monthly clicks</li>
-                    <li>Recent Ads</li>
-                </ul>
-                {% if not admin %}<a href="{{url_for('competitors')}}" class="btn btn-secondary">Complete now</a>{% endif %}
-            </div>
-        </div>
-    {% endif %}
-
+{% macro competitors(page) %}
+<competitive-intelligence></competitive-intelligence>
 {% endmacro %}
-
 
 {{ section(
 	link="competitors",
 	title="Competitive Intelligence",
-	body=competitors(),
+	body=competitors(page),
 	hash="competitors"
 ) }}
+
+{% block js %}
+<script type="module">
+	import CompetitiveIntelligence from '/static/src/components/Competitors.js'
+</script>
+{% endblock %}

@@ -359,7 +359,8 @@ def get_competitors():
     service = CompetitorService()
     vm = CompetitorViewModel(customer_id=session['user'])
     struct = vm.get(service)
-    return render_template('core/competitors.html', core=struct)
+
+    return json.dumps(struct)
 
 @app.route('/api/insights', methods=['POST'])
 @login_required
