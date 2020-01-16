@@ -51,6 +51,12 @@
 									{% include "core/campaigns_2.html" %}
 								{% endwith %}
 							</div>
+							<div class="tab-pane" id="competitors" role="tabpanel" aria-labelledby="competitors-tab">
+								<div class="competitor_loading" id="loading">
+									<div class="load-circle"><span class="one"></span></div>
+								</div>
+								<div id="mount_competitors"></div>
+							</div>
 							<div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 								{% with page=page %}
 									{% include "core/profile.html" %}
@@ -60,12 +66,6 @@
 								{% with page=page %}
 									{% include "core/messages.html" %}
 								{% endwith %}
-							</div>
-							<div class="tab-pane" id="competitors" role="tabpanel" aria-labelledby="competitors-tab">
-								<div class="competitor_loading" id="loading">
-									<div class="load-circle"><span class="one"></span></div>
-								</div>
-								<div id="mount_competitors"></div>
 							</div>
 						</div>
 
