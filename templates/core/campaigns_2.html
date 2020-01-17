@@ -47,7 +47,8 @@
     competitiveness="{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}"
     selling_to="{{base.get('selling_to')}}"
     biz_model="{{base.get('biz_model')}}"
-    active_plan="{{base.get('current_plan')}}">
+    active_plan="{{base.get('current_plan')}}"
+    spend_rate="{{ base.get('spend_rate') }}">
 </ad-spend>
 {% endmacro %}
 

@@ -222,8 +222,8 @@ def spend_allocation():
     rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
     budget = rec.get()
 
-    actual_budget = req.get('actual_budget')
-    input_budget = float(actual_budget) if actual_budget else budget
+    viewed_budget = req.get('viewed_budget')
+    input_budget = float(viewed_budget) if viewed_budget else budget
 
     user = session.get('user') if session.get('user') else session.get('customer_id')
     spend = SpendAllocation(
@@ -232,13 +232,12 @@ def spend_allocation():
         req.get('selling_to'), req.get('biz_model')
     )
 
-    print(req.get('selling_to'))
-
     allocation = json.loads(spend.campaign_allocation())
 
     returned = {
         'budget': input_budget,
-        'allocation': allocation
+        'allocation': allocation,
+        'recommended_budget': budget
     }
     return json.dumps(returned)
 

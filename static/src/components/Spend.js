@@ -23,7 +23,8 @@ export default class AdSpend extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
         this.state = {
-            data: null
+            data: null,
+            real: false
         }
 
         this.css = styles()
@@ -105,20 +106,6 @@ export default class AdSpend extends HTMLElement {
             <div class="col"></div>
         </div>`
         )
-    }
-
-
-    budget_display(el){
-        const budget = this.actual_budget != undefined ? parseInt(this.actual_budget) : this.data.budget
-        let budget_display = budget => "$" + budget.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-
-        el.querySelectorAll(".rec_budget").forEach(element => {
-            element.textContent = budget_display(budget)
-        });
-        el.querySelectorAll(".viewed_budget").forEach(element => {
-            element.textContent = budget_display(budget)
-        });
-        el.querySelector("#typical").value = budget.toFixed(0)
     }
 
     update_cta(total, el){
@@ -229,13 +216,34 @@ export default class AdSpend extends HTMLElement {
     shell(){
         /*html*/
         return (
-            `<div class="row row_cancel">
+            `<div class="row ${this.current_plan ? '' : 'hidden'}">
+                <div class="center_it col">
+                    <button class="budget_type actual_budget_view allocation_toggle btn ${
+                        this.state.real == true
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">real budget</button>
+                    <button class="budget_type rec_budget_view allocation_toggle btn ${
+                        this.state.real == false
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">recommended</button>
+                </div>
+            </div>
+            <div class="row row_cancel">
                 <div class="col-md-2 col-12"></div>
-                <div class="col-md-4 col-12">
-                    <p><strong>Recommended Advertising Budget:</strong></p>
+                <div class="${this.state.real && this.current_plan ? 'col-md-8 col-12' : 'col-md-4 col-12'}">
+                    <p><strong>
+                        ${this.state.real
+                            ? `Ad spend budget`
+                            : `Recommended budget`}
+                    </strong>:</p>
                     <div style="padding-top:7%;" class="card center_it negative_card">
-                        <h5><strong><span class="rec_budget"></span></strong> /month</h5>
-                        <div class="tool-wrapper">
+                        <h5>
+                            <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
+                            ${this.state.real && this.current_plan ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
+                        </h5>
+                        ${this.actual_budget == null ?
+                        /*html*/
+                        `<div class="tool-wrapper">
                             How is this calculated?
                             <div class="custom-tooltip">
                                 <p>We provide a recommended budget based on the following factors:</p>
@@ -253,27 +261,27 @@ export default class AdSpend extends HTMLElement {
                                     <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
                                 </ul>
                             </div>
-                        </div>
+                        </div>`
+                        : 
+                        /*html*/
+                        `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
                     </div>
                 </div>
-                <div class="col-md-4 col-12">
-                    <p class="small_txt">Need to modify the budget to fit current plans?</p>
+                <div class="col-md-4 col-12 ${this.state.real && this.current_plan ? ' hidden' : ''}">
+                    <p class="small_txt">View recommendations with new budget:</p>
                     <div class="form-group">
-                        <input type="number" id="typical" class="form-control">
+                        <input type="number" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
                         <div class="form-control-border"></div>
                     </div>
-                    <p class="small_txt"><em>Changing this will affect the marketing mix spend below</em></p>
+                    <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
                 </div>
-                <div class="col-md-2 col-12">
+
+                <div class="col-md-2 col-12 ${this.state.real && this.current_plan ? 'hidden' : ''}">
                     <button id="recalc" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
+           
             </div>
 
-
-            <p class="center_it">Below is your personalized marketing portfolio mix based on a budget of <strong><span class="viewed_budget"></span></strong>.</p>
-            <div class="center_it">
-                <button id="reset" class="center_it btn btn-neutral ${this.actual_budget == null ? 'hidden' : ''} ">reset budget to recommended</button>
-            </div>
             <div class="row">
                 <div class="col-lg-6 col-sm-12">
                     <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
@@ -281,11 +289,11 @@ export default class AdSpend extends HTMLElement {
                 <div class="col-lg-6 col-sm-12">
                     <br>
                     <div style="margin:0 auto;text-align:center;">
-                        <button class="view_perc allocation_toggle btn ${
+                        <button class="spend_num_type view_perc allocation_toggle btn ${
                             this.perc_or_usd == 'perc'
                             ? 'btn btn-secondary'
                             : 'allocation_toggle-inactive'}">%</button>
-                        <button class="view_usd allocation_toggle btn ${
+                        <button class="spend_num_type view_usd allocation_toggle btn ${
                             this.perc_or_usd == 'usd' 
                             ? 'btn btn-secondary'
                             : 'allocation_toggle-inactive'}">$</button>
@@ -298,6 +306,17 @@ export default class AdSpend extends HTMLElement {
     }
 
     compile(){
+
+        this.budget_variance = (this.spend_rate - this.data.recommended_budget) / this.spend_rate * 100
+        if (this.current_plan) {
+            if (this.state.real) this.viewed_budget = this.spend_rate
+            else if (this.custom_budget) this.viewed_budget = this.custom_budget
+            else this.viewed_budget = this.data.recommended_budget
+        } else {
+            if (this.custom_budget) this.viewed_budget = this.custom_budget 
+            else this.viewed_budget = this.data.recommended_budget
+        }
+        
         const first = async () => {
             this.shadow.innerHTML = ""
     
@@ -313,24 +332,19 @@ export default class AdSpend extends HTMLElement {
 
         const second = async (_el) => {
 
-            this.num_campaigns = this.data.allocation.map(item => item.num_campaigns).reduce((prev, next) => prev + next);
-            this.budget_display(_el)    
+            this.num_campaigns = this.data.allocation.map(item => item.num_campaigns).reduce((prev, next) => prev + next); 
             
             this.update_breakdown(_el)
             _el.querySelector("#recalc").addEventListener("click", e=>{
                 const value = _el.querySelector("#typical").value
                 if (!isNaN(value)) {
                     this.toggle_button(_el.querySelector("#recalc"))
-                    this.actual_budget = value
+                    this.custom_budget = parseFloat(value)
                     this.render()
                 }
             })
             _el.querySelector("#typical").addEventListener("keyup", e=>_el.querySelector("#recalc").classList.remove('hidden'))
-            _el.querySelector("#reset").addEventListener("click", e=>{
-                this.actual_budget = null
-                this.toggle_button(_el.querySelector("#reset"))
-                this.render()
-            })
+
             _el.querySelectorAll(".considerations").forEach(c=>{
                 c.addEventListener('change', e=>{
                     _el.querySelector("#recalc_considerations").classList.remove("hidden")
@@ -355,14 +369,22 @@ export default class AdSpend extends HTMLElement {
             _el.querySelectorAll('.allocation_toggle').forEach(btn=>{
                 btn.addEventListener('click', e => {
                     const classList = e.currentTarget.classList
-    
-                    classList.contains('view_perc')
-                        ? this.perc_or_usd = 'perc'
-                        : this.perc_or_usd = 'usd'
-    
-                    classList.remove('allocation_toggle-inactive')
-                    classList.add('btn-secondary')
-                    this.render(true)
+                    
+                    if (classList.contains('spend_num_type')) {
+                        classList.contains('view_perc')
+                            ? this.perc_or_usd = 'perc'
+                            : this.perc_or_usd = 'usd'
+                        this.render()
+                    } else if (classList.contains('budget_type')) {
+                        if(classList.contains('actual_budget_view')){
+                            this.state.real = true
+                            this.render()
+                        } else {
+                            this.actual_budget = null
+                            this.state.real = false
+                            this.render()
+                        }
+                    }
                 })
             })
 
@@ -378,32 +400,41 @@ export default class AdSpend extends HTMLElement {
             .then(_el => this.shadow.appendChild(_el))
     }
 
-    render(state=false){
+    render(){
+        let budget = null;
+        if (this.current_plan) {
+            if (this.state.real) budget = this.spend_rate ? this.spend_rate : 0
+            else if (this.state.real == false && this.custom_budget) budget = this.custom_budget
+            else budget = null
+        } else { 
+            if (this.custom_budget) budget = this.custom_budget 
+            else budget = null
+        }
 
-        if (!state){
-            const body = JSON.stringify({
-                type: this.type,
-                stage: this.stage,
-                revenue: this.revenue,
-                brand_strength: (this.brand_strength != null) ? this.brand_strength : 'medium',
-                growth_needs: (this.growth_needs != null) ? this.growth_needs : 'medium',
-                competitiveness: (this.competitiveness != null) ? this.competitiveness : 'medium',
-                selling_to: this.selling_to,
-                biz_model: this.biz_model,
-                actual_budget: this.actual_budget
-            })
-            fetch('/api/spend_allocation', {
-                method: 'POST',
-                headers : new Headers({
-                    "content-type": "application/json"
-                }),
-                body
-            })
-                .then((res) => res.json())
-                .then((data) => this.data = data )
-                .then(()=> this.compile() )
-                .catch((err)=>console.log(err))
-        } else this.compile()
+        const body = JSON.stringify({
+            type: this.type,
+            stage: this.stage,
+            revenue: this.revenue,
+            brand_strength: (this.brand_strength != null) ? this.brand_strength : 'medium',
+            growth_needs: (this.growth_needs != null) ? this.growth_needs : 'medium',
+            competitiveness: (this.competitiveness != null) ? this.competitiveness : 'medium',
+            selling_to: this.selling_to,
+            biz_model: this.biz_model,
+            viewed_budget: budget
+        })
+     
+        fetch('/api/spend_allocation', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body
+        })
+            .then((res) => res.json())
+            .then((data) => this.data = data )
+            .then(()=> this.compile() )
+            .catch((err)=>console.log(err))
+      
 
     }
 
@@ -417,7 +448,10 @@ export default class AdSpend extends HTMLElement {
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
         this.active_plan = this.getAttribute('active_plan')
-        this.actual_budget = null
+        this.spend_rate = this.getAttribute('spend_rate')
+        if (this.active_plan && this.spend_rate) this.viewed_budget = this.spend_rate
+        if (this.active_plan && this.spend_rate) this.state.real = true
+        
         this.custom = false
 
         this.render()
