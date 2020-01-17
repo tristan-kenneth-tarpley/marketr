@@ -216,7 +216,8 @@ export default class AdSpend extends HTMLElement {
     shell(){
         /*html*/
         return (
-            `<div class="row ${this.current_plan ? '' : 'hidden'}">
+            
+            `<div class="row ${this.active_plan ? '' : 'hidden'}">
                 <div class="center_it col">
                     <button class="budget_type actual_budget_view allocation_toggle btn ${
                         this.state.real == true
@@ -230,7 +231,7 @@ export default class AdSpend extends HTMLElement {
             </div>
             <div class="row row_cancel">
                 <div class="col-md-2 col-12"></div>
-                <div class="${this.state.real && this.current_plan ? 'col-md-8 col-12' : 'col-md-4 col-12'}">
+                <div class="${this.state.real && this.active_plan ? 'col-md-8 col-12' : 'col-md-4 col-12'}">
                     <p><strong>
                         ${this.state.real
                             ? `Ad spend budget`
@@ -239,7 +240,7 @@ export default class AdSpend extends HTMLElement {
                     <div style="padding-top:7%;" class="card center_it negative_card">
                         <h5>
                             <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
-                            ${this.state.real && this.current_plan ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
+                            ${this.state.real && this.active_plan ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
                         </h5>
                         ${this.actual_budget == null ?
                         /*html*/
@@ -267,7 +268,7 @@ export default class AdSpend extends HTMLElement {
                         `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
                     </div>
                 </div>
-                <div class="col-md-4 col-12 ${this.state.real && this.current_plan ? ' hidden' : ''}">
+                <div class="col-md-4 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
                     <p class="small_txt">View recommendations with new budget:</p>
                     <div class="form-group">
                         <input type="number" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
@@ -276,7 +277,7 @@ export default class AdSpend extends HTMLElement {
                     <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
                 </div>
 
-                <div class="col-md-2 col-12 ${this.state.real && this.current_plan ? 'hidden' : ''}">
+                <div class="col-md-2 col-12 ${this.state.real && this.active_plan ? 'hidden' : ''}">
                     <button id="recalc" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
            
@@ -308,7 +309,7 @@ export default class AdSpend extends HTMLElement {
     compile(){
 
         this.budget_variance = (this.spend_rate - this.data.recommended_budget) / this.spend_rate * 100
-        if (this.current_plan) {
+        if (this.active_plan) {
             if (this.state.real) this.viewed_budget = this.spend_rate
             else if (this.custom_budget) this.viewed_budget = this.custom_budget
             else this.viewed_budget = this.data.recommended_budget
@@ -402,7 +403,7 @@ export default class AdSpend extends HTMLElement {
 
     render(){
         let budget = null;
-        if (this.current_plan) {
+        if (this.active_plan) {
             if (this.state.real) budget = this.spend_rate ? this.spend_rate : 0
             else if (this.state.real == false && this.custom_budget) budget = this.custom_budget
             else budget = null
