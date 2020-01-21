@@ -28,20 +28,47 @@
                 <div class="container container-small">
                   <a href="/blog"><strong>< All blogs</strong></a>
                   <h1>{{ post.story.name }}</h1>
+                  {% set author = post.story.content.author %}
+                  <p><strong>By: {{ author }}, {{ 'CEO of Market(r)' if author == 'Tristan Tarpley' }}</strong></p>
                   {% for content in post.story.content.body.content %}
+ 
                     {% if content.type == 'paragraph'%}
 
                       {% for p in content.content %}
                         {% if p.type == 'hard_break' %}
                         <br>
-                        {% else %}
-                        <p>{{ p.text }}</p>
+                        {% elif p.type == 'text' %}
+                          {% for mark in p.marks if mark.type == 'bold' %}
+                              <p><strong>{{ p.text }}</strong></p>
+                          {% else %}
+                            <p>{{ p.text }}</p>
+                          {% endfor %}
                         {% endif %}
                       {% endfor %}
 
+                    {% elif content.type == 'ordered_list' %}
+             
+                      <ol>
+                        {% for item in content.content %}
+                          {% if item.type == 'list_item' %}
+                            <li>
+                            {% for content in item.content %}
+                              {% for attrs in content.content %}
+                                {% for mark in attrs.marks if mark.type == 'link' %}
+                                    <a target="__blank" href="{{mark.attrs.href}}">{{ attrs.text }}</a>
+                                {% else %}
+                                    <p>{{ attrs.text }}</p>
+                                {% endfor %}
+                              {% endfor %}
+                            {% endfor %}
+                          </li>
+                          {% endif %}
+                        {% endfor %}
+                      </ol>
                     {% elif content.type == 'heading' %}
 
                       {% if content.attrs.level == 2 %}
+
                         {% for h in content.content %}
                           {% if h.type == 'hard_break' %}
                           <br>
@@ -49,7 +76,9 @@
                           <h2>{{ h.text }}</h2>
                           {% endif %}
                         {% endfor %}
+
                       {% elif content.attrs.level == 1 %}
+
                         {% for h in content.content %}
                           {% if h.type == 'hard_break' %}
                           <br>
@@ -65,29 +94,9 @@
                   <div class="row">
                       <div class="col-12">
                         <h4>At Market(r), we wondered...what if companies could know <em>exactly</em> how much to spend on their marketing and where to spend it, then trust that they are getting the best ROI possible. So we built it!</h4>
-                        <p><a href="/">Give it a try.</a> It's free for 30 days, then only $85/campaign after that.</p>
+                        <p><a href="/">Give it a try.</a> It's free to see exactly how much to spend and where to spend it, then only $85/campaign after that.</p>
                       </div>
                   </div>
-                    <!-- <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                    <h2>know everything about your application</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    <figure class="alignwide">
-                        <img src="static/img/1600x1000.jpg" title="" alt="">
-                    </figure>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                    <blockquote class="blockquote-center">
-                        <i class="fas icon fa-quote-left"></i>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        </p>
-                        <label>- Nancy Bayer</label>
-                    </blockquote>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
                 </div>
             </div>
             <!-- 

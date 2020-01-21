@@ -21,7 +21,6 @@
 </div>
 {% endmacro %}
     <main>
-        <!--  Start Page Title -->
         <section class="page-title-lg bg-cover bg-fixed bg-no-repeat bg-center">
             <div class="container">
                 <div class="row align-items-center">
@@ -37,25 +36,32 @@
                 </div>
             </div>
         </section>
-        <!-- End Page Title -->
-        <!-- Blog Section -->
+
         <section class="section">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8">
-                    <!-- Blog listing -->    
-                    <div class="row">
-                        {% for story in posts.stories %}
-                        <div class="col-md-6">
-                            {{ post(
-                                story.content.image,
-                                story.slug,
-                                story.content.title,
-                                story.published_at
-                            )  }}
-                        </div>
-                        {% endfor %}
-                        
+                    {% for story in posts.stories %}
+                    <div class="col-md-6">
+                        {{ post(
+                            story.content.image,
+                            story.slug,
+                            story.content.title,
+                            story.published_at
+                        )  }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
+
+
+
+
+{#
+    template
+
 
                         <!-- peginations -->
                         <!-- <div class="col-12">
@@ -189,7 +195,5 @@
         </section>
         <!-- Blog Section End -->
     </main>
-    <!-- Footer -->
-    
-
-{% endblock %}
+    <!-- Footer -->    
+#}

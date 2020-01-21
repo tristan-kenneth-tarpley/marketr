@@ -14,7 +14,7 @@ class Blog:
 
     def all_stories(self):
         url = self.endpoint
-        querystring = {"token":self.key, "starts_with":"posts/"}
+        querystring = {"token":self.key, "starts_with":"posts/", "cv": "1"}
         return self.fetch(url, querystring)
 
     def fetch(self, url, querystring):
