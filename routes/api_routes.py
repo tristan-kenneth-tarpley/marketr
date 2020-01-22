@@ -20,6 +20,7 @@ from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWrite
 from services.gamify import Achievements, Credits, Rewards
 from services.BigQuery import GoogleORM
 from services.RecService import RecommendationService, Recommendation
+from services.WebListener import Listener
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -30,6 +31,9 @@ import services.forms as forms
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
 import time
 import datetime
+
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 
 
 @app.route('/api/products', methods=['GET'])
@@ -336,6 +340,20 @@ def dismiss_rec():
         result = 'error'
 
     return json.dumps({'result': result})
+
+
+# intel
+@app.route('/api/intel/listener', methods=['POST'])
+def web_listen():
+    req = request.get_json()
+    options = Options()
+    options.headless = True
+
+    driver = webdriver.Firefox(options=options, executable_path = '/Users/Tristan/Desktop/geckodriver')
+
+    listener = Listener(driver, req.get('keyword'))
+    
+    return json.dumps(listener.listen())
 
 
 
