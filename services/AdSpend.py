@@ -265,7 +265,6 @@ class SpendAllocation:
             sets = [campaign for campaign in campaigns if campaign['bucket'] == bucket_name]
 
             for set in sets:
-                print(self.biz_type)
                 if self.biz_type.lower() in set.get('biz_type') or set.get('biz_type')[0] == 'all':
                     campaignset = added_campaigns(set.get('campaigns')[:num_campaigns], bucket_name)
                     allocation.append({

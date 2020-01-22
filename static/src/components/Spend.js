@@ -24,7 +24,7 @@ export default class AdSpend extends HTMLElement {
         this.shadow = this.attachShadow({ mode: 'open' });
         this.state = {
             data: null,
-            real: false
+            real: null
         }
 
         this.css = styles()
@@ -130,7 +130,14 @@ export default class AdSpend extends HTMLElement {
                                         currency_rounded(set.spend)
                 /*html */
                 return `
-                    <p>${display_num} <span class="allocation_headers">${set.bucket}</span></p>
+                    <p>${display_num}
+                        <span class="allocation_headers">
+                            ${ set.bucket == 'seo'
+                                ? `<a target="__blank" href="https://marketr.life/blog/the-total-guide-to-investing-in-search-engine-optimization">${set.bucket}</a>`
+                                : set.bucket
+                            }
+                        </span>
+                    </p>
                     <div class="row inset">
                         <div class="col small_txt allocation_tactics awareness_tactics">
                             <ul class="campaign_list">
@@ -377,14 +384,16 @@ export default class AdSpend extends HTMLElement {
                             : this.perc_or_usd = 'usd'
                         this.render()
                     } else if (classList.contains('budget_type')) {
-                        if(classList.contains('actual_budget_view')){
-                            this.state.real = true
-                            this.render()
-                        } else {
-                            this.actual_budget = null
-                            this.state.real = false
-                            this.render()
-                        }
+                        (async () => {
+                            this.toggle_button(e.currentTarget)
+                            if (classList.contains('actual_budget_view')) {
+                                setQueryString('real', 'true')
+                                this.actual_budget = null
+                            }
+                            else {
+                                setQueryString('real', 'false')
+                            }
+                        })().then(()=>this.render())
                     }
                 })
             })
@@ -401,7 +410,20 @@ export default class AdSpend extends HTMLElement {
             .then(_el => this.shadow.appendChild(_el))
     }
 
+    detectReal(){
+        const status = eval(params().get('real'))
+        
+        if (this.active_plan) {
+            if (status == null || status == true ) return true
+            else if (status == false) return false
+
+        } else return false
+    
+    }
+
     render(){
+        this.state.real = this.detectReal()
+
         let budget = null;
         if (this.active_plan) {
             if (this.state.real) budget = this.spend_rate ? this.spend_rate : 0
@@ -413,6 +435,7 @@ export default class AdSpend extends HTMLElement {
         }
 
         const body = JSON.stringify({
+            customer_id: this.customer_id,
             type: this.type,
             stage: this.stage,
             revenue: this.revenue,
@@ -440,6 +463,7 @@ export default class AdSpend extends HTMLElement {
     }
 
     connectedCallback(){
+        this.customer_id = this.getAttribute('customer_id')
         this.type = this.getAttribute('type')
         this.stage = this.getAttribute('stage')
         this.revenue = parseInt(this.getAttribute('revenue').replace(/\,/g, ''))
@@ -449,11 +473,11 @@ export default class AdSpend extends HTMLElement {
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
         this.active_plan = this.getAttribute('active_plan')
-        this.spend_rate = this.getAttribute('spend_rate')
-        if (this.active_plan && this.spend_rate) this.viewed_budget = this.spend_rate
-        if (this.active_plan && this.spend_rate) this.state.real = true
-        
-        this.custom = false
+        this.spend_rate = this.getAttribute('spend_rate') != null
+                            ? this.getAttribute('spend_rate')
+                            : 0
+
+        this.state.real = false
 
         this.render()
 

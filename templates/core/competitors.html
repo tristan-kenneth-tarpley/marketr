@@ -3,7 +3,7 @@
 
 
 {% macro competitors(page) %}
-<competitive-intelligence></competitive-intelligence>
+<competitive-intelligence customer_id="{{page.data['core']['core'][0]['id']}}"></competitive-intelligence>
 {% endmacro %}
 
 {{ section(

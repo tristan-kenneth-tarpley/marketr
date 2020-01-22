@@ -225,7 +225,7 @@ def spend_allocation():
     viewed_budget = req.get('viewed_budget')
     input_budget = float(viewed_budget) if viewed_budget else budget
 
-    user = session.get('user') if session.get('user') else session.get('customer_id')
+    user = req.get('customer_id')
     spend = SpendAllocation(
         user, req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
@@ -352,11 +352,12 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
-@app.route('/api/competitive_intel', methods=['GET'])
+@app.route('/api/competitive_intel', methods=['POST'])
 @login_required
 def get_competitors():
+    req = request.get_json()
     service = CompetitorService()
-    vm = CompetitorViewModel(customer_id=session['user'])
+    vm = CompetitorViewModel(customer_id=req.get('customer_id'))
     struct = vm.get(service)
 
     return json.dumps(struct)

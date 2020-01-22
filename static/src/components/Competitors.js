@@ -13,7 +13,7 @@ const styles = () => {
 
 export default class CompetitiveIntelligence extends HTMLElement {
     static get observedAttributes() {
-        return ['customer-id', 'start_date'];
+        return ['customer-id'];
     }
     constructor() {
         super();
@@ -138,9 +138,21 @@ export default class CompetitiveIntelligence extends HTMLElement {
     }
 
     connectedCallback() {
+        this.customer_id = this.getAttribute('customer_id')
         this.render()
+
+        const body = JSON.stringify({
+            customer_id: this.customer_id
+        })
+        
         this.state.data == null
-            ?  fetch('/api/competitive_intel')
+            ?  fetch('/api/competitive_intel', {
+                method: 'POST',
+                headers : new Headers({
+                    "content-type": "application/json"
+                }),
+                body
+            })
                     .then(res=>res.json())
                     .then(res=>{
                         this.state.data = res

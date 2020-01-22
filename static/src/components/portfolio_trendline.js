@@ -37,7 +37,7 @@ export default class PortfolioTrendline extends HTMLElement {
             labels,
             datasets: [
                 {
-                    label: "Site visits per $1,000 spent",
+                    label: "Market(r) Index",
                     fill: false,
                     borderColor: "#62cde0",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
