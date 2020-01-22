@@ -349,7 +349,6 @@ def web_listen():
     options = Options()
     options.headless = True
 
-
     app.config.from_pyfile('config.cfg')
     driver = webdriver.Firefox(options=options, executable_path = app.config['GECKO_PATH'])
 
