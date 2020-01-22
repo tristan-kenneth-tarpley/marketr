@@ -660,7 +660,7 @@ class CompetitorViewModel:
 	def get(self, service):
 		def clean_urls(struct):
 			def clean(val):
-				struct[val] = struct[val].replace('\\', '').replace('http://', '').replace('/','')
+				struct[val] = struct[val].replace('\\', '').replace('http://', '').replace('/','').replace('https://','')
 
 			clean_list = ['comp_1_website', 'comp_2_website']
 			for url in clean_list:

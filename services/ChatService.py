@@ -43,6 +43,5 @@ class ChatService:
             'type': "UserMessage",
             'custom': { message: message }
         }]
-        print(data)
 
         requests.post(url, data = json.dumps(data))
