@@ -3,6 +3,7 @@ from flask import request, render_template, redirect, url_for, flash
 import services.helpers as helpers
 import hashlib
 import json
+import asyncio
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
@@ -375,11 +376,9 @@ def tactic_of_day():
 @login_required
 def get_competitors():
     req = request.get_json()
-    service = CompetitorService()
-    vm = CompetitorViewModel(customer_id=req.get('customer_id'))
-    struct = vm.get(service)
+    comp = CompetitorService(req.get("customer_id"))
 
-    return json.dumps(struct)
+    return json.dumps(comp.competitor_card())
 
 @app.route('/api/insights', methods=['POST'])
 @login_required

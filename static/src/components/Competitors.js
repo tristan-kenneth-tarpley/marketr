@@ -5,7 +5,15 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-
+        th {
+            font-size: 90%;
+        }
+        tr {
+            width: 25%;
+        }
+        .ad_container {
+            margin-top: 2%;
+        }
  
     </style>
     `.trim()
@@ -27,82 +35,122 @@ export default class CompetitiveIntelligence extends HTMLElement {
 
     shell(){
 
-        const google = (headline, website, description) => {
-            return (
-                `<div class="google_ad_preview_container">
-                    <h5 style="font-size: 110%;">${headline}</h5>
-                    <p class="website"><span>Ad</span> ${website}</p>
-                    <p>${description}</p>
-                </div>`
-            )
-        }
-        const template = (name, site, type, ad) => {
-            return (
-                /*html*/
-                `
-                <div class="row">
-                    <div class="col-lg-4 col-sm-12">
-                        <h5>${name}</h5>
-                        <a href="https://${site}" target="__blank">${site}</a>
-                    </div>
-                    <div class="col-lg-2 col-sm-12">
-                        <p class="comp-badge">${type}</p>
-                        <p>Competitor type</p>
-                    </div>
+        const overview = (name, site, type) => {
+            
+            return /*html*/ `
+            <div class="row">
+                <div class="col-lg-3">
+                    <h5>${name}</h5>
                 </div>
+                <div class="col-lg-3">
+                    <a target="__blank" href="https://${site}">website</a>
+                </div>
+                <div class="col-lg-3">
+                    <p class="comp-badge">${type}</p>
+                </div>
+            </div>
+            `.trim()
 
-                <div class="row comp_metrics">
-                    <div style="text-align:center;" class="col-lg-3 col-sm-12">
-                        <div class="comp_box comp_box-metrics">
-                            <p>Adwords Budget<br>
-                            <strong>${currency_rounded(ad.budget)}/month</strong></p>
-                        </div>
-                        <div class="comp_box comp_box-metrics">
-                            <p><strong>${number_no_commas(ad.clicks)}</strong><br>clicks in past 30 days</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-1"></div>
-                    <div class="col-lg-8 col-sm-12 comp_box">
-                        <h5>Recent Ads</h5>
-                        ${google(ad.ads[0].title, ad.ads[0].url, ad.ads[0].body)}
-                        ${google(ad.ads[1].title, ad.ads[1].url, ad.ads[1].body)}
-                    </div>
-                </div>
-                `
-            )
+        }
+
+        const traffic = (name, spend, traffic, organic, paid) => {
+            /*html*/
+            return `   
+            <tr>
+                <td><h5>${name}</h5></td>
+                <td>${spend}</td>
+                <td>${traffic}</td>
+            </tr>
+            `.trim()
+        }
+
+        const google_ads = comps => {
+            const google = (headline, website, description) => {
+                return (
+                    `<div class="google_ad_preview_container">
+                        <h5 style="font-size: 110%;">${headline}</h5>
+                        <p class="website"><span>Ad</span> ${website}</p>
+                        <p>${description}</p>
+                    </div>`
+                )
+            }
+            /*html*/
+            return `
+            <p>Google Ads</p>
+            <div class="row">
+                ${comps.map(comp=>{
+                    return comp.google_ads.map(ad=>{
+                        return `
+                            <div class="col-md-6 col-sm-12">
+                                ${google(ad.title, ad.url, ad.body)}
+                            </div>
+                        `
+                    }).join("")
+                }).join("")}
+            </div>
+            `
+        }
+
+        const display_ads = comps => {
+                /*html*/
+            return `
+            <p>Display ads</p>
+            <div class="row">
+                ${comps.map(comp=>{
+                    return comp.display_ads.map(ad=>{
+                        return `
+                            <div class="col-md-6 col-sm-12">
+                                <img onerror="this.style.display='none'" src="${ad}">
+                            </div>
+                        `
+                    }).join("")
+                }).join("")}
+            </div>
+            `
         }
 
         const base = this.state.data
         /*html*/
         return `
-            ${template(base.comp_1_name, base.comp_1_website, base.comp_1_type, base.competitor_intro_1)}
+            ${base.map(comp=>{
+                return overview(comp.comp_name, comp.site, comp.type)
+            }).join("")}
+
             <div class="separator"></div>
-            ${template(base.comp_2_name, base.comp_2_website, base.comp_2_type, base.competitor_intro_2)}
-        `.trim()
 
-        return (
-            /*html*/
-            ` 
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col">
+                    <table style="width: 100%;" class="table table-responsive table-borderless">
+                        <thead>
+                            <th></th>
+                            <th><p>Est. Google Ad Spend per month</p></th>
+                            <th><p>Web traffic</p></th>
+                            <th><p>Paid vs. Organic search</p></th>
+                        </thead>
+                        <tbody>
+                            ${base.map(comp=>{
+                                return traffic(
+                                    comp.comp_name, currency_rounded(comp.core.ppc_budget), 
+                                    number_no_commas(comp.core.total_traffic), number_no_commas(comp.core.seo_clicks), 
+                                    number_no_commas(comp.core.ppc_clicks) 
+                                )
+                            }).join("")}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-2 ad_container"></div>
+            </div>
 
+            <div class="separator"></div>
+
+            ${google_ads(base)}
+
+            <div class="separator"></div>
+
+            ${display_ads(base)}
             
-            <!--<div class="row">
-                <div class=“col-lg-5 col-sm-12”>
-                    <img src=“/static/assets/img/competitors.jpg”>
-                </div>
-                <div class=“col-lg-1”></div>
-                <div class=“col-lg-6”>
-                    <h5>Hey, what’s your competition doing over there?..</h5>
-                    <p>Give us some info on your competitors and we’ll pull some strings and collect valuable intelligence on things like:</p>
-                    <ul>
-                        <li>Estimated monthly spend</li>
-                        <li>Monthly clicks</li>
-                        <li>Recent Ads</li>
-                    </ul>
-                    <a href=“/competitors” class=“btn btn-secondary”>Complete now</a>
-                </div>
-            </div>-->
         `.trim()
-        )
     }
 
     render(state=false){
@@ -156,6 +204,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     .then(res=>res.json())
                     .then(res=>{
                         this.state.data = res
+                        console.log(res)
                         this.render(true)
                     })
                     .catch(e=>{
