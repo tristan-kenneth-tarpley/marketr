@@ -1,3 +1,4 @@
+import {tabs, shadow_events} from '/static/src/components/UI_elements.js'
 const styles = () => {
     /*html*/
     return `
@@ -5,14 +6,39 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        th {
-            font-size: 90%;
+        th p {
+            font-size: 80%;
         }
         tr {
             width: 25%;
         }
         .ad_container {
             margin-top: 2%;
+        }
+        .spend {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .comp-badge {
+            max-width: 150px;
+        }
+
+        .nav-tabs {
+            margin-bottom: 5%;
+        }
+
+        .traffic_meters {
+            height: 10px;
+        }
+        .traffic_meters div {
+            display: inline;
+        }
+        .organic_meter {
+            background-color: #9CE4F1;
+        }
+        .paid_meter {
+            background-color: var(--primary);
         }
  
     </style>
@@ -39,15 +65,17 @@ export default class CompetitiveIntelligence extends HTMLElement {
             
             return /*html*/ `
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-md-2 col-sm-12"></div>
+                <div class="col-lg-2">
                     <h5>${name}</h5>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <a target="__blank" href="https://${site}">website</a>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <p class="comp-badge">${type}</p>
                 </div>
+                <div class='col-lg-4'></div>
             </div>
             `.trim()
 
@@ -57,9 +85,13 @@ export default class CompetitiveIntelligence extends HTMLElement {
             /*html*/
             return `   
             <tr>
-                <td><h5>${name}</h5></td>
-                <td>${spend}</td>
+                <td>${name}</td>
+                <td class="spend">${spend}</td>
                 <td>${traffic}</td>
+                <td data-paid="${paid}" data-organic="${organic}" class="traffic_meters_container">
+                    <div class="traffic_meters paid_meter"></div>
+                    <div class="traffic_meters organic_meter"></div>
+                </td>
             </tr>
             `.trim()
         }
@@ -74,37 +106,60 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     </div>`
                 )
             }
-            /*html*/
-            return `
-            <p>Google Ads</p>
-            <div class="row">
-                ${comps.map(comp=>{
-                    return comp.google_ads.map(ad=>{
+
+            let labels = []
+            let content = []
+            for (let i of comps) {
+                labels.push(i.comp_name) 
+                content.push (
+                    `<div class="row">
+                    ${i.google_ads.map(ad=>{
                         return `
                             <div class="col-md-6 col-sm-12">
                                 ${google(ad.title, ad.url, ad.body)}
                             </div>
-                        `
-                    }).join("")
-                }).join("")}
+                        `.trim()
+                    }).join("")}
+                    </div>
+                    `
+                )
+            } 
+            
+            /*html*/
+            return `
+            <p>Google Ads</p>
+            <div class="row">
+                ${tabs(labels, content, 'google')}
             </div>
             `
         }
 
         const display_ads = comps => {
+            let labels = []
+            let content = []
+            for (let i of comps) {
+                labels.push(i.comp_name) 
+                content.push (
+                    `<div class="row">
+                        ${ i.display_ads.length > 0 
+                            ? i.display_ads.map(ad=>{
+                                return `
+                                    <div class="col-md-6 col-sm-12">
+                                        <img onerror="this.style.display='none'" src="${ad}">
+                                    </div>
+                                `.trim()
+                            }).join("")
+                            : `<p>Sorry, we had an issue getting these display ads. Check back later!</p>`
+                        }
+                    </div>`.trim()
+                )
+            } 
+            console.log(content)
                 /*html*/
             return `
             <p>Display ads</p>
             <div class="row">
-                ${comps.map(comp=>{
-                    return comp.display_ads.map(ad=>{
-                        return `
-                            <div class="col-md-6 col-sm-12">
-                                <img onerror="this.style.display='none'" src="${ad}">
-                            </div>
-                        `
-                    }).join("")
-                }).join("")}
+                ${tabs(labels, content, 'display')}
             </div>
             `
         }
@@ -119,7 +174,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
             <div class="separator"></div>
 
             <div class="row">
-                <div class="col-md-2"></div>
+                <div class="col-md-1"></div>
                 <div class="col">
                     <table style="width: 100%;" class="table table-responsive table-borderless">
                         <thead>
@@ -133,13 +188,13 @@ export default class CompetitiveIntelligence extends HTMLElement {
                                 return traffic(
                                     comp.comp_name, currency_rounded(comp.core.ppc_budget), 
                                     number_no_commas(comp.core.total_traffic), number_no_commas(comp.core.seo_clicks), 
-                                    number_no_commas(comp.core.ppc_clicks) 
+                                    number_no_commas(comp.core.ppc_clicks)
                                 )
                             }).join("")}
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-2 ad_container"></div>
+                <div class="col-md-1 ad_container"></div>
             </div>
 
             <div class="separator"></div>
@@ -168,21 +223,38 @@ export default class CompetitiveIntelligence extends HTMLElement {
             </div>
         </div>`
         
-        const compile = () => {
+        const compile = async () => {
             this.shadow.innerHTML = ""
-            const el = document.createElement('div')
             /*html*/
-            el.innerHTML = `
+            const markup = `
                 ${this.css}
                 ${state == false
                     ? loading
                     : this.shell()
                 }
             `
-            this.shadow.appendChild(el)
+            const el = shadow_events(markup)
+
+            return el
         }
 
-        compile()
+        compile().then(el=>{
+            el.querySelectorAll('.traffic_meters').forEach(meter=>{
+                const organic = remove_commas_2(meter.parentNode.dataset.organic)
+                const paid = remove_commas_2(meter.parentNode.dataset.paid)
+
+                const total = organic + paid
+
+                if (meter.classList.contains('paid_meter')){
+                    meter.style.width = `${paid/total*100}%`
+                } else if (meter.classList.contains('organic_meter')){
+                    meter.style.width = `${organic/total*100}%`
+                }
+            })
+
+            return el
+        }).then(el=>this.shadow.appendChild(el))
+        
     }
 
     connectedCallback() {

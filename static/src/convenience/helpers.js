@@ -116,6 +116,7 @@ const number = num => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 const number_no_commas = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 const percent = num => `${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`
 const remove_commas = num => num.toFixed(2).replace(/\,/g, '')
+const remove_commas_2 = num => parseFloat(num.replace(/\,/g,''))
 
 const now = () => {
     let date = new Date();

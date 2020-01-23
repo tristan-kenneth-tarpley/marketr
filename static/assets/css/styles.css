@@ -5127,6 +5127,7 @@ ul#product {
 }
 .nav-tabs .nav-link {
   transition-duration: .3s;
+  cursor: pointer;
 }
 .nav-tabs .nav-link:hover {
   opacity: .7;
@@ -11758,3 +11759,5 @@ left: -6px;
   .lte8 .tool-wrapper:hover .custom-tooltip {
   display: block;
   }
+
+
