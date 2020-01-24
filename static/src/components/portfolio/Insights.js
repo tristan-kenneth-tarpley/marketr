@@ -40,7 +40,7 @@ export default class Insights extends HTMLElement {
                 `
             }).join("")}
 
-            <div class='separator'></p>
+           
             <p class="x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
             <p>Thanks! ~ Tristan | Founder </p>
         `.trim()
