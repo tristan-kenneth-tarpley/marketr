@@ -184,7 +184,7 @@ const Controller = class {
 					audit_request.ready()
 					break
 				case 'home':
-					const tactics = new Tactics(this.params)
+					// const tactics = new Tactics(this.params)
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()

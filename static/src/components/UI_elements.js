@@ -60,3 +60,19 @@ export const tabs = (labels, content, uid) => {
 
     return El
 }
+
+
+
+const dots_loader = () => {
+    return `
+        <div style="text-align:center;margin: 0 auto;" class="col">
+            <div style="margin: 0 auto;" class="loading_dots">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    `.trim()
+}

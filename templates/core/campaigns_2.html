@@ -55,11 +55,6 @@
 
 
 {% macro performance(page) %}
-<portfolio-trendline
-    customer_id="{{page.data['core']['core'][0]['id']}}"
-    company_name="{{page.data['core']['core'][0]['company_name']}}"
-></portfolio-trendline
-    >
 <portfolio-performance
     google_id="{{page.data['core']['core'][0]['google_id']}}"
     facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
@@ -69,6 +64,13 @@
     funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
     insights="{{page.data['insights']['insights']}}">
 </portfolio-performance>
+<div class="separator"></div>
+<portfolio-budget
+    customer_id="{{ page.data['core']['core'][0]['id'] }}"
+    spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
+    funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+    company_name="{{page.data['core']['core'][0]['company_name']}}"
+></portfolio-budget>
 {% endmacro %}
 
 {% macro recommendations(page) %}
@@ -82,7 +84,7 @@
 
 {% if page.data['core']['core'][0]['current_plan'] %}
 <div class="row">
-    <div class="col-lg-8 col-md-7 col-sm-12">
+    <div class="col-lg-8 col-md-12 col-sm-12">
         {{ section(
             link=None,
             title="Portfolio Performance",
@@ -91,7 +93,7 @@
             admin=page.admin
         ) }}
     </div>
-    <div class="col-lg-4 col-md-5 col-sm-12">
+    <div class="col-lg-4 col-md-12 col-sm-12">
         <div class="row">
             <div class="col">
                 {{ section(
@@ -145,7 +147,8 @@
     <script type="module">
         import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
         import AdSpend from '/static/src/components/Spend.js'
-        import PortfolioPerformance from '/static/src/components/portfolio_performance.js'
+        import PortfolioPerformance from '/static/src/components/portfolio/portfolio_performance.js'
+        import Budget from '/static/src/components/portfolio/Budget.js'
         import Recommendations from '/static/src/components/customer/recommendations.js'
         import Rec_shell from '/static/src/components/customer/recommendations.js'
     </script>

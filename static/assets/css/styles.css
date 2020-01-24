@@ -5119,10 +5119,8 @@ ul#product {
 
 
 
-
-
 .nav-tabs {
-  width: 70% !important;
+  width: 100%;
   border-bottom: none;
 }
 .nav-tabs .nav-link {
@@ -5134,7 +5132,7 @@ ul#product {
   border: 1px solid transparent;
 }
 .nav-tabs li {
-  width: 20% !important;
+  width: 25% !important;
   text-align:center !important;
   border-bottom: 0;
 }

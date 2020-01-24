@@ -419,11 +419,20 @@ def create_campaign():
     return json.dumps(groups)
 
 
-
+### spend queries ###
+@app.route('/api/spend/last_7', methods=['POST'])
+def last_7_spend():
+    req = request.get_json()
+    orm = GoogleORM(req.get('company_name'))
+    spend = orm.cost_past_7()
+    spend = spend.cost.sum()
+    return json.dumps({
+        'spend': spend
+    })
 
 
 ### Market(r) index ### 
-@app.route('/api/index/get', methods=['POST'])
+@app.route('/api/index/detailed', methods=['POST'])
 def compile_master_index():
     req = request.get_json()
     ltv = req.get('ltv') # need to collect
@@ -434,4 +443,35 @@ def compile_master_index():
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
 
+    query = """
+        "insert into index_log
+        (customer_id, _index, submitted)
+
+        values
+        (?, ?, CURRENT_TIMESTAMP)"
+    """
+    val = compiled['aggregate']
+    db.execute(query, False, (req.get('customer_id'), val), commit=True)
+
     return compiled
+
+@app.route('/api/index/trendline', methods=['POST'])
+def index_trendline():
+    req = request.get_json()
+
+    query = """
+        select _index, convert(varchar(10), submitted, 120) as date from index_log where customer_id = ?
+    """
+
+    data, cursor = db.execute(query, True, (req.get('customer_id'),))
+    data = cursor.fetchall()
+    
+    returned = list()
+    if data:
+        for row in data:
+            returned.append({
+                'index': row[0],
+                'date': row[1]
+            })
+
+    return json.dumps(returned)

@@ -1,4 +1,8 @@
-import PortfolioTrendline from '/static/src/components/portfolio_trendline.js'
+import PortfolioTrendline from '/static/src/components/portfolio/portfolio_trendline.js'
+import PortfolioDetails from '/static/src/components/portfolio/Details.js'
+import Insights from '/static/src/components/portfolio/Insights.js'
+import Creative from '/static/src/components/portfolio/Creative.js'
+import {tabs, shadow_events} from '/static/src/components/UI_elements.js'
 
 const styles = () => {
     /*html*/
@@ -48,6 +52,122 @@ export default class PortfolioPerformance extends HTMLElement {
 
         this.css = styles()
     }
+
+    shell(){
+        let labels = ['Chart', 'Details', 'Insights', 'Ads']
+        
+        let content = [
+            '<div id="trendline"></div>',
+            '<div id="details"></div>',
+            '<div id="insights"></div>',
+            '<div id="creative"></div>'
+        ]
+        return `
+        ${tabs(labels, content, 'perf_tabs')}
+        `
+    }
+
+    creative(){
+        const creative = new Creative()
+        creative.setAttribute('customer_id', this.customer_id)
+
+        return creative
+    }
+
+    details(){
+        const details = new PortfolioDetails()
+        details.setAttribute('customer_id', this.customer_id)
+
+        return details
+    }
+
+    insights(){
+        const insights = new Insights()
+        insights.setAttribute('customer_id', this.customer_id)
+
+        return insights
+    }
+
+    trendline(){
+        const trendline = new PortfolioTrendline()
+        trendline.setAttribute('customer_id', this.customer_id)
+
+        return trendline
+    }
+
+    render(init=true){
+
+        this.shadow.innerHTML = ""
+        /*html */
+        const markup = `
+            ${this.css}
+            ${this.shell()}
+        `
+
+        const el = shadow_events(markup)
+        el.querySelector('#trendline').appendChild(this.trendline())
+        el.querySelector('#details').appendChild(this.details())
+        el.querySelector('#insights').appendChild(this.insights())
+        el.querySelector('#creative').appendChild(this.creative())
+
+        this.shadow.appendChild(el)
+
+        // el.innerHTML = `
+        //     ${this.css}
+        //     <div style="text-align:center;">
+        //         <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
+        //     <div>
+        //     <div style="text-align:center;">
+        //         <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
+        //         <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
+        //         <div id="container"></div>
+        //     </div>
+        // `
+        // this.shadow.appendChild(this.summary_handlers(el));
+    }
+
+    connectedCallback(start=now()) {
+        this.customer_id = this.getAttribute('customer-id')
+        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
+        this.google_id = this.getAttribute('google_id') != null ? true : false
+        this.company_name = this.getAttribute('company-name')
+        this.spend_rate = this.getAttribute('spend_rate')
+        this.funds_remaining = this.getAttribute('funds_remaining')
+        this.insights_json = eval(this.getAttribute('insights'))
+        this.render()
+
+
+        // setTimeout(()=>{
+        //     this.start_date = start
+        //     fetch('/api/portfolio_metrics', {
+        //         method: 'POST',
+        //         headers : new Headers({
+        //             "content-type": "application/json"
+        //         }),
+        //         body:  JSON.stringify({
+        //             start_date: this.start_date,
+        //             customer_id: this.customer_id,
+        //             company_name: this.customer_id == 200 ? "o3" : this.company_name,
+        //             google: this.google_id,
+        //             facebook: this.facebook_id
+        //         })
+        //     })
+        //         .then((res) => res.json())
+        //         .then((data) => {
+        //             this.state.data = data
+        //             this.render(false)
+        //         })
+        //         .then(()=> this.shadow.querySelector('#insights').disabled = false)
+        //         .catch((err)=>console.log(err))
+        // }, 100)
+
+    }
+}
+  
+document.addEventListener( 'DOMContentLoaded', customElements.define('portfolio-performance', PortfolioPerformance))
+
+
+/*
 
     summary(){
         const handle = (key, value) => {
@@ -130,7 +250,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 ]
             }
         ]
-        /*html */
+
         const el = `
         <div class="row">
             <div class="col">
@@ -153,13 +273,13 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
             <div class="col-lg-6 col-sm-12">
                 ${column_packets.map(packet=>{
-                    /*html */
+            
                     return `
                     <div class="separator"></div>
                     <h5 class="small_txt">${packet.category}</h5>
                     <div class="row">
                         ${packet.columns.map((column, index)=>{
-                            /*html */
+                
                             return `                                  
                                 <div class="col-lg-6">
                                     <span class="small_txt">${column.label}</span>
@@ -236,59 +356,4 @@ export default class PortfolioPerformance extends HTMLElement {
         el.setAttribute('company_name', this.company_name)
         return el
     }
-
-    render(init=true){
-        this.shadow.innerHTML = ""
-        const el = document.createElement('div')
-        /*html */
-        el.innerHTML = `
-            ${this.css}
-            <div style="text-align:center;">
-                <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
-            <div>
-            <div style="text-align:center;">
-                <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
-                <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
-                <div id="container"></div>
-            </div>
-        `
-        this.shadow.appendChild(this.summary_handlers(el));
-    }
-
-    connectedCallback(start=now()) {
-        this.customer_id = this.getAttribute('customer-id')
-        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
-        this.google_id = this.getAttribute('google_id') != null ? true : false
-        this.company_name = this.getAttribute('company-name')
-        this.spend_rate = this.getAttribute('spend_rate')
-        this.funds_remaining = this.getAttribute('funds_remaining')
-        this.insights_json = eval(this.getAttribute('insights'))
-        this.render()
-        setTimeout(()=>{
-            this.start_date = start
-            fetch('/api/portfolio_metrics', {
-                method: 'POST',
-                headers : new Headers({
-                    "content-type": "application/json"
-                }),
-                body:  JSON.stringify({
-                    start_date: this.start_date,
-                    customer_id: this.customer_id,
-                    company_name: this.customer_id == 200 ? "o3" : this.company_name,
-                    google: this.google_id,
-                    facebook: this.facebook_id
-                })
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    this.state.data = data
-                    this.render(false)
-                })
-                .then(()=> this.shadow.querySelector('#insights').disabled = false)
-                .catch((err)=>console.log(err))
-        }, 100)
-
-    }
-}
-  
-document.addEventListener( 'DOMContentLoaded', customElements.define('portfolio-performance', PortfolioPerformance))
+*/

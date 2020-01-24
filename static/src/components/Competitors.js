@@ -154,7 +154,6 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     </div>`.trim()
                 )
             } 
-            console.log(content)
                 /*html*/
             return `
             <p>Display ads</p>
@@ -276,7 +275,6 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     .then(res=>res.json())
                     .then(res=>{
                         this.state.data = res
-                        console.log(res)
                         this.render(true)
                     })
                     .catch(e=>{

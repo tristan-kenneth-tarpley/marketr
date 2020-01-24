@@ -228,7 +228,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     index = PortfolioIndex(ltv, amount_spent)
 
     def compile_search(ltv=ltv, search_df=search_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        
         # initialize at ad level
         search_index = ad_index_obj.PrepIndex(search_df, search=True)
         new_search_index = search_df[['adid', 'headline1', 'headline2', 'finalurl', 'description']].drop_duplicates(subset ="adid")
@@ -245,7 +244,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         return search_index, search_t2, search_t3
 
     def compile_social(ltv=ltv, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        print(social_df.columns)
         # initialize at ad level
         social_index = ad_index_obj.PrepIndex(social_df, social=True)
         
@@ -268,6 +266,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     t1 = index.PrepIndex(social_t2, search_t2)
 
     return json.dumps({
+
         'campaign': {
             'social': social_t3.to_json(orient='records'),
             'search': search_t3.to_json(orient='records')

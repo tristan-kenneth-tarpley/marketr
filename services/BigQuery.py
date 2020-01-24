@@ -66,10 +66,27 @@ class GoogleORM(BigQuery):
                 except:
                     return None
 
+    def cost_past_7(self):
+        query = f"""
+        select sum(cost) as cost from (
+            select sum(spend / 1000) as cost from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+
+            WHERE EXTRACT(DATE FROM date_start) > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+
+            union all
+
+            select sum(cost / 1000000) as cost from `{self.project_id}`.`{self.company_name}_google`.`ACCOUNT_PERFORMANCE_REPORT` as acc
+
+            WHERE EXTRACT(DATE FROM day) > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+        )
+        """
+
+        return self.get(query)
+
     def social_index(self):
         facebook = f"""
             select
-               ads.creative.id, ads.adset_id, ads.campaign_id,
+               ai.date_start, ads.creative.id, ads.adset_id, ads.campaign_id,
                creative.thumbnail_url, creative.body,
                ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions
 
@@ -78,12 +95,14 @@ class GoogleORM(BigQuery):
               on creative.id = ads.creative.id
 
               join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
-              on ai.ad_id = ads.id"""
+              on ai.ad_id = ads.id
+
+            """
         
         return self.get(facebook)
     
     def search_index(self):
-        google = f"""select rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
+        google = f"""select rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
 
 from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep"""
         
