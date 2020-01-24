@@ -36,6 +36,8 @@ import datetime
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
+## market(r) index imports
+from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
 
 @app.route('/api/products', methods=['GET'])
 def get_personas():
@@ -415,3 +417,21 @@ def create_campaign():
                 group[1].update(ads = [ad for ad in ads])
 
     return json.dumps(groups)
+
+
+
+
+
+### Market(r) index ### 
+@app.route('/api/index/get', methods=['POST'])
+def compile_master_index():
+    req = request.get_json()
+    ltv = req.get('ltv') # need to collect
+
+    orm = GoogleORM(req.get('company_name'))
+    search_df = orm.search_index()
+    social_df = orm.social_index()
+
+    compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+
+    return compiled

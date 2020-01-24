@@ -66,5 +66,28 @@ class GoogleORM(BigQuery):
                 except:
                     return None
 
+    def social_index(self):
+        facebook = f"""
+            select
+               ads.creative.id, ads.adset_id, ads.campaign_id,
+               creative.thumbnail_url, creative.body,
+               ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions
+
+            from `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
+              join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
+              on creative.id = ads.creative.id
+
+              join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+              on ai.ad_id = ads.id"""
+        
+        return self.get(facebook)
+    
+    def search_index(self):
+        google = f"""select rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
+
+from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep"""
+        
+        return self.get(google)
+
             
         
