@@ -30,13 +30,38 @@ const styles = () => {
         const el = document.createElement('div')
         el.innerHTML = `
           ${this.css}
-          <p>Test test</p>
+          <p>Campaign history</p>
+          <table class="table table-striped table-responsive">
+            <thead>
+                <th>Campaign Type</th>
+                <th>% of marketing investment</th>
+                <th>Market(r) Index</th>
+            </thead>
+            <tbody>
+                ${this.data.campaign.social.map(it=>{
+                    return `
+                    <tr>
+                        <td>Social Media PPC</td>
+                        <td>${it.cost / this.data.total_spent}</td>
+                        <td>${it.index}</td>
+                    </tr>
+                    `
+                }).join("")}
+
+                ${this.data.campaign.search.map(it=>{
+                    return 'hi'
+                }).join("")}
+                
+            </tbody>
+          </table>
       `
         this.shadow.appendChild(el)
     }
   
     connectedCallback() {
         this.customer_id = this.getAttribute('customer_id')
+        this.data = JSON.parse(this.getAttribute('data'))
+        console.log(this.data)
         this.render()
     }
   }

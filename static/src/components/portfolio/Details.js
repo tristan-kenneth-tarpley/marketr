@@ -1,3 +1,5 @@
+import Funnel from '/static/src/components/portfolio/details/funnel.js'
+import Active from '/static/src/components/portfolio/details/active.js'
 const styles = () => {
     /*html*/
     return `
@@ -25,15 +27,41 @@ export default class PortfolioDetails extends HTMLElement {
         this.css = styles()
     }
 
+    active(){
+        const el = new Active()
+        el.setAttribute('customer_id', this.customer_id)
+        el.setAttribute('company_name', this.company_name)
+        el.setAttribute('data', this.data)
+        return el
+    }
+
+    funnel(){
+        const el = new Funnel()
+        el.setAttribute('customer_id', this.customer_id)
+        el.setAttribute('company_name', this.company_name)
+        return el
+    }
+
     render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        el.innerHTML = `<p>I am the details</p>`
+        el.innerHTML = `
+            ${this.css}
+            <p>Funnel</p>
+            <div class="row">
+                <div id="funnel" class="col-lg-12 col-md-12">
+                </div>
+            </div>
+        `
+        //el.querySelector("#active").appendChild(this.active())
+        el.querySelector("#funnel").appendChild(this.funnel())
         this.shadow.appendChild(el)
     }
 
     connectedCallback() {
         this.customer_id = this.getAttribute('customer_id')
+        this.company_name = this.getAttribute('company_name')
+        this.data = this.getAttribute('data')
         this.render()
     }
 }

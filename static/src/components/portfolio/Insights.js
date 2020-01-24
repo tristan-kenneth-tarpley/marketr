@@ -6,6 +6,10 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
+        .dark_blue {
+            color: var(--darker-blue);
+            font-weight: bold;
+        }
  
     </style>
     `.trim()
@@ -25,11 +29,37 @@ export default class Insights extends HTMLElement {
         this.css = styles()
     }
 
+    shell(){
+        return `
+            ${this.state.data.map(ins=>{
+                /*html*/
+                return `
+                ${this.css}
+                <p class='dark_blue small_txt'>${ins.time}</p>
+                <p>${ins.body}</p>
+                `
+            }).join("")}
+        `.trim()
+    }
+
     render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        el.innerHTML = `<p>I am the insights</p>`
-        this.shadow.appendChild(el)
+        fetch('/api/insights', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                customer_id: this.customer_id
+            })
+        })
+        .then(res=>res.json())
+        .then(res=>this.state.data = res)
+        .then(()=>{
+            el.innerHTML = this.shell()
+        })
+        .then(()=>this.shadow.appendChild(el))
     }
 
     connectedCallback() {

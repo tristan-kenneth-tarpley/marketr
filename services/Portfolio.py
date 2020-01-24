@@ -53,13 +53,13 @@ class Portfolio:
             ])
 
 
-    def group(self, start_date):
-        self.clean(start_date)
+    def group(self):#, start_date):
+        # self.clean(start_date)
 
-        d = UserService.now()
-        year, month, day = (int(x) for x in start_date.split('-'))
-        d = date(year, month, day)
-        start, end = self.last_sunday(d)
+        # d = UserService.now()
+        # year, month, day = (int(x) for x in start_date.split('-'))
+        # d = date(year, month, day)
+        # start, end = self.last_sunday(d)
 
         if self.agg is not None:
             impressions = int(self.agg.impressions.sum())
@@ -73,10 +73,10 @@ class Portfolio:
             engagement = impressions/interactions if interactions > 0 else 0
             
             returned = {
-                'range': {
-                    'start': str(start),
-                    'end': str(end)
-                },
+                # 'range': {
+                #     'start': str(start),
+                #     'end': str(end)
+                # },
                 'cost': cost,
                 'awareness': {
                     'engagement': engagement,
@@ -93,10 +93,10 @@ class Portfolio:
             }
         else:
             returned = {
-                'range': {
-                    'start': str(start),
-                    'end': str(end)
-                },
+            #     'range': {
+            #         'start': str(start),
+            #         'end': str(end)
+            #     },
                 'cost': 0,
                 'awareness': {
                     'engagement': 0,

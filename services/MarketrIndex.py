@@ -230,7 +230,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     def compile_search(ltv=ltv, search_df=search_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         # initialize at ad level
         search_index = ad_index_obj.PrepIndex(search_df, search=True)
-        new_search_index = search_df[['adid', 'headline1', 'headline2', 'finalurl', 'description']].drop_duplicates(subset ="adid")
+        new_search_index = search_df[['name', 'adid', 'headline1', 'headline2', 'finalurl', 'description']].drop_duplicates(subset ="adid")
         # export to view performance metrics by creative
         search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
 
@@ -247,7 +247,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         # initialize at ad level
         social_index = ad_index_obj.PrepIndex(social_df, social=True)
         
-        new_social_index = social_df[['id', 'thumbnail_url', 'body']].drop_duplicates(subset = 'id')
+        new_social_index = social_df[['name', 'id', 'thumbnail_url', 'body']].drop_duplicates(subset = 'id')
         # export to view performance metrics by creative
         social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
 
@@ -265,17 +265,17 @@ def compile_master(ltv=None, search_df=None, social_df=None):
 
     t1 = index.PrepIndex(social_t2, search_t2)
 
-    return json.dumps({
-
+    return {
+        'total_spent': search_df.cost.sum() + social_df.cost.sum(),
         'campaign': {
-            'social': social_t3.to_json(orient='records'),
-            'search': search_t3.to_json(orient='records')
+            'social': json.loads(social_t3.to_json(orient='records')),
+            'search': json.loads(search_t3.to_json(orient='records'))
         },
         'ads': {
-            'social': social_index.to_json(orient='records'),
-            'search': search_index.to_json(orient='records')
+            'social': json.loads(social_index.to_json(orient='records')),
+            'search': json.loads(search_index.to_json(orient='records'))
         },
         'aggregate': t1
-    })
+    }
 
     

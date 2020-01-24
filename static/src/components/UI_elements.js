@@ -63,7 +63,7 @@ export const tabs = (labels, content, uid) => {
 
 
 
-const dots_loader = () => {
+export const dots_loader = () => {
     return `
         <div style="text-align:center;margin: 0 auto;" class="col">
             <div style="margin: 0 auto;" class="loading_dots">
@@ -75,4 +75,14 @@ const dots_loader = () => {
             </div>
         </div>
     `.trim()
+}
+
+export const google = (headline, website, description) => {
+    return (
+        `<div class="google_ad_preview_container">
+            <h5 style="font-size: 110%;">${headline}</h5>
+            <p class="website"><span>Ad</span> ${website}</p>
+            <p>${description}</p>
+        </div>`
+    )
 }

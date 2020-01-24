@@ -54,13 +54,13 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     shell(){
-        let labels = ['Chart', 'Details', 'Insights', 'Ads']
+        let labels = ['Chart', 'Details', 'Ads', 'Insights']
         
         let content = [
             '<div id="trendline"></div>',
             '<div id="details"></div>',
-            '<div id="insights"></div>',
-            '<div id="creative"></div>'
+            '<div id="creative"></div>',
+            '<div id="insights"></div>'
         ]
         return `
         ${tabs(labels, content, 'perf_tabs')}
@@ -77,6 +77,7 @@ export default class PortfolioPerformance extends HTMLElement {
     details(){
         const details = new PortfolioDetails()
         details.setAttribute('customer_id', this.customer_id)
+        details.setAttribute('company_name', this.company_name)
 
         return details
     }
@@ -106,9 +107,33 @@ export default class PortfolioPerformance extends HTMLElement {
 
         const el = shadow_events(markup)
         el.querySelector('#trendline').appendChild(this.trendline())
-        el.querySelector('#details').appendChild(this.details())
         el.querySelector('#insights').appendChild(this.insights())
-        el.querySelector('#creative').appendChild(this.creative())
+
+        fetch('/api/index/detailed', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                customer_id: this.customer_id,
+                company_name: this.customer_id == 200 ? "o3" : this.company_name,
+                ltv: 500
+            })
+        })
+        .then(res=>res.json())
+        .then(res=>{
+            let deets = this.details()
+            deets.setAttribute('data', JSON.stringify(res))
+
+            let creator = this.creative()
+            creator.setAttribute('data', JSON.stringify(res))
+
+            return {creator, deets}
+        })
+        .then(({creator, deets})=>{
+            el.querySelector('#details').appendChild(deets)
+            el.querySelector('#creative').appendChild(creator)
+        })
 
         this.shadow.appendChild(el)
 

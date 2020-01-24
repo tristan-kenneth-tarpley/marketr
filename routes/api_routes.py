@@ -255,7 +255,7 @@ def portfolio_metrics():
     df = orm.agg()
 
     portfolio = Portfolio(agg=df)
-    returned = portfolio.group(req.get('start_date'))
+    returned = portfolio.group()
 
     return returned
 
@@ -384,6 +384,17 @@ def get_competitors():
 
 @app.route('/api/insights', methods=['POST'])
 @login_required
+def insights():
+    req = request.get_json()
+    tup = (req.get('customer_id'),)
+    query = "SELECT body, FORMAT(time, 'dd-MM-yyyy') as time FROM insights WHERE customer_id = ?"
+    insights, cursor = db.execute(query, True, tup)
+    insights = cursor.fetchall()
+    returned = [{'body': row[0],'time': str(row[1])} for row in insights]
+    return json.dumps(returned)
+
+@app.route('/api/ranged_insights', methods=['POST'])
+@login_required
 def range_insights():
     req = request.get_json()
     tup = (req.get('customer_id'), req.get('start_date'), req.get('end_date'))
@@ -444,16 +455,18 @@ def compile_master_index():
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
 
     query = """
-        "insert into index_log
+    if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
+        insert into index_log
         (customer_id, _index, submitted)
-
+        
         values
-        (?, ?, CURRENT_TIMESTAMP)"
+        (?, ?, CURRENT_TIMESTAMP)
     """
-    val = compiled['aggregate']
+    val = compiled.get('aggregate')
+
     db.execute(query, False, (req.get('customer_id'), val), commit=True)
 
-    return compiled
+    return json.dumps(compiled)
 
 @app.route('/api/index/trendline', methods=['POST'])
 def index_trendline():
