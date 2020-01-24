@@ -51,6 +51,7 @@ class Competitors(FlaskForm):
 class Company(FlaskForm):
     selling_to = HiddenField('selling_to')
     biz_model = HiddenField('biz_model', validators=[validators.InputRequired()])
+    ltv = StringField('ltv')
     rev_channel_freeform = TextAreaField('rev_channel_freeform')
     storefront_perc = StringField('storefront_perc')
     direct_perc = StringField('direct_perc')

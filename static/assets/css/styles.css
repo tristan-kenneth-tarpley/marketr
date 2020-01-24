@@ -5690,6 +5690,10 @@ ul#product {
 .small_txt {
   font-size: 85%;
 }
+
+.x_small_txt {
+  font-size: 70%;
+}
 .ad_container .box {
   padding: 10%;
   width: 90%;
@@ -5707,6 +5711,7 @@ ul#product {
   padding: 3%;
   margin: 0;
 }
+
 
 
 

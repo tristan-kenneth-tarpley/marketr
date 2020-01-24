@@ -613,7 +613,7 @@
 
 					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
 						
-				{% if not questions[next_string]['a_format'] | layout %}
+				{% if not questions.get(next) or not questions[next_string]['a_format'] | layout %}
 					{{ close_row(debug=False) }}
 				{% endif %}
 

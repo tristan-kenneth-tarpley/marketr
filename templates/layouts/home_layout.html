@@ -12,7 +12,7 @@
 
 <div class="main-panel">
 	{% if not page.admin %}
-		{% with plan="active" %}
+		{% with plan="active", customer = page.data['core']['core'][0]['current_plan'] %}
 			{% include "/core/navbar/sidebar.html" %}
 		{% endwith %}
 		{% include "/core/navbar/topbar.html" %}

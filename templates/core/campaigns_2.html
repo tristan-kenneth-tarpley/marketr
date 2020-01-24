@@ -62,6 +62,7 @@
     customer-id="{{page.data['core']['core'][0]['id']}}"
     spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
     funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+    ltv="{{page.data['core']['core'][0]['ltv']}}"
     insights="{{page.data['insights']['insights']}}">
 </portfolio-performance>
 <div class="separator"></div>
@@ -89,7 +90,7 @@
             link=None,
             title="Portfolio Performance",
             body=performance(page),
-            hash=None,
+            hash="perf",
             admin=page.admin
         ) }}
     </div>

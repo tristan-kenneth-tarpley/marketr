@@ -37,6 +37,9 @@ export default class Insights extends HTMLElement {
                 ${this.css}
                 <p class='dark_blue small_txt'>${ins.time}</p>
                 <p>${ins.body}</p>
+                <div class='separator'></p>
+                <p class="x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
+                <p>Thanks! ~ Tristan | Founder </p>
                 `
             }).join("")}
         `.trim()

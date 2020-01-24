@@ -111,7 +111,7 @@ export default class PortfolioTrendline extends HTMLElement {
             .then(() => {
                 setTimeout(()=>{
                     this.init_chart(el.querySelector("#trendline"))
-                }, 100)
+                }, 500)
             })
             .then(()=>{
                 this.shadow.appendChild(el)

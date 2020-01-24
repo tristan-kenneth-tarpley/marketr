@@ -47,7 +47,6 @@ export default class PortfolioDetails extends HTMLElement {
         const el = document.createElement('div')
         el.innerHTML = `
             ${this.css}
-            <p>Funnel</p>
             <div class="row">
                 <div id="funnel" class="col-lg-12 col-md-12">
                 </div>

@@ -446,7 +446,7 @@ def last_7_spend():
 @app.route('/api/index/detailed', methods=['POST'])
 def compile_master_index():
     req = request.get_json()
-    ltv = req.get('ltv') # need to collect
+    ltv = req.get('ltv')
 
     orm = GoogleORM(req.get('company_name'))
     search_df = orm.search_index()

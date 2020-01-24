@@ -54,7 +54,7 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     shell(){
-        let labels = ['Chart', 'Details', 'Ads', 'Insights']
+        let labels = ['Chart', 'Funnel', 'Ads', 'Insights']
         
         let content = [
             '<div id="trendline"></div>',
@@ -117,7 +117,7 @@ export default class PortfolioPerformance extends HTMLElement {
             body:  JSON.stringify({
                 customer_id: this.customer_id,
                 company_name: this.customer_id == 200 ? "o3" : this.company_name,
-                ltv: 500
+                ltv: this.ltv
             })
         })
         .then(res=>res.json())
@@ -159,6 +159,8 @@ export default class PortfolioPerformance extends HTMLElement {
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
         this.insights_json = eval(this.getAttribute('insights'))
+        this.ltv = eval(this.getAttribute('ltv'))
+        console.log(this.ltv)
         this.render()
 
 
