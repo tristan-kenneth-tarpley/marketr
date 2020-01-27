@@ -104,10 +104,11 @@ export default class AccountCreative extends HTMLElement {
     render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
+
         /*html*/
         el.innerHTML = `
           ${this.css}
-          ${this.data.length > 0
+          ${this.data.total_spent > 0
             ? this.core()
             : this.null_state()
             }
