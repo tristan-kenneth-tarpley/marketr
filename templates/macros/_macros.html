@@ -613,7 +613,7 @@
 
 					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
 			
-				{% if not questions.get(next) and not questions[next_string]['a_format'] | layout %}
+				{% if not questions[next_string]['a_format'] | layout %}
 					{{ close_row(debug=False) }}
 				{% endif %}
 
@@ -647,3 +647,19 @@
 
 
 
+
+<div class="col-lg-6 col-12">
+	<p><strong>Ad possibilities</strong></p>
+	<div class="inset">
+		${recs[rec].meta.ads.map(ad=>{
+
+			return `
+			<div class="google_ad_preview_container">
+				<h5 class="small_txt">${ad.headline}</h5>
+				<p class="small_txt website"><span>ad</span> www.example.com</p>
+				<p class="small_txt">${ad.body}</p>
+			</div>
+			`.trim()
+		}).join('')}
+	</div>
+</div>
