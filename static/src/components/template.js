@@ -1,3 +1,5 @@
+import {tabs, shadow_events, dots_loader} from '/static/src/components/UI_elements.js'
+
 const styles = () => {
   /*html*/
   return `

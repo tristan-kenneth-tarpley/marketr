@@ -1,4 +1,5 @@
 import {tabs, shadow_events} from '/static/src/components/UI_elements.js'
+import Listener from '/static/src/components/intel/listener.js'
 const styles = () => {
     /*html*/
     return `
@@ -63,23 +64,30 @@ export default class CompetitiveIntelligence extends HTMLElement {
         this.css = styles()
     }
 
+    listener(keywords){
+        const el = new Listener()
+        el.setAttribute('keywords', JSON.stringify(keywords))
+
+        return el
+    }
+
     shell(){
 
         const overview = (name, site, type) => {
             
             return /*html*/ `
             <div class="row">
-                <div class="col-md-2 col-sm-12"></div>
-                <div class="col-lg-2">
-                    <h5>${name}</h5>
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-12"></div>
+                        <div class="col-lg-6">
+                            <p>${name}</p>
+                            <a class="small_txt" target="__blank" href="https://${site}">website</a>
+                            <p class="small_txt comp-badge ${type}">${type}</p>
+                        </div>
+                        <div class='col-lg-4'></div>
+                    </div>
                 </div>
-                <div class="col-lg-2">
-                    <a target="__blank" href="https://${site}">website</a>
-                </div>
-                <div class="col-lg-2">
-                    <p class="comp-badge ${type}">${type}</p>
-                </div>
-                <div class='col-lg-4'></div>
             </div>
             `.trim()
 
@@ -171,10 +179,17 @@ export default class CompetitiveIntelligence extends HTMLElement {
         
         /*html*/
         return `
-            ${base.map(comp=>{
-                return overview(comp.comp_name, comp.site, comp.type)
-            }).join("")}
-
+            <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                    ${base.map(comp=>{
+                        return overview(comp.comp_name, comp.site, comp.type)
+                    }).join("")}
+                </div>
+                <div class="col-lg-9 col-sm-12">
+                    <div id="listener" class="row">
+                    </div>
+                </div>
+            </div>
             <div class="separator"></div>
 
             <div class="row">
@@ -282,6 +297,17 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     .then(res=>{
                         this.state.data = res
                         this.render(true)
+                    })
+                    .then(()=>{
+                        let keywords = []
+                        for (let i of this.state.data) {
+                            keywords = [...keywords.flat(), i.core.keywords.flat()]
+                        }
+
+                        return keywords.flat()
+                    })
+                    .then(keywords=>{
+                        this.shadow.querySelector('#listener').appendChild(this.listener(keywords))
                     })
                     .catch(e=>{
                         console.log(e)

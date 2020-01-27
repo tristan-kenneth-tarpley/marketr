@@ -14,19 +14,19 @@ import praw
 
 class Listener:
     def __init__(self, keyword):
-        
-        self.keyword = keyword
+        self.keywords = keyword
 
     def listen(self):
         reddit = praw.Reddit(client_id='oy-mmNuzOc9-vA',
                      client_secret='iYEjlEIHrL4rv5ikxfACQn8cSEg', password='uVF32x*PxMf3yL8ooYvx',
                      user_agent='marketr', username='marketr_life')
         returned = list()
-        for submission in reddit.subreddit('all').search(self.keyword):
-            returned.append({
-                'title': submission.title,
-                'url': submission.url,
-                'created_at': submission.created_utc
-            })
+        for keyword in self.keywords:
+            for submission in reddit.subreddit('all').search(keyword):
+                returned.append({
+                    'title': submission.title,
+                    'url': submission.url,
+                    'created_at': submission.created_utc
+                })
         
         return returned[:10]

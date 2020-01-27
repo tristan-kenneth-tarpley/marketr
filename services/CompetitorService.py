@@ -58,15 +58,18 @@ class CompetitorService(object):
     def competitor_card(self):
         async def compile(competitors):
             def Struct(name, site, Type, res_1, res_2, res_3, res_4):
+                res_3 = res_3[:5] if len(res_3) > 5 else res_3
                 organic = float(res_2.get('seo_clicks')) if res_2.get('seo_clicks') else 0
    
                 paid = float(res_2.get('ppc_clicks')) if res_2.get('ppc_clicks') else 0
                 budget = float(res_2.get('ppc_budget')) if res_2.get('ppc_budget') else 0
+
                 core = {
                     'total_traffic': organic + paid,
                     'ppc_budget': budget,
                     'ppc_clicks': paid,
-                    'seo_clicks': organic
+                    'seo_clicks': organic,
+                    'keywords': [keyword for keyword in res_3[0]['keywords']]
                 }
                 return {
                     'comp_name': name,
