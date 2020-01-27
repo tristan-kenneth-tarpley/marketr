@@ -444,7 +444,7 @@ def last_7_spend():
     req = request.get_json()
     orm = GoogleORM(req.get('company_name'))
     spend = orm.cost_past_7()
-    if spend:
+    if spend is not None:
         spend = spend.cost.sum()
     else:
         spend = 0

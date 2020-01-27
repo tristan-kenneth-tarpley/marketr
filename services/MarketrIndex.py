@@ -17,6 +17,7 @@ class MarketrIndex(object):
         }
     
         self.assertion_error = 'dataset type required, e.g. search=True || social=True'
+
     def clean(self, df):
         df.fillna(0, inplace=True)
         df['lcr'] = df.conversions.sum() / df.clicks.sum() if df.clicks.sum() > 0 else .02
@@ -25,11 +26,14 @@ class MarketrIndex(object):
     
     def pp1ki(self, ctr, lcr, spend, impressions):
         # translation: profit potential per 1,000 impressions
-        formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
+        try:
+            formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
+        except:
+            formula = 0
         return formula
     
     def Prep(self, DF, search=False, social=False):
-        assert search or social, self.assertion_error
+        assert search == True or social == True, self.assertion_error
         if search:
             columns = self.search_columns
         elif social:
@@ -38,7 +42,7 @@ class MarketrIndex(object):
         df = self.clean(DF)
 
         df['cpm'] = 1000 * df.cost / df.impressions
-            
+   
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
         df = df.groupby(columns).agg(self.agg_set).reset_index()
 
