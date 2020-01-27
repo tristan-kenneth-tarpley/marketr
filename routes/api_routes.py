@@ -357,7 +357,11 @@ def web_listen():
     options.headless = True
 
     app.config.from_pyfile('config.cfg')
-    driver = webdriver.Firefox(options=options, executable_path = app.config['GECKO_PATH'])
+
+    driver = webdriver.Firefox(
+        options=options, executable_path = app.config['GECKO_PATH'],
+        service_log_path = app.config['NULL_PATH']
+    )
 
     listener = Listener(driver, req.get('keyword'))
     
