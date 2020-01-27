@@ -137,18 +137,6 @@ export default class PortfolioPerformance extends HTMLElement {
 
         this.shadow.appendChild(el)
 
-        // el.innerHTML = `
-        //     ${this.css}
-        //     <div style="text-align:center;">
-        //         <input id="select_range" value="${this.state.data == null ? now() : this.state.data.range.start}" type="date">
-        //     <div>
-        //     <div style="text-align:center;">
-        //         <button id="details" class="allocation_toggle btn btn-secondary">Details</button>
-        //         <button disabled="true" id="insights" class="btn allocation_toggle allocation_toggle-inactive">Insights</button>
-        //         <div id="container"></div>
-        //     </div>
-        // `
-        // this.shadow.appendChild(this.summary_handlers(el));
     }
 
     connectedCallback(start=now()) {
@@ -159,8 +147,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.spend_rate = this.getAttribute('spend_rate')
         this.funds_remaining = this.getAttribute('funds_remaining')
         this.insights_json = eval(this.getAttribute('insights'))
-        this.ltv = eval(this.getAttribute('ltv'))
-        console.log(this.ltv)
+        this.ltv = this.getAttribute('ltv')
         this.render()
 
 

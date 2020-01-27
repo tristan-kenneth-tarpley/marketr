@@ -156,7 +156,7 @@ export default class AdSpend extends HTMLElement {
                     <p>${this.num_campaigns} campaigns</p>
                     <p>${currency_rounded(this.data.budget)} per month to the advertising platforms</p>
                     
-                    ${ this.active_plan == 'None'
+                    ${ !this.active_plan
                         ? `
                         <a class="btn btn-primary" href="/pricing?quantity=${this.num_campaigns}">Apply recommendations</a>`
                         : ''
@@ -472,7 +472,7 @@ export default class AdSpend extends HTMLElement {
         this.competitiveness = this.getAttribute('competitiveness')
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
-        this.active_plan = this.getAttribute('active_plan')
+        this.active_plan = this.getAttribute('active_plan') != 'None' ? null : this.getAttribute('active_plan') != 'None'
         this.spend_rate = this.getAttribute('spend_rate') != null
                             ? this.getAttribute('spend_rate')
                             : 0

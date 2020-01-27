@@ -23,7 +23,10 @@ class BigQuery(object):
         self.project_id = 'marketr-app'
         
     def get(self, sql):
-        return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
+        try:
+            return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
+        except:
+            return None
 
 
 

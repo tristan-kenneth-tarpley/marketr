@@ -45,7 +45,7 @@ def get_personas():
     query = "select name, p_id from product_list where customer_id = ? and name is not null"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
-    print(customer_id)
+
     returned = [{'product_name': row[0], 'p_id': row[1]} for row in data]
     return json.dumps(returned)
 
@@ -62,7 +62,7 @@ def get_products():
 @admin_required
 @account_rep_required
 def remove_product():
-    print(request.form['product_name'])
+
     UserService.remove_product(request.form.get('product_name'))
     return 'added'
 
@@ -119,7 +119,7 @@ def complete_task():
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
-    print(request.form.get('task'))
+
     tasks.complete_task(
         request.form.get('task')
     )
@@ -132,7 +132,7 @@ def incomplete_task():
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
-    print('hi')
+
     tasks.incomplete_task(
         request.form.get('task')
     )
@@ -231,7 +231,10 @@ def spend_allocation():
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
-    input_budget = float(viewed_budget) if viewed_budget else budget
+    if viewed_budget is not None:
+        input_budget = float(str(viewed_budget).replace(",", ""))
+    else:
+        input_budget = budget
 
     user = req.get('customer_id')
     spend = SpendAllocation(
@@ -427,7 +430,7 @@ def create_campaign():
                 ads = ad_obj.Google(ad_history)
                 if ads:
                     group[1].update(ads = [ad for ad in list(ads)])
-                    
+
         except Exception as e:
             print(e)
             continue
@@ -441,10 +444,15 @@ def last_7_spend():
     req = request.get_json()
     orm = GoogleORM(req.get('company_name'))
     spend = orm.cost_past_7()
-    spend = spend.cost.sum()
+    if spend:
+        spend = spend.cost.sum()
+    else:
+        spend = 0
     return json.dumps({
         'spend': spend
     })
+    
+    
 
 
 ### Market(r) index ### 
@@ -458,18 +466,21 @@ def compile_master_index():
     social_df = orm.social_index()
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+    print(compiled)
+    try:
+        query = """
+        if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
+            insert into index_log
+            (customer_id, _index, submitted)
+            
+            values
+            (?, ?, CURRENT_TIMESTAMP)
+        """
+        val = compiled.get('aggregate')
 
-    query = """
-    if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
-        insert into index_log
-        (customer_id, _index, submitted)
-        
-        values
-        (?, ?, CURRENT_TIMESTAMP)
-    """
-    val = compiled.get('aggregate')
-
-    db.execute(query, False, (req.get('customer_id'), val), commit=True)
+        db.execute(query, False, (req.get('customer_id'), val), commit=True)
+    except:
+        print("hi")
 
     return json.dumps(compiled)
 

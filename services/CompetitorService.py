@@ -77,7 +77,6 @@ class CompetitorService(object):
                     'display_ads': res_4
                 }
             
-            print(competitors)
             returned = list()
             for competitor in competitors:
                 competitors = loop.run_in_executor(None, self.NewCompetitors, competitor['comp_website'])
