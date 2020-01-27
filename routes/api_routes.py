@@ -353,17 +353,7 @@ def dismiss_rec():
 @app.route('/api/intel/listener', methods=['POST'])
 def web_listen():
     req = request.get_json()
-    options = Options()
-    options.headless = True
-
-    app.config.from_pyfile('config.cfg')
-
-    driver = webdriver.Firefox(
-        options=options, executable_path = app.config['GECKO_PATH'],
-        service_log_path = app.config['NULL_PATH']
-    )
-
-    listener = Listener(driver, req.get('keyword'))
+    listener = Listener(req.get('keyword'))
     
     return json.dumps(listener.listen())
 

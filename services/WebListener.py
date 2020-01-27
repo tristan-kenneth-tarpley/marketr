@@ -10,30 +10,23 @@ import urllib
 import hmac
 from pprint import pprint
 from xml.etree import ElementTree
+import praw
 
 class Listener:
-    def __init__(self, driver, keyword):
-        self.driver = driver
+    def __init__(self, keyword):
+        
         self.keyword = keyword
 
     def listen(self):
-#         csv = ', '.join([arg for arg in args])
-        headline_enc = f"{self.keyword}"
-        querystring = urllib.parse.quote(headline_enc)
-        reddit_base = f'https://www.reddit.com/search/?q={querystring}'
+        reddit = praw.Reddit(client_id='oy-mmNuzOc9-vA',
+                     client_secret='iYEjlEIHrL4rv5ikxfACQn8cSEg', password='uVF32x*PxMf3yL8ooYvx',
+                     user_agent='marketr', username='marketr_life')
+        returned = list()
+        for submission in reddit.subreddit('all').search(self.keyword):
+            returned.append({
+                'title': submission.title,
+                'url': submission.url,
+                'created_at': submission.created_utc
+            })
         
-        self.driver.get(reddit_base)
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
-        posts = self.driver.find_elements_by_css_selector('.Post div:nth-of-type(2) h3')
-        
-        listened = {
-            'phrases': [],
-            'link': reddit_base
-        }
-        for post in posts:
-            if post.text.strip() != "" and len(post.text.strip()) > 0:
-                listened['phrases'].append(post.text)
-        
-        self.driver.quit()
-        
-        return listened
+        return returned[:10]
