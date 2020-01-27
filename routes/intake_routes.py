@@ -141,7 +141,7 @@ def competitors():
 def company():
     form = forms.Company()
     service = IntakeService(session['user'], 'company', session['onboarding_complete'])
-
+    
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         if request.form['submit_button'] != 'skip':
             service.company(form.data)

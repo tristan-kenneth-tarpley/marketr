@@ -1,3 +1,4 @@
+import {google} from '/static/src/components/UI_elements.js'
 const styles = () => {
     return html(
       'style',
@@ -16,6 +17,9 @@ const styles = () => {
         
         .accordion-content.acc-active {
             display: block;
+        }
+        textarea.form-control {
+            padding: 3%;
         }
       `
     );
@@ -180,12 +184,13 @@ const formatting_template = recs => {
     }
     /*html */
     return `
+    <div class="row">
+        <div class="col-lg-6 col-12">
     ${Object.keys(recs).map(rec=>{
         /*html*/
         let returned = `
-        <p><strong>${_print(recs[rec].ad_group)}</strong></p>
-        <div class="row">
-            <div class="col-lg-6 col-12">
+            <p><strong>${_print(recs[rec].ad_group)}</strong></p>
+            
                 <div class="inset">
                 ${recs[rec].meta.match_types.map(met=>{ 
                     let _returned = ""
@@ -206,24 +211,31 @@ const formatting_template = recs => {
                     return _returned
                 }).join('')}
                 </div>
-            </div>
-            <div class="col-lg-6 col-12">
-                <p><strong>Ad possibilities</strong></p>
-                <div class="inset">
-                    ${recs[rec].meta.ads.map(ad=>{
-                        return `
-                        <div class="google_ad_preview_container">
-                            <h5 class="small_txt">${ad.headline}</h5>
-                            <p class="small_txt website"><span>ad</span> www.example.com</p>
-                            <p class="small_txt">${ad.body}</p>
-                        </div>
-                        `.trim()
-                    }).join('')}
-                </div>
-            </div>
-        </div>`
+
+            `
         return returned
-    }).join('')}`.trim()
+    }).join('')}
+        </div>
+        <div class="col-lg-6 col-12">
+            <p><strong>Ad possibilities</strong></p>
+    ${Object.keys(recs).map(rec=>{
+        /*html*/
+        return `
+            <div class="inset">
+                ${recs[rec].meta.ads.map(ad=>{
+                    return `
+                    <div class="google_ad_preview_container">
+                        <h5 class="small_txt">${ad.headline}</h5>
+                        <p class="small_txt website"><span>ad</span> www.example.com</p>
+                        <p class="small_txt">${ad.body}</p>
+                    </div>
+                    `.trim()
+                }).join('')}
+            </div>`
+        }).join('')}
+        </div>
+    </div>
+    `.trim()
 }
 
 

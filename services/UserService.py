@@ -574,19 +574,20 @@ class IntakeService:
 		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
 
-		db.execute(query, False, vals, commit=True)
+		db.execute(query, False, tuple(vals), commit=True)
 
 	def company(self, data):
 		self.perc_complete(30)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='company', keys=keys, vals=vals)
-
 		query = dbactions.insert_conditional('not exists', table='company')
 		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
 
-		db.execute(query, False, vals, commit=True)
+		print(query)
+
+		db.execute(query, False, tuple(vals), commit=True)
 
 	def product(self, data):
 

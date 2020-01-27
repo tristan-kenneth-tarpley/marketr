@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import json
 import math
 from services.UserService import UserService
@@ -18,7 +19,6 @@ class Portfolio:
         next_sunday = timedelta(days=end_offset)
         end = d + next_sunday
 
-        
         return start, end
 
     def clean(self, start_date):
@@ -37,14 +37,13 @@ class Portfolio:
             df = self.agg.fillna(0)
     
             df['cpc'] = df.cost/df.clicks
-            df['visits_per_thousand'] = 1000 / df.cpc
-            df = df.drop_duplicates(keep='first')
-            df = df.fillna(0)
-
+            df['visits_per_thousand'] = 1000 / df['cpc']
+            df = df.replace([np.inf, -np.inf], 0).drop_duplicates(keep='first').fillna(0)
+            
             df['range'] = pd.to_datetime(df['week']) - pd.to_timedelta(7, unit='d')
             df = df.groupby(['week', pd.Grouper(key='range', freq='W-MON')])['visits_per_thousand'].sum().reset_index().sort_values('range')
-            df['range'] = df.range.dt.strftime('%Y-%m-%d')
 
+            df['range'] = df.range.dt.strftime('%Y-%m-%d')
             df = df.groupby(['range'])['visits_per_thousand'].mean().reset_index().sort_values('range')
 
             return df.to_json(orient='records')
@@ -54,13 +53,13 @@ class Portfolio:
             ])
 
 
-    def group(self, start_date):
-        self.clean(start_date)
+    def group(self):#, start_date):
+        # self.clean(start_date)
 
-        d = UserService.now()
-        year, month, day = (int(x) for x in start_date.split('-'))
-        d = date(year, month, day)
-        start, end = self.last_sunday(d)
+        # d = UserService.now()
+        # year, month, day = (int(x) for x in start_date.split('-'))
+        # d = date(year, month, day)
+        # start, end = self.last_sunday(d)
 
         if self.agg is not None:
             impressions = int(self.agg.impressions.sum())
@@ -74,10 +73,10 @@ class Portfolio:
             engagement = impressions/interactions if interactions > 0 else 0
             
             returned = {
-                'range': {
-                    'start': str(start),
-                    'end': str(end)
-                },
+                # 'range': {
+                #     'start': str(start),
+                #     'end': str(end)
+                # },
                 'cost': cost,
                 'awareness': {
                     'engagement': engagement,
@@ -94,10 +93,10 @@ class Portfolio:
             }
         else:
             returned = {
-                'range': {
-                    'start': str(start),
-                    'end': str(end)
-                },
+            #     'range': {
+            #         'start': str(start),
+            #         'end': str(end)
+            #     },
                 'cost': 0,
                 'awareness': {
                     'engagement': 0,

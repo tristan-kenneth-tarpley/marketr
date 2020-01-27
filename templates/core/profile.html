@@ -44,8 +44,11 @@
 	<h6 class="title" style="font-size: 80%;">{{title}}</h6>
 	{% endmacro %}
 
-	<p>{{core['company_name']}} is a {{ core['selling_to'] }} company in the {{ core['biz_model']}} space with their primary sources of revenue coming from the following channels: </p>
-
+	<p>{{core['company_name']}} is a {{ core['selling_to'] }} {{ core['biz_model']}}.
+	{% if core.get('ltv') %}
+	<p>Their lifetime value of a customer is ${{core['ltv'] | currency}} and their primary sources of revenue come from the following channels: </p>
+	{% endif %}
+	
 	<div class="row row_cancel percentages">
 		<div class="{{ classlist }}">
 			<div class="">

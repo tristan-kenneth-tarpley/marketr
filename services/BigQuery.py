@@ -1,15 +1,16 @@
 from google.oauth2 import service_account
+import pandas
 import pandas_gbq
 
 
 class BigQuery(object):
     def __init__(self):
         self.credentials = service_account.Credentials.from_service_account_info(
-            {
+        {
             "type": "service_account",
             "project_id": "marketr-app",
-            "private_key_id": "2b7740004c3a58d4f89d3f66e48514c286d2c797",
-            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDi9cwp/CgmTq3d\n4WrWAjQHzQj2zm8R4onTGVpKdCeeCauFSGumSIIaKBgjnhCLz3MVZndPRUkqkhNZ\nysI5mXNay4vsEE9UrOfwcDcbMrDK+f2uTMwp5mSakJH0mt+g7/E9j8PA5x2xuqiw\ngOCs3PfqntjaOypjR0f3ODpECWMc7Y8im29Nr4uXuIt7tHcRSwmI6XxGhxqXkvlo\n496AaB0TTu+9++DzAZnz11bvHcEyWPLP5GdMGU9V3byBaLKdcxD3Zvmkd/+kyRCw\nPGEjbfY5AOj1zqu2UZheok/oCIz2CJnfQ05BGqblnf5WfhoorJAws0rubXkLiK8I\nVsZmL0fxAgMBAAECggEABNx+ccTGqGFljHvcUbas3iDoaP7tdpzbVmPz4OXhhltP\nKvTs51wku0IyGCs10ATSwnnWIuLJSSnlU7ZJ2Dl+9Moo1lbYGCh29Fm2+HRqwII/\nyoi3E8utSnk/wxVBJn2VNXwblYltw6WLoPI1vcYi4kniO7RqOUOo2TUBXH01/APZ\nRcB86Svw6Ia7+ViswxWEAdCELtFWipye3OVAcOwImjhN1GJHs3Onc0BygZqRJXfe\nTl9wCxHZgS5QT5ZrteLT65BT2RiPJeBAi2J9JujFMOpoGQBoM+pbA/x8iHa4aind\nlP3fnPsg/TCc5TZJ3IwquToDB1dvCRpWo+m6ZMfAJQKBgQD/mWB2D4D9C8QzI61v\nE3wva+vd/I53DzLRIr5TMuRvdf0nXRVwvsAAMn+E+HUzOpBfQJ3Kk6pExWUW50Fc\nGxQ/iZlklgPlVEJzUN2tOzyTatsFqX0QQGMVK9z/7yTe+yKYONL1ROBZFG6M4yTX\nn32FqdX9x36yxno8R/m0ZM/x7QKBgQDjUOwRybiMup1mmXh9hsMG6my6FbgDyXOh\nOiKQmvrlsTb3Ktp6SIaNyBwAdUzStuc1u4wEzlZobtt+ACWNEp3z9kLFK47pf0ap\n1v9oj83LXBqrduaoB+g7vRjVbfgsM0pbCW10xwXsjnck4z5wNBqFU3BtI5DU2kHJ\nSPtPdko9lQKBgQCXkozxdiA371JaQT4IMLXkKUumSK7zS8AG5WOYUwXEU2PchAbC\n5VtWwpt8bxqRVplm4xqvlwHR5n0cJ+dKh4RqaV7dl1iYFm+RktLid85kXWmk4e2Y\nRZZ8Z5aW72oeES9itc/kQwQHz2X/hnPCqoH1UdHkvPkVaz3xoX0izOXDwQKBgQCE\nZY6Jsb7+oHaq2np2SjZvYbygCaRa+EuTvUOCi/HUNIp6HYiQrotIKyQ8FBYBqKwz\n/J9J8VAclWzcD4PPjedXv7gWFQ+w6gOjSmkKYq+PYX7bHW6ssaZOnQ3IybtBK0KE\nkZIh8QV/SV8VqhGk0oQb4YRa3NsvTkwAy7QsDQ6inQKBgBJDs8FFkQzu4F3YHG55\npsHPXXN7O9ZUvLml9GmQMuFDFzqtuxDV/PHp0qt9hAF0UN62dlTTqrohtjmwbX2L\nY3ENkn4LcFhshB2ivwPBP5pEbxwWsDCusHqkYfUL0nC5qZdUGqx4qHmFjDC1HptY\nWr084Vi6tr48vfKeS1+U52QB\n-----END PRIVATE KEY-----\n",
+            "private_key_id": "9fe4fdebc713ddb1fbba51eb26d40c7e59b0900e",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8lUWYNFOvdEVr\n0ibh6qpXAiHA/iFEzR4LnRVtGdHat6q7YDkSBR6rdS3Dei1JzKBeuwwWjiFWtIAO\nJ4Ect14s8P+hY6rc0/NlkKqN+p+Z6v4+O2wgEnNEkQ5WLaq38BRK2iBX+nsmKyBE\nKpqno4fDYEYs6TQCrJA7S57jVDeqKtJvbf2C6hobmN4LVym5iHdx7k4ymneLjb7w\nKpnsP3VHNMttNkiUBOlE7SfrwthFz4ihJ2ym1BU5q9MwVyyMtgFY0mjqTBPZhv6e\nFtFRVPc+Y+rG7mR8MRirNViPYyUiO69UfZo7z4acnPDCBwUe30vmlFYUy2oJCx8h\nXTxeJzKzAgMBAAECggEANW2XJ42frgRjjK4f/P6WnwsIFB0LwOnaGtE42k2n4m8J\nzIdw89WGgG409n5daVyzjNMylAtVj7KY2ym/Dys2X8YxroBFzsWv3jUT1SDN6fYl\nbO0574Y6qRDtvmW2yeEXZrOQ2UwqasBqJlXpthgDJUvX5e52IVHRlTMSA3b/RFLb\n+xo2Te16nkrcIeJzYtHmMKoF3qOEniUzFpenPMZ0V+/kAOvaVmMhX0d1KX1+wmOk\nR0HYNhBfCG7/+L1Q+CJckqxltIDQ7x3uP4TnbNZeHVSGwpOr3u2CksDKkZakrljm\nFHtjNT7Uc9WpfVkQg9IcchfDSgCk0NTWqSmwwb2U9QKBgQDhqkgpJPkxB7IJefkD\ntdToZAn9ih4NyLumSFizNXcsH2c7rvD5TqXpTnwNEH6fGpitwFb89AjZGhLnvxBW\nRm7pjOMMZgcI/gjAR0kzZ3gi8duY/9Z8Zxao+38cUnvee6qwxam+g4jXGW2I9VO6\nMLtbqpZ6IFHJwgnmsd9zkWVKpQKBgQDV7uaRFrl74/n9OVHHADdTe/8Dn/6SHywO\nhkrOcuykUDC45QzW2Oz687+qxYAujdL2RoCgrEj4CxS/MCd7NWPreeLEpfyfz9n3\niK1wAS4gzaFO378WiADYut4qnLlN/FnvUwgP6SN7uWVrqPSXo4VBCIpj5z1wag60\na3z1TpOAdwKBgHSR/+CxJsB7Fy7qAQY3oZnCQ57jAA9ix/xnltpMHhl+x1b/UZ+X\nTwEr98zP3njVxlTK7KSScxei7m0kN445qAWhL5AyDCRLBb49lMSnCFoU0blBP0zX\n+86iy9CXk0EkZNIX6U1uqPtkOT7sa6ncjowVnNHNbDJqt66h56nNS6O5AoGARFTz\ndmJgyo6t+dEGKt8JzPOtJ7ZB9OBaDSWd3UVeCrnGZjhbGoDdaObUULKW18fbG2i3\nixqckAXSEaNK6RLLoJok8ZTnFRCp2WPhqgXmevnTTUMwYPz98Dv33HqEwcEZ5NSL\nnbFk8Q7tsy6bOZg0ZupYccKZoD9wBPbUSfJYMM8CgYEAxfqBKYUuuyztsI9Fi4fm\nHCvbqMFzVZEoSkVaX6zLXeJvCGz2nu8GDsOzNwc2RUU8ZQH3AV3Q96UqTLROp0QN\npEbA6CJWcEIT+Uyqz/boAobpc9QonOJN3fIS6hoAQPW9+/H1pIv8D7ndhA7J75ei\nN9f2PusTdbodD53SHcyteYg=\n-----END PRIVATE KEY-----\n",
             "client_email": "marketr@marketr-app.iam.gserviceaccount.com",
             "client_id": "103363973211179125545",
             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -17,11 +18,15 @@ class BigQuery(object):
             "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
             "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/marketr%40marketr-app.iam.gserviceaccount.com"
             }
+
         )
         self.project_id = 'marketr-app'
         
     def get(self, sql):
-        return pandas_gbq.read_gbq(sql, project_id=self.project_id)
+        try:
+            return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
+        except:
+            return None
 
 
 
@@ -46,12 +51,13 @@ class GoogleORM(BigQuery):
         google = f"""
         SELECT ctr, clicks, cost/1000000 as cost, conversions, impressions, interactions, week, null as date_stop
 
-        FROM `{self.project_id}.marketr_google.ACCOUNT_PERFORMANCE_REPORT`"""
+        FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT`"""
 
         facebook = f"""SELECT ctr, clicks, spend as cost, null as conversions, impressions, reach as interactions, CAST(EXTRACT(DATE FROM date_start) AS string) as week, CAST(EXTRACT(DATE FROM date_stop) AS string) as date_stop
         FROM `{self.project_id}.{self.company_name}_facebook.ads_insights`"""
 
         g_fb = google + " union all " + facebook
+        # return self.get(g_fb)
         try:
             return self.get(g_fb)
         except:
@@ -62,6 +68,49 @@ class GoogleORM(BigQuery):
                     return self.get(facebook)
                 except:
                     return None
+
+    def cost_past_7(self):
+        query = f"""
+        select sum(cost) as cost from (
+            select sum(spend / 1000) as cost from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+
+            WHERE EXTRACT(DATE FROM date_start) > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+
+            union all
+
+            select sum(cost / 1000000) as cost from `{self.project_id}`.`{self.company_name}_google`.`ACCOUNT_PERFORMANCE_REPORT` as acc
+
+            WHERE EXTRACT(DATE FROM day) > DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+        )
+        """
+
+        return self.get(query)
+
+    def social_index(self):
+        facebook = f"""
+            select
+               ai.campaign_name as name, ai.date_start, ads.creative.id, ads.adset_id, ads.campaign_id,
+               creative.thumbnail_url, creative.body,
+               ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions
+
+            from `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
+              join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
+              on creative.id = ads.creative.id
+
+              join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+              on ai.ad_id = ads.id
+            where creative.thumbnail_url is not null and campaign_name is not null
+            """
+        
+        return self.get(facebook)
+    
+    def search_index(self):
+        google = f"""select rep.campaign as name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
+
+from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep
+where rep.campaign is not null"""
+        
+        return self.get(google)
 
             
         

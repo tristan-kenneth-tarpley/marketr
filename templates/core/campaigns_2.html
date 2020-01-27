@@ -35,170 +35,22 @@
 {% set ad_premium = page.data['core']['core'][0][''] %}
 {% set company_name = page.data['core']['company_name'] %}
 
-{% macro parameters(page) %}
-<div class="row">
-    <div class="col-md-3">
-        <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
-    </div>
-    <div class="col center_it">
-        <button type="button" class="small_txt annotation" data-container="body" data-toggle="popover" data-html="true" data-placement="left"
-        title="<p>Brand Strength</p>"
-        data-content="<p>Brand strength is a relative measure of your brand in the marketplace you're targeting.</p>
-        <p>Low | less than 5% market share</p>
-        <p>Medium | 5% - 15% market share</p>
-        <p>High |  more than 15% market share</p>">
-        Brand<br>Strength
-        </button>
-        {% set options = ['high', 'medium', 'low'] %}
-        {% if not page.admin %}
-            <select id="brand_strength" class="considerations_select form-control">
-                    {% if page.data['core']['core'][0].get('brand_strength') %}
-                        <option>{{ page.data['core']['core'][0].get('brand_strength') }}</option>
-                        {% for option in options %}
-                            {% if option != page.data['core']['core'][0].get('brand_strength') %}
-                            <option>{{ option }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        {% for option in options %}
-                        <option>{{option}}</option>
-                        {% endfor %}
-                    {% endif %}
-            </select>
-        {% else %}
-            <p class="small_txt">{{ page.data['core']['core'][0].get('brand_strength') }}</p>
-        {% endif %}
-    </div>
-    <div class="col center_it">
-        <button type="button" class="small_txt annotation" data-container="body" data-toggle="popover" data-html="true" data-placement="left"
-        title="<p>Growth Needs</p>"
-        data-content="<p>Growth needs ties into how quickly you need (or want) to grow in the marketplace as it compares to competitors and your current position in the marketplace. </p>
-        <p>Low |  No need to rapidly acquire new clients.  May be still building product, not ready to scale, and/or holding your market position.</p>
-        <p>Medium | Definitely need or want some new clients, but okay to pace with the competition. </p>  
-        <p>High |  Need rapid growth at all costs.</p>">
-        Growth<br>Needs
-        </button>
-        {% if not page.admin %}
-            <select id="growth_needs" class="considerations_select form-control">
-                {% if page.data['core']['core'][0].get('growth_needs') %}
-                    <option>{{ page.data['core']['core'][0].get('growth_needs') }}</option>
-                    {% for option in options %}
-                        {% if option != page.data['core']['core'][0].get('growth_needs') %}
-                        <option>{{ option }}</option>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% for option in options %}
-                    <option>{{option}}</option>
-                    {% endfor %}
-                {% endif %}
-            </select>
-        {% else %}
-            <p class="small_txt">{{ page.data['core']['core'][0].get('growth_needs') }}</p>
-        {% endif %}
-    </div>
-    <div class="col center_it">
-        <button type="button" class="small_txt annotation" data-container="body" data-toggle="popover" data-html="true" data-placement="left"
-        title="<p>Market Competitiveness</p>"
-        data-content="<p>Competitiveness specifies how crowded and intense the competition is within your specific market and niche.  </p>
-        <p>Low |  Only a couple players and/or low intensity competition.  Lots of green-field available to expand into.</p>
-        <p>Medium | A few established competitors and or new entrants, but more than enough market available.</p>
-        <p>High |  Competition is intense.  Established players and/or many new entrants.">
-        Market<br>Competitiveness
-        </button>
-        {% if not page.admin %}
-        <select id="competitiveness" class="considerations_select form-control">
-                {% if page.data['core']['core'][0].get('growth_needs') %}
-                    <option>{{ page.data['core']['core'][0].get('competitiveness') }}</option>
-                    {% for option in options %}
-                        {% if option != page.data['core']['core'][0].get('competitiveness') %}
-                        <option>{{ option }}</option>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% for option in options %}
-                    <option>{{option}}</option>
-                    {% endfor %}
-                {% endif %}
-        </select>
-        {% else %}
-        <p class="small_txt">{{ page.data['core']['core'][0].get('competitiveness') }}</p>
-        {% endif %}
-    </div>
-
-    <div class="col">
-        <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
-    </div>
-</div>
-{% endmacro %}
 
 {% macro spend_allocation(page) %}
-    <div class="row row_cancel">
-        <div class="col-md-2 col-12"></div>
-        <div class="col-md-4 col-12">
-            <p><strong>Recommended Advertising Budget:</strong></p>
-            <div style="padding-top:7%;" class="card center_it negative_card">
-                <h5><strong><span class="rec_budget"></span></strong> /month</h5>
-                <button type="button" style="background-color: transparent;" id="score_popover" class="btn btn-neutral" data-container="body" data-toggle="popover" data-html="true" data-placement="left" title="<p>Recommended budget</p>"
-                    data-content="<p>We provide a recommended budget based on the following factors:</p>
-                    <ul class='no-dec'>
-                        <li>Stage of your company</li>
-                        <li>Annual Revenues</li>
-                        <li>Business model</li>
-                    </ul>
-                    
-                    <p>Additional factors that you may want to adjust your spend targets (either up or down) include:</p>
-                    <ul class='no-dec'>
-                        <li>Competitiveness of your product/service niche.</li>
-                        <li>Industry-specific adjustments i.e. financial or real-estate services may require a higher spend rate for effective results.</li>
-                        <li>Location.</li>
-                        <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
-                    </ul>">
-                    How is this calculated?
-                </button>
-            </div>
-        </div>
-        <div class="col-md-4 col-12">
-            <p class="small_txt">Need to modify the budget to fit current plans?</p>
-            <div class="form-group">
-                <input type="number" id="typical" value="$1,500/month" class="form-control">
-                <div class="form-control-border"></div>
-            </div>
-            <p class="small_txt"><em>Changing this will affect the marketing mix spend below</em></p>
-        </div>
-        <div class="col-md-2 col-12">
-            <button id="recalc" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
-        </div>
-    </div>
-
-    <div class="separator"></div>
-
-    <p class="center_it">Below is your personalized marketing portfolio mix based on a budget of <strong><span class="viewed_budget"></span></strong>.</p>
-    <div class="row">
-        <div class="col-lg-6 col-sm-12">
-            <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
-        </div>
-        <div class="col-lg-6 col-sm-12">
-            <br>
-            <div style="margin:0 auto;text-align:center;">
-                <button class="view_perc allocation_toggle btn btn-secondary">%</button>
-                <button class="view_usd allocation_toggle allocation_toggle-inactive btn">$</button>
-            </div>
-            <div id="stage_breakdown" class="inset">
-            </div>
-        </div>
-    </div>
-    {#{% if not page.data['core']['core'][0].get('current_plan') %}
-    <div class="row row_cancel">
-        <div class="center_it small_txt col card negative_card">
-            <h5><strong>See how easy it can be?</strong></h5>
-            <p>Based on your marketing spend recommendations, we suggest <span class="rec_budget"></span> spend/month spread out across <span class="num_campaigns"></span> campaigns.</p>
-            <p>Market(r) can manage some, or all, of that budget. We'll do it completely for free for 30 days to prove ourselves. After that, it's only $85/month per campaign.</p>
-            <a href="{{url_for('pricing')}}" class="campaign_cta small_txt btn btn-outline btn-outline-secondary">I want to learn more</a>
-            <a href="{{url_for('pricing')}}" class="campaign_cta small_txt btn btn-primary">Start campaigns</a>
-        </div>
-    </div>
-    {% endif %}#}
+{% set base = page.data['core']['core'][0] %}
+<ad-spend
+    customer_id="{{page.data['core']['core'][0]['id']}}"
+    type="{{page.data['spend_rec']['spend_rec'][0]['model']}}"
+    stage="{{base.get('stage')}}"
+    revenue="{{base.get('revenue')}}"
+    brand_strength="{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}"
+    growth_needs="{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}"
+    competitiveness="{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}"
+    selling_to="{{base.get('selling_to')}}"
+    biz_model="{{base.get('biz_model')}}"
+    active_plan="{{base.get('current_plan')}}"
+    spend_rate="{{ base.get('spend_rate') }}">
+</ad-spend>
 {% endmacro %}
 
 
@@ -210,8 +62,16 @@
     customer-id="{{page.data['core']['core'][0]['id']}}"
     spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
     funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+    ltv="{{page.data['core']['core'][0]['ltv']}}"
     insights="{{page.data['insights']['insights']}}">
 </portfolio-performance>
+<div class="separator"></div>
+<portfolio-budget
+    customer_id="{{ page.data['core']['core'][0]['id'] }}"
+    spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
+    funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+    company_name="{{page.data['core']['core'][0]['company_name']}}"
+></portfolio-budget>
 {% endmacro %}
 
 {% macro recommendations(page) %}
@@ -225,16 +85,16 @@
 
 {% if page.data['core']['core'][0]['current_plan'] %}
 <div class="row">
-    <div class="col-lg-8 col-md-7 col-sm-12">
+    <div class="col-lg-8 col-md-12 col-sm-12">
         {{ section(
             link=None,
             title="Portfolio Performance",
             body=performance(page),
-            hash=None,
+            hash="perf",
             admin=page.admin
         ) }}
     </div>
-    <div class="col-lg-4 col-md-5 col-sm-12">
+    <div class="col-lg-4 col-md-12 col-sm-12">
         <div class="row">
             <div class="col">
                 {{ section(
@@ -246,7 +106,7 @@
                 ) }}
             </div>
         </div>
-        <div class="row">
+        {#<div class="row">
             <div class="col">
                 {% macro tactics_empty() %}
                     <div class="tactics_loading" id="loading">
@@ -263,14 +123,11 @@
                     admin=page.admin
                 ) }}
             </div>
-        </div>
+        </div>#}
     </div>
 </div>
 {% endif %}
 
-<div class="card">
-    {{ parameters(page)}}
-</div>
 
 <div id="where" class="row">
     <div class="col">
@@ -290,24 +147,11 @@
 {% block js %}
     <script type="module">
         import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
-        import AdSpend from '/static/src/Spend.js'
-        import PortfolioPerformance from '/static/src/components/portfolio_performance.js'
+        import AdSpend from '/static/src/components/Spend.js'
+        import PortfolioPerformance from '/static/src/components/portfolio/portfolio_performance.js'
+        import Budget from '/static/src/components/portfolio/Budget.js'
         import Recommendations from '/static/src/components/customer/recommendations.js'
         import Rec_shell from '/static/src/components/customer/recommendations.js'
-
-        {% set base = page.data['core']['core'][0] %}
-        const spendobj = new AdSpend(
-            "{{page.data['spend_rec']['spend_rec'][0]['model']}}",
-            "{{base.get('stage')}}",
-            "{{base.get('revenue')}}",
-            "{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}",
-            "{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}",
-            "{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}",
-            "{{base.get('selling_to')}}",
-            "{{base.get('biz_model')}}",
-            "{{base.get('current_plan')}}"
-        )
-        spendobj.get()
     </script>
 {% endblock %}
 

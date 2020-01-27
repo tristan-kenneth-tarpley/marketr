@@ -30,14 +30,14 @@ export default class PortfolioTrendline extends HTMLElement {
 
     init_chart(target){
         target.innerHTML = ""
-        let labels = this.state.data ? this.state.data.map(i => i.range) : [0]
-        let dataset = this.state.data ? this.state.data.map(i => parseInt(i.visits_per_thousand.toFixed())) : [0]
+        let labels = this.state.data ? this.state.data.map(i => i.date) : [0]
+        let dataset = this.state.data ? this.state.data.map(i => i.index) : [0]
     
         const data = {
             labels,
             datasets: [
                 {
-                    label: "Site visits per $1,000",
+                    label: "Market(r) Index",
                     fill: false,
                     borderColor: "#62cde0",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
@@ -77,72 +77,60 @@ export default class PortfolioTrendline extends HTMLElement {
                 }]
             }
         };
-        const trendline = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'line',
             data: data,
             options: options
         });
     }
 
-    render(init=true){
+    render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        if (init == false && (this.state.data[0].range != "0000-00-00")) {
-            /*html */
-            el.innerHTML = `
-                ${this.css}
-                <div class="row">
-                    <div class="col" id="chart_container">
-                        <canvas id="trendline"></canvas>
-                    </div>
+        console.log(this.state.data)
+        /*html*/
+        el.innerHTML = `
+            ${this.css}
+            ${!this.state.data
+                ? `<p class="small_txt">When your campaigns become active, you will begin to see a trendline of your Market(r) Index-- your marketing portfolio health score.</p>
+                <p class="small_txt">If you have any questions, head over to the chat tab and your Market(r) guide will reponse within an hour!</p>
+                <p class="small_txt">~ Tristan Tarpley, Founder of Market(r)</p>`
+                : ''
+            }
+            <div class="row">
+                <div class="col" id="chart_container">
+                    <canvas id="trendline"></canvas>
                 </div>
-            `
-            this.shadow.appendChild(el);
-            this.init_chart(el.querySelector('#trendline'))
-        } else if (init == true) {
-            el.innerHTML = `
-                ${this.css}
-                <div class="row">  
-                    <div style="margin: 0 auto;" class="col">
-                    <div style="margin: 0 auto;" class="loading_dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    </div>
-                </div>
-            `
-            this.shadow.appendChild(el);
-        } else if (this.state.data[0].range == "0000-00-00") {
-            el.innerHTML = `<div class="row"></div>`
-        }
+            </div>
+        `
+
+        fetch('/api/index/trendline', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body:  JSON.stringify({
+                company_name: this.customer_id == 200 ? "o3" : this.company_name,
+                customer_id: this.customer_id
+            })
+        })
+            .then((res) => res.json())
+            .then(data => this.state.data = data)
+            .then(() => {
+                setTimeout(()=>{
+                    this.init_chart(el.querySelector("#trendline"))
+                }, 500)
+            })
+            .then(()=>{
+                this.shadow.appendChild(el)
+            })
+            .catch((err)=>console.log(err))
     }
 
     connectedCallback() {
-        this.customer_id = this.getAttribute('customer-id')
+        this.customer_id = this.getAttribute('customer_id')
         this.company_name = this.getAttribute('company_name')
         this.render()
-
-        setTimeout(()=>{
-            fetch('/api/portfolio/trend_line', {
-                method: 'POST',
-                headers : new Headers({
-                    "content-type": "application/json"
-                }),
-                body:  JSON.stringify({
-                    company_name: this.company_name == "Acme Widgets" ? "o3" : this.company_name,
-                    customer_id: this.customer_id
-                })
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    this.state.data = data
-                    this.render(false)
-                })
-                .catch((err)=>console.log(err))
-        }, 100)
 
     }
 }

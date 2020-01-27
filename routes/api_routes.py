@@ -3,6 +3,7 @@ from flask import request, render_template, redirect, url_for, flash
 import services.helpers as helpers
 import hashlib
 import json
+import asyncio
 from bleach import clean
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
@@ -20,6 +21,7 @@ from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWrite
 from services.gamify import Achievements, Credits, Rewards
 from services.BigQuery import GoogleORM
 from services.RecService import RecommendationService, Recommendation
+from services.WebListener import Listener
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -31,19 +33,25 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignat
 import time
 import datetime
 
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+## market(r) index imports
+from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
 
 @app.route('/api/products', methods=['GET'])
 def get_personas():
-    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    customer_id = request.args.get('customer_id')
     query = "select name, p_id from product_list where customer_id = ? and name is not null"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
+
     returned = [{'product_name': row[0], 'p_id': row[1]} for row in data]
     return json.dumps(returned)
 
 @app.route('/api/personas', methods=['GET'])
 def get_products():
-    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    customer_id = request.args.get('customer_id')
     query = "SELECT persona_name, audience_id from audience WHERE persona_name is not null and customer_id = ?"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
@@ -54,7 +62,7 @@ def get_products():
 @admin_required
 @account_rep_required
 def remove_product():
-    print(request.form['product_name'])
+
     UserService.remove_product(request.form.get('product_name'))
     return 'added'
 
@@ -111,7 +119,7 @@ def complete_task():
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
-    print(request.form.get('task'))
+
     tasks.complete_task(
         request.form.get('task')
     )
@@ -124,7 +132,7 @@ def incomplete_task():
         admin_id = session.get('admin'),
         user = 'customer' if session['customer'] == True else 'admin'
     )
-    print('hi')
+
     tasks.incomplete_task(
         request.form.get('task')
     )
@@ -222,23 +230,25 @@ def spend_allocation():
     rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
     budget = rec.get()
 
-    actual_budget = req.get('actual_budget')
-    input_budget = float(actual_budget) if actual_budget else budget
+    viewed_budget = req.get('viewed_budget')
+    if viewed_budget and viewed_budget != 'None':
+        input_budget = float(str(viewed_budget).replace(",", ""))
+    else:
+        input_budget = budget
 
-    user = session.get('user') if session.get('user') else session.get('customer_id')
+    user = req.get('customer_id')
     spend = SpendAllocation(
         user, req.get('revenue'), input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
         req.get('selling_to'), req.get('biz_model')
     )
 
-    print(req.get('selling_to'))
-
     allocation = json.loads(spend.campaign_allocation())
 
     returned = {
         'budget': input_budget,
-        'allocation': allocation
+        'allocation': allocation,
+        'recommended_budget': budget
     }
     return json.dumps(returned)
 
@@ -249,7 +259,7 @@ def portfolio_metrics():
     df = orm.agg()
 
     portfolio = Portfolio(agg=df)
-    returned = portfolio.group(req.get('start_date'))
+    returned = portfolio.group()
 
     return returned
 
@@ -339,6 +349,21 @@ def dismiss_rec():
     return json.dumps({'result': result})
 
 
+# intel
+@app.route('/api/intel/listener', methods=['POST'])
+def web_listen():
+    req = request.get_json()
+    options = Options()
+    options.headless = True
+
+    app.config.from_pyfile('config.cfg')
+    driver = webdriver.Firefox(options=options, executable_path = app.config['GECKO_PATH'])
+
+    listener = Listener(driver, req.get('keyword'))
+    
+    return json.dumps(listener.listen())
+
+
 
 #views
 
@@ -353,15 +378,26 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
-@app.route('/api/competitive_intel', methods=['GET'])
+@app.route('/api/competitive_intel', methods=['POST'])
 @login_required
 def get_competitors():
-    service = CompetitorService()
-    vm = CompetitorViewModel(customer_id=session['user'])
-    struct = vm.get(service)
-    return render_template('core/competitors.html', core=struct)
+    req = request.get_json()
+    comp = CompetitorService(req.get("customer_id"))
+
+    return json.dumps(comp.competitor_card())
 
 @app.route('/api/insights', methods=['POST'])
+@login_required
+def insights():
+    req = request.get_json()
+    tup = (req.get('customer_id'),)
+    query = "SELECT body, FORMAT(time, 'dd-MM-yyyy') as time FROM insights WHERE customer_id = ?"
+    insights, cursor = db.execute(query, True, tup)
+    insights = cursor.fetchall()
+    returned = [{'body': row[0],'time': str(row[1])} for row in insights]
+    return json.dumps(returned)
+
+@app.route('/api/ranged_insights', methods=['POST'])
 @login_required
 def range_insights():
     req = request.get_json()
@@ -383,16 +419,89 @@ def create_campaign():
 
     grouper = AdGrouper(market, keywords)
     groups = grouper.full_groups()
-    
+
     for group in enumerate(groups):  
-        ad_history = market.ad_history(group[1]['group'])
+        try:
+            ad_history = market.ad_history(group[1]['group'])
 
-        if len(ad_history) > 0:
-            ad_history = ad_history[ad_history.position < 10]
-            ad_obj = CopyWriter()
-            ads = ad_obj.Google(ad_history)
+            if len(ad_history) > 0:
+                ad_history = ad_history[ad_history.position < 10]
+                ad_obj = CopyWriter()
+                ads = ad_obj.Google(ad_history)
+                if ads:
+                    group[1].update(ads = [ad for ad in list(ads)])
 
-            if ads:
-                group[1].update(ads = [ad for ad in ads])
+        except Exception as e:
+            print(e)
+            continue
 
     return json.dumps(groups)
+
+
+### spend queries ###
+@app.route('/api/spend/last_7', methods=['POST'])
+def last_7_spend():
+    req = request.get_json()
+    orm = GoogleORM(req.get('company_name'))
+    spend = orm.cost_past_7()
+    if spend is not None:
+        spend = spend.cost.sum()
+    else:
+        spend = 0
+
+    return json.dumps({
+        'spend': spend
+    })
+    
+    
+
+
+### Market(r) index ### 
+@app.route('/api/index/detailed', methods=['POST'])
+def compile_master_index():
+    req = request.get_json()
+    ltv = req.get('ltv')
+
+    orm = GoogleORM(req.get('company_name'))
+    search_df = orm.search_index()
+    social_df = orm.social_index()
+
+    compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+
+    if compiled:
+        query = """
+        if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
+            insert into index_log
+            (customer_id, _index, submitted)
+            
+            values
+            (?, ?, CURRENT_TIMESTAMP)
+        """
+        val = compiled.get('aggregate')
+
+        db.execute(query, False, (req.get('customer_id'), val), commit=True)
+    else:
+        compiled = []
+
+    return json.dumps(compiled)
+
+@app.route('/api/index/trendline', methods=['POST'])
+def index_trendline():
+    req = request.get_json()
+
+    query = """
+        select _index, convert(varchar(10), submitted, 120) as date from index_log where customer_id = ?
+    """
+
+    data, cursor = db.execute(query, True, (req.get('customer_id'),))
+    data = cursor.fetchall()
+    
+    returned = list()
+    if data:
+        for row in data:
+            returned.append({
+                'index': row[0],
+                'date': row[1]
+            })
+
+    return json.dumps(returned)

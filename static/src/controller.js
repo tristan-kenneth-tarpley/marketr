@@ -1,4 +1,3 @@
-import Competitors from './competitors.js';
 import Tactics from './tactics.js';
 import Portfolio from './campaigns.js';
 import cta from './campaign_cta.js';
@@ -185,8 +184,7 @@ const Controller = class {
 					audit_request.ready()
 					break
 				case 'home':
-					const competitors = new Competitors(this.params)
-					const tactics = new Tactics(this.params)
+					// const tactics = new Tactics(this.params)
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()

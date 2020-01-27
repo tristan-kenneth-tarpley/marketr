@@ -7,6 +7,7 @@
   --body-copy: rgb(87,102,126);
   --panel-bg: #f3f3f3;
   --label-color: rgba(87,102,126, .9);
+  --darker-blue: #09A1BC;
 
   /* chat */
   --client-chat: rgb(206, 214, 223);

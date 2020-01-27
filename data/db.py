@@ -59,8 +59,8 @@ def execute(query, returned, tup, commit=False):
 				cursor.close()
 				retry_flag = False
 
-		except AssertionError:
-		# except:
+		# except AssertionError:
+		except:
 			retry_count = retry_count + 1
 			time.sleep(1)
 

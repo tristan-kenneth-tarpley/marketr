@@ -179,12 +179,12 @@ class SpendAllocation:
                 'bucket': 'search',
                 'biz_type': ['all'],
                 'campaigns': [
-                    'Activity keyword targeting',
+                    'Activity keyword campaign',
                     'Product / service keywords',
-                    'Retargeting search',
-                    'A/B testing Campaign 1',
-                    'A/B testing Campaign 2',
-                    'A/B testing Campaign 3'
+                    'Retargeting search campaign',
+                    'Dynamic keyword targeting',
+                    'Landing page a/b testing campaign'
+                    'Landing page a/b testing campaign'
             ]}, {
                 'bucket': 'social',
                 'biz_type': ['b2b'],
@@ -193,18 +193,19 @@ class SpendAllocation:
                     'LinkedIn retargeting display',
                     'LinkedIn career-focused targeting',
                     'Complimentary product targeting',
-                    'A/B testing Campaign 1',
-                    'A/B testing Campaign 2',
-                    'A/B testing Campaign 3'
+                    'Facebook retargeting campaign',
+                    'Facebook awareness video campaign',
+                    'Youtube awareness video campaign',
+                    'Landing page a/b testing campaign'
             ]},  {
                 'bucket': 'social',
                 'biz_type': ['b2c'],
                 'campaigns': [
                     'Facebook demographic targeting',
                     'Facebook retargeting display',
-                    'A/B testing Campaign 1',
-                    'A/B testing Campaign 2',
-                    'A/B testing Campaign 3'
+                    'Youtube awareness video campaign',
+                    'Youtube retargeting campaign',
+                    'Instagram awareness campaign'
             ]},  {
                 'bucket': 'seo',
                 'biz_type': ['all'],
@@ -222,11 +223,11 @@ class SpendAllocation:
                 'bucket': 'display networks',
                 'biz_type': ['all'],
                 'campaigns': [
-                    'Retargeting search',
+                    'Retargeting search campaign',
                     'Demographic targeting',
-                    'A/B testing Campaign 1',
-                    'A/B testing Campaign 2',
-                    'A/B testing Campaign 3'
+                    'Keyword-based awareness campaign',
+                    'Landing page retargeting campaign',
+                    'Landing page a/b testing campaign'
             ]}]
         
         
@@ -264,7 +265,6 @@ class SpendAllocation:
             sets = [campaign for campaign in campaigns if campaign['bucket'] == bucket_name]
 
             for set in sets:
-                print(self.biz_type)
                 if self.biz_type.lower() in set.get('biz_type') or set.get('biz_type')[0] == 'all':
                     campaignset = added_campaigns(set.get('campaigns')[:num_campaigns], bucket_name)
                     allocation.append({

@@ -44,8 +44,8 @@
 </li>
 {% endmacro %}
 
-{% macro competitive_intelligence() %}
-<li>
+{% macro competitive_intelligence(active) %}
+<li class="{{ 'active' if active }}">
 	<a class="render_competitors" href="/home?view=competitors">
 		<i class="now-ui-icons business_globe"></i>
 		<p>Competitive Intelligence</p>
@@ -70,9 +70,31 @@
 	  </a>
 	</div>
 	<div class="sidebar-wrapper tab-content">
+		<div id="campaigns-nav">		
+			<ul class="nav">
+				<li class="{{ plan }}">
+					<a href="{{ url_for('home', view='campaigns') }}">
+						<i class="now-ui-icons business_chart-pie-36"></i>
+						<p>Marketing</p>
+					</a>	
+					<ul class="sub_nav nav">
+						{% if customer %}<li><a class="perf targeted" href="#perf">Portfolio Performance</a></li>{% endif %}
+						<li><a class="spend" href="#spend">How much to spend</a></li>
+						<li><a class="where" href="#where">Where to spend it</a></li>
+					</ul>
+				</li>
+				{{ competitive_intelligence() }}
+				{{ profile() }}
+				{{ messages() }}
+				{{ achievements() }}
+				{{ settings_link() }}
+				{{ logout() }}
+			</ul>
+		</div>
 		<div id="profile-nav" class="hidden">
 			<ul class="nav">
 				{{ campaigns() }}
+				{{ competitive_intelligence() }}
 				<li class="{{ plan }}">
 					<a href="/home?view=profile">
 						<i class="now-ui-icons business_badge"></i>
@@ -93,29 +115,6 @@
 					{% endif %}
 				</li>
 				{{ messages() }}
-				{{ competitive_intelligence() }}
-				{{ achievements() }}
-				{{ settings_link() }}
-				{{ logout() }}
-			</ul>
-		</div>
-		<div id="campaigns-nav">		
-			<ul class="nav">
-				<li class="{{ plan }}">
-					<a href="{{ url_for('home', view='campaigns') }}">
-						<i class="now-ui-icons business_chart-pie-36"></i>
-						<p>Marketing</p>
-					</a>	
-					<ul class="sub_nav nav">
-						<li><a class="spend targeted" href="#spend">How much to spend</a></li>
-						<li><a class="where" href="#where">Where to spend it</a></li>
-						<li><a class="insights" href="#insights">Insights</a></li>
-						<li><a class="insights" href="#tactics">Tactics</a></li>
-					</ul>
-				</li>
-				{{ profile() }}
-				{{ messages() }}
-				{{ competitive_intelligence() }}
 				{{ achievements() }}
 				{{ settings_link() }}
 				{{ logout() }}
@@ -124,6 +123,7 @@
 		<div id="messages-nav" class="hidden">		
 			<ul class="nav">
 				{{ campaigns() }}
+				{{ competitive_intelligence() }}
 				{{ profile() }}
 				<li class="{{ plan }}">
 					<a href="{{ url_for('home', view='messages') }}">
@@ -134,7 +134,6 @@
 						<li><a class="targeted profile_information" href="#to_do">Messages</a></li>
 					</ul>
 				</li>
-				{{ competitive_intelligence() }}
 				{{ achievements() }}
 				{{ settings_link() }}
 				{{ logout() }}
@@ -144,9 +143,9 @@
 		<div id="competitors-nav" class="hidden">		
 			<ul class="nav">
 				{{ campaigns() }}
+				{{ competitive_intelligence(True) }}
 				{{ profile() }}
 				{{ messages() }}
-				{{ competitive_intelligence() }}
 				{{ achievements() }}
 				{{ settings_link() }}
 				{{ logout() }}

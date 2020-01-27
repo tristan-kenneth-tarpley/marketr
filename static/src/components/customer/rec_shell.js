@@ -40,19 +40,19 @@ const styles = () => {
             font-weight: 200;
             }
             html.modal-active, body.modal-active {
-            overflow: hidden;
+                overflow: hidden;
             }
 
             #modal-container {
-            position: fixed;
-            display: table;
-            height: 100%;
-            width: 75%;
-            left: 260px;
-            right: 0;
-            top: 0;
-            transform: scale(0);
-            z-index: 1000;
+                position: fixed;
+                display: table;
+                height: 100%;
+                width: 100%;
+                left: 0;
+                right: 0;
+                top: 0;
+                transform: scale(0);
+                z-index: 1000;
             }
             @media only screen and (max-width: 990px) {
             #modal-container {
@@ -242,6 +242,7 @@ const styles = () => {
             display: inline-block;
             border-radius: 3px;
             font-weight: 300;
+            width: 95%;
             position: relative;
             }
             #modal-container .modal-background .modal h2 {
@@ -663,6 +664,7 @@ export default class Rec_shell extends HTMLElement {
                     el.removeAttribute('class')
                     el.classList.add(buttonId)
                 })
+
                 body.classList.add('modal-active')
             })
         }); 

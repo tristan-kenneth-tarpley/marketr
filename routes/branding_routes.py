@@ -15,7 +15,7 @@ def index():
 def blog():
 	blog = Blog()
 	posts = blog.all_stories()
-	#return str(posts)
+	# return str(posts)
 	return render_template('branding/blog.html', posts=posts)
 
 @app.route('/blog/<slug>')

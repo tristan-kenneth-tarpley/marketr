@@ -100,7 +100,8 @@ def to_date(date):
 	return format(datetime.datetime.fromtimestamp(date), '%m/%d/%Y')
 
 def currency(num):
-	return "{:,.2f}".format(num)
+	num = num.replace(",", "")
+	return "{:,.2f}".format(int(num))
 
 def add_commas(num):
 	return "{:,}".format(num)
