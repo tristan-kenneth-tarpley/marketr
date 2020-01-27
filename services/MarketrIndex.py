@@ -218,7 +218,10 @@ class PortfolioIndex(MarketrIndex):
 
 
 def compile_master(ltv=None, search_df=None, social_df=None):
-    amount_spent = search_df.cost.sum() + social_df.cost.sum()
+    if search_df is not None or social_df is not None:
+        amount_spent = search_df.cost.sum() + social_df.cost.sum()
+    else:
+        return None
 
     # init objects
     ad_index_obj = AdIndex(ltv) 

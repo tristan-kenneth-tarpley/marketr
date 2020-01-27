@@ -241,9 +241,9 @@ export default class AdSpend extends HTMLElement {
                 <div class="${this.state.real && this.active_plan ? 'col-md-8 col-12' : 'col-md-4 col-12'}">
                     <p><strong>
                         ${this.state.real
-                            ? `Ad spend budget`
-                            : `Recommended budget`}
-                    </strong>:</p>
+                            ? `Ad spend budget:`
+                            : `Recommended budget:`}
+                    </strong></p>
                     <div style="padding-top:7%;" class="card center_it negative_card">
                         <h5>
                             <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
@@ -472,8 +472,11 @@ export default class AdSpend extends HTMLElement {
         this.competitiveness = this.getAttribute('competitiveness')
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
-        this.active_plan = this.getAttribute('active_plan') != 'None' ? null : this.getAttribute('active_plan') != 'None'
-        this.spend_rate = this.getAttribute('spend_rate') != null
+        this.active_plan = this.getAttribute('active_plan') == 'None'
+                            ? false
+                            : true
+
+        this.spend_rate = this.getAttribute('spend_rate') != null && this.getAttribute('spend_rate') != 'None'
                             ? this.getAttribute('spend_rate')
                             : 0
 

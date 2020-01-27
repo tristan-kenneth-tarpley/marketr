@@ -24,6 +24,10 @@ const styles = () => {
             max-width: 150px;
         }
 
+        .comp-badge.indirect {
+            background-color: var(--darker-blue);
+        }
+
         .nav-tabs {
             margin-bottom: 5%;
         }
@@ -73,7 +77,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     <a target="__blank" href="https://${site}">website</a>
                 </div>
                 <div class="col-lg-2">
-                    <p class="comp-badge">${type}</p>
+                    <p class="comp-badge ${type}">${type}</p>
                 </div>
                 <div class='col-lg-4'></div>
             </div>
@@ -149,7 +153,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                                     </div>
                                 `.trim()
                             }).join("")
-                            : `<p>Sorry, we had an issue getting these display ads. Check back later!</p>`
+                            : `<p>Hmm...It looks like ${i.comp_name} hasn't ran any display ads.</p>`
                         }
                     </div>`.trim()
                 )

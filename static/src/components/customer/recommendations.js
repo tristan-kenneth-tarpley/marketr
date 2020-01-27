@@ -118,7 +118,9 @@ export default class Recommendations extends HTMLElement {
         const append = res => {
             el.innerHTML = `${this.css}`
             if (this.state.data.length == 0) {
-                el.innerHTML += `<p>You don't currently have any recommendations. We'll email you when you get one!</p>`
+                el.innerHTML += `
+                <p class="small_txt">Every week, you will receive tailored, actionable recommendations from our internal engines and stellar team.</p>
+                <p class="small_txt">You can implement these recommendations with only 1 click. Until then, explore your dashboard and we'll email you when you receive your recommendations.</p>`
             } else for (let i in res) el.appendChild(this.recommendation(res[i], i))
         }
 

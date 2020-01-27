@@ -87,8 +87,15 @@ export default class PortfolioTrendline extends HTMLElement {
     render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
+        /*html*/
         el.innerHTML = `
             ${this.css}
+            ${this.state.data == null
+                ? `<p class="small_txt">When your campaigns become active, you will begin to see a trendline of your Market(r) Index-- your marketing portfolio health score.</p>
+                <p class="small_txt">If you have any questions, head over to the chat tab and your Market(r) guide will reponse within an hour!</p>
+                <p class="small_txt">~ Tristan Tarpley, Founder of Market(r)</p>`
+                : ''
+            }
             <div class="row">
                 <div class="col" id="chart_container">
                     <canvas id="trendline"></canvas>
@@ -102,7 +109,7 @@ export default class PortfolioTrendline extends HTMLElement {
                 "content-type": "application/json"
             }),
             body:  JSON.stringify({
-                // company_name: this.customer_id == 200 ? "o3" : this.company_name,
+                company_name: this.customer_id == 200 ? "o3" : this.company_name,
                 customer_id: this.customer_id
             })
         })

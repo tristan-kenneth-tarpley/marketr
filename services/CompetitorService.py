@@ -79,10 +79,11 @@ class CompetitorService(object):
             
             returned = list()
             for competitor in competitors:
-                competitors = loop.run_in_executor(None, self.NewCompetitors, competitor['comp_website'])
-                core = loop.run_in_executor(None, self.SpyfuCore, competitor['comp_website'])
-                google_ads = loop.run_in_executor(None, self.GoogleAds, competitor['comp_website'])
-                display_ads = loop.run_in_executor(None, self.DisplayAds, competitor['comp_website'])
+                website = competitor['comp_website'].replace("http://", "").replace("https://", "").replace("/", "")
+                competitors = loop.run_in_executor(None, self.NewCompetitors, website)
+                core = loop.run_in_executor(None, self.SpyfuCore, website)
+                google_ads = loop.run_in_executor(None, self.GoogleAds, website)
+                display_ads = loop.run_in_executor(None, self.DisplayAds, website)
 
                 res_1 = await competitors
                 res_2 = await core

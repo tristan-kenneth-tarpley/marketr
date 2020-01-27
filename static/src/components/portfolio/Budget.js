@@ -46,7 +46,7 @@ export default class Budget extends HTMLElement {
 
         <div class="row">
             <div class="col-4">
-                <h5 class='blue_label'>${currency(parseFloat(this.funds_remaining))}</h5>
+                <h5 class='blue_label'>${currency(parseFloat(this.funds_remaining || 0))}</h5>
             </div>
             <div class="col-4">
                 <h5 class="blue_label">${currency_rounded(parseFloat(this.state.data.spend))}</h5>

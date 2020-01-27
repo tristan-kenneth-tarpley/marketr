@@ -231,7 +231,7 @@ def spend_allocation():
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
-    if viewed_budget is not None:
+    if viewed_budget and viewed_budget != 'None':
         input_budget = float(str(viewed_budget).replace(",", ""))
     else:
         input_budget = budget
@@ -448,6 +448,7 @@ def last_7_spend():
         spend = spend.cost.sum()
     else:
         spend = 0
+
     return json.dumps({
         'spend': spend
     })
@@ -466,8 +467,8 @@ def compile_master_index():
     social_df = orm.social_index()
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
-    print(compiled)
-    try:
+
+    if compiled:
         query = """
         if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
             insert into index_log
@@ -479,8 +480,8 @@ def compile_master_index():
         val = compiled.get('aggregate')
 
         db.execute(query, False, (req.get('customer_id'), val), commit=True)
-    except:
-        print("hi")
+    else:
+        compiled = []
 
     return json.dumps(compiled)
 

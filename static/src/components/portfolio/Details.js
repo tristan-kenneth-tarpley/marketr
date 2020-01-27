@@ -45,6 +45,7 @@ export default class PortfolioDetails extends HTMLElement {
     render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
+        console.log(this.data)
         el.innerHTML = `
             ${this.css}
             <div class="row">
@@ -60,7 +61,7 @@ export default class PortfolioDetails extends HTMLElement {
     connectedCallback() {
         this.customer_id = this.getAttribute('customer_id')
         this.company_name = this.getAttribute('company_name')
-        this.data = this.getAttribute('data')
+        this.data = JSON.parse(this.getAttribute('data'))
         this.render()
     }
 }
