@@ -505,3 +505,8 @@ def index_trendline():
             })
 
     return json.dumps(returned)
+
+
+# @app.route('/api/index/trendline/view', methods=['POST'])
+# def portfolio_view_func():
+#     pass

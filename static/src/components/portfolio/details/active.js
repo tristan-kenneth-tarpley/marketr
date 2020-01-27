@@ -61,7 +61,6 @@ const styles = () => {
     connectedCallback() {
         this.customer_id = this.getAttribute('customer_id')
         this.data = JSON.parse(this.getAttribute('data'))
-        console.log(this.data)
         this.render()
     }
   }

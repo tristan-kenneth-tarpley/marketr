@@ -45,7 +45,7 @@ export default class PortfolioDetails extends HTMLElement {
     render(init=true){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        console.log(this.data)
+
         el.innerHTML = `
             ${this.css}
             <div class="row">

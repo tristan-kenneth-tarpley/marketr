@@ -1,4 +1,5 @@
 import Rec_shell from '/static/src/components/customer/rec_shell.js'
+import {dots_loader} from '/static/src/components/UI_elements.js'
 
 const styles = () => {
     /*html*/
@@ -125,6 +126,7 @@ export default class Recommendations extends HTMLElement {
         }
 
         if (state == false) {
+            this.shadow.innerHTML = dots_loader()
             fetch('/api/outstanding_recs', {
                 method: 'POST',
                 headers : new Headers({
@@ -138,7 +140,10 @@ export default class Recommendations extends HTMLElement {
                 .then(res=>res.json())
                 .then( res=> this.state.data = res )
                 .then(res=>append(res))
-                .then(this.shadow.appendChild(el))
+                .then(()=>{
+                    this.shadow.innerHTML = ""
+                    this.shadow.appendChild(el)
+                })
         } else {
             append(this.state.data)
             this.shadow.appendChild(el)

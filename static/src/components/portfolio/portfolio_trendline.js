@@ -87,7 +87,7 @@ export default class PortfolioTrendline extends HTMLElement {
     render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        console.log(this.state.data)
+
         /*html*/
         el.innerHTML = `
             ${this.css}
