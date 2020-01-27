@@ -407,7 +407,7 @@ def range_insights():
     insights = cursor.fetchall()
     returned = [{'body': row[0],'time': str(row[1])} for row in insights]
     return json.dumps(returned)
-
+ 
 
 
 #tools 
@@ -505,3 +505,8 @@ def index_trendline():
             })
 
     return json.dumps(returned)
+
+
+# @app.route('/api/index/trendline/view', methods=['POST'])
+# def portfolio_view_func():
+#     pass

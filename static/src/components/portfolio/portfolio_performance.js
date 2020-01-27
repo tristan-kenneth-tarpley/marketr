@@ -108,8 +108,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
         const el = shadow_events(markup)
         el.querySelector('#trendline').appendChild(this.trendline())
-        el.querySelector('#insights').appendChild(this.insights())
-
+        
         fetch('/api/index/detailed', {
             method: 'POST',
             headers : new Headers({
@@ -132,6 +131,7 @@ export default class PortfolioPerformance extends HTMLElement {
             return {creator, deets}
         })
         .then(({creator, deets})=>{
+            el.querySelector('#insights').appendChild(this.insights())
             el.querySelector('#details').appendChild(deets)
             el.querySelector('#creative').appendChild(creator)
         })

@@ -59,6 +59,7 @@ class CompetitorService(object):
         async def compile(competitors):
             def Struct(name, site, Type, res_1, res_2, res_3, res_4):
                 organic = float(res_2.get('seo_clicks')) if res_2.get('seo_clicks') else 0
+   
                 paid = float(res_2.get('ppc_clicks')) if res_2.get('ppc_clicks') else 0
                 budget = float(res_2.get('ppc_budget')) if res_2.get('ppc_budget') else 0
                 core = {

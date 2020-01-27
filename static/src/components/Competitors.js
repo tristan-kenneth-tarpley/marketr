@@ -168,6 +168,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
         }
 
         const base = this.state.data
+        
         /*html*/
         return `
             ${base.map(comp=>{
