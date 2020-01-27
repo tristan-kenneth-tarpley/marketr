@@ -371,7 +371,7 @@ def range_insights():
     insights = cursor.fetchall()
     returned = [{'body': row[0],'time': str(row[1])} for row in insights]
     return json.dumps(returned)
-
+ 
 
 
 #tools 
