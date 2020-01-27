@@ -32,6 +32,7 @@ class MarketResearch:
     
     def ad_history(self, term):
         url = f"https://www.spyfu.com/apis/ad_history_api/term_ad_history_json?t={term}&api_key={self.spyfu}"
+        print(url)
         res = pd.DataFrame(requests.get(url).json())
         return res
 

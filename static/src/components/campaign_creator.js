@@ -1,3 +1,4 @@
+import {google} from '/static/src/components/UI_elements.js'
 const styles = () => {
     return html(
       'style',
@@ -16,6 +17,9 @@ const styles = () => {
         
         .accordion-content.acc-active {
             display: block;
+        }
+        textarea.form-control {
+            padding: 3%;
         }
       `
     );
@@ -188,6 +192,7 @@ const formatting_template = recs => {
             <div class="col-lg-6 col-12">
                 <div class="inset">
                 ${recs[rec].meta.match_types.map(met=>{ 
+                    console.log(met)
                     let _returned = ""
                     switch(met){
                         case 'broad':
@@ -211,6 +216,7 @@ const formatting_template = recs => {
                 <p><strong>Ad possibilities</strong></p>
                 <div class="inset">
                     ${recs[rec].meta.ads.map(ad=>{
+
                         return `
                         <div class="google_ad_preview_container">
                             <h5 class="small_txt">${ad.headline}</h5>

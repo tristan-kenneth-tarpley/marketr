@@ -41,16 +41,17 @@ from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignI
 
 @app.route('/api/products', methods=['GET'])
 def get_personas():
-    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    customer_id = request.args.get('customer_id')
     query = "select name, p_id from product_list where customer_id = ? and name is not null"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
+    print(customer_id)
     returned = [{'product_name': row[0], 'p_id': row[1]} for row in data]
     return json.dumps(returned)
 
 @app.route('/api/personas', methods=['GET'])
 def get_products():
-    customer_id = session['user'] if session.get('user') else request.args.get('customer_id')
+    customer_id = request.args.get('customer_id')
     query = "SELECT persona_name, audience_id from audience WHERE persona_name is not null and customer_id = ?"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
@@ -415,17 +416,21 @@ def create_campaign():
 
     grouper = AdGrouper(market, keywords)
     groups = grouper.full_groups()
-    
+
     for group in enumerate(groups):  
-        ad_history = market.ad_history(group[1]['group'])
+        try:
+            ad_history = market.ad_history(group[1]['group'])
 
-        if len(ad_history) > 0:
-            ad_history = ad_history[ad_history.position < 10]
-            ad_obj = CopyWriter()
-            ads = ad_obj.Google(ad_history)
-
-            if ads:
-                group[1].update(ads = [ad for ad in ads])
+            if len(ad_history) > 0:
+                ad_history = ad_history[ad_history.position < 10]
+                ad_obj = CopyWriter()
+                ads = ad_obj.Google(ad_history)
+                if ads:
+                    group[1].update(ads = [ad for ad in list(ads)])
+                    
+        except Exception as e:
+            print(e)
+            continue
 
     return json.dumps(groups)
 
