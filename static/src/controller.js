@@ -185,6 +185,7 @@ const Controller = class {
 					break
 				case 'home':
 					// const tactics = new Tactics(this.params)
+
 					view_model.dashboard()
 					view_model.messages()
 					view_model.tabs()

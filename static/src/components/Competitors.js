@@ -262,6 +262,23 @@ export default class CompetitiveIntelligence extends HTMLElement {
     }
 
     connectedCallback() {
+        fetch('/api/intel/listener', {
+            method: 'POST',
+            headers : new Headers({
+                "content-type": "application/json"
+            }),
+            body: JSON.stringify({
+                keyword: "digital signage"
+            })
+        })
+                .then(res=>res.json())
+                .then(res=>{
+                    console.log(res)
+                })
+                .catch(e=>{
+                    console.log(e)
+                })
+
         this.customer_id = this.getAttribute('customer_id')
         this.render()
 
