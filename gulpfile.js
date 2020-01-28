@@ -1,45 +1,19 @@
 var gulp = require('gulp');
-var path = require('path');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var open = require('gulp-open');
-var babel = require("gulp-babel");
+var uglify = require('gulp-uglify')
 var concat = require("gulp-concat");
+var cssMin = require('gulp-css')
 
-var Paths = {
-  HERE: './',
-  DIST: 'dist/',
-  CSS: './assets/css/',
-  SCSS_TOOLKIT_SOURCES: './assets/scss/now-ui-dashboard.scss',
-  SCSS: './assets/scss/**/**'
-};
-
-gulp.task("default", function () {
-  return gulp.src("src/**/*.js")
-    .pipe(sourcemaps.init())
-    .pipe(babel())
-    .pipe(concat("all.js"))
-    .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest("dist"));
+gulp.task('css', function() {
+  gulp.src([
+    '/static/assets/css/styles.css',
+    '/static/assets/css/jquery-ui.css',
+    '/static/assets/template-js/autocomplete/easy-autocomplete.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+  ])
+    .pipe(concat('app.css'))
+    .pipe(cssMin())
+    .pipe(gulp.dest('/static/assets/css'))
 });
 
-gulp.task('compile-scss', function() {
-  return gulp.src(Paths.SCSS_TOOLKIT_SOURCES)
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(autoprefixer())
-    .pipe(sourcemaps.write(Paths.HERE))
-    .pipe(gulp.dest(Paths.CSS));
-});
+gulp.task('default', ['css'])
 
-gulp.task('watch', function() {
-  gulp.watch(Paths.SCSS, ['compile-scss']);
-});
-
-gulp.task('open', function() {
-  gulp.src('examples/dashboard.html')
-    .pipe(open());
-});
-
-gulp.task('open-app', ['open', 'watch']);

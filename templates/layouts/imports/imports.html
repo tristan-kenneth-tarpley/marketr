@@ -1,3 +1,7 @@
+<script src="/static/src/convenience/webcomponents-loader.js" defer></script>
+
+
+
 <!-- Start of HubSpot Embed Code -->
 <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/6573216.js"></script>
 <!-- End of HubSpot Embed Code -->
@@ -19,7 +23,18 @@
 <script src="/static/src/future_refactor/eventHandlers.js"></script>
 <script src="/static/src/future_refactor/route_handlers.js"></script>
 <script src="/static/src/future_refactor/routes.js"></script>
-<script type="module" src="/static/src/controller.js"></script>
+<script type="module" src="/static/src/controller.js" async></script>
+
+<!-- Load a custom element definitions in `waitFor` and return a promise -->
+<script type="module" async>
+    import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
+    import AdSpend from '/static/src/components/Spend.js'
+    import PortfolioPerformance from '/static/src/components/portfolio/portfolio_performance.js'
+    import Budget from '/static/src/components/portfolio/Budget.js'
+    import Recommendations from '/static/src/components/customer/recommendations.js'
+    import Rec_shell from '/static/src/components/customer/recommendations.js'
+    import CompetitiveIntelligence from '/static/src/components/Competitors.js'
+</script>
 
 
 
