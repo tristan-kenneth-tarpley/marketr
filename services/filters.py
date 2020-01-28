@@ -101,7 +101,7 @@ def to_date(date):
 
 def currency(num):
 	num = str(num).replace(",", "")
-	return "{:,.2f}".format(int(num))
+	return "{:,.2f}".format(float(num))
 
 def add_commas(num):
 	return "{:,}".format(num)
