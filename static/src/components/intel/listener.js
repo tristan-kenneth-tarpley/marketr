@@ -86,7 +86,8 @@ const styles = () => {
   
     connectedCallback() {
         this.keywords = JSON.parse(this.getAttribute('keywords'))
-        const body = JSON.stringify({ keywords: this.keywords })
+        const body = JSON.stringify(this.keywords)
+
         this.state.data == null
         ?  fetch('/api/intel/listener', {
             method: 'POST',

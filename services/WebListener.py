@@ -51,11 +51,12 @@ class Listener:
                 comp_list.append(task)
 
             responses = await asyncio.gather(*returned)
-            comps = await asyncio.gather(*comp_list)
-            comps = random.sample(comps, len(comps))
             returned = [item for sublist in responses for item in sublist]
+
+            comps = await asyncio.gather(*comp_list)
+            comps_ = [item for sublist in random.sample(comps, len(comps)) for item in sublist]
         
-            return comps + returned
+            return comps_ + returned
         
         asyncio.set_event_loop(asyncio.new_event_loop())
         loop = asyncio.get_event_loop()
