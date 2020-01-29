@@ -11,6 +11,7 @@ import hmac
 from pprint import pprint
 from xml.etree import ElementTree
 import praw
+import random
 
 
 class Listener:
@@ -21,7 +22,7 @@ class Listener:
         reddit = praw.Reddit(client_id='oy-mmNuzOc9-vA',
                      client_secret='iYEjlEIHrL4rv5ikxfACQn8cSEg', password='uVF32x*PxMf3yL8ooYvx',
                      user_agent='marketr', username='marketr_life')
-        
+
         async def fetch(keyword):
             response = reddit.subreddit('all').search(keyword)
             returned = list()
@@ -38,18 +39,27 @@ class Listener:
 
         async def run():
             returned = list()
-            for keyword in self.keywords:
-                task = asyncio.ensure_future(fetch(keyword))
-                returned.append(task)
+            comp_list = list()
+
+            for item in self.keywords:
+                for keyword in item.get('keywords'): 
+                    task = asyncio.ensure_future(fetch(keyword))
+                    returned.append(task)
+                
+            for comp in self.keywords:
+                task = asyncio.ensure_future(fetch(comp.get('comp_name')))
+                comp_list.append(task)
 
             responses = await asyncio.gather(*returned)
+            comps = await asyncio.gather(*comp_list)
+            comps = random.sample(comps, len(comps))
             returned = [item for sublist in responses for item in sublist]
-            return returned
+        
+            return comps + returned
         
         asyncio.set_event_loop(asyncio.new_event_loop())
         loop = asyncio.get_event_loop()
         future = asyncio.ensure_future(run())
-        returned = loop.run_until_complete(future)
+        posts = loop.run_until_complete(future)
  
-        posts = returned#random.sample(returned, len(returned))
         return posts[:100] if len(posts) > 100 else posts

@@ -76,7 +76,6 @@ const styles = () => {
             return el
         }
         first().then(el=>{
-            console.log(el.querySelector("#listening"))
             new DataTable(el.querySelector("#listening"));
             return el
         })
@@ -88,7 +87,6 @@ const styles = () => {
     connectedCallback() {
         this.keywords = JSON.parse(this.getAttribute('keywords'))
         const body = JSON.stringify({ keywords: this.keywords })
-        
         this.state.data == null
         ?  fetch('/api/intel/listener', {
             method: 'POST',

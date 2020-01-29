@@ -353,7 +353,7 @@ def dismiss_rec():
 @app.route('/api/intel/listener', methods=['POST'])
 def web_listen():
     req = request.get_json()
-    listener = Listener(req.get('keywords'))
+    listener = Listener(req)
     
     return json.dumps(listener.listen())
 

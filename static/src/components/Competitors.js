@@ -301,11 +301,13 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     .then(()=>{
                         let keywords = []
                         for (let i of this.state.data) {
-                            keywords = [...keywords.flat(), i.core.keywords.flat()]
-                            keywords = [...keywords.flat(), i.comp_name]
+                            keywords = [...keywords.flat(), {
+                                'comp_name': i.comp_name,
+                                'keywords': i.core.keywords.flat()
+                            }]
                         }
 
-                        return keywords.flat()
+                        return keywords
                     })
                     .then(keywords=>{
                         this.shadow.querySelector('#listener').appendChild(this.listener(keywords))
