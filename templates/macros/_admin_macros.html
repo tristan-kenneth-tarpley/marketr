@@ -79,6 +79,14 @@
 		      </a>
 		    </li>
 		{% endif %}
+		{% if manager %}
+			<li class="{{ 0 | check_active(stage) }}">
+				<a href="/admin/keyword_formatter">
+				<i class="now-ui-icons design_scissors"></i>
+				<p>Keyword formatter</p>
+				</a>
+			</li>
+		{% endif %}
 			<li>
 				<a href="{{ url_for('logout') }}">
 					<i class="now-ui-icons objects_key-25"></i>

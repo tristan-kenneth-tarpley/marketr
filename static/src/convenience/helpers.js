@@ -125,3 +125,13 @@ const now = () => {
                         .split("T")[0];
     return dateString
 } 
+
+
+function urlify(text) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function(url) {
+        return `<a target="__blank" href="${url}">${url}</a>`
+    })
+    // or alternatively
+    // return text.replace(urlRegex, '<a href="$1">$1</a>')
+}

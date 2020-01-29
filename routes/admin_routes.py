@@ -573,7 +573,10 @@ def update_admin(a_id):
 
 
 
-
+@app.route('/admin/keyword_formatter', methods=['GET'])
+@manager_required
+def keyword_formatter():
+	return render_template('/admin_view/keyword_formatter.html')
 
 
 

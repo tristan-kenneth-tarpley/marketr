@@ -30,6 +30,11 @@ const styles = () => {
         .read-more {
             margin: auto;
         }
+        
+        p.modal {
+            white-space: pre-wrap !important;
+        }
+
         html, body {
             min-height: 100%;
             height: 100%;
@@ -38,23 +43,23 @@ const styles = () => {
             background-position: top center;
             font-family: helvetica neue, helvetica, arial, sans-serif;
             font-weight: 200;
-            }
-            html.modal-active, body.modal-active {
-                overflow: hidden;
-            }
+        }
+        html.modal-active, body.modal-active {
+            overflow: hidden;
+        }
 
-            #modal-container {
-                position: fixed;
-                display: table;
-                height: 100%;
-                width: 100%;
-                left: 0;
-                right: 0;
-                top: 0;
-                transform: scale(0);
-                z-index: 1000;
-            }
-            @media only screen and (max-width: 990px) {
+        #modal-container {
+            position: fixed;
+            display: table;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            transform: scale(0);
+            z-index: 1000;
+        }
+        @media only screen and (max-width: 990px) {
             #modal-container {
                 left: 0;
                 width: 100%;
@@ -246,13 +251,16 @@ const styles = () => {
             position: relative;
             }
             #modal-container .modal-background .modal h2 {
-            font-size: 25px;
-            line-height: 25px;
-            margin-bottom: 15px;
+                font-size: 25px;
+                line-height: 25px;
+                margin-bottom: 15px;
+                text-align:center;
             }
             #modal-container .modal-background .modal p {
-            font-size: 18px;
-            line-height: 22px;
+                font-size: 18px;
+                line-height: 22px;
+                white-space: pre-wrap;
+                text-align:left;
             }
             #modal-container .modal-background .modal .modal-svg {
             position: absolute;
@@ -290,7 +298,7 @@ const styles = () => {
             }
             .content .buttons .button {
             display: inline-block;
-            text-align: center;
+            text-align: left;
             padding: 10px 15px;
             margin: 10px;
             background: red;
@@ -638,12 +646,9 @@ export default class Rec_shell extends HTMLElement {
         const shell = `
         <div id="modal-container">
             <div class="modal-background">
-                <div class="modal">
+                <div class="safe modal">
                     <h2>${title}</h2>
                     <p>${body}</p>
-                    <svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
-                        <rect x="0" y="0" fill="none" width="226" height="162" rx="3" ry="3"></rect>
-                    </svg>
                 </div>
             </div>
         </div>
@@ -668,7 +673,13 @@ export default class Rec_shell extends HTMLElement {
                 body.classList.add('modal-active')
             })
         }); 
-
+        this.shadow.querySelectorAll('.safe').forEach(el=>{
+            const text = el.querySelector('p')
+            text.innerHTML = urlify(text.textContent)
+            el.addEventListener('click', e=>{
+                e.stopPropagation()
+            })
+        })
         modal_container.forEach(el=>{
             el.addEventListener('click', e=>{
                 const _this = e.currentTarget
