@@ -6,7 +6,7 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-  
+        @import url("https://cdn.jsdelivr.net/npm/vanilla-datatables@v1.6.16/dist/vanilla-dataTables.min.css");
   
     </style>
     `.trim()
@@ -30,35 +30,59 @@ const styles = () => {
         /*html*/
         return `
         <div class="row">
-        ${this.state.data.map(res=>{
-            /*html*/
-            return `
-            <div class="col-lg-4">
-                <p class="small_txt">"${res.title}"<br><a class="small_txt btn btn-primary" target="__blank" href="${res.url}">view</a></p>   
+            <div class="col">
+                <table class="table" id="listening">
+                    <thead>
+                        <th>Title</th>
+                        <th>Link</th>
+                    </thead>
+                    <tbody>
+                        ${this.state.data.map(res=>{
+                            /*html*/
+                            return `
+                            <tr>
+                                <td>${res.title}</td>
+                                <td><a target="__blank" href="${res.url}">View</a></td>
+                            </tr>
+                            `
+                        }).join("")}
+                    </tbody>
+                </table>
             </div>
-            `
-        }).join("")}
         </div>
         `
     }
 
     null(){
-        return dots_loader()
+        return `
+            ${dots_loader()}
+            <table class="hidden" id="listening"></table>
+        `
     }
   
     render(init=true){
-        this.shadow.innerHTML = ""
-        const el = document.createElement('div')
-        el.innerHTML = `
-          ${this.css}
-          <h5 class="small_txt">What people are saying:</h5>
-          ${
-              this.state.data
-              ? this.core()
-              : this.null()
-          }
-      `
-        this.shadow.appendChild(el)
+        const first = async () => {
+            this.shadow.innerHTML = ""
+            const el = document.createElement('div')
+            el.innerHTML = `
+              ${this.css}
+              <h5 class="small_txt">What people are saying:</h5>
+              ${
+                  this.state.data
+                  ? this.core()
+                  : this.null()
+              }
+          `
+            return el
+        }
+        first().then(el=>{
+            console.log(el.querySelector("#listening"))
+            new DataTable(el.querySelector("#listening"));
+            return el
+        })
+        .then(el=>{
+            this.shadow.appendChild(el)
+        })
     }
   
     connectedCallback() {

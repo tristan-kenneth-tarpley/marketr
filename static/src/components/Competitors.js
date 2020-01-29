@@ -302,6 +302,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                         let keywords = []
                         for (let i of this.state.data) {
                             keywords = [...keywords.flat(), i.core.keywords.flat()]
+                            keywords = [...keywords.flat(), i.comp_name]
                         }
 
                         return keywords.flat()
