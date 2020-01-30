@@ -101,7 +101,10 @@ def new():
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         result = UserService.CreateCustomer(form.email.data, form.password.data, form=form, app=app)
         if result:
-            return redirect(url_for("splash", next_step="begin"))
+            # return redirect(url_for('"splash", next_step="begin"'))
+            login = UserService.customer_login(form.email.data, form.password.data)
+            if login:
+                return redirect(url_for('begin'))
         else:
             error = "something went wrong."
             return render_template('new.html', form=form, error=error)

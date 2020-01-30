@@ -396,38 +396,38 @@ class UserService:
 			last_name = data[0][5]
 
 			if sha256_crypt.verify(password, pw):
-				if email_confirmed == 1:
-					session['prev_log_in'] = data[0][6]
-					session['logged_in'] = True
-					session['customer'] = True
-					session['email'] = data[0][0]
-					session['user'] = int(uid)
-					session['stripe_id'] = data[0][7]
-					session['company_name'] = data[0][8]
-					session['user_name'] = "%s %s" % (first_name, last_name)
-					session.permanent = True
-					session.remember = True
+				# if email_confirmed == 1:
+				session['prev_log_in'] = data[0][6]
+				session['logged_in'] = True
+				session['customer'] = True
+				session['email'] = data[0][0]
+				session['user'] = int(uid)
+				session['stripe_id'] = data[0][7]
+				session['company_name'] = data[0][8]
+				session['user_name'] = "%s %s" % (first_name, last_name)
+				session.permanent = True
+				session.remember = True
 
-					st = UserService.now()
-					last_logged_in = """UPDATE customer_basic SET last_logged_in = ? WHERE id = ?"""
-					db.execute(last_logged_in, False, (st, int(uid)), commit=True)
+				st = UserService.now()
+				last_logged_in = """UPDATE customer_basic SET last_logged_in = ? WHERE id = ?"""
+				db.execute(last_logged_in, False, (st, int(uid)), commit=True)
 
-					first_query = db.sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
+				first_query = db.sql_to_df("SELECT first_name FROM dbo.customer_basic WHERE ID = '" + str(session['user']) + "'")
 
-					if first_query['first_name'][0] == None:
-						session['onboarding_complete'] = False
-						return True, 'begin'
-					else:
-						step = load_last_page(session['user'])
-						return True, step
+				if first_query['first_name'][0] == None:
+					session['onboarding_complete'] = False
+					return True, 'begin'
 				else:
-					tup = ("begin",)
-					query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
-					data, cursor = db.execute(query, True, tup)
-					heading, paragraph = cursor.fetchone()
-					heading = heading.replace("`", "'")
-					paragraph = paragraph.replace("`", "'")
-					return True, 'verify_email'
+					step = load_last_page(session['user'])
+					return True, step
+				# else:
+				# 	tup = ("begin",)
+				# 	query = "SELECT heading, paragraph FROM dbo.splash WHERE after_page = ?"
+				# 	data, cursor = db.execute(query, True, tup)
+				# 	heading, paragraph = cursor.fetchone()
+				# 	heading = heading.replace("`", "'")
+				# 	paragraph = paragraph.replace("`", "'")
+				# 	return True, 'verify_email'
 
 			else:
 				error = "Invalid credentials. Try again."
