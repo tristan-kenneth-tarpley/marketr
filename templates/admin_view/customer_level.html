@@ -81,19 +81,34 @@
     <script type="module">
         import AdminRecs from '/static/src/components/admin/recommendations.js'
         Talk.ready.then(function() {
+            let admin = parseInt({{page.admin}})
+            let photo;
+            switch (admin) {
+                case 6: 
+                    photo = 'https://marketr.life/static/branding/img/tristan.jpg'
+                    break
+                case 8:
+                    photo = 'https://marketr.life/static/branding/img/tyler.jpeg'
+                    break
+                default:
+                    photo = null
+                    break
+            }
+
             var me = new Talk.User({
                 id: "admin-{{page.admin}}",
                 role: "Admin",
                 name: "{{page.chat['admin_name']}}",
                 email: "{{page.chat['email']}}",
-                photoUrl: "https://marketr.life/static/branding/img/tristan.jpg",
+                photoUrl: photo,
                 welcomeMessage: "Welcome to Market(r)! Do you have any particular place in which you'd like to start your marketing journey with us?"
             });
             
             window.talkSession = new Talk.Session({
                 appId: "S9ifmqxv",
                 me: me,
-                signature: "{{page.chat['hash']}}"
+                signature: "{{page.chat['hash']}}",
+                photoUrl: photo
             });
 
 
@@ -106,6 +121,9 @@
             var conversation = window.talkSession.getOrCreateConversation("marketr-{{page.chat['customer_id']}}");
             conversation.setParticipant(me);
             conversation.setParticipant(operator);
+            conversation.setAttributes({
+                photoUrl: photo
+            })
             var chatbox = window.talkSession.createChatbox(conversation);
             chatbox.mount(document.getElementById("talkjs-container"));
         });

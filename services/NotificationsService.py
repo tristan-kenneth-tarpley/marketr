@@ -185,7 +185,7 @@ class NotificationsService:
     def TaskNotification(self, to):
         mailman = EmailService(to=to)
         subject = "You have a new assignment in Market(r)."
-        message = "Login here to view the message: https://marketr.life/home?view=campaigns"
+        message = "Login here to view the message: https://marketr.life/home?view=messages"
 
         mailman.send(
             subject=subject,

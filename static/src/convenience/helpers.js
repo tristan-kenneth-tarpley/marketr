@@ -135,3 +135,73 @@ function urlify(text) {
     // or alternatively
     // return text.replace(urlRegex, '<a href="$1">$1</a>')
 }
+
+
+const iterate_text = (lines, target) => {
+    let counter = 1;
+    let staller;
+    target.innerHTML = `<span>${lines[0]}</span>`
+
+    const change = () => {
+        staller = lines[counter]
+        target.innerHTML = `<span>${staller}</span>`
+        counter++
+        if (counter >= lines.length) counter = 0
+    }
+    setInterval(change, 2000)
+    
+}
+
+const modal = (title, body, uid) => {
+    /*html*/
+    const shell = `
+    <div data-uid="${uid}" id="modal-container">
+        <div class="modal-background">
+            <div class="safe modal">
+                <h2>${title}</h2>
+                <p>${body}</p>
+            </div>
+        </div>
+    </div>
+    `.trim()
+
+    return shell
+}
+
+
+
+const modal_handlers = (parent) => {
+    const modal_container = parent.querySelectorAll("#modal-container")
+    const body = document.querySelector('body')
+    
+    parent.querySelectorAll('.button').forEach(el => {
+        el.addEventListener('click', e=>{
+                let buttonId = e.currentTarget.getAttribute('id')
+            
+                modal_container.forEach(el=>{
+                    if (el.dataset.uid == e.currentTarget.dataset.uid) {
+                        el.removeAttribute('class')
+                        el.classList.add(buttonId)
+                        body.classList.add('modal-active')
+                    }
+                })
+        })
+    }); 
+    parent.querySelectorAll('.safe').forEach(el=>{
+        const text = el.querySelector('p')
+        text.innerHTML = urlify(text.textContent)
+        el.addEventListener('click', e=>{
+            e.stopPropagation()
+        })
+    })
+    modal_container.forEach(el=>{
+        el.addEventListener('click', e=>{
+            if (el.dataset.uid == e.currentTarget.dataset.uid) {
+                const _this = e.currentTarget
+                _this.classList.add('out')
+                body.classList.remove('modal-active')
+            }
+        })
+    })
+
+}

@@ -90,30 +90,36 @@ export class CoreViewModels {
 
 
     dashboard() {
-
-        $('.truncate').each(function(){
-            var full_text = $(this).text()
-            // $(this).after("<p class='full_text'>" + full_text + "</p>")
-            if ($(this).text().length > 49){
-                var truncated_text = $(this).text()
+        document.querySelectorAll('.truncate').forEach(el=>{
+            let text = el.textContent
+            if (text.length > 49) {
+                let truncated_text = text
                     .trim()    // remove leading and trailing spaces
                     .substring(0, 50)    // get first 600 characters
                     .split(" ") // separate characters into an array of words
                     .slice(0, -1)    // remove the last full or partial word
                     .join(" ") + "..."; // combine into a single string and append "..."
-                $(this).html("<span class='daText'>" + truncated_text + "</span> <span class='showAll'>Show more</span>")
-                $('.showAll').click(function(){
-                    $(this).toggleClass('clicked')
-                    if ($(this).hasClass('clicked')){
-                        $(this).siblings('.daText').html(full_text)
-                        $(this).html("<span class='showAll'>See less</span>")
-                    } else {
-                        $(this).siblings('.daText').html(truncated_text)
-                        $(this).html("<span class='showAll'>Show more</span>")
-                    }
+
+                el.innerHTML = `<span class='daText'>${truncated_text}</span> <span class='showAll'>Show more</span>`
+                
+                document.querySelectorAll('.showAll').forEach(el=>{
+                    el.addEventListener('click', e=>{
+                        const _this = e.currentTarget
+
+                        if (el.classList.contains('clicked')) {
+                            _this.classList.remove('clicked')
+                            _this.parentNode.querySelector(".daText").textContent = truncated_text
+                            _this.innerHTML = `<span class='showAll'>See less</span>`
+                        } else {
+                            _this.classList.add('clicked')
+                            _this.parentNode.querySelector(".daText").textContent = text
+                            _this.innerHTML = "<span class='showAll'>Show more</span>"
+                        }
+                    })
                 })
             }
         })
+
         
         
         $('.results_img').each(function(){

@@ -173,7 +173,7 @@
 			      </a>
 				</li>
 				{% if onboarding_complete == True %}
-			    <li class="{{ 3 | check_active(stage) }}">
+			    <li class="{{ 4 | check_active(stage) }}">
 			      <a href="/home">
 			        <i class="now-ui-icons media-1_album"></i>
 			        <p>Home</p>
@@ -389,7 +389,7 @@
 			hover_box
 			{{ large_md_sm_col }}
 			col-5">
-			<table class="table table-borderless">
+			<table class="table {{ 'file_path' if file_path }} table-borderless">
 			    <thead>
 			    	<tr>
 				      <th style="font-size: 100%;">

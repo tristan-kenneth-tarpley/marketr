@@ -229,7 +229,11 @@ export default class CompetitiveIntelligence extends HTMLElement {
 
     render(state=false){
 
+
+
         const loading = `
+        <div class="center_it" id="stall"><span></span></div>
+
         <div class="row">  
             <div style="text-align:center;margin: 0 auto;" class="col">
                 <div style="margin: 0 auto;" class="loading_dots">
@@ -273,6 +277,21 @@ export default class CompetitiveIntelligence extends HTMLElement {
 
             return el
         }).then(el=>this.shadow.appendChild(el))
+        .then(()=>{
+            let it;
+            if(this.state.data == null){
+                const lines = [
+                    '...Analyzing top keywords of your competitors...',
+                    "...Scanning the web for related conversations...",
+                    "...o_O  these look interesting...",
+                    "...Check them out and get engaged!"
+                ]
+                it = iterate_text(lines, this.shadow.querySelector('#stall'))
+            } else {
+                clearInterval(it)
+            }
+   
+        })
         
     }
 

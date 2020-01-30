@@ -39,7 +39,22 @@ const product_cell = (type, name) => {
 }
 
 
-const platform_row = (name, index) => {
+const platform_row = (name, index) => {	
+	const tile = (title) => {
+		return `
+		<div class="table-responsive hover_box col-lg-5 col-md-">
+			<table class="table">
+				<thead>
+					<tr>
+						<th style="text-align:center;">
+							<h6 style="font-size: 70%;" class="x_small_txt">${title}</h6>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>`
+	}
+	/*html*/
 	const el = `<div class="row platform_row">
 					<div class='col-lg-2 col-sm-12 col-12'>
 						<h5 style="text-align:center;" class="title"><span class="platform_img">${name}</span></h5>
@@ -48,13 +63,9 @@ const platform_row = (name, index) => {
 					<div style="text-align:center;" class='col-lg-4 col-md-4 col-sm-6 col-6'>
 						<h6>Still using?</h6><br>
 						<div class="container row col-12">
-							<div class='hover_box col-lg-5 col-md-5'>
-								<h6>yes</h6>
-							</div>
+							${tile('yes')}
 							&nbsp;
-							<div class='hover_box col-lg-5 col-md-5'>
-								<h6>no</h6>
-							</div>
+							${tile('no')}
 							<input type="text" name="currently_using[${index}]" class="hidden_input hidden">
 						</div>
 					</div>

@@ -7,7 +7,7 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         @import url("https://cdn.jsdelivr.net/npm/vanilla-datatables@v1.6.16/dist/vanilla-dataTables.min.css");
-  
+        
     </style>
     `.trim()
   }
@@ -29,6 +29,7 @@ const styles = () => {
     core(){
         /*html*/
         return `
+        <h5 class="small_txt">What people are saying:</h5>
         <div class="row">
             <div class="col">
                 <table class="table" id="listening">
@@ -55,8 +56,11 @@ const styles = () => {
 
     null(){
         return `
+            <div id="stall" style="center_it"><span><span></div>
             ${dots_loader()}
-            <table class="hidden" id="listening"></table>
+            <div id="table_container" style="display:none;">
+                <table id="listening"></table>
+            </div>
         `
     }
   
@@ -66,7 +70,6 @@ const styles = () => {
             const el = document.createElement('div')
             el.innerHTML = `
               ${this.css}
-              <h5 class="small_txt">What people are saying:</h5>
               ${
                   this.state.data
                   ? this.core()
@@ -81,6 +84,21 @@ const styles = () => {
         })
         .then(el=>{
             this.shadow.appendChild(el)
+        })
+        .then(()=>{
+            let it;
+            if(this.state.data == null){
+                const lines = [
+                    '...Analyzing top keywords of your competitors...',
+                    "...Scanning the web for related conversations...",
+                    "...o_O  these look interesting...",
+                    "...Check them out and get engaged!"
+                ]
+                it = iterate_text(lines, this.shadow.querySelector('#stall'))
+            } else {
+                clearInterval(it)
+            }
+   
         })
     }
   

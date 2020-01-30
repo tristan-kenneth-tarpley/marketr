@@ -75,11 +75,9 @@ export default class AdSpend extends HTMLElement {
             return (
             /*html*/
                 `
-                <div class='col-lg-3 center_it'>    
-                    <div class="tool-wrapper">
-                        ${title}
-                        <div class="custom-tooltip">${considerations_meta[title].hover}</div>
-                    </div>
+                <div class='col-lg-3 col-md-3 col-sm-12 center_it'>   
+                    <div id="six" data-uid="${title}" class="modal-controller button"><p>${title}</p></div>
+                    ${modal(title, considerations_meta[title].hover, title)}
                     <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
                         <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
                         <option value="medium" ${value == 'medium' ? "selected" : ""}>medium</option>
@@ -221,6 +219,21 @@ export default class AdSpend extends HTMLElement {
     }
 
     shell(){
+        const modal_markup = `<p>We provide a recommended budget based on the following factors:</p>
+        <ul class='no-dec'>
+            <li>Stage of your company</li>
+            <li>Annual Revenues</li>
+            <li>Business model</li>
+        </ul>
+        
+        <p>Additional factors that you may want to adjust your spend targets (either up or down) include:</p>
+        <ul class='no-dec'>
+            <li>Competitiveness of your product/service niche.</li>
+            <li>Industry-specific adjustments i.e. financial or real-estate services may require a higher spend rate for effective results.</li>
+            <li>Location.</li>
+            <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
+        </ul>`
+        const uid = "how_calculated"
         /*html*/
         return (
             
@@ -251,25 +264,9 @@ export default class AdSpend extends HTMLElement {
                         </h5>
                         ${this.actual_budget == null ?
                         /*html*/
-                        `<div class="tool-wrapper">
-                            How is this calculated?
-                            <div class="custom-tooltip">
-                                <p>We provide a recommended budget based on the following factors:</p>
-                                <ul class='no-dec'>
-                                    <li>Stage of your company</li>
-                                    <li>Annual Revenues</li>
-                                    <li>Business model</li>
-                                </ul>
-                                
-                                <p>Additional factors that you may want to adjust your spend targets (either up or down) include:</p>
-                                <ul class='no-dec'>
-                                    <li>Competitiveness of your product/service niche.</li>
-                                    <li>Industry-specific adjustments i.e. financial or real-estate services may require a higher spend rate for effective results.</li>
-                                    <li>Location.</li>
-                                    <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
-                                </ul>
-                            </div>
-                        </div>`
+                        `<div id="six" data-uid="${uid}" class="modal-controller button"><p>How is this calculated?</p></div>
+                        ${modal("How is this calculated", modal_markup, uid)}
+                        `
                         : 
                         /*html*/
                         `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
@@ -408,6 +405,9 @@ export default class AdSpend extends HTMLElement {
         first()
             .then(_el => second(_el))
             .then(_el => this.shadow.appendChild(_el))
+            .then(()=>{
+                modal_handlers(this.shadow)
+            })
     }
 
     detectReal(){

@@ -210,7 +210,7 @@ export class Store {
         switch(data['type']){
             case 'tactics_rewards':
                 /*html*/
-                copy = `<h5>${data['title']}</h5> <p>You won more tactics...Nice! Your tactic has been added to your <a href="/home?view=campaigns">library.</a></p>`
+                copy = `<h5>${data['title']}</h5> <p>You won more tactics...Nice! Your tactic has been added to your library</p>`
                 break
             case 'credit_reward':
                 let current = parseInt(document.querySelector('.total_credits').textContent.replace(/\,/g, ''))
@@ -268,7 +268,6 @@ export class Store {
                 .then((res) => res.json())
                 .then((data) => {
                     this.rewards.reveal()
-                    console.log(data)
                     this.notify_after_buy(data, (current_amount-max), target)
                     this.rewards.get()
                 })

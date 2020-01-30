@@ -39,6 +39,7 @@ export default class Insights extends HTMLElement {
                 <p>${ins.body}</p>
                 `
             }).join("")}
+            <hr>
             ${this.state.data.length == 0
                 ? `
                 <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
