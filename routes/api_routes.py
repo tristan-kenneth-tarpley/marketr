@@ -461,6 +461,9 @@ def compile_master_index():
     search_df = orm.search_index()
     social_df = orm.social_index()
 
+    print(social_df)
+    print(search_df)
+
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
 
     if compiled:

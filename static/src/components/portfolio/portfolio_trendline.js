@@ -117,6 +117,7 @@ export default class PortfolioTrendline extends HTMLElement {
             .then((res) => res.json())
             .then(data => this.state.data = data)
             .then(() => {
+                console.log(this.state.data)
                 setTimeout(()=>{
                     this.init_chart(el.querySelector("#trendline"))
                 }, 500)
