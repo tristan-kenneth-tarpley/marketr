@@ -2,7 +2,6 @@ from google.oauth2 import service_account
 import pandas
 import pandas_gbq
 import pyarrow
-from google.cloud import bigquery_storage_v1beta1
 
 class BigQuery(object):
     def __init__(self):
@@ -25,7 +24,7 @@ class BigQuery(object):
         
     def get(self, sql):
         try:
-            return pandas_gbq.read_gbq(sql, use_bqstorage_api=True, project_id=self.project_id, credentials=self.credentials)
+            return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
         except:
             return None
 
