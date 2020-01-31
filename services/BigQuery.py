@@ -1,7 +1,8 @@
 from google.oauth2 import service_account
 import pandas
 import pandas_gbq
-
+import pyarrow
+from google.cloud import bigquery_storage_v1beta1
 
 class BigQuery(object):
     def __init__(self):
