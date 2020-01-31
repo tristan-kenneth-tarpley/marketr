@@ -169,6 +169,7 @@ class SpendAllocation:
         priority_sum = df['priority_scale'].sum()
         df['spend_per_tactic'] = self.budget * df['priority_scale'] / priority_sum
         df['spend_percent'] = df['spend_per_tactic'] / self.budget
+        df = df.fillna(0)
         df['num_campaigns'] = (df['spend_percent'] * num_campaigns).apply(lambda x: 1 if x < 1 else math.floor(x))
 
         return df.to_json(orient='records')

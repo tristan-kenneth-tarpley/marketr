@@ -107,8 +107,8 @@ class GoogleORM(BigQuery):
     def search_index(self):
         google = f"""select rep.campaign as name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
 
-from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep
-where rep.campaign is not null"""
+        from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep
+        where rep.campaign is not null"""
         
         return self.get(google)
 

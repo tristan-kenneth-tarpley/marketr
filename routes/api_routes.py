@@ -227,7 +227,8 @@ def rewards():
 @login_required
 def spend_allocation():
     req = request.get_json()
-    rec = GetRec(req.get('revenue'), req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
+    revenue = req.get('revenue') if req.get('revenue') and req.get('revenue') > 100000 else 100000
+    rec = GetRec(revenue, req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
@@ -238,7 +239,7 @@ def spend_allocation():
 
     user = req.get('customer_id')
     spend = SpendAllocation(
-        user, req.get('revenue'), input_budget,
+        user, revenue, input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
         req.get('selling_to'), req.get('biz_model')
     )

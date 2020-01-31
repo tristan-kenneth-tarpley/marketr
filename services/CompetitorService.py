@@ -34,7 +34,10 @@ class CompetitorService(object):
    
     def SpyfuCore(self, url):
         url = f"https://www.spyfu.com/apis/leads_api/get_contact_card?domain={url}&api_key={self.spyfu}"
-        return requests.get(url).json()
+        try:
+            return requests.get(url).json()
+        except:
+            return None
     
     def GoogleAds(self, url):
         url = f'https://www.spyfu.com/apis/ad_history_api/domain_ad_history_json?d={url}&r=10&s=0&isUs=true&api_key={self.spyfu}'
@@ -59,17 +62,25 @@ class CompetitorService(object):
         async def compile(competitors):
             def Struct(name, site, Type, res_1, res_2, res_3, res_4):
                 res_3 = res_3[:5] if len(res_3) > 5 else res_3
-                organic = float(res_2.get('seo_clicks')) if res_2.get('seo_clicks') else 0
-   
-                paid = float(res_2.get('ppc_clicks')) if res_2.get('ppc_clicks') else 0
-                budget = float(res_2.get('ppc_budget')) if res_2.get('ppc_budget') else 0
+                keywords = list()
+                if res_2:
+                    organic = float(res_2.get('seo_clicks')) if res_2.get('seo_clicks') else 0
+                    paid = float(res_2.get('ppc_clicks')) if res_2.get('ppc_clicks') else 0
+                    budget = float(res_2.get('ppc_budget')) if res_2.get('ppc_budget') else 0
+                else:
+                    organic = 0
+                    paid = 0
+                    budget = 0
+                for item in res_3:
+                    for keyword in item['keywords']:
+                        keywords.append(keyword)
 
                 core = {
                     'total_traffic': organic + paid,
                     'ppc_budget': budget,
                     'ppc_clicks': paid,
                     'seo_clicks': organic,
-                    'keywords': [keyword for keyword in res_3[0]['keywords']]
+                    'keywords': keywords
                 }
                 return {
                     'comp_name': name,
