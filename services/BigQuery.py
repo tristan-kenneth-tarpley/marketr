@@ -24,7 +24,7 @@ class BigQuery(object):
         
     def get(self, sql):
         try:
-            return pandas_gbq.read_gbq(sql, project_id=self.project_id, credentials=self.credentials)
+            return pandas_gbq.read_gbq(sql, use_bqstorage_api=True, project_id=self.project_id, credentials=self.credentials)
         except:
             return None
 
