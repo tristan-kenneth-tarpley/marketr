@@ -86,23 +86,6 @@ export default class PortfolioTrendline extends HTMLElement {
 
     render(){
         this.shadow.innerHTML = ""
-        const el = document.createElement('div')
-
-        /*html*/
-        el.innerHTML = `
-            ${this.css}
-            ${!this.state.data
-                ? `<p class="small_txt">When your campaigns become active, you will begin to see a trendline of your Market(r) Index-- your marketing portfolio health score.</p>
-                <p class="small_txt">If you have any questions, head over to the chat tab and your Market(r) guide will reponse within an hour!</p>
-                <p class="small_txt">~ Tristan Tarpley, Founder of Market(r)</p>`
-                : ''
-            }
-            <div class="row">
-                <div class="col" id="chart_container">
-                    <canvas id="trendline"></canvas>
-                </div>
-            </div>
-        `
 
         fetch('/api/index/trendline', {
             method: 'POST',
@@ -116,13 +99,33 @@ export default class PortfolioTrendline extends HTMLElement {
         })
             .then((res) => res.json())
             .then(data => this.state.data = data)
-            .then(() => {
-
+            .then(()=>{
+                const el = document.createElement('div')
+                /*html*/
+                el.innerHTML = `
+                    ${this.css}
+                    ${!this.state.data
+                        ? `<p class="small_txt">When your campaigns become active, you will begin to see a trendline of your Market(r) Index-- your marketing portfolio health score.</p>
+                        <p class="small_txt">If you have any questions, head over to the chat tab and your Market(r) guide will reponse within an hour!</p>
+                        <p class="small_txt">~ Tristan Tarpley, Founder of Market(r)</p>`
+                        : ''
+                    }
+                    <div class="row">
+                        <div class="col" id="chart_container">
+                            <canvas id="trendline"></canvas>
+                        </div>
+                    </div>
+                `
+                return el
+            })
+            .then(el => {
                 setTimeout(()=>{
                     this.init_chart(el.querySelector("#trendline"))
-                }, 500)
+                }, 800)
+
+                return el
             })
-            .then(()=>{
+            .then(el => {
                 this.shadow.appendChild(el)
             })
             .catch((err)=>console.log(err))

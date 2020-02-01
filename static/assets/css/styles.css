@@ -12243,3 +12243,13 @@ html.modal-active, body.modal-active {
   text-decoration: underline;
   font-weight: bold;
 }
+
+
+.blue_label {
+  font-weight: bold;
+  color: var(--darker-blue);
+}
+/* 
+.fb_graphics {
+  image-rendering: pixelated;
+} */

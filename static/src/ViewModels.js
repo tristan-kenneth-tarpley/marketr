@@ -175,10 +175,15 @@ export class CoreViewModels {
         }
 
         const change_nav_active = () => {
-            const hash = window.location.hash.substring(1)
-            let target = `a.${hash}`
-            $('a').not(target).removeClass('targeted')
-            $(target).addClass("targeted")
+            try {
+                const hash = window.location.hash.substring(1)
+                let target = `a.${hash}`
+                $('.nav li a').not(target).removeClass('targeted')
+                $(target).addClass("targeted")
+                
+            } catch (e) {
+                
+            }
         }
 
         $(document).on('scroll', e => {

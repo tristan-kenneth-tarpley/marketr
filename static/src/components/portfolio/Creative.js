@@ -1,4 +1,4 @@
-import {google} from '/static/src/components/UI_elements.js'
+import {google, facebook} from '/static/src/components/UI_elements.js'
 const styles = () => {
     /*html*/
     return `
@@ -10,6 +10,9 @@ const styles = () => {
         .blue_label {
             color: var(--darker-blue);
             font-weight: bold;
+        }
+        th {
+            font-size: 90%;
         }
     </style>
     `.trim()
@@ -30,64 +33,103 @@ export default class AccountCreative extends HTMLElement {
     }
 
     display_shell(name, type, perc_of_budget, index, creative){
+        /*html*/
         return `
-            <div class="row">
-                <div class="col-3">
-                    <p class="small_txt">${name} (${type})</p>
-                </div>
-                <div class="col-3">
-                    <p class="small_txt">${perc_of_budget}</p>
-                </div>
-                <div class="col-3">
-                    <p class="small_txt">${index}</p>
-                </div>
-                <div class="col-3">
-                    ${creative}
-                </div>
-            </div>
+            <tr>
+                <td><p class="small_txt">${name}</p></td>
+                <td><p class="small_txt">${type}</p></td>
+                <td><p class="small_txt">${index}</p></td>
+                <td><p class="small_txt">${perc_of_budget}</p></td>
+                <td><p class="small_txt">${creative}</p></td>
+            </tr>
         `.trim()
     }
 
-    core() {
+    ad_shell(ad, index, perc_budget, spend){
         return `
         <div class="row">
-            <div class="col-lg-12">
-                <div class="row row_cancel">
-                    <div class="col-3">
-                        <p style="font-size: 80%;" class="blue_label">Campaign name (type)</p>
-                    </div>
-                    <div class="col-3">
-                        <p style="font-size: 80%;" class="blue_label">% of budget</p>
-                    </div>
-                    <div class="col-3">
-                        <p style="font-size: 80%;" class="blue_label">Market(r) Index</p>
-                    </div>
-                    <div class="col-3">
-                        <p style="font-size: 80%;" class="blue_label">Ad creative</p>
+            <div class="col-lg-6">
+                ${ad}
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col">
+                        <span class="small_txt">Market(r) Index</span>
+                        <h5 class="blue_label">${index}</h5>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col">
+                        <span class="small_txt">Percent of ad budget</span>
+                        <h5 class="blue_label">${perc_budget}</h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <span class="small_txt">Amount spent</span>
+                        <h5 class="blue_label">${spend}</h5>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        `
+    }
+
+    core() {
+        /*html*/
+        return `
+        <div class="row">
+            <div class="col">
+                <table id="creative_table" class="table table-reponsive">
+                    <thead>
+                        <th>Campaign name</th>
+                        <th>Campaign type</th>
+                        <th>Market(r) Index</th>
+                        <th>Percent of budget</th>
+                        <th>View ad</th>
+                    </thead>
+                    <tbody>
+                        ${this.data.ads.social.map((it, index)=>{
+                            const creative_body = this.ad_shell(
+                                facebook('', it.thumbnail_url, it.body),
+                                it.marketr_index.toFixed(2),
+                                percent(it.cost / this.data.total_spent * 100),
+                                currency(it.cost)
+                            )
+                            const uid = `social-${index}`
+                            const creative = modal(it.name, creative_body, `social-${index}`) + modal_trigger(uid, 'view ad')
+                            
+                                /*html*/
+                                return `
+                                    ${this.display_shell(it.name, 'Social', percent(it.cost / this.data.total_spent * 100), it.marketr_index.toFixed(2), creative)}
+                                `
+                            }).join("")}
+                    
+                            ${this.data.ads.search.map((it, index)=>{
+                                if (it.headline1 != 0) {
+                                    let url = JSON.parse(it.finalurl)
+                                    const creative_body = this.ad_shell(
+                                        google(it.headline1 + " " + it.headline2, url[0], it.description != 0 ? it.description : ''),
+                                        it.marketr_index.toFixed(2),
+                                        percent(it.cost / this.data.total_spent * 100),
+                                        currency(it.cost)
+                                    )
+                                    
+                                    const uid = `search-${index}`
+                                    const creative = modal(it.name, creative_body, uid) + modal_trigger(uid, 'view ad')
+                                    return `
+                                        ${this.display_shell(it.name, 'Search', percent(it.cost / this.data.total_spent * 100), it.marketr_index.toFixed(2), creative)}
+                                    `
+                                }
+                            }).join("")}
+                    </tbody>
+                </table>
             </div>
         </div>
   
-        ${this.data.ads.social.map(it=>{
-        const creative = `
-            <p style="font-size: 80%;">${it.body}</p>
-            <img style="width:100%;" src="${it.thumbnail_url}">
-        `
-            /*html*/
-            return `
-                ${this.display_shell(it.name, 'Social', percent(it.cost / this.data.total_spent * 100), it.marketr_index.toFixed(2), creative)}
-            `
-        }).join("")}
-
-        ${this.data.ads.search.map(it=>{
-            let url = JSON.parse(it.finalurl)
-            const creative = google(it.headline1 + " " + it.headline2, url[0], it.description != 0 ? it.description : '')
-
-            return `
-            ${this.display_shell(it.name, 'Social', percent(it.cost / this.data.total_spent * 100), it.marketr_index.toFixed(2), creative)}
-            `
-        }).join("")}
   
         `.trim()
 
@@ -102,18 +144,29 @@ export default class AccountCreative extends HTMLElement {
     }
 
     render(init=true){
-        this.shadow.innerHTML = ""
-        const el = document.createElement('div')
+        const first = async () => {
+            this.shadow.innerHTML = ""
+            const el = document.createElement('div')
+            return el
+        }
 
-        /*html*/
-        el.innerHTML = `
-          ${this.css}
-          ${this.data.total_spent > 0
-            ? this.core()
-            : this.null_state()
-            }
-        `
-        this.shadow.appendChild(el)
+        first().then(el=>{
+            /*html*/
+            el.innerHTML = `
+            ${this.css}
+            ${this.data.total_spent > 0
+                ? this.core()
+                : this.null_state()
+                }
+            `
+            return el
+        }).then(el=>{
+            new DataTable(el.querySelector("#creative_table"))
+            return el
+        }).then(el=>{
+            this.shadow.appendChild(el)
+            
+        }).then(()=>modal_handlers(this.shadow))
     }
 
     connectedCallback() {

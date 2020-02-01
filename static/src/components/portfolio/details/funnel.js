@@ -9,10 +9,7 @@ const styles = () => {
         label.small_txt {
             font-size: 80%;
         }
-        .blue_label {
-            font-weight: bold;
-            color: var(--darker-blue);
-        }
+
     </style>
     `.trim()
   }

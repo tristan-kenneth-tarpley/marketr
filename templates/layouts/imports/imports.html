@@ -36,7 +36,10 @@
     import CompetitiveIntelligence from '/static/src/components/Competitors.js'
 </script>
 
-
-
+<script>
+    window.onbeforeunload = function(event) {
+        window.stop();
+    };
+</script>
 
 <script src="https://js.stripe.com/v3/"></script>

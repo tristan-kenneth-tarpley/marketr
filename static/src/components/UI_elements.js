@@ -79,10 +79,19 @@ export const dots_loader = () => {
 
 export const google = (headline, website, description) => {
     return (
-        `<div class="google_ad_preview_container">
+        `<div style="text-align:left;" class="google_ad_preview_container">
             <h5 style="font-size: 110%;">${headline}</h5>
             <p class="website"><span>Ad</span> ${website}</p>
             <p>${description}</p>
         </div>`
+    )
+}
+
+export const facebook = (headline, img, copy) => {
+    return (
+        `
+        <img class="fb_graphics" style="width:20%;" src="${img}">
+        <p style="font-size: 80%;">${copy}</p>
+        `
     )
 }

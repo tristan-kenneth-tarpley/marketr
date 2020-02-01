@@ -168,6 +168,10 @@ const modal = (title, body, uid) => {
     return shell
 }
 
+const modal_trigger = (uid, copy) => {
+    /*html*/
+    return `<div id="six" data-uid="${uid}" class="modal-controller button"><p>${copy}</p></div>`
+}
 
 
 const modal_handlers = (parent) => {
