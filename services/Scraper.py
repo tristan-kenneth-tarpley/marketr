@@ -13,11 +13,11 @@ class Scraper:
 
         self.measure = measure
 
-    def get(self, url=None):
+    def get(self, url=None, render=False):
         payload = {
             'api_key': self.key,
             'url': self.url if not url else url,
-            'render': 'true'
+            'render': 'true' if render else 'false'
         }
 
         r = requests.get('http://api.scraperapi.com', params=payload)

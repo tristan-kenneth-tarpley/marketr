@@ -80,14 +80,14 @@ class TextAnalyzer:
         driver = self.scraper
         
         try:
-            dom = driver.get(url=url)
+            dom = driver.get(url=url, render=True)
             
             time.sleep(2)
 
             titles = dom.select('.suggestion-title')
             descriptions = dom.select('.suggestion-description')
             score = dom.select('.overall .score')
-            print(score)
+     
             struct = {
                 'score': score,
                 'recommendations': []

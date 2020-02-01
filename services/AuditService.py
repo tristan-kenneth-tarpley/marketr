@@ -56,6 +56,8 @@ class SiteObj:
             for x in v:
                 self.site_string += (" " + x)
 
+        print(self.site_string)
+
 
 
 
@@ -103,7 +105,8 @@ class ColdAudit:
         
     def get(self):   
         def site_data(scraper=self.scraper, url=self.url):
-            driver = scraper.get()
+            print(scraper.url)
+            driver = scraper.get(render=False)
             siteobj = SiteObj(url=url, driver=driver)
             load_time = scraper.load_time
             
@@ -115,6 +118,7 @@ class ColdAudit:
             text_analyzer = self.TextAnalyzer
     
             assert siteobj.site_string is not None, "Site string wasn't populated"
+            print(siteobj.site_string)
             scent = text_analyzer.tone_analyzer(siteobj.site_string)
             
             return headlines, load_time, scent
@@ -123,10 +127,11 @@ class ColdAudit:
             ads = self.competitors.GoogleAds(url)
             keywords = self.competitors.paid_kw(url)
             competitors = self.competitors.NewCompetitors(url)
-            print(competitors)
             
             return ads, keywords, competitors
-        
+
+        print(self.scraper)
+        print(self.url)        
         self.headlines, self.load_time, self.scent = site_data()
         self.ads, self.keywords, self.competitors = get_ad_data()
         
@@ -219,7 +224,9 @@ class AuditService:
 ### compile
 
 def run_audit(url=None, requested=True):
+    url = url.replace('www.', '')
     url = url[:-1] if url[-1] == '/' else url
+    print(url)
 
     competitors = CompetitorService(None)
     scraper = Scraper(url=url, measure=True)
@@ -237,23 +244,32 @@ def run_audit(url=None, requested=True):
     audit.run()
     audit.save()
     
-    i = 1
-    completed_comps = [url.replace('https://', '')]
-    for competitor in audit.competitors:
-        if competitor['domainName'] != url.replace('https://', '').replace('www.', '') and i < 6:
+    base_url = url.replace('https://', '').replace('http://', '')
+    completed_comps = []
+    for count, competitor in enumerate(audit.competitors):
+        if competitor['domainName'].replace('www.', '') != base_url and count < 4:
             try:
-                audit = ColdAudit(url=('https://' + competitor['domainName']))
+                url = competitor['domainName']
+               
+                scraper = Scraper(url=url, measure=True)
+                text_analyzer = TextAnalyzer(scraper)
+                audit = ColdAudit(
+                    url=url,
+                    TextAnalyzer=text_analyzer,
+                    run_competitors=False,
+                    requested=False,
+                    competitors=competitors,
+                    scraper=scraper
+                )
+
                 audit.run()
                 audit.save()
-                query_url = url.replace('https://', '')
-                print(competitor['domainName'])
                 completed_comps.append(competitor['domainName'])
 
-                query = f"UPDATE audit_results SET comp_{i} = '{competitor['domainName']}' WHERE url = '{query_url}'"
+                query = f"UPDATE audit_results SET comp_{count} = '{competitor['domainName']}' WHERE url = '{url}'"
                 db.execute(query, False, (), commit=True)
 
-                i += 1
-            except:
+            except AssertionError:
                 continue
             
     if len(completed_comps) > 1:       
