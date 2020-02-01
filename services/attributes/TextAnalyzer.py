@@ -84,7 +84,7 @@ class TextAnalyzer:
             
             time.sleep(2)
 
-            titles = dom.select('.suggestion-title')
+            titles = dom.find_all('.suggestion-title')
             descriptions = dom.select('.suggestion-description')
             score = dom.select('.overall .score')
      

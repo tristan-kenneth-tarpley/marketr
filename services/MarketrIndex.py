@@ -221,7 +221,7 @@ class PortfolioIndex(MarketrIndex):
                 return (-1 * (abs(index) ** .5) * (cost / self.total_spent))
             else:
                 return index ** .5 * (cost / self.total_spent)
-                
+        
         arr = [condition(arg['index'], arg['cost']) for arg in args]
         return sum(arr)
 

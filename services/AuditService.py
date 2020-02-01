@@ -105,8 +105,8 @@ class ColdAudit:
         
     def get(self):   
         def site_data(scraper=self.scraper, url=self.url):
-            print(scraper.url)
-            driver = scraper.get(render=False)
+        
+            driver = scraper.get(render=True)
             siteobj = SiteObj(url=url, driver=driver)
             load_time = scraper.load_time
             
@@ -118,7 +118,7 @@ class ColdAudit:
             text_analyzer = self.TextAnalyzer
     
             assert siteobj.site_string is not None, "Site string wasn't populated"
-            print(siteobj.site_string)
+      
             scent = text_analyzer.tone_analyzer(siteobj.site_string)
             
             return headlines, load_time, scent
@@ -129,9 +129,7 @@ class ColdAudit:
             competitors = self.competitors.NewCompetitors(url)
             
             return ads, keywords, competitors
-
-        print(self.scraper)
-        print(self.url)        
+    
         self.headlines, self.load_time, self.scent = site_data()
         self.ads, self.keywords, self.competitors = get_ad_data()
         
