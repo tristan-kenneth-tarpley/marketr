@@ -31,6 +31,10 @@ class CompetitorService(object):
     def NewCompetitors(self, url):
         url = f'https://www.spyfu.com/apis/core_api/get_domain_competitors_us?domain={url}&isOrganic=true&r=10&api_key={self.spyfu}'
         return requests.get(url).json()
+
+    def paid_kw(self, url):
+        url = f'https://www.spyfu.com/apis/url_api/paid_kws?q={url}&r=10&api_key={self.spyfu}'
+        return requests.get(url).json()
    
     def SpyfuCore(self, url):
         url = f"https://www.spyfu.com/apis/leads_api/get_contact_card?domain={url}&api_key={self.spyfu}"

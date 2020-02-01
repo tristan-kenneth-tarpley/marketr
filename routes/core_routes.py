@@ -17,6 +17,7 @@ from services.ChatService import ChatService
 from services.AdSpend import GetRec, SpendAllocation
 from services.tools.campaign_creator import AdGrouper, MarketResearch, CopyWriter
 from services.gamify import Achievements, Credits, Rewards
+from services.AuditService import AuditService, run_audit
 from services.BigQuery import GoogleORM
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
@@ -365,32 +366,28 @@ def tactic(tactic_id):
         page=vm
     )
 
-@app.route('/audit/<url>', methods=['GET'])
+@app.route('/audit/<url>', methods=['POST', 'GET'])
 def audit(url):
-    query = """SELECT
-                audit_string,
-                (select audit_string from audit_results WHERE url = ar.comp_1) as comp_1,
-                (select audit_string from audit_results WHERE url = ar.comp_2) as comp_2,
-                (select audit_string from audit_results WHERE url = ar.comp_3) as comp_3,
-                (select top 3 title, description from join_tactics where tag_val like '%any%' ORDER BY NEWID() for json path, root('tactics'))
-                as tactics
 
-                FROM audit_results as ar WHERE url = ?
-            """
-    results, cursor = db.execute(query, True, (url,))
-    results = cursor.fetchone()
-    page = eval(results[0])
-    if results[1]:
-        competitors = [eval(results[1]), eval(results[2]), eval(results[3])]
-    else:
-        competitors = None
-    tactics = eval(results[4])
-    return render_template(
-        'branding/audit.html',
-        page=page,
-        competitors=competitors if competitors else None,
-        tactics=tactics
-    )
+    if request.method == 'GET':
+        service = AuditService(url=url)
+        page, competitors, tactics = service.get()
+
+        return render_template(
+            'branding/audit.html',
+            page=page,
+            competitors=competitors if competitors else None,
+            tactics=tactics
+        )
+    
+    elif request.method == 'POST':
+        run_audit(url=url, requested=True)
+        return json.dumps({
+            'success': True
+        })
+        #redirect(url_for('audit', url=req.get('url')))
+
+
 
 
 

@@ -15,8 +15,9 @@ import random
 
 
 class Listener:
-    def __init__(self, keyword):
+    def __init__(self, keyword, length=100):
         self.keywords = keyword
+        self.length = length
 
     def listen(self):
         reddit = praw.Reddit(client_id='oy-mmNuzOc9-vA',
@@ -63,4 +64,4 @@ class Listener:
         future = asyncio.ensure_future(run())
         posts = loop.run_until_complete(future)
  
-        return posts[:100] if len(posts) > 100 else posts
+        return posts[:self.length] if len(posts) > self.length else posts

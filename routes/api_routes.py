@@ -52,6 +52,7 @@ def get_personas():
 @app.route('/api/personas', methods=['GET'])
 def get_products():
     customer_id = request.args.get('customer_id')
+    #test
     query = "SELECT persona_name, audience_id from audience WHERE persona_name is not null and customer_id = ?"
     data, cursor = db.execute(query, True, (customer_id,))
     data = cursor.fetchall()
@@ -505,3 +506,6 @@ def index_trendline():
 # @app.route('/api/index/trendline/view', methods=['POST'])
 # def portfolio_view_func():
 #     pass
+
+
+
