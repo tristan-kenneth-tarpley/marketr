@@ -216,7 +216,13 @@ class PortfolioIndex(MarketrIndex):
         self.total_spent = total_spent
         
     def PrepIndex(self, *args):
-        arr = [(arg['index'] ** .5 * arg['cost'] / self.total_spent) for arg in args]
+        def condition(index, cost):
+            if index < 0:
+                return (-1 * (abs(index) ** .5) * (cost / self.total_spent))
+            else:
+                return index ** .5 * (cost / self.total_spent)
+                
+        arr = [condition(arg['index'], arg['cost']) for arg in args]
         return sum(arr)
 
 
