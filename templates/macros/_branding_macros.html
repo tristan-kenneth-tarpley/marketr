@@ -4,7 +4,7 @@
     {% endmacro %}
     {% macro cta(popular=False) %}
         <div class="pt-footer">
-            <a class="m-btn {{'m-btn-theme2nd' if popular else 'm-btn-theme'}} m-btn-round" href="/new">Get started</a>
+            <a class="m-btn {{'m-btn-theme2nd' if popular else 'm-btn-theme'}} m-btn-round" href="/new">Join early access program</a>
         </div>
     {% endmacro %}
     {% macro shell(logged=logged_in, headline=None, subheading=None, body=None, footer=None) %}
@@ -93,7 +93,7 @@
         {% if ads %}<a id="ad_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
         {% if testing %}<a id="testing_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
     {% else %}  
-        <a id="checkout_link" class="m-btn m-btn-theme m-btn-round" href="/new">Get started (pay later)</a>
+        <a id="checkout_link" class="m-btn m-btn-theme m-btn-round" href="/new">I want to join the early access program</a>
     {% endif %}
         <br>
         <hr style="height:5px; box-shadow:none; background-color: rgba(0,0,0,.1); color:rgba(0,0,0,.1);width:50%;">
@@ -135,7 +135,7 @@
                     <div class="section-title text-center">
                         <h2>Flat-Rate Pricing</h2>
                         <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
-                        {% if not logged_in %}<a href="/new">Sign up here.</a>{%endif%}</p>
+                        {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
                         <p>Only pay us if we manage your ad campaigns.</p>
                     </div>
                 </div>

@@ -15,7 +15,7 @@
 
 {% block form %}
 
-    <form class="new_user" id="new_user" action="{{ url_for('new') }}" accept-charset="UTF-8" method="post">
+    <form class="new_user" id="new_user" action="{{ url_for('new_temp') }}" accept-charset="UTF-8" method="post">
     {{ form.csrf_token }}
     <div id="email_availability"></div>
       <fieldset>
