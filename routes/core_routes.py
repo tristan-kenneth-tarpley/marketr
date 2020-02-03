@@ -421,3 +421,11 @@ def google():
     return 'success'
 
 
+@app.route('/thanks/audit', methods=['GET'])
+def thanks_audit():
+    return render_template('layouts/thank_you_layout.html', audit=True)
+
+@app.route('/thanks/booking', methods=['GET'])
+def thanks_booking():
+    return render_template('layouts/thank_you_layout.html', booking=True)
+

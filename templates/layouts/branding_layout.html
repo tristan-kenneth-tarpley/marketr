@@ -77,6 +77,8 @@
                                 <li><a class="nav-link" href="#price">Price</a></li>
                                 <li><a class="nav-link" href="#contact">Contact Us</a></li>
                                 <li><a class="nav-link" href="/blog">Blog</a></li>
+                            {% else %} 
+                                <li><a class="nav-link" href="/">Home</a></li>
                             {% endif %}
                             {% if not logged_in %}
                                 <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/new">Sign Up</a></li>
