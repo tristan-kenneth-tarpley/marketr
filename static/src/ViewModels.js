@@ -315,6 +315,7 @@ export class AuditRequest {
                 $.post('/audit_request', data, ()=>{
                     document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
                     document.querySelector('#audit_gif').style.display = 'none'
+                    window.location.replace("https://marketr.life/thanks/audit")
                 })
             }
         })
