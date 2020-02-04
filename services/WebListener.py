@@ -43,7 +43,7 @@ class Listener:
             comp_list = list()
 
             for item in self.keywords:
-                for keyword in item.get('keywords'): 
+                for keyword in item.get('keywords'):
                     task = asyncio.ensure_future(fetch(keyword))
                     returned.append(task)
                 

@@ -106,24 +106,24 @@ const styles = () => {
         this.keywords = JSON.parse(this.getAttribute('keywords'))
         const body = JSON.stringify(this.keywords)
 
-        this.state.data == null
-        ?  fetch('/api/intel/listener', {
+
+        this.render()
+        fetch('/api/intel/listener', {
             method: 'POST',
             headers : new Headers({
                 "content-type": "application/json"
             }),
             body
         })
-                .then(res=>res.json())
-                .then(res=>{
-                    this.state.data = res
-                    this.render(true)
-                })
-                .catch(e=>{
-                    console.log(e)
-                })
-        : this.render(true)
-        this.render()
+            .then(res=>res.json())
+            .then(res=>{
+                this.state.data = res
+                this.render(true)
+            })
+            .catch(e=>{
+                console.log(e)
+            })
+
     }
   }
   
