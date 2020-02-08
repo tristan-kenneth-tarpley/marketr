@@ -47,7 +47,8 @@ export default class PortfolioTrendline extends HTMLElement {
                     pointBorderColor: "rgba(98, 205, 224, 0.9)",
                     data: dataset,
                     pointHoverBorderWidth: 2,
-                    pointHoverRadius: 7
+                    pointHoverRadius: 7,
+                    drawBorder: true
                 }
             ]
         };

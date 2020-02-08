@@ -93,25 +93,38 @@ class GoogleORM(BigQuery):
     def social_index(self):
         facebook = f"""
             select
-               ai.campaign_name as name, ai.date_start, ads.creative.id, ads.adset_id, ads.campaign_id,
-               creative.thumbnail_url, creative.body,
-               ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions
+                ai.campaign_name as ad_name, ai.date_start, ads.creative.id, ads.adset_id, ads.campaign_id,
+                creative.thumbnail_url, creative.body,
+                ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions,
+                adsets.daily_budget, ca.name as campaign_name
 
             from `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
-              join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
-              on creative.id = ads.creative.id
 
-              join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
-              on ai.ad_id = ads.id
+            join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
+            on creative.id = ads.creative.id
+
+            join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+            on ai.ad_id = ads.id
+            
+            join `{self.project_id}`.`{self.company_name}_facebook`.`adsets` as adsets
+            on adsets.campaign_id = ads.campaign_id
+            
+            join `{self.project_id}`.`{self.company_name}_facebook`.`campaigns` as ca
+            on ca.id = ads.campaign_id
+            
             where creative.thumbnail_url is not null and campaign_name is not null
             """
         
         return self.get(facebook)
     
     def search_index(self):
-        google = f"""select rep.campaign as name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions
+        google = f"""select rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget
 
         from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT` as rep
+
+        join `{self.project_id}`.`{self.company_name}_google`.`CAMPAIGN_PERFORMANCE_REPORT` as campaign
+        on campaign.campaignid = rep.campaignid
+
         where rep.campaign is not null"""
         
         return self.get(google)

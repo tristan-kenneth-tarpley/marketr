@@ -2,14 +2,13 @@ import pandas as pd
 import numpy as np
 import json
 
-
 ######################### SUPER CLASS #########################
 
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
-        self.social_columns = ['id', 'adset_id', 'campaign_id']
-        self.search_columns = ['adid', 'adgroupid', 'campaignid']
+        self.social_columns = ['id', 'adset_id', 'campaign_id', pd.Grouper(key='date_start', freq='W-MON')]
+        self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cost': 'sum',
             'conversions': 'sum', 'ctr' : 'sum', 'clicks':'sum',
@@ -42,7 +41,7 @@ class MarketrIndex(object):
         df = self.clean(DF)
 
         df['cpm'] = 1000 * df.cost / df.impressions
-   
+        df['date_start'] = pd.to_datetime(df['date_start']) - pd.to_timedelta(7, unit='d')
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
         df = df.groupby(columns).agg(self.agg_set).reset_index()
 
@@ -60,18 +59,40 @@ class MarketrIndex(object):
     
     def Assign(self, df, column_selector, search=False, social=False):
         assert search or social, self.assertion_error
+
         df = df.groupby(column_selector).agg(self.agg_set).reset_index()
         
         df['ad_pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         df['marketr_index'] = self.IndexFormula(df.ad_pp1ki)
         
+        mi_sum = df.marketr_index.sum()
+        mi_mean = df.marketr_index.mean()
+        mi_std = df.marketr_index.std()
+        
+        df['action'] = df.sort_values(by=['marketr_index'])['marketr_index'].apply(
+            lambda x: self.eval_action(x, mi_sum, mi_mean, mi_std)
+        )
+
         return df
     
     def reorder_m_index(self, x):
         return np.average(
             x['marketr_index'], weights=x['cost'] if x['cost'] > 0 else 1
         )
+    
+    def eval_action(self, index, sum, mean, std):   
+        breakpoint = 1*std
+#         print('std', std)
+#         print('mean', mean)
+#         print('index', index)
+        if index > mean + breakpoint:
+            _action = 'invest more'
+        elif index <  mean - breakpoint:
+            _action = 'kill it'
+        else:
+            _action = 'leave it alone'
 
+        return _action
 
 
 
@@ -100,10 +121,17 @@ class AdIndex(MarketrIndex):
         super().__init__(ltv)
     
     def PrepIndex(self, df, search=False, social=False):
-            
+
         df = self.Prep(df, search=search, social=social)
         df['marketr_index'] = self.IndexFormula(df.ad_pp1ki)
-
+        
+        mi_sum = df.marketr_index.sum()
+        mi_mean = df.marketr_index.mean()
+        mi_std = df.marketr_index.std()
+        df['action'] = df.sort_values(by=['marketr_index'])['marketr_index'].apply(
+            lambda x: self.eval_action(x, mi_sum, mi_mean, mi_std)
+        )
+        
         return df
 
 
@@ -128,6 +156,7 @@ class AdGroupIndex(MarketrIndex):
         super().__init__(ltv)
         
     def PrepIndex(self, df, search=False, social=False):
+        
         if search:
             column_selector = self.search_columns[1:]
         elif social:
@@ -161,6 +190,7 @@ class CampaignIndex(MarketrIndex):
         super().__init__(ltv)
         
     def PrepIndex(self, df, search=False, social=False):
+        
         if search:
             column_selector = self.search_columns[2:]
         elif social:
@@ -226,6 +256,8 @@ class PortfolioIndex(MarketrIndex):
         return sum(arr)
 
 
+        
+
 
 def compile_master(ltv=None, search_df=None, social_df=None):
     if search_df is not None or social_df is not None:
@@ -241,54 +273,71 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     index = PortfolioIndex(ltv, amount_spent)
 
     def compile_search(ltv=ltv, search_df=search_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        # initialize at ad level
-        search_index = ad_index_obj.PrepIndex(search_df, search=True)
-        new_search_index = search_df[['name', 'adid', 'headline1', 'headline2', 'finalurl', 'description']].drop_duplicates(subset ="adid")
-        # export to view performance metrics by creative
-        search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
+        try:
+            # initialize at ad level
+            search_index = ad_index_obj.PrepIndex(search_df, search=True)
+            new_search_index = search_df[['campaign_name', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset ="adid")
+            # export to view performance metrics by creative
+            search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
 
-        # ad group level
-        search_t4 = group_index_obj.PrepIndex(search_index, search=True)
-        # campaign level
-        search_t3 = campaign_index.PrepIndex(search_t4, search=True)
-        # bucket level
-        search_t2 = bucket_index.PrepIndex(search_t3)
+            # ad group level
+            search_t4 = group_index_obj.PrepIndex(search_index, search=True)
+            # campaign level
+            search_t3 = campaign_index.PrepIndex(search_t4, search=True)
+            # bucket level
+            search_t2 = bucket_index.PrepIndex(search_t3)
+        except:
+            search_index=search_t2=search_t3=search_t4 = None
 
-        return search_index, search_t2, search_t3
+        return search_index, search_t2, search_t3, search_t4
 
     def compile_social(ltv=ltv, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        # initialize at ad level
-        social_index = ad_index_obj.PrepIndex(social_df, social=True)
-        
-        new_social_index = social_df[['name', 'id', 'thumbnail_url', 'body']].drop_duplicates(subset = 'id')
-        # export to view performance metrics by creative
-        social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
+        try:
+            # initialize at ad level
+            social_index = ad_index_obj.PrepIndex(social_df, social=True)
 
-        # ad group level
-        social_t4 = group_index_obj.PrepIndex(social_index, social=True)
-        # campaign level
-        social_t3 = campaign_index.PrepIndex(social_t4, social=True)
-        # bucket level
-        social_t2 = bucket_index.PrepIndex(social_t3)
-        # portfolio level
-        return social_index, social_t2, social_t3
+            new_social_index = social_df[['campaign_name', 'id', 'thumbnail_url', 'body', 'daily_budget']].drop_duplicates(subset = 'id')
+            # export to view performance metrics by creative
+            social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
 
-    social_index, social_t2, social_t3 = compile_social()
-    search_index, search_t2, search_t3 = compile_search()
+            # ad group level
+            social_t4 = group_index_obj.PrepIndex(social_index, social=True)
+            # campaign level
+            social_t3 = campaign_index.PrepIndex(social_t4, social=True)
+            # bucket level
+            social_t2 = bucket_index.PrepIndex(social_t3)
+            # portfolio level
+        except:
+            social_index=social_t2=social_t3=social_t4 = None
+        return social_index, social_t2, social_t3, social_t4
+
+    social_index, social_t2, social_t3, social_t4 = compile_social()
+    search_index, search_t2, search_t3, search_t4 = compile_search()
 
     t1 = index.PrepIndex(social_t2, search_t2)
-
-    return {
+    
+    def export(df):
+        df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
+        return json.loads(df.to_json(orient='records'))
+    
+    struct = {
         'total_spent': search_df.cost.sum() + social_df.cost.sum(),
         'campaign': {
-            'social': json.loads(social_t3.to_json(orient='records')),
-            'search': json.loads(search_t3.to_json(orient='records'))
+            'social': export(social_t3),
+            'search': export(search_t3)
+        },
+        'ad_groups': {
+            'social': export(social_t4),
+            'search': export(search_t4)
         },
         'ads': {
-            'social': json.loads(social_index.to_json(orient='records')),
-            'search': json.loads(search_index.to_json(orient='records'))
+            'social': export(social_index),
+            'search': export(search_index)
         },
         'aggregate': t1
     }
+    return struct
+
+#     return social_index, search_t4, search_t3, search_t2
 
     

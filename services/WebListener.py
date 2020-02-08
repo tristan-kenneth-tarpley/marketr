@@ -7,7 +7,6 @@ import hashlib
 import urllib
 import hmac
 from pprint import pprint
-from xml.etree import ElementTree
 import praw
 import random
 
@@ -18,9 +17,13 @@ class Listener:
         self.length = length
 
     def listen(self):
-        reddit = praw.Reddit(client_id='oy-mmNuzOc9-vA',
-                     client_secret='iYEjlEIHrL4rv5ikxfACQn8cSEg', password='uVF32x*PxMf3yL8ooYvx',
-                     user_agent='marketr', username='marketr_life')
+        reddit = praw.Reddit(
+            client_id='oy-mmNuzOc9-vA',
+            client_secret='iYEjlEIHrL4rv5ikxfACQn8cSEg',
+            password='uVF32x*PxMf3yL8ooYvx',
+            user_agent='marketr',
+            username='marketr_life'
+        )
 
         async def fetch(keyword):
             response = reddit.subreddit('all').search(keyword)

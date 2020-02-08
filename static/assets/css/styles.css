@@ -4106,11 +4106,11 @@ li.breadcrumb-item.active a {
 }
 .intake_content {
   position: relative;
-  -webkit-animation: intake_fadein 4s ease-in-out;
-  -moz-animation: intake_fadein 4s ease-in-out;
-   -ms-animation: intake_fadein 4s ease-in-out;
-    -o-animation: intake_fadein 4s ease-in-out;
-       animation: intake_fadein 4s ease-in-out;
+  -webkit-animation: intake_fadein 2s ease-in-out;
+  -moz-animation: intake_fadein 2s ease-in-out;
+   -ms-animation: intake_fadein 2s ease-in-out;
+    -o-animation: intake_fadein 2s ease-in-out;
+       animation: intake_fadein 2s ease-in-out;
 }
 
 @keyframes intake_fadein {
