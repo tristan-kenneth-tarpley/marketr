@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
 import json
-
 ######################### SUPER CLASS #########################
 
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
-        self.social_columns = ['id', 'adset_id', 'campaign_id', pd.Grouper(key='date_start', freq='W-MON')]
+        self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
         self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cost': 'sum',
@@ -39,13 +38,13 @@ class MarketrIndex(object):
             columns = self.social_columns
         
         df = self.clean(DF)
-
         df['cpm'] = 1000 * df.cost / df.impressions
         df['date_start'] = pd.to_datetime(df['date_start']) - pd.to_timedelta(7, unit='d')
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
+
         df = df.groupby(columns).agg(self.agg_set).reset_index()
 
-        df['ad_pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         
         return df
     
@@ -62,8 +61,8 @@ class MarketrIndex(object):
 
         df = df.groupby(column_selector).agg(self.agg_set).reset_index()
         
-        df['ad_pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
-        df['marketr_index'] = self.IndexFormula(df.ad_pp1ki)
+        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        df['marketr_index'] = self.IndexFormula(df.pp1ki)
         
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
@@ -121,9 +120,8 @@ class AdIndex(MarketrIndex):
         super().__init__(ltv)
     
     def PrepIndex(self, df, search=False, social=False):
-
         df = self.Prep(df, search=search, social=social)
-        df['marketr_index'] = self.IndexFormula(df.ad_pp1ki)
+        df['marketr_index'] = self.IndexFormula(df.pp1ki)
         
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
@@ -220,9 +218,14 @@ class BucketIndex(MarketrIndex):
         super().__init__(ltv)
         
     def PrepIndex(self, df):
+        cost = df.cost.sum()
+        index = np.average(df.marketr_index, weights=df.cost)
+        df = df.groupby('date_start').agg(self.agg_set).reset_index()
+        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         return {
-            'cost': df.cost.sum(),
-            'index': np.average(df.marketr_index, weights=df.cost)
+            'cost': cost,
+            'index': index,
+            'raw': df
         }
 
 
@@ -251,14 +254,23 @@ class PortfolioIndex(MarketrIndex):
                 return (-1 * (abs(index) ** .5) * (cost / self.total_spent))
             else:
                 return index ** .5 * (cost / self.total_spent)
-        
-        arr = [condition(arg['index'], arg['cost']) for arg in args]
-        return sum(arr)
+            
+        dfs = list()
+        arr = list()
+        for arg in args:
+            arr.append(condition(arg['index'], arg['cost']))
+            dfs.append(arg['raw'])
+            
+        df = pd.concat(dfs).groupby('date_start').agg(self.agg_set).reset_index()
+        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+            
+        return {
+            'index': sum(arr),
+            'raw': df
+        }
 
 
-        
-
-
+######### compile ##########
 def compile_master(ltv=None, search_df=None, social_df=None):
     if search_df is not None or social_df is not None:
         amount_spent = search_df.cost.sum() + social_df.cost.sum()
@@ -279,13 +291,22 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             new_search_index = search_df[['campaign_name', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset ="adid")
             # export to view performance metrics by creative
             search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
-
             # ad group level
             search_t4 = group_index_obj.PrepIndex(search_index, search=True)
             # campaign level
             search_t3 = campaign_index.PrepIndex(search_t4, search=True)
+
+
             # bucket level
             search_t2 = bucket_index.PrepIndex(search_t3)
+            id_map = search_df[['campaign_name', 'campaignid']].drop_duplicates(subset = 'campaign_name')
+            _id_map = {}
+            for row, value in id_map.iterrows():
+                name = (search_df.iloc[row]['campaign_name'])
+                _id = (search_df.iloc[row]['campaignid'])
+                _id_map[_id] = name
+
+            search_t3['campaign_name'] = search_t3.campaignid.apply(lambda x: _id_map[x])
         except:
             search_index=search_t2=search_t3=search_t4 = None
 
@@ -304,9 +325,19 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             social_t4 = group_index_obj.PrepIndex(social_index, social=True)
             # campaign level
             social_t3 = campaign_index.PrepIndex(social_t4, social=True)
-            # bucket level
+
             social_t2 = bucket_index.PrepIndex(social_t3)
-            # portfolio level
+
+            id_map = social_df[['campaign_name', 'campaign_id']].drop_duplicates(subset = 'campaign_name')
+            _id_map = {}
+            for row, value in id_map.iterrows():
+                name = (social_df.iloc[row]['campaign_name'])
+                _id = (social_df.iloc[row]['campaign_id'])
+                _id_map[_id] = name
+
+            social_t3['campaign_name'] = social_t3.campaign_id.apply(lambda x: _id_map[x])
+        # bucket level
+        # portfolio level
         except:
             social_index=social_t2=social_t3=social_t4 = None
         return social_index, social_t2, social_t3, social_t4
@@ -322,7 +353,21 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     
     struct = {
         'total_spent': search_df.cost.sum() + social_df.cost.sum(),
-        'campaign': {
+        'buckets': [
+            {
+                'type': 'social',
+                'cost': social_t2['cost'],
+                'index': social_t2['index'],
+                'raw': export(social_t2['raw'])
+            },
+            {
+                'type': 'search',
+                'cost': search_t2['cost'],
+                'index': search_t2['index'],
+                'raw': export(search_t2['raw'])
+            }
+        ],
+        'campaigns': {
             'social': export(social_t3),
             'search': export(search_t3)
         },
@@ -334,7 +379,10 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             'social': export(social_index),
             'search': export(search_index)
         },
-        'aggregate': t1
+        'aggregate': {
+            'index': t1['index'],
+            'raw': export(t1['raw'])
+        }
     }
     return struct
 

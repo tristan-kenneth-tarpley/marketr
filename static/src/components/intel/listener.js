@@ -14,7 +14,7 @@ const styles = () => {
   
   export default class Listener extends HTMLElement {
     static get observedAttributes() {
-        return ['keywords'];
+        return ['keywords', 'customer_id'];
     }
     constructor() {
         super();
@@ -103,8 +103,13 @@ const styles = () => {
     }
   
     connectedCallback() {
-        this.keywords = JSON.parse(this.getAttribute('keywords'))
-        const body = JSON.stringify(this.keywords)
+        this.keywords = this.getAttribute('keywords')
+        this.customer_id = this.getAttribute('customer_id')
+
+        const body = JSON.stringify({
+            keywords: JSON.parse(this.keywords),
+            customer_id: this.customer_id
+        })
 
 
         this.render()

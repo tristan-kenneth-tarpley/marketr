@@ -10,6 +10,10 @@ const styles = () => {
             color: var(--darker-blue);
             font-weight: bold;
         }
+        .shadow_insights {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
  
     </style>
     `.trim()
@@ -31,23 +35,25 @@ export default class Insights extends HTMLElement {
 
     shell(){
         return `
-            ${this.state.data.map(ins=>{
-                /*html*/
-                return `
-                ${this.css}
-                <p class='dark_blue small_txt'>${ins.time}</p>
-                <p>${ins.body}</p>
-                `
-            }).join("")}
-            <hr>
-            ${this.state.data.length == 0
-                ? `
-                <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
-                <p>Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
-                :  `    
-                <p class="x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
-                <p>Thanks! ~ Tristan | Founder </p>`
-            }
+        <div class="shadow_insights">
+                ${this.state.data.map(ins=>{
+                    /*html*/
+                    return `
+                    ${this.css}
+                    <p class='dark_blue small_txt'>${ins.time}</p>
+                    <p>${ins.body}</p>
+                    `
+                }).join("")}
+                <hr>
+                ${this.state.data.length == 0
+                    ? `
+                    <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
+                    <p>Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
+                    :  `    
+                    <p class="x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
+                    <p>Thanks! ~ Tristan | Founder </p>`
+                }
+        </div>
         `.trim()
     }
 

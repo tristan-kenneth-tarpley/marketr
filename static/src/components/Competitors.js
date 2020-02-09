@@ -67,6 +67,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
     listener(keywords){
         const el = new Listener()
         el.setAttribute('keywords', JSON.stringify(keywords))
+        el.setAttribute('customer_id', this.customer_id)
 
         return el
     }

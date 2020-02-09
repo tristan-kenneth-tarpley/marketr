@@ -3,6 +3,7 @@ from flask import request, render_template, redirect, url_for, flash
 import services.helpers as helpers
 import hashlib
 import json
+import pandas as pd
 import asyncio
 from bleach import clean
 from flask_mail import Mail, Message
@@ -254,16 +255,16 @@ def spend_allocation():
     }
     return json.dumps(returned)
 
-@app.route('/api/portfolio_metrics', methods=['POST'])
-def portfolio_metrics():
-    req = request.get_json()
-    orm = GoogleORM(req.get('company_name'))
-    df = orm.agg()
+# @app.route('/api/portfolio_metrics', methods=['POST'])
+# def portfolio_metrics():
+#     req = request.get_json()
+#     orm = GoogleORM(req.get('company_name'))
+#     df = orm.agg()
 
-    portfolio = Portfolio(agg=df)
-    returned = portfolio.group()
+#     portfolio = Portfolio(agg=df)
+#     returned = portfolio.group()
 
-    return returned
+#     return returned
 
 @app.route('/api/portfolio/trend_line', methods=['POST'])
 def portfolio_trends():
@@ -355,9 +356,12 @@ def dismiss_rec():
 @app.route('/api/intel/listener', methods=['POST'])
 def web_listen():
     req = request.get_json()
-    listener = Listener(req)
-    
-    return json.dumps(listener.listen())
+    listener = Listener(req.get('customer_id'), req.get('keywords'))
+
+    due, result = listener.is_due()
+    res = listener.listen() if due else result
+
+    return res
 
 
 
@@ -456,15 +460,20 @@ def last_7_spend():
 @app.route('/api/index/detailed', methods=['POST'])
 def compile_master_index():
     req = request.get_json()
-    ltv = req.get('ltv')
-
-    orm = GoogleORM(req.get('company_name'))
-    search_df = orm.search_index()
-    social_df = orm.social_index()
+    demo = True if req.get('customer_id') == '181' else False
+    if not demo:
+        ltv = req.get('ltv')
+        orm = GoogleORM(req.get('company_name'))
+        search_df = orm.search_index()
+        social_df = orm.social_index()
+    else:
+        ltv = 5000
+        search_df = db.sql_to_df("SELECT * FROM demo_data_search")
+        social_df = db.sql_to_df("SELECT * FROM demo_data_social")
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
 
-    if compiled:
+    if compiled and not demo:
         query = """
         if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
             insert into index_log
@@ -476,7 +485,7 @@ def compile_master_index():
         val = compiled.get('aggregate')
 
         db.execute(query, False, (req.get('customer_id'), val), commit=True)
-    else:
+    elif compiled and not demo:
         compiled = []
 
     return json.dumps(compiled)

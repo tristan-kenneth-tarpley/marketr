@@ -261,6 +261,19 @@ def customer_core():
     return json.dumps(return_data)
 
 
+@app.route('/demo', methods=['GET', 'POST'])
+def demo():
+    # data = GoogleORM('musicmaker')
+    # campaign.google_meta()
+    view_model = CustomerDataViewModel(customer_id=181, init=True)
+    chat = ChatService('User', 'tristan@marketr.life', 181)
+    chat.run()
+    return render_template(
+        'layouts/home_layout.html',
+        page=view_model,
+        chat=chat
+    )
+
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 @onboarding_required

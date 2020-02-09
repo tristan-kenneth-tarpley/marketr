@@ -42,7 +42,6 @@ export default class Recommendations extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
-        this.customer_id = this.getAttribute('customer-id')
         this.state = {
             data: null
         }
@@ -151,6 +150,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     connectedCallback(){
+        this.customer_id = this.getAttribute('customer-id')
         this.render()
     }
 }

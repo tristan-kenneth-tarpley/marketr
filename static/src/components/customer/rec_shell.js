@@ -93,7 +93,7 @@ export default class Rec_shell extends HTMLElement {
                         <div class="col-md-6 col-12">
                             <div data-uid="${this.title}" id="six" class="button">Read more</div>
                         </div>
-                        <div class="col-md-6 col-12"><button class="rec-apply btn btn-secondary">Apply</button></div>
+                        <div class="col-md-6 col-12"><button class="rec-apply btn btn-secondary">Do it</button></div>
                     </div>
                 </div>
             </div>

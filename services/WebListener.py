@@ -5,16 +5,34 @@ import requests
 import pandas as pd
 import hashlib
 import urllib
+import json
 import hmac
 from pprint import pprint
 import praw
 import random
-
+import data.db as db
 
 class Listener:
-    def __init__(self, keyword, length=100):
+    def __init__(self, customer_id, keyword, length=100):
         self.keywords = keyword
         self.length = length
+        self.customer_id = customer_id
+
+    def is_due(self):
+        result, cursor = db.execute("SELECT * FROM run_listener(?)", True, (self.customer_id,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            result = result[0][1]
+            return False, result
+        else:
+            return True, None
+
+    def save(self, values):
+        query = """
+            INSERT INTO listener_cache (cached_at, json, customer_id)
+            values (GETDATE(), ?, ?)
+        """
+        db.execute(query, False, (values, self.customer_id), commit=True)
 
     def listen(self):
         reddit = praw.Reddit(
@@ -64,5 +82,8 @@ class Listener:
         loop = asyncio.get_event_loop()
         future = asyncio.ensure_future(run())
         posts = loop.run_until_complete(future)
- 
-        return posts[:self.length] if len(posts) > self.length else posts
+
+        returned = posts[:self.length] if len(posts) > self.length else posts
+        _returned = json.dumps(returned)
+        self.save(_returned)
+        return _returned

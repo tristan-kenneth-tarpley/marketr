@@ -66,12 +66,12 @@
     insights="{{page.data['insights']['insights']}}">
 </portfolio-performance>
 <div class="separator"></div>
-<portfolio-budget
+{#<portfolio-budget
     customer_id="{{ page.data['core']['core'][0]['id'] }}"
     spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
     funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
     company_name="{{page.data['core']['core'][0]['company_name']}}"
-></portfolio-budget>
+></portfolio-budget>#}
 {% endmacro %}
 
 {% macro recommendations(page) %}
@@ -85,18 +85,19 @@
 
 {% if page.data['core']['core'][0]['current_plan'] %}
 <div class="row">
-    <div class="col-lg-8 col-md-12 col-sm-12">
-        {{ section(
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        {{ performance(page) }}
+        {#{{ section(
             link=None,
             title="Portfolio Performance",
             body=performance(page),
             hash="perf",
             admin=page.admin
-        ) }}
+        ) }}#}
     </div>
     <div class="col-lg-4 col-md-12 col-sm-12">
         <div class="row">
-            <div class="col">
+            {#<div class="col">
                 {{ section(
                     link=None,
                     title="Recommendations",
@@ -104,7 +105,7 @@
                     hash=None,
                     admin=page.admin
                 ) }}
-            </div>
+            </div>#}
         </div>
         {#<div class="row">
             <div class="col">

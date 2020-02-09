@@ -32,10 +32,14 @@ export const shadow_events = markup => {
     return el
 }
 
-export const tabs = (labels, content, uid) => {
+export const tabs = (labels, content, uid, vertical=false) => {
     /*html*/
     const El = `
-    <ul class="nav nav-tabs" id="${uid}myTab" role="tablist">
+    ${vertical
+        ? `<div class="row"><div class="col-lg-3 col-sm-12">`
+        : ''
+    }
+    <ul class="nav ${vertical ? 'vertical' : ''} nav-tabs" id="${uid}myTab" role="tablist">
         ${labels.map((label, index) => {
             /*html*/
             return `
@@ -45,7 +49,11 @@ export const tabs = (labels, content, uid) => {
             `.trim()
         }).join("")}
     </ul>
-    <br>
+
+    ${vertical
+        ? `</div><div class="col">`
+        : '<br>'
+    }
     <div class="tab-content" id="myTabContent${uid}">
         ${labels.map((label, index) => {
             /*html*/
@@ -56,6 +64,11 @@ export const tabs = (labels, content, uid) => {
             `.trim()
         }).join("")}
     </div>
+
+    ${vertical
+        ? `</div></div>`
+        : '<br>'
+    }
     `.trim()
 
     return El

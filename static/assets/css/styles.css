@@ -5171,6 +5171,17 @@ ul#product {
   opacity: .7;
 }
 
+.nav.vertical {
+  flex-direction: column;
+}
+.nav.vertical .nav-item {
+  width: 100%;
+}
+.nav.vertical .tab-link {
+  background-color: white !important;
+  color: rgba(0,0,0,.7);
+  margin-top: 10%;
+}
 
 
 .nav-tabs {
@@ -5186,7 +5197,7 @@ ul#product {
   border: 1px solid transparent;
 }
 .nav-tabs li {
-  width: 25% !important;
+  width: 20%;
   text-align:center !important;
   border-bottom: 0;
 }
