@@ -173,7 +173,7 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
 
-    data_controller(el){
+    data_controller(){
         let { active_view, data, active_data } = this.state
         let dates = []
         let pp1ki = []
@@ -196,7 +196,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 dates: i.raw.map(x => x.date_start),
                 cpm: i.raw.map(x => x.cpm),
                 pp1ki: i.raw.map(x => x.pp1ki),
-                marketr_index:i.index
+                marketr_index:i.index,
+                action: i.action
             }]
         }
         const group_campaigns = camp => {
@@ -205,7 +206,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 pp1ki: camp.pp1ki,
                 cpm: camp.cpm,
                 date_start: camp.date_start,
-                marketr_index:camp.marketr_index
+                marketr_index:camp.marketr_index,
+                action: camp.action
             }]
             if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
 
@@ -217,11 +219,14 @@ export default class PortfolioPerformance extends HTMLElement {
                 pp1ki: i.pp1ki,
                 cpm: i.cpm,
                 marketr_index:i.marketr_index,
-                date_start: i.date_start
+                date_start: i.date_start,
+                action: i.action,
+                cost: i.cost
             }]
             if (!sub_filters.includes(id)) sub_filters.push(id)
         }
          //dates = Array.from(new Set([...dates, i.date_start]))
+        
         switch(active_view) {
             // portfolio
             case 0:
@@ -237,7 +242,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     dates: _buckets.map(i => i.date_start),
                     pp1ki: _buckets.map(i=>i.pp1ki),
                     cpm: _buckets.map(i=>i.cpm),
-                    marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0
+                    marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
+                    action: _buckets.map(i=>i.action)[0]
                 }
                 break
             // campaigns
@@ -261,7 +267,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     dates: copied_campaigns.map(_camp=>_camp.date_start),
                     pp1ki: copied_campaigns.map(_camp=>_camp.pp1ki),
                     cpm: copied_campaigns.map(_camp=>_camp.cpm),
-                    marketr_index: copied_campaigns.map(_camp=>_camp.marketr_index)[copied_campaigns.map(_camp=>_camp.marketr_index).length - 1]
+                    marketr_index: copied_campaigns.map(_camp=>_camp.marketr_index)[copied_campaigns.map(_camp=>_camp.marketr_index).length - 1],
+                    action: copied_campaigns.map(i=>i.action)[0]
                 }
         
                 break
@@ -278,41 +285,56 @@ export default class PortfolioPerformance extends HTMLElement {
                     })
                 }
                 this.sub_filters = sub_filters
-                let _ads = ads.filter(x=>x.id == this.state.active_sub_view)
-                let copied_ads = _ads.filter(x=>x.id == this.state.active_sub_view)
+                let copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
+                console.log(copied_ads)
+                console.log(copied_ads.map(i=>i.cost).reduce((a, b) => a + b, 0))
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
                     pp1ki: copied_ads.map(_camp=>_camp.pp1ki),
                     cpm: copied_ads.map(_camp=>_camp.cpm),
-                    marketr_index: copied_ads.map(_camp=>_camp.marketr_index)[copied_ads.map(_camp=>_camp.marketr_index).length - 1]
+                    marketr_index: copied_ads.map(_camp=>_camp.marketr_index).reduce((sum, value) => sum + value, 0 / copied_ads.map(_camp=>_camp.marketr_index).length),
+                    action: copied_ads.map(i=>i.action)[copied_ads.map(i=>i.action).length - 1],
+                    cost: copied_ads.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
                 break
         }
-        
 
     }
 
     view_controller(el){
-        this.data_controller(el)
-        el.querySelector('#view_selector').addEventListener('change', e=>{
-            const first = async () => this.state.active_view = parseInt(e.currentTarget.value)
-            first().then(()=>this.data_controller(el)).then(()=>this.render(false))
-            console.log('called')
-        })
-        el.querySelector("#sub_target").addEventListener('change', e=>{
-            const first = async () => this.state.active_sub_view = e.currentTarget.value
-            first().then(()=>this.data_controller(el)).then(()=>this.render(false))
+        
+        el.querySelector('#view_selector').addEventListener('change', e => {
+
+            const first = async () => {
+                this.state.active_view = parseInt(e.currentTarget.value)
+            } 
+            first().then(()=>this.data_controller()).then(()=>{
+                this.render(false)
+            })
+
         })
 
+        el.querySelector("#sub_target").addEventListener('change', e=>{
+
+            const first = async () => this.state.active_sub_view = e.currentTarget.value
+            first().then(()=>this.data_controller()).then(() => {
+                this.render(false)
+            })
+
+        })
 
         return el
     }
 
     template(){
         let {total_spent} = this.state.data
+        let {marketr_index, action, cost} = this.state.active_data.profitability
+
+        let _cost = this.state.active_view == 0 ? total_spent : cost
+        
         /*html*/
         return `
-            <div class="col-lg-6 col-12">
+            <div class="col-lg-6 col-md-6 col-12">
                 <div class="card card-body">
                     <div class="row">
                         <div class="col">
@@ -324,20 +346,20 @@ export default class PortfolioPerformance extends HTMLElement {
                             ${value(currency_rounded(this.funds_remaining))}
                         </div>
                         <div class="col">
-                            ${title('amount spent')}
-                            ${value(currency_rounded(total_spent))}
+                            ${title(this.state.active_view == 0 ? 'amount spent' : 'cost')}
+                            ${value(currency_rounded(_cost))}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-12">
+            <div class="col-lg-3 col-md-3 col-12">
                 <div class="card card-body">
                     ${title('health score')}
-                    ${value(number(this.state.active_data.profitability.marketr_index))}
+                    ${value(number(marketr_index ? marketr_index : 0))}
                 </div>
             </div>
         </div>
-        <div class="col-lg-5 col-sm-6">
+        <div class="col-lg-5 col-md-5 col-sm-6">
             <div class="card card-body">
                 ${title('profitability spread')}
                 <br>
@@ -348,14 +370,14 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-sm-6">
+        <div class="col-lg-4 col-md-4 col-sm-6">
             <div class="card card-body">
             </div>
         </div>
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="card card-body">
                 ${title('our recommendation')}
-                <p>Hold</p>
+                ${value(action ? action : "")}
             </div>
         </div>
         <div class="row">
@@ -422,34 +444,12 @@ export default class PortfolioPerformance extends HTMLElement {
         return recs_
     }
 
-    creative(){
-        const creative = new Creative()
-        creative.setAttribute('customer_id', this.customer_id)
-
-        return creative
-    }
-
-    details(){
-        const details = new PortfolioDetails()
-        details.setAttribute('customer_id', this.customer_id)
-        details.setAttribute('company_name', this.company_name)
-
-        return details
-    }
 
     insights(){
         const insights = new Insights()
         insights.setAttribute('customer_id', this.customer_id)
 
         return insights
-    }
-
-    trendline(){
-        const trendline = new PortfolioTrendline()
-        trendline.setAttribute('customer_id', this.customer_id)
-        trendline.setAttribute('company_name', this.company_name)
-
-        return trendline
     }
 
 
@@ -461,37 +461,36 @@ export default class PortfolioPerformance extends HTMLElement {
         const insights = this.insights()
 
         const compile = async () => {
+
             let el;
-   
+      
+    
             const markup = `
-            ${this.css}
-            ${this.shell()}
-        `
+                ${this.css}
+                ${this.shell()}
+            `
             el = document.createElement('div')
             el.innerHTML = markup
 
-            let sub = this.state.active_sub_view
-            if (sub == undefined && this.state.active_view > 0) this.state.active_sub_view = this.sub_filters[0]
-                
-            
-            return this.view_controller(el)
+            if (this.state.active_view > 0) this.state.active_sub_view = this.sub_filters[0]
+            this.data_controller()
+
+            return el
         } 
+
         const run = () => {
             compile()
-            .then(el=>{
-                el.querySelector('#home-row').innerHTML += this.template()
-                return el
-            })
-            .then(el=>{
-                this.reset_charts(this.shadow)
-                el.querySelector("#recommendations").appendChild(recs)
-                el.querySelector('#insights').appendChild(insights)
-                return el
-            })
-            .then(el=>{
-                this.shadow.appendChild(el)
-            })
-           
+                .then(el=>{
+                    el.querySelector('#home-row').innerHTML += this.template()
+                    return el
+                })
+                .then(el=>{
+                    this.reset_charts(el)
+                    el.querySelector("#recommendations").appendChild(recs)
+                    el.querySelector('#insights').appendChild(insights)
+                    return el
+                })
+                .then( el => this.shadow.appendChild(this.view_controller(el)) )
         }
 
 
@@ -510,7 +509,6 @@ export default class PortfolioPerformance extends HTMLElement {
             .then(res=>res.json())
             .then(res => {
                 this.state.data = res
-
             })
             .then(()=> run())
         } else run()
