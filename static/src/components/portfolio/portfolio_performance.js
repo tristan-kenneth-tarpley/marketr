@@ -197,7 +197,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 cpm: i.raw.map(x => x.cpm),
                 pp1ki: i.raw.map(x => x.pp1ki),
                 marketr_index:i.index,
-                action: i.action
+                action: i.action,
+                cost: i.cost
             }]
         }
         const group_campaigns = camp => {
@@ -207,7 +208,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 cpm: camp.cpm,
                 date_start: camp.date_start,
                 marketr_index:camp.marketr_index,
-                action: camp.action
+                action: camp.action,
+                cost: camp.cost
             }]
             if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
 
@@ -243,7 +245,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     pp1ki: _buckets.map(i=>i.pp1ki),
                     cpm: _buckets.map(i=>i.cpm),
                     marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
-                    action: _buckets.map(i=>i.action)[0]
+                    action: _buckets.map(i=>i.action)[0],
+                    cost: _buckets.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
                 break
             // campaigns
@@ -268,7 +271,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     pp1ki: copied_campaigns.map(_camp=>_camp.pp1ki),
                     cpm: copied_campaigns.map(_camp=>_camp.cpm),
                     marketr_index: copied_campaigns.map(_camp=>_camp.marketr_index)[copied_campaigns.map(_camp=>_camp.marketr_index).length - 1],
-                    action: copied_campaigns.map(i=>i.action)[0]
+                    action: copied_campaigns.map(i=>i.action)[copied_campaigns.map(i=>i.action).length - 1],
+                    cost: copied_campaigns.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
         
                 break
@@ -286,8 +290,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
                 this.sub_filters = sub_filters
                 let copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
-                console.log(copied_ads)
-                console.log(copied_ads.map(i=>i.cost).reduce((a, b) => a + b, 0))
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
                     pp1ki: copied_ads.map(_camp=>_camp.pp1ki),
@@ -315,7 +317,7 @@ export default class PortfolioPerformance extends HTMLElement {
         })
 
         el.querySelector("#sub_target").addEventListener('change', e=>{
-
+            this.sub_edited = true
             const first = async () => this.state.active_sub_view = e.currentTarget.value
             first().then(()=>this.data_controller()).then(() => {
                 this.render(false)
@@ -402,7 +404,7 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
             <div id="home-row" class="row">
-                <div class="col-lg-3 col-12">
+                <div class="col-lg-3 col-md-3 col-12">
                     <div class="card card-body">
                         ${title('view by')}
                         <select class="form-control" id="view_selector">
@@ -454,7 +456,6 @@ export default class PortfolioPerformance extends HTMLElement {
 
 
     render(init=true){
-
         this.shadow.innerHTML = ""
 
         const recs = this.recs()
@@ -472,7 +473,7 @@ export default class PortfolioPerformance extends HTMLElement {
             el = document.createElement('div')
             el.innerHTML = markup
 
-            if (this.state.active_view > 0) this.state.active_sub_view = this.sub_filters[0]
+            if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0]
             this.data_controller()
 
             return el
