@@ -180,17 +180,16 @@ class SpendAllocation:
                 'bucket': 'search',
                 'biz_type': ['all'],
                 'campaigns': [
-                    'Activity keyword campaign',
-                    'Product / service keywords',
-                    'Retargeting search campaign',
-                    'Dynamic keyword targeting',
+                    'Activity-based',
+                    'Product / service',
+                    'Your brand(s)',
                     'Landing page a/b testing campaign'
                     'Landing page a/b testing campaign'
             ]}, {
                 'bucket': 'social',
                 'biz_type': ['b2b'],
                 'campaigns': [
-                    'LinkedIn industry / product keywords',
+                    'LinkedIn role-focused',
                     'LinkedIn retargeting display',
                     'LinkedIn career-focused targeting',
                     'Complimentary product targeting',
@@ -218,13 +217,13 @@ class SpendAllocation:
                 'bucket': 'outbound email',
                 'biz_type': ['all'],
                 'campaigns': [
-                    'Lead nurturing drip campaign',
+                    'Lead nurturing drip',
                     'Inactive customer campaign'
             ]}, {
                 'bucket': 'display networks',
                 'biz_type': ['all'],
                 'campaigns': [
-                    'Retargeting search campaign',
+                    'Display Retargeting',
                     'Demographic targeting',
                     'Keyword-based awareness campaign',
                     'Landing page retargeting campaign',
@@ -239,7 +238,7 @@ class SpendAllocation:
             if self.budget > 1000:
                 if self.competitiveness in ['high', 'medium']:
                     if bucket_name == 'search':
-                        add('Direct Competitor Search Campaign')
+                        add('Direct competitor brand(s)')
                 
                 if self.biz_type == 'b2b':
                     if bucket_name == 'search':

@@ -62,7 +62,7 @@
 </li>
 {% endmacro %}
 
-
+{% if not demo %}
 <div class="sidebar" data-color="orange">
 	<div class="logo">
 	  <a href="{{ url_for('home') }}" class="simple-text logo-normal">
@@ -155,3 +155,29 @@
 
 	</div>
 </div>
+{% else %}
+<div class="sidebar" data-color="orange">
+	<div class="logo">
+		<a href="{{ url_for('pricing') }}" class="simple-text logo-normal">
+		  <img src="/static/assets/img/marketrblack.png">
+		</a>
+	  </div>
+	<div class="sidebar-wrapper tab-content">
+		<div style="padding: 5%">
+			<h5 class="wrap widget__title"><strong>Live demo:</strong><br>Get these superpowers in just 10 minutes.</h5>
+			<div class="separator"></div>
+			<div class="cta_row">
+				
+				<div class="center_it"><i class="fas fa-chart-pie"></i></div><br>
+				<p>Market(r) is an app that learns how much you should spend and where to spend it, and gives you 1-click implementation for your online advertising.</p>
+				<div class="center_it">
+					<a href="/pricing" class="btn btn-secondary">View plans</a><br>
+					<a href="/schedule" class="btn btn-neutral">Talk to someone first</a>
+				</div>
+
+			</div>
+		</div>
+		
+	</div>	
+</div>
+{% endif %}

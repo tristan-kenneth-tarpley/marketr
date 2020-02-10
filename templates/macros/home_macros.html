@@ -105,11 +105,11 @@
 {% endmacro %}
 
 
-{% macro section(link=None, title="", body="", hash=None, admin=False) %}
+{% macro section(link=None, title="", body="", hash=None, admin=False, demo=False) %}
 
     <div class="target" id="{{hash if hash}}">
         <div class="container-responsive target_container">
-            {% if not admin and link != None %}
+            {% if not demo and not admin and link != None %}
                 <div class="edit">
                     <a style="background-color:transparent;" href="{{url_for(link, home=True, splash=False)}}" class="edit btn-neutral btn">
                         Edit

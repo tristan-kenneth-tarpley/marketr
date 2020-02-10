@@ -11712,6 +11712,11 @@ left: -6px;
   margin-left: 3%;
   text-decoration: underline;
 }
+.campaign_type {
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: underline;
+}
 .allocation_tactics p {
   margin-bottom: 0;
 }
@@ -11864,6 +11869,7 @@ html.modal-active, body.modal-active {
     transform: scale(0);
     z-index: 1000 !important;
 }
+
 @media only screen and (max-width: 990px) {
     #modal-container {
         left: 0;
@@ -11912,13 +11918,23 @@ html.modal-active, body.modal-active {
     vertical-align: middle;
     }
     #modal-container .modal-background .modal {
-    background: white;
-    padding: 50px;
-    display: inline-block;
-    border-radius: 3px;
-    font-weight: 300;
-    width: 95%;
-    position: relative;
+      background: white;
+      padding: 50px;
+      display: inline-block;
+      border-radius: 3px;
+      font-weight: 300;
+      width: 95%;
+      position: relative;
+      overflow-y: scroll;
+    }
+    #modal-container .modal._right {
+      position: absolute;
+      right: 2.5%;
+      width: 40%;
+      left: 57.5%;
+      height: 95%;
+      top: 2.5%;
+      bottom: 2.5%;
     }
     #modal-container .modal-background .modal h2 {
         font-size: 25px;
@@ -12296,6 +12312,9 @@ html.modal-active, body.modal-active {
   text-decoration: underline;
   font-weight: bold;
 }
+.campaign_type .modal-controller p {
+  font-weight: 400 !important;
+}
 
 
 .blue_label {
@@ -12328,6 +12347,10 @@ html.modal-active, body.modal-active {
   white-space: nowrap;
 }
 
+.widget__title.wrap {
+  white-space: pre-wrap;
+}
+
 
 .widget__title.small {
   color: #b8b8d9;
@@ -12344,4 +12367,33 @@ html.modal-active, body.modal-active {
   margin-bottom: 15px;
   font-feature-settings: "tnum";
 
+}
+
+.next_steps {
+  margin-top: 15%;
+}
+.next_steps .top {
+  background-color: var(--primary);
+  padding: 7%;
+}
+.next_steps > .top h5, p {
+  color: white;
+}
+.next_steps .bottom {
+  background-color: #F5FAFA;
+  padding: 7%;
+}
+.next_steps > .bottom h5, p {
+  color: rgba(0,0,0,.5);
+}
+
+.cta_row {
+  width: 100%;
+  margin-top: 2%;
+  padding: 10% 0;
+}
+.cta_row i {
+  color: var(--primary);
+  font-size: 40pt;
+  text-align:center;
 }

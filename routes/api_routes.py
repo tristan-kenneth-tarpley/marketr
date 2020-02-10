@@ -226,7 +226,6 @@ def rewards():
 
 
 @app.route('/api/spend_allocation', methods=['POST'])
-@login_required
 def spend_allocation():
     req = request.get_json()
     revenue = req.get('revenue') if req.get('revenue') and req.get('revenue') > 100000 else 100000
@@ -240,6 +239,7 @@ def spend_allocation():
         input_budget = budget
 
     user = req.get('customer_id')
+    
     spend = SpendAllocation(
         user, revenue, input_budget,
         req.get('brand_strength'), req.get('growth_needs'), req.get('competitiveness'), 
@@ -247,7 +247,7 @@ def spend_allocation():
     )
 
     allocation = json.loads(spend.campaign_allocation())
-
+    print(allocation)
     returned = {
         'budget': input_budget,
         'allocation': allocation,
@@ -379,7 +379,6 @@ def tactic_of_day():
 
 
 @app.route('/api/competitive_intel', methods=['POST'])
-@login_required
 def get_competitors():
     req = request.get_json()
     comp = CompetitorService(req.get("customer_id"))
@@ -387,7 +386,6 @@ def get_competitors():
     return json.dumps(comp.competitor_card())
 
 @app.route('/api/insights', methods=['POST'])
-@login_required
 def insights():
     req = request.get_json()
     tup = (req.get('customer_id'),)

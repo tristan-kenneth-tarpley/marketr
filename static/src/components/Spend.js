@@ -1,3 +1,4 @@
+import {right_modal, inline_article} from '/static/src/components/UI_elements.js'
 const styles = () => {
     /*html*/
     return `
@@ -122,6 +123,7 @@ export default class AdSpend extends HTMLElement {
         
         /*html*/
         const el = `
+            <p>Here are the campaigns that we recommend:</p>
             ${this.data.allocation.map(set=>{
                 const display_num = this.perc_or_usd == 'perc' ?
                                         percent(set.spend_percent * 100) :
@@ -129,38 +131,36 @@ export default class AdSpend extends HTMLElement {
                 /*html */
                 return `
                     <p>${display_num}
-                        <span class="allocation_headers">
+                       
+                            | ${set.bucket}
+
                             ${ set.bucket == 'seo'
-                                ? `<a target="__blank" href="https://marketr.life/blog/the-total-guide-to-investing-in-search-engine-optimization">${set.bucket}</a>`
-                                : set.bucket
+                                ? `<a target="__blank" href="https://marketr.life/blog/the-total-guide-to-investing-in-search-engine-optimization">learn more</a>`
+                                : ''
                             }
-                        </span>
+            
                     </p>
                     <div class="row inset">
                         <div class="col small_txt allocation_tactics awareness_tactics">
-                            <ul class="campaign_list">
+                            
+                            <ol class="campaign_list">
                                 ${set['campaigns'].map(i=>{
-                                    return `<li>${i}</li>`
+                                    /*html*/
+                                    return `${inline_article(i)
+                                                ? `
+                                                <li class="campaign_type">
+                                                    ${modal_trigger(i, `${i} <span style="color:#62cde0;">></span>`)}
+                                                    ${right_modal('', inline_article(i), i)}
+                                                </li>
+                                                `
+                                                : `<li>${i}</li>`
+                                            }`
                                 }).join("")}
-                            </ul>
+                            </ol>
                         </div>
                     </div>
                 `.trim()
             }).join("")}
-
-            <div class="row">
-                <div class="col">
-                    <h5 class="small_txt"><strong>We recommend:</strong></h5>
-                    <p>${this.num_campaigns} campaigns</p>
-                    <p>${currency_rounded(this.data.budget)} per month to the advertising platforms</p>
-                    
-                    ${ !this.active_plan
-                        ? `
-                        <a class="btn btn-primary" href="/pricing?quantity=${this.num_campaigns}">Apply recommendations</a>`
-                        : ''
-                    }
-                </div>
-            </div>
         `.trim()
         target.innerHTML = el
     }
@@ -188,7 +188,7 @@ export default class AdSpend extends HTMLElement {
         }
         const options = {
             legend: {
-               display: true
+               display: false
             },
             tooltips: {
                enabled: true
@@ -199,18 +199,19 @@ export default class AdSpend extends HTMLElement {
             plugins: {
                 datalabels:
                 {
-                    display: false
-                    // formatter: (value, context)=> {
-                    //     return `${this.perc_or_usd == 'usd' ? "$" : ""}${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${this.perc_or_usd == 'perc' ? "%" : ""}`
-                    // },
-                    // labels: {
-                    //     title: {
-                    //         color: 'rgba(255,255,255,.9)',
-                    //         weight: "bold",
-                    //         size: "30px",
-                    //         textAlign: "center"
-                    //     }
-                    // }
+                    display: true,
+                    formatter: (value, context)=> {
+                        let label = context.chart.data.labels[context.dataIndex]
+                        return label
+                    },
+                    labels: {
+                        title: {
+                            color: 'rgba(255,255,255,.9)',
+                            weight: "bold",
+                            size: "30px",
+                            textAlign: "center"
+                        }
+                    }
                 }
             }
         }
@@ -260,7 +261,7 @@ export default class AdSpend extends HTMLElement {
                     <div style="padding-top:7%;" class="card center_it negative_card">
                         <h5>
                             <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
-                            ${this.state.real && this.active_plan ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
+                            ${this.state.real && this.active_plan && this.demo != 'True' ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
                         </h5>
                         ${this.actual_budget == null ?
                         /*html*/
@@ -288,10 +289,10 @@ export default class AdSpend extends HTMLElement {
             </div>
 
             <div class="row">
-                <div class="col-lg-6 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
                 </div>
-                <div class="col-lg-6 col-sm-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <br>
                     <div style="margin:0 auto;text-align:center;">
                         <button class="spend_num_type view_perc allocation_toggle btn ${
@@ -306,7 +307,30 @@ export default class AdSpend extends HTMLElement {
                     <div id="stage_breakdown" class="inset">
                     </div>
                 </div>
-            </div>`
+                <div class="col-lg-4 col-md-4 col-sm-12">        
+                    <div class="next_steps">
+                        <h6>Next steps</h6>
+                        <div class="top">
+                            <h5>Do it yourself</h5>
+                            <p>Go forth and conquer.  Keep us posted on your successes!</p>
+
+                            <h5 class="center_it">or</h5>
+
+                            <h5>We can help</h5>
+                            <p>Market(r) will create, manage, and optimize your campaign(s) overtime for a flat-monthly fee.</p>
+
+                        </div>
+                        <div class="bottom">
+                            <div class="center_it">
+                                <a class="btn btn-secondary" href="/pricing">view plans</a><br>
+                                <a href="/schedule">want to chat first?</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            `
         )
     }
 
@@ -458,8 +482,6 @@ export default class AdSpend extends HTMLElement {
             .then((data) => this.data = data )
             .then(()=> this.compile() )
             .catch((err)=>console.log(err))
-      
-
     }
 
     connectedCallback(){
@@ -472,6 +494,7 @@ export default class AdSpend extends HTMLElement {
         this.competitiveness = this.getAttribute('competitiveness')
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
+        this.demo = this.getAttribute('demo')
         this.active_plan = this.getAttribute('active_plan') == 'None'
                             ? false
                             : true
@@ -479,6 +502,7 @@ export default class AdSpend extends HTMLElement {
         this.spend_rate = this.getAttribute('spend_rate') != null && this.getAttribute('spend_rate') != 'None'
                             ? this.getAttribute('spend_rate')
                             : 0
+
 
         this.state.real = false
 

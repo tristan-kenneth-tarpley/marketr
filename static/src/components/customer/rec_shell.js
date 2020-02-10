@@ -56,24 +56,26 @@ export default class Rec_shell extends HTMLElement {
 
     RecEvents(){
         const x = this.shadow.querySelectorAll(".x")
-        x.forEach(el=>{
-            el.addEventListener('click', e=>{
-                this.style.display = 'none';
-                this.setAttribute('dismissed', 'true')
+        if (this.demo != 'True') {
+            x.forEach(el=>{
+                el.addEventListener('click', e=>{
+                    this.style.display = 'none';
+                    this.setAttribute('dismissed', 'true')
+                })
             })
-        })
 
-        const apply = this.shadow.querySelectorAll('.rec-apply')
-        
-        apply.forEach(el=>{
-            el.addEventListener('click', e=>{
-                e.currentTarget.textContent = 'Done!'
-                setTimeout(()=>{
-                    this.style.display = 'none'
-                    this.setAttribute('applied', 'true')
-                }, 1000)
+            const apply = this.shadow.querySelectorAll('.rec-apply')
+            
+            apply.forEach(el=>{
+                el.addEventListener('click', e=>{
+                    e.currentTarget.textContent = 'Done!'
+                    setTimeout(()=>{
+                        this.style.display = 'none'
+                        this.setAttribute('applied', 'true')
+                    }, 1000)
+                })
             })
-        })
+        }
         
     }
 
@@ -122,6 +124,8 @@ export default class Rec_shell extends HTMLElement {
         this.title = this.getAttribute('title')
         this.body = this.getAttribute('body')
         this.index = parseInt(this.getAttribute('index')) % 4
+        this.demo = this.getAttribute('demo')
+
         this.render()
     }
 }

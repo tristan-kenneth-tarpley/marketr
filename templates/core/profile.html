@@ -13,7 +13,7 @@
 				<h2 class="title" style="margin-bottom: 0;">
 					{{ company_name }}
 
-					{% if not page.admin %}
+					{% if not demo and not page.admin %}
 						<a style="font-size: 40%;" href="{{url_for('begin', home=True, splash=False)}}" class="btn-neutral btn">
 							Edit
 						</a>
@@ -539,7 +539,8 @@
 			link="goals",
 			title="Marketing Goal",
 			body=goals(page),
-			admin=page.admin
+			admin=page.admin,
+			demo=demo
 		) }}
 	</div>
 </div>
@@ -549,7 +550,8 @@
 	title="Company Info",
 	body=two(),
 	hash="company",
-	admin=page.admin
+	admin=page.admin,
+	demo=demo
 ) }}	
 
 {{ section(
@@ -557,28 +559,32 @@
 	title="Customer Personas",
 	body=five(),
 	hash="audience",
-	admin=page.admin
+	admin=page.admin,
+	demo=demo
 ) }}
 {{ section(
 	link="product",
 	title="Product / Service Offering",
 	body=six(),
 	hash="products",
-	admin=page.admin
+	admin=page.admin,
+	demo=demo
 ) }}
 {{ section(
 	link="salescycle",
 	title="Customer Journey",
 	body=seven(),
 	hash="salescycle",
-	admin=page.admin
+	admin=page.admin,
+	demo=demo
 ) }}
 {{ section(
 	link="platforms",
 	title="Advertising Platforms",
 	body=eight(),
 	hash="platforms",
-	admin=page.admin
+	admin=page.admin,
+	demo=demo
 ) }}
 
 

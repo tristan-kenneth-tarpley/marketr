@@ -625,7 +625,7 @@ export default class PortfolioPerformance extends HTMLElement {
     recs(){
         const recs_ = new Recommendations()
         recs_.setAttribute('customer-id', this.customer_id)
-
+        recs_.setAttribute('demo', this.demo)
         return recs_
     }
 
@@ -707,6 +707,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.funds_remaining = this.getAttribute('funds_remaining') != null ? parseFloat(this.getAttribute('funds_remaining')) : 0
         this.insights_json = eval(this.getAttribute('insights'))
         this.ltv = this.getAttribute('ltv')
+        this.demo = this.getAttribute('demo')
         this.render()
 
     }

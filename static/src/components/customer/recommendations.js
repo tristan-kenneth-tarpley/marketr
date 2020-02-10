@@ -105,6 +105,7 @@ export default class Recommendations extends HTMLElement {
         el.setAttribute('customer_id', this.customer_id)
         el.setAttribute('title', rec.title)
         el.setAttribute('body', rec.body)
+        el.setAttribute('demo', this.demo)
 
         this.observer.observe(el, {
             attributes: true
@@ -152,6 +153,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     connectedCallback(){
+        this.demo = this.getAttribute('demo')
         this.customer_id = this.getAttribute('customer-id')
         this.render()
     }

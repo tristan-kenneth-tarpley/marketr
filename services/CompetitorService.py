@@ -3,6 +3,7 @@ from app import app
 import asyncio
 import data.db as db
 from bs4 import BeautifulSoup
+from services.Scraper import Scraper
 
 
 
@@ -50,15 +51,19 @@ class CompetitorService(object):
     
     def DisplayAds(self, url):      
         display_creative_url = f'https://www.adbeat.com/free/profile-search/{url}'
-        response = requests.get(display_creative_url)
+        scrapy = Scraper(url=display_creative_url)
+        response = scrapy.get()
+        print(display_creative_url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        
+        print(response.text)
         ads = list()
         
         ad_parent = soup.find_all('div', 'ad-category')
         for parent in enumerate(ad_parent):
             img = parent[1].find_all('img')[0]['src']
             ads.append(img)
+
+        print(ads)
             
         return ads
 
@@ -108,6 +113,7 @@ class CompetitorService(object):
                 res_2 = await core
                 res_3 = await google_ads
                 res_4 = await display_ads
+             
                 
                 struct = Struct(
                     competitor['comp_name'], competitor['comp_website'], competitor['comp_type'],
