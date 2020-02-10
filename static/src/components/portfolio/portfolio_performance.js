@@ -17,32 +17,7 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        .widget__title {
-            color: var(--nav-color);
-            font-size: 18px;
-            margin-bottom: 5%;
-            font-weight: 300;
-            text-transform: capitalize;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .widget__title.small {
-            color: #b8b8d9;
-            display: flex;
-            font-size: 14px;
-            font-weight: 500;
-            margin-left: 10px;
-        }
-        .widget__value {
-            align-items: baseline;
-            color: var(--darker-blue);
-            display: inline;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            font-feature-settings: "tnum";
 
-        }
         .metric_display {
             color: var(--primary);
             font-weight: bold;
@@ -181,9 +156,33 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
             ]
         };
+        let font_color = `#b8b8d9`
         const options = {
             legend: {
-                display: true
+                display: true,
+                labels: {
+                    fontColor: font_color
+                }
+            },
+            scales: {
+                xAxes: [{ 
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                      fontColor: font_color
+                    },
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                      fontColor: font_color
+                    },
+                }],
             },
             plugins: {
                 datalabels:{
@@ -195,19 +194,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     tension: 0
                 }
             },
-            responsive: true,
-            scales: {
-                xAxes: [{
-                    gridLines: {
-                        display:false
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display:false
-                    }   
-                }]
-            }
+            responsive: true
         };
         new Chart(chart, {
             type: 'line',

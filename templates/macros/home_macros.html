@@ -139,6 +139,15 @@
     {% endfor %}
 {% endmacro %}
 
+{% macro sentence_iterator(iterable) %}
+    {% for i in iterable %}
+        {% if i %}
+            {{i}}{{',' if loop.index < iterable | length else '' }}
+        {% endif %}
+        
+    {% endfor %}
+{% endmacro %}
+
 {% macro product_val_iterator(iterable, key) %}
     {% for index in iterable %}
         {% if index[key] %}

@@ -12308,4 +12308,40 @@ html.modal-active, body.modal-active {
 } */
 
 
+.persona {
+  width: 100%;
+  max-height: 600px;
+  border-top: 3px solid var(--darker-blue);
+  overflow-y: scroll;
+}
 
+.freeform {
+  white-space: pre-wrap;
+}
+.widget__title {
+  color: var(--nav-color);
+  font-size: 18px;
+  margin-bottom: 5%;
+  font-weight: 300;
+  text-transform: capitalize;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+.widget__title.small {
+  color: #b8b8d9;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+}
+.widget__value {
+  align-items: baseline;
+  color: var(--darker-blue);
+  display: inline;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-feature-settings: "tnum";
+
+}

@@ -10,6 +10,8 @@ const styles = () => {
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         .rec-container {
             padding: 1%;
+            max-height: 500px;
+            overflow-y: scroll;
         }
         .rec {
             border-left: 4px solid gray;
