@@ -2,7 +2,7 @@ import PortfolioTrendline from '/static/src/components/portfolio/portfolio_trend
 import PortfolioDetails from '/static/src/components/portfolio/Details.js'
 import Insights from '/static/src/components/portfolio/Insights.js'
 import Creative from '/static/src/components/portfolio/Creative.js'
-import {tabs, shadow_events} from '/static/src/components/UI_elements.js'
+import {google, facebook} from '/static/src/components/UI_elements.js'
 import Recommendations from '/static/src/components/customer/recommendations.js'
 import { dots_loader } from '/static/src/components/UI_elements.js'
 
@@ -24,7 +24,6 @@ const styles = () => {
             font-weight: 300;
             text-transform: capitalize;
             overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
         }
         .widget__title.small {
@@ -37,7 +36,7 @@ const styles = () => {
         .widget__value {
             align-items: baseline;
             color: var(--darker-blue);
-            display: flex;
+            display: inline;
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 15px;
@@ -66,6 +65,57 @@ const styles = () => {
                 width: 100%;
             }
         }
+
+        .blue-card {
+            background-color: var(--panel-bg);
+            box-shadow: var(--silicon-raised);
+            text-align:center;
+        }
+
+        .stats {
+            align-items: center;
+            padding: 13px 0 11px;
+            border-bottom: 1px solid #f2f2ff;
+        }
+
+        .stats {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .stat {
+            display: flex;
+            align-items: center;
+            padding: 13px 0 11px;
+            border-bottom: 1px solid #f2f2ff;
+        }
+        .stat-wrapper {
+            padding: 0 30px;
+            position: relative;
+            list-style-type: none;
+            width: 100%;
+        }
+        .stat span {
+            vertical-align: baseline;
+            margin-bottom: 0;
+        }
+        .stat h2 {
+            color: var(--darker-blue);
+            font-weight: 600;
+            font-size: 25px;
+            margin-right: 20px;
+            flex-shrink: 0;
+            margin-bottom: 0;
+        }
+        .stat h3 {
+            color: var(--secondary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: auto;
+            margin-bottom: 0;
+        }
+
 
     </style>
     `.trim()
@@ -233,6 +283,7 @@ export default class PortfolioPerformance extends HTMLElement {
             // portfolio
             case 0:
                 for (let i of data.aggregate.raw) group(i)
+                this.state.breakdown = data.buckets
                 this.state.active_data.profitability = {dates, pp1ki, cpm, marketr_index: this.state.data.aggregate.index}
                 break
             // platforms
@@ -240,6 +291,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 for (let i of data.buckets) group_buckets(i)
                 this.sub_filters = sub_filters
                 let _buckets = buckets.filter(x=>x.type == this.state.active_sub_view)
+                this.state.breakdown = data.campaigns
                 this.state.active_data.profitability = {
                     dates: _buckets.map(i => i.date_start),
                     pp1ki: _buckets.map(i=>i.pp1ki),
@@ -265,7 +317,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.sub_filters = sub_filters
                 let _campaigns = campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let copied_campaigns = _campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
-                
+                this.state.breakdown = data.campaigns
                 this.state.active_data.profitability = {
                     dates: copied_campaigns.map(_camp=>_camp.date_start),
                     pp1ki: copied_campaigns.map(_camp=>_camp.pp1ki),
@@ -290,6 +342,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
                 this.sub_filters = sub_filters
                 let copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
+                this.state.breakdown = copied_ads[0]
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
                     pp1ki: copied_ads.map(_camp=>_camp.pp1ki),
@@ -328,59 +381,132 @@ export default class PortfolioPerformance extends HTMLElement {
         return el
     }
 
+    breakdown_markup(){
+        let markup;
+        let data = this.state.breakdown
+        let {active_view} = this.state
+        /*html*/
+        const row = (index, description, description_sub, cost) => {
+            return`
+                <li class="stat-wrapper">
+                    <div class="stat">
+                        <h2>${number(index)} <p style="font-size:40%;">(health score)</p></h2>
+                        <span>${description} <p style="font-size:40%;">(${description_sub})</p></span>
+                        <h3>${currency(cost)} ${active_view == 1 ? `<p style="font-size:40%;">(cost per conversion)</p>` : ''}</h3>
+                    </div>
+                </li>
+            `
+        } 
+        switch(this.state.active_view) {
+            case 0:
+                console.log(data)
+                /*html*/
+                markup = `
+                ${data.map(_row=>{
+                    return row(_row.index, _row.type, 'campaign type', _row.cost)
+                }).join('')}
+                `
+                break
+            case 1:
+                let social = remove_duplicates(data.social.reverse(), 'campaign_id')
+                let search = remove_duplicates(data.search.reverse(), 'campaign_id')
+                console.log(social)
+                console.log(search)
+                markup = `
+                    ${social.map(_row=>{
+                        return row(
+                            _row.marketr_index,
+                            _row.campaign_name,
+                            'campaign name',
+                            _row.cost/_row.conversions || 0
+                        )
+                    }).join("")}
+                    ${search.map(_row=>{
+                        return row(
+                            _row.marketr_index,
+                            _row.campaign_name,
+                            'campaign name',
+                            _row.cost/_row.conversions || 0
+                        )
+                    }).join("")}
+                `         
+                break
+            case 2:
+                /*html*/
+                markup = `
+                <p>test 3</p>
+                `
+                break
+            case 3:
+                /*html*/
+                markup = `
+                <p>test 4</p>
+                `
+                break
+        }
+        return markup
+    }
+
     template(){
         let {total_spent} = this.state.data
         let {marketr_index, action, cost} = this.state.active_data.profitability
-
-        let _cost = this.state.active_view == 0 ? total_spent : cost
-        
+        let company_index = this.state.data.aggregate.index
+        let meta_map = {
+            0: '',
+            1: 'platform',
+            2: 'campaign',
+            3: 'ad'
+        }
         /*html*/
         return `
             <div class="col-lg-6 col-md-6 col-12">
                 <div class="card card-body">
+                    <div class="row row_cancel">
+                        <div style="display: ${this.state.active_view != 0 ? 'auto' : 'none'};" class="col">
+                            ${title(`${meta_map[this.state.active_view]} health score`)}
+                            ${value(number(marketr_index ? marketr_index : 0))}
+                        </div>
+                        <div class="col">
+                            ${title('total health score')}
+                            ${value(number(company_index ? company_index : 0))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 ${this.state.active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-5 col-md-5'}">
+            <div class="row">
+                <div class="col card card-body">
+                    ${title('profitability spread')}
+                    <br>
                     <div class="row">
-                        <div class="col">
-                            ${title('spend rate')}
-                            ${value(currency_rounded(this.spend_rate))}
-                        </div>
-                        <div class="col">
-                            ${title('funds remaining')}
-                            ${value(currency_rounded(this.funds_remaining))}
-                        </div>
-                        <div class="col">
-                            ${title(this.state.active_view == 0 ? 'amount spent' : 'cost')}
-                            ${value(currency_rounded(_cost))}
+                        <div class="col" id="profit_chart_container">
+                            <canvas id="profit_chart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-12">
-                <div class="card card-body">
-                    ${title('health score')}
-                    ${value(number(marketr_index ? marketr_index : 0))}
-                </div>
+            <div class="row">
+                ${
+                    this.state.active_view != 0
+                        ? `
+                        <div class="col">
+                    
+                            <div class="card card-body">
+                                ${title('our recommendation')}
+                                ${value(action ? action : "")}
+                            </div>
+                        </div>`
+                        : ''
+                    }
             </div>
         </div>
-        <div class="col-lg-5 col-md-5 col-sm-6">
+        <div class="col-sm-6 ${this.state.active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-7 col-md-7'}">
             <div class="card card-body">
-                ${title('profitability spread')}
-                <br>
-                <div class="row">
-                    <div class="col" id="profit_chart_container">
-                        <canvas id="profit_chart"></canvas>
-                    </div>
-                </div>
+                ${title('Breakdown')}
+                ${this.breakdown_markup()}
             </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-6">
-            <div class="card card-body">
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="card card-body">
-                ${title('our recommendation')}
-                ${value(action ? action : "")}
-            </div>
         </div>
         <div class="row">
             <div class="col">
@@ -394,7 +520,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
         </div>
-        </div>
         `
     }
 
@@ -403,36 +528,58 @@ export default class PortfolioPerformance extends HTMLElement {
 
         /*html*/
         return `
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-12">
+                </div>
+                <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
+                    <div class="row row_cancel">
+                        <div class='col'></div>
+                        <div class="col-lg-4 col-md-4 col-12">
+                            ${title(`Funds remaining: ${value(currency(this.funds_remaining))}`)}
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-12">
+                            ${title(`spend rate: ${value(`${currency(this.spend_rate)}/month`)}`)}
+                        </div>
+                        <div class='col'></div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-12">
+                </div>
+            </div>
             <div id="home-row" class="row">
-                <div class="col-lg-3 col-md-3 col-12">
+                <div class="col-lg-6 col-md-6 col-12">
                     <div class="card card-body">
-                        ${title('view by')}
-                        <select class="form-control" id="view_selector">
-                            <option value="0" ${this.state.active_view == 0 ? 'selected' : ''}>portfolio</option>
-                            <option value="1" ${this.state.active_view == 1 ? 'selected' : ''}>platforms</option>
-                            <option value="2" ${this.state.active_view == 2 ? 'selected' : ''}>campaigns</option>
-                            <option value="3" ${this.state.active_view == 3 ? 'selected' : ''}>ads</option>
-                        </select>
-
-                        ${
-                            this.state.active_view != 0
-                            /*html*/
-                            ? `
-                                <br>
-                                ${title('filter by', true)}
-                                <select id="sub_target" class="form-control">
-                                    ${this.sub_filters.map((filter, index)=>{
-                                        return (
-                                            `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
-                                                ${filter}
-                                            </option>
-                                            `
-                                        )
-                                    }).join('')}
-                                </select>`
-                            : `<select id="sub_target" class="hidden form-control"></select>`
-                        }
-
+                        <div class="row">
+                            <div class="col">
+                                ${title('view by')}
+                                <select class="form-control" id="view_selector">
+                                    <option value="0" ${this.state.active_view == 0 ? 'selected' : ''}>portfolio</option>
+                                    <option value="1" ${this.state.active_view == 1 ? 'selected' : ''}>platforms</option>
+                                    <option value="2" ${this.state.active_view == 2 ? 'selected' : ''}>campaigns</option>
+                                    <option value="3" ${this.state.active_view == 3 ? 'selected' : ''}>ads</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                ${
+                                    this.state.active_view != 0
+                                    /*html*/
+                                    ? `
+                                
+                                        ${title('filter by', true)}
+                                        <select id="sub_target" class="form-control">
+                                            ${this.sub_filters.map((filter, index)=>{
+                                                return (
+                                                    `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
+                                                        ${filter}
+                                                    </option>
+                                                    `
+                                                )
+                                            }).join('')}
+                                        </select>`
+                                    : `<select id="sub_target" style="visibility:hidden;" class="form-control"></select>`
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
            

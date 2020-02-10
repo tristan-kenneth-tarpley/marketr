@@ -209,3 +209,12 @@ const modal_handlers = (parent) => {
     })
 
 }
+
+
+
+// const remove_duplicates = (arr, filter) => {
+//     let _new = []
+//     for (let i of arr) {
+//         if (i[filter])
+//     }
+// }
