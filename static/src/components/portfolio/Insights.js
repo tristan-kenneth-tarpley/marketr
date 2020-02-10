@@ -13,7 +13,9 @@ const styles = () => {
         .shadow_insights {
             max-height: 500px;
             overflow-y: scroll;
+            white-space: pre-wrap;
         }
+    
  
     </style>
     `.trim()

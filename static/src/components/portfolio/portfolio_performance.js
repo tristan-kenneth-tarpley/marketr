@@ -241,6 +241,7 @@ export default class PortfolioPerformance extends HTMLElement {
         }
         const group_buckets = i => {
             sub_filters.push(i.type)
+
             buckets = [...buckets, {
                 type: i.type,
                 dates: i.raw.map(x => x.date_start),
@@ -266,6 +267,21 @@ export default class PortfolioPerformance extends HTMLElement {
         }
         const group_ads = i => {
             let id = i.id == undefined ? i['adid'] : i['id']
+            let creative;
+
+            if (i.id == undefined) {
+                creative = {
+                    headline: `${i.headline1} | ${i.headline2}`,
+                    description: i.description,
+                    url: i.finalurl
+                }
+            } else {
+                creative = {
+                    thumbnail: i.thumbnail_url,
+                    body: i.body
+                }
+            }
+
             ads = [...ads, {
                 id: id,
                 pp1ki: i.pp1ki,
@@ -273,7 +289,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 marketr_index:i.marketr_index,
                 date_start: i.date_start,
                 action: i.action,
-                cost: i.cost
+                cost: i.cost,
+                creative
             }]
             if (!sub_filters.includes(id)) sub_filters.push(id)
         }
@@ -291,13 +308,13 @@ export default class PortfolioPerformance extends HTMLElement {
                 for (let i of data.buckets) group_buckets(i)
                 this.sub_filters = sub_filters
                 let _buckets = buckets.filter(x=>x.type == this.state.active_sub_view)
+                console.log(_buckets.map(i=>i.cpm).flat())
                 this.state.breakdown = data.campaigns
                 this.state.active_data.profitability = {
-                    dates: _buckets.map(i => i.date_start),
-                    pp1ki: _buckets.map(i=>i.pp1ki),
-                    cpm: _buckets.map(i=>i.cpm),
+                    dates: _buckets.map(i => i.dates).flat(),
+                    pp1ki: _buckets.map(i=>i.pp1ki).flat(),
+                    cpm: _buckets.map(i=>i.cpm).flat(),
                     marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
-                    action: _buckets.map(i=>i.action)[0],
                     cost: _buckets.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
                 break
@@ -317,7 +334,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.sub_filters = sub_filters
                 let _campaigns = campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let copied_campaigns = _campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
-                this.state.breakdown = data.campaigns
+                this.state.breakdown = remove_duplicates(copied_campaigns, 'campaign_name')
+
                 this.state.active_data.profitability = {
                     dates: copied_campaigns.map(_camp=>_camp.date_start),
                     pp1ki: copied_campaigns.map(_camp=>_camp.pp1ki),
@@ -385,21 +403,30 @@ export default class PortfolioPerformance extends HTMLElement {
         let markup;
         let data = this.state.breakdown
         let {active_view} = this.state
-        /*html*/
+
         const row = (index, description, description_sub, cost) => {
+            let third_sub = {
+                0: `<p style="font-size:40%;">(total spent)</p>`,
+                1: `<p style="font-size:40%;">(cost per conversion)</p>`,
+                2: `<p style="font-size:40%;">(cost per conversion)</p>`,
+                3: ``
+            }
+            /*html*/
             return`
                 <li class="stat-wrapper">
                     <div class="stat">
                         <h2>${number(index)} <p style="font-size:40%;">(health score)</p></h2>
                         <span>${description} <p style="font-size:40%;">(${description_sub})</p></span>
-                        <h3>${currency(cost)} ${active_view == 1 ? `<p style="font-size:40%;">(cost per conversion)</p>` : ''}</h3>
+                        <h3>
+                            ${currency(cost)}
+                            ${third_sub[active_view]}
+                        </h3>
                     </div>
                 </li>
             `
         } 
         switch(this.state.active_view) {
             case 0:
-                console.log(data)
                 /*html*/
                 markup = `
                 ${data.map(_row=>{
@@ -410,8 +437,7 @@ export default class PortfolioPerformance extends HTMLElement {
             case 1:
                 let social = remove_duplicates(data.social.reverse(), 'campaign_id')
                 let search = remove_duplicates(data.search.reverse(), 'campaign_id')
-                console.log(social)
-                console.log(search)
+
                 markup = `
                     ${social.map(_row=>{
                         return row(
@@ -434,22 +460,31 @@ export default class PortfolioPerformance extends HTMLElement {
             case 2:
                 /*html*/
                 markup = `
-                <p>test 3</p>
+                ${data.map(_row=>{
+                    return row(_row.marketr_index, currency(_row.pp1ki), 'profit potential<br>per thousand impressions', _row.cost)
+                }).join("")}
                 `
                 break
             case 3:
-                /*html*/
-                markup = `
-                <p>test 4</p>
-                `
+                
+                const is_search = data.creative.headline == undefined ? false : true;
+                const is_social = data.creative.headline == undefined ? true : false;
+
+                if (is_search) markup = google(
+                    data.creative.headline,
+                    JSON.parse(data.creative.url)[0],
+                    data.creative.description
+                )
+                else if (is_social) markup = facebook('', data.creative.thumbnail, data.creative.body)
+
                 break
         }
         return markup
     }
 
     template(){
-        let {total_spent} = this.state.data
         let {marketr_index, action, cost} = this.state.active_data.profitability
+        let {active_view} = this.state
         let company_index = this.state.data.aggregate.index
         let meta_map = {
             0: '',
@@ -457,13 +492,26 @@ export default class PortfolioPerformance extends HTMLElement {
             2: 'campaign',
             3: 'ad'
         }
+
+        let breakdown_title = {
+            0: 'active platforms',
+            1: 'active campaigns',
+            2: 'campaign breakdown',
+            3: 'ad creative'
+        }
+
+        let recommendation_map = {
+            'leave it alone': `Just give it some time. Our machine learning engines predict that, while the performance isn't where we want it now, it will turn around soon.`,
+            'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it.`,
+            'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learn for next time.`
+        }
         /*html*/
         return `
             <div class="col-lg-6 col-md-6 col-12">
                 <div class="card card-body">
                     <div class="row row_cancel">
-                        <div style="display: ${this.state.active_view != 0 ? 'auto' : 'none'};" class="col">
-                            ${title(`${meta_map[this.state.active_view]} health score`)}
+                        <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col">
+                            ${title(`${meta_map[active_view]} health score`)}
                             ${value(number(marketr_index ? marketr_index : 0))}
                         </div>
                         <div class="col">
@@ -474,7 +522,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 ${this.state.active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-5 col-md-5'}">
+        <div class="col-sm-6 ${active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-5 col-md-5'}">
             <div class="row">
                 <div class="col card card-body">
                     ${title('profitability spread')}
@@ -488,22 +536,23 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
             <div class="row">
                 ${
-                    this.state.active_view != 0
+                    ![0,1].includes(active_view)
                         ? `
                         <div class="col">
                     
                             <div class="card card-body">
                                 ${title('our recommendation')}
                                 ${value(action ? action : "")}
+                                <p>${recommendation_map[action]}</p>
                             </div>
                         </div>`
                         : ''
                     }
             </div>
         </div>
-        <div class="col-sm-6 ${this.state.active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-7 col-md-7'}">
+        <div class="col-sm-6 ${active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-7 col-md-7'}">
             <div class="card card-body">
-                ${title('Breakdown')}
+                ${title(breakdown_title[active_view])}
                 ${this.breakdown_markup()}
             </div>
         </div>
@@ -534,11 +583,11 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
                     <div class="row row_cancel">
                         <div class='col'></div>
-                        <div class="col-lg-4 col-md-4 col-12">
+                        <div class="col-lg-5 col-md-5 col-12">
                             ${title(`Funds remaining: ${value(currency(this.funds_remaining))}`)}
                         </div>
-                        <div class="col-lg-4 col-md-4 col-12">
-                            ${title(`spend rate: ${value(`${currency(this.spend_rate)}/month`)}`)}
+                        <div class="col-lg-5 col-md-5 col-12">
+                            ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate)}/month`)}`)}
                         </div>
                         <div class='col'></div>
                     </div>
