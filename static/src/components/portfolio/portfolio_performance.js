@@ -105,6 +105,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.shadow = this.attachShadow({ mode: 'open' });
         this.state = {
             data: null,
+            date_range: 30,
             active_view: 0,
             active_data: {
                 profitability: {
@@ -369,7 +370,9 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.state.active_view = parseInt(e.currentTarget.value)
             } 
             first().then(()=>this.data_controller()).then(()=>{
-                this.render(false)
+                setTimeout(()=>{
+                    this.render(false)
+                }, 600)
             })
 
         })
@@ -378,9 +381,17 @@ export default class PortfolioPerformance extends HTMLElement {
             this.sub_edited = true
             const first = async () => this.state.active_sub_view = e.currentTarget.value
             first().then(()=>this.data_controller()).then(() => {
-                this.render(false)
+                setTimeout(()=>{
+                    this.render(false)
+                }, 600)
             })
 
+        })
+
+        el.querySelector('#date_range').addEventListener('change', e=>{
+            this.state.date_range = parseInt(e.currentTarget.value)
+            this.data_controller()
+            this.render(true)
         })
 
         return el
@@ -431,7 +442,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
-                            _row.cost/_row.conversions || 0
+                            _row.conversions != 0 ? _row.cost/_row.conversions : 0
                         )
                     }).join("")}
                     ${search.map(_row=>{
@@ -439,7 +450,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
-                            _row.cost/_row.conversions || 0
+                            _row.conversions != 0 ? _row.cost/_row.conversions : 0
                         )
                     }).join("")}
                 `         
@@ -565,21 +576,32 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
             <div class="row">
-                <div class="col-lg-2 col-md-2 col-12">
-                </div>
-                <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
+                <div class="blue-card card card-body col-lg-9 col-md-9 col-12">
                     <div class="row row_cancel">
                         <div class='col'></div>
                         <div class="col-lg-5 col-md-5 col-12">
-                            ${title(`Funds remaining: ${value(currency(this.funds_remaining))}`)}
+                            ${title(`Funds remaining: ${value(currency(this.funds_remaining ? this.funds_remaining : 0))}`)}
                         </div>
                         <div class="col-lg-5 col-md-5 col-12">
-                            ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate)}/month`)}`)}
+                            ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`)}
                         </div>
                         <div class='col'></div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-2 col-12">
+                <div class="col-lg-3 col-md-3 col-12">
+                    <select id="date_range" class="form-control">
+                        <option value="10000000000000000" ${this.state.date_range == 10000000000000000 ? 'selected' : ''}>Lifetime</option>
+                        <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
+                        <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
+                        <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
+                        <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
+                        <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
+                        <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
+                        <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
+                        <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
+                        <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
+                        <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
+                    </select>
                 </div>
             </div>
             <div id="home-row" class="row">
@@ -687,11 +709,13 @@ export default class PortfolioPerformance extends HTMLElement {
                 body:  JSON.stringify({
                     customer_id: this.customer_id,
                     company_name: this.customer_id == 200 ? "o3" : this.company_name,
-                    ltv: this.ltv
+                    ltv: this.ltv,
+                    date_range: this.state.date_range
                 })
             })
             .then(res=>res.json())
             .then(res => {
+                document.querySelector('#performance_loader').style.display = 'none'
                 this.state.data = res
             })
             .then(()=> run())

@@ -459,15 +459,17 @@ def last_7_spend():
 def compile_master_index():
     req = request.get_json()
     demo = True if req.get('customer_id') == '181' else False
+
+    date_range = req.get('date_range')
     if not demo:
         ltv = req.get('ltv')
         orm = GoogleORM(req.get('company_name'))
-        search_df = orm.search_index()
-        social_df = orm.social_index()
+        search_df = orm.search_index(date_range)
+        social_df = orm.social_index(date_range)
     else:
         ltv = 5000
-        search_df = db.sql_to_df("SELECT * FROM demo_data_search")
-        social_df = db.sql_to_df("SELECT * FROM demo_data_social")
+        search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where datediff(day, date_start, getdate()) < {date_range}")
+        social_df = db.sql_to_df(f"SELECT * FROM demo_data_social where datediff(day, date_start, getdate())  < {date_range}")
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
 
