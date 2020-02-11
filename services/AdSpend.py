@@ -252,7 +252,7 @@ class SpendAllocation:
                     if bucket_name == 'social':
                         add('Additional LinkedIn Display Campaign')
                 if self.brand_strength in ['high', 'medium']:
-                    if bucket_name == 'social':
+                    if bucket_name == 'search':
                         add('Branded search campaign')
                     
             return campaign_list
