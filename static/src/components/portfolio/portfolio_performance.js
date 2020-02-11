@@ -228,15 +228,16 @@ export default class PortfolioPerformance extends HTMLElement {
             cpm = append_data(cpm, i.cpm)
         }
         const group_buckets = i => {
+
             sub_filters.push(i.type)
+   
 
             buckets = [...buckets, {
                 type: i.type,
                 dates: i.raw.map(x => x.date_start),
                 cpm: i.raw.map(x => x.cpm),
                 pp1ki: i.raw.map(x => x.pp1ki),
-                marketr_index:i.index,
-                action: i.action,
+                marketr_index:i.index,  
                 cost: i.cost
             }]
         }
@@ -283,7 +284,7 @@ export default class PortfolioPerformance extends HTMLElement {
             if (!sub_filters.includes(id)) sub_filters.push(id)
         }
          //dates = Array.from(new Set([...dates, i.date_start]))
-        
+       
         switch(active_view) {
             // portfolio
             case 0:
@@ -295,8 +296,10 @@ export default class PortfolioPerformance extends HTMLElement {
             case 1:
                 for (let i of data.buckets) group_buckets(i)
                 this.sub_filters = sub_filters
-                let _buckets = buckets.filter(x=>x.type == this.state.active_sub_view)
-                console.log(_buckets.map(i=>i.cpm).flat())
+                let _buckets = buckets.filter(x=>{
+                    return x.type == this.state.active_sub_view
+                })
+                
                 this.state.breakdown = data.campaigns
                 this.state.active_data.profitability = {
                     dates: _buckets.map(i => i.dates).flat(),
@@ -401,6 +404,8 @@ export default class PortfolioPerformance extends HTMLElement {
         let markup;
         let data = this.state.breakdown
         let {active_view} = this.state
+        
+        if (!data) this.data_controller()
 
         const row = (index, description, description_sub, cost) => {
             let third_sub = {
@@ -423,6 +428,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </li>
             `
         } 
+        
         switch(this.state.active_view) {
             case 0:
                 /*html*/
@@ -501,7 +507,7 @@ export default class PortfolioPerformance extends HTMLElement {
         let recommendation_map = {
             'leave it alone': `Just give it some time. Our machine learning engines predict that, while the performance isn't where we want it now, it will turn around soon.`,
             'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it.`,
-            'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learn for next time.`
+            'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
         /*html*/
         return `
