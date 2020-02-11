@@ -94,6 +94,16 @@
             document.querySelector("#performance_loader").innerHTML = dots_loader()
         </script>
         {{ performance(page) }}
+        {% if not page.data['core']['core'][0]['data_synced'] %}
+            {{ section(
+                link=None,
+                title='To-Do List',
+                body=todo(page, admin=False),
+                hash=None,
+                admin=page.admin
+            ) }}
+        {% endif %}
+
         {#{{ section(
             link=None,
             title="Portfolio Performance",

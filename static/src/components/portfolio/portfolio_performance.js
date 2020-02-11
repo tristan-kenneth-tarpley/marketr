@@ -660,6 +660,7 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
 
+
     render(init=true){
         this.shadow.innerHTML = ""
 
@@ -713,12 +714,14 @@ export default class PortfolioPerformance extends HTMLElement {
                     date_range: this.state.date_range
                 })
             })
-            .then(res=>res.json())
+            .then(res=> res.json())
             .then(res => {
-                document.querySelector('#performance_loader').style.display = 'none'
-                this.state.data = res
+
+                    document.querySelector('#performance_loader').style.display = 'none'
+                    this.state.data = res
+                    run()
+    
             })
-            .then(()=> run())
         } else run()
     }
 

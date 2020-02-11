@@ -9,10 +9,10 @@ class PaymentsService:
         app.config.from_pyfile('config.cfg')
         self.sk = app.config['STRIPE_SK']
         self.pk = app.config['STRIPE_PK']
-        # self.success_url = 'http://127.0.0.1:5000/Xr8FcPcNQsvTEJ3kuznY'
-        # self.cancel_url = 'http://127.0.0.1:5000/logout'
-        self.success_url = 'https://marketr.life/Xr8FcPcNQsvTEJ3kuznY'
-        self.cancel_url = 'https://marketr.life/logout'
+        self.success_url = 'http://127.0.0.1:5000/Xr8FcPcNQsvTEJ3kuznY'
+        self.cancel_url = 'http://127.0.0.1:5000/pricing'
+        # self.success_url = 'https://marketr.life/Xr8FcPcNQsvTEJ3kuznY'
+        # self.cancel_url = 'https://marketr.life/pricing'
         self.email = email
         self.customer_id = customer_id
 
@@ -35,6 +35,7 @@ class PaymentsService:
 			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
             'plan_GDRUIQvA5OEUgK': 'ad_binary',
 			'plan_FxJJZ1sUDZ0550': 'ad_premium',
+            'plan_GiHRR96eXXfxQM': 'analytics',
 			# test mode
 			'plan_Fed1YzQtnto2mT': 'ab_binary',
 			'plan_FecAlOmYSmeDK3': 'ad_binary',
@@ -133,6 +134,22 @@ class PaymentsService:
         )
         self.id = session['id']
 
+    def analytics(self):
+        stripe.api_key = self.sk
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            customer=self.customer_id,
+            subscription_data={
+                'items': [{
+                'plan': 'plan_GiHRR96eXXfxQM'
+                }],
+                'trial_from_plan': True
+            },
+            success_url = self.success_url,
+            cancel_url = self.cancel_url
+        )
+        self.id = session['id']
+        self.session = session
 
     def almost_free(self):
         stripe.api_key = self.sk

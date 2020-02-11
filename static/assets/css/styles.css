@@ -11869,7 +11869,9 @@ html.modal-active, body.modal-active {
     transform: scale(0);
     z-index: 1000 !important;
 }
-
+.modal-backdrop {
+  position: static !important;
+}
 @media only screen and (max-width: 990px) {
     #modal-container {
         left: 0;

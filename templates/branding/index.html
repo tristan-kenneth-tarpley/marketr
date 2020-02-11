@@ -23,6 +23,8 @@
                             <form>
                                 <div class="input-group">
                                     <a style="border: 3px solid transparent;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/new">Join our early access program</a>
+                                    <br>
+                                    <a class="m-btn m-btn-theme m-btn-round" href="/demo">Live demo</a>
                                 </div>
                                 <span class="help-text">Free to start&mdash; no credit card required.</span>
                             </form>
@@ -484,7 +486,7 @@
     </section>
     <!-- end testimonials -->
     <!--  pricing -->
-    {{ pricing() }}
+    {{ pricing(logged_in) }}
     <section class="section">
         <div class="container">
             <div class="row justify-content-center sm-m-25px-b m-45px-b">

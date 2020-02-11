@@ -1,4 +1,102 @@
 {% macro pricing(logged_in, settings_view=False, quantity=1) %}
+<section id="price" class="section gray-bg">
+    <div class="container">
+        <!-- section title -->
+        <div class="row justify-content-center sm-m-25px-b m-45px-b">
+            <div class="col-lg-8 col-md-10">
+                <div class="section-title text-center">
+                    <h2>Flat-Rate Pricing</h2>
+                    <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
+                    {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
+                </div>
+            </div>
+        </div>
+        <!-- end section title -->
+        <div class="row align-items-center">
+            <div class="col-md-4 col-lg-4 m-15px-tb">    
+                <div class="price-table">
+                    <div class="pt-head">
+                        <h5><span>$</span>40/month</h5>
+                    </div>
+                    <div class="pt-body">
+                        <h4>Analytics</h4>
+                        <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Data integrations with 80+ platforms</li>
+                            <li><i class="fas fa-check"></i> Cross-platform analytics</li>
+                            <li><i class="fas fa-check"></i> Real-time recommendations on ad spend optimization.</li>
+                            <li><i class="fas fa-check"></i> Market(r) learns exactly how much you should spend and where to spend it.</li>
+                        </ul>
+                    </div>
+                    <div class="pt-footer">
+                        <a class="m-btn m-btn-theme m-btn-radius" href="{{ url_for('analytics_checkout') if logged_in else url_for('new') }}">Let's go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4 m-15px-tb">    
+                <div class="price-table">
+                    <div class="pt-head">
+                        <label class="msg">popular choice</label>
+                        <h5><span>$</span>85/month per campaign</h5>
+                    </div>
+                    <div class="pt-body">
+                        <h4>Analytics + Implementation</h4>
+                        <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Full campaign management including research, copywriting, and implementation.</li>
+                            <li><i class="fas fa-check"></i> Weekly recommendations with 1-click implementation.</li>
+                            <li><i class="fas fa-check"></i> Real-time strategic insights</li>
+                            <li><i class="fas fa-check"></i> Url-based conversion tracking</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pt-footer">
+                        <div class="input-group">
+                            {% if logged_in %}
+                                <input value="1" min="1" pattern="[0-9]" type="number" class="form-control" id="quantity">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">campaigns</span>
+                                </div>
+                     
+
+                                <script>
+                                    document.querySelector('#quantity').addEventListener('keyup', e=>{
+                                        document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${e.currentTarget.value}`
+                                    })
+                                </script>
+                            {% endif %}
+                        </div>
+                        <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign') if logged_in else url_for('new') }}">Get started</a>
+                    </div>
+                </div>
+            </div>
+            <!-- price table -->
+            <div class="col-md-4 col-lg-4 m-15px-tb">
+                <div class="price-table">
+                    <div class="pt-head">
+                        <h5>Custom</h5>
+                    </div>
+                    <div class="pt-body">
+                        <h4>Enterprise</h4>
+                        <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Custom-tailored machine learning model, trained on your business's data.</li>
+                            <li><i class="fas fa-check"></i> Multiple conversion values</li>
+                            <li><i class="fas fa-check"></i> Multiple customer lifetime value tracking</li>
+                        </ul>
+                    </div>
+                    <div class="pt-footer">
+                        <a class="m-btn m-btn-theme m-btn-radius" href="{{ url_for('schedule') }}">Let's chat</a>
+                    </div>
+                </div>
+            </div>
+            <!-- end price table -->
+            <div class="col-md-3 col-lg-2 m-15px-tb">                    
+            </div>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+
+{% macro old_pricing(logged_in, settings_view=False, quantity=1) %}
     {% macro feature(copy) %}
         <li><i class="fas fa-check"></i> {{copy | safe}}</li>
     {% endmacro %}
@@ -136,7 +234,6 @@
                         <h2>Flat-Rate Pricing</h2>
                         <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
                         {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
-                        <p>Only pay us if we manage your ad campaigns.</p>
                     </div>
                 </div>
             </div>

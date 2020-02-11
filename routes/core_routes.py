@@ -172,6 +172,8 @@ def single_campaign():
     quantity = request.args.get('quantity') if request.args.get('quantity') else 1
     obj.single_campaign(quantity=quantity)
 
+    db.execute("update customer_basic set num_campaigns = ? where id = ?", False, (quantity, session['user']), commit=True)
+
     if request.args.get('session_id'):
         return render_template('core/checkout.html', plan="ab")
     else:
@@ -218,6 +220,17 @@ def paid_ads_premium_checkout():
         return render_template('core/checkout.html', plan="ads_premium")
     else:
         return redirect(url_for('paid_ads_premium_checkout', session_id=obj.id))
+
+
+@app.route('/checkout/analytics', methods=['GET', 'POST'])
+@login_required
+def analytics_checkout():
+    obj = PaymentsService(session['email'], customer_id = session['stripe_id'])
+    obj.analytics()
+    if request.args.get('session_id'):
+        return render_template('core/checkout.html', plan="analytics")
+    else:
+        return redirect(url_for('analytics_checkout', session_id=obj.id))
 
 # anchor
 @app.route('/Xr8FcPcNQsvTEJ3kuznY')

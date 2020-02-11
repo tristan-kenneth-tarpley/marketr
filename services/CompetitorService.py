@@ -112,7 +112,7 @@ class CompetitorService(object):
                 res_1 = await competitors
                 res_2 = await core
                 res_3 = await google_ads
-                res_4 = await display_ads
+                res_4 = []
              
                 struct = Struct(
                     competitor['comp_name'], competitor['comp_website'], competitor['comp_type'],

@@ -87,6 +87,7 @@ class GoogleChatService:
 			'plan_FfIAIrHBJ78YpY': 'almost_free_binary',
 			'plan_FxJJZ1sUDZ0550': 'ad_premium',
             'plan_GDRUIQvA5OEUgK': 'ad_binary',
+            'plan_GiHRR96eXXfxQM': 'analytics',
 			# test mode
 			'plan_Fed1YzQtnto2mT': 'ab_binary',
 			'plan_FecAlOmYSmeDK3': 'ad_binary',
