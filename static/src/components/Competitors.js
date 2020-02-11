@@ -221,9 +221,9 @@ export default class CompetitiveIntelligence extends HTMLElement {
 
             ${google_ads(base)}
 
-            <div class="separator"></div>
+            <!--<div class="separator"></div>
 
-            ${display_ads(base)}
+            ${display_ads(base)}-->
             
         `.trim()
     }

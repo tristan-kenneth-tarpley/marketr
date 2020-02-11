@@ -520,7 +520,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 ${active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-5 col-md-5'}">
+        <div class="col-sm-6 col-lg-6 col-md-6">
             <div class="row">
                 <div class="col card card-body">
                     ${title('profitability spread')}
@@ -532,26 +532,28 @@ export default class PortfolioPerformance extends HTMLElement {
                     </div>
                 </div>
             </div>
-            <div class="row">
-                ${
+        </div>
+        <div class="col-sm-6 col-lg-6 col-md-6">
+            <div class="card card-body">
+                ${title(breakdown_title[active_view])}
+                ${this.breakdown_markup()}
+              
+                    ${
                     ![0,1].includes(active_view)
                         ? `
-                        <div class="col">
-                    
-                            <div class="card card-body">
-                                ${title('our recommendation')}
+                        <div class="separator"></div>
+                        <div class="row">
+                            <div class="col">
+
+                                ${title('our recommendation:')}
                                 ${value(action ? action : "")}
                                 <p>${recommendation_map[action]}</p>
+                  
                             </div>
                         </div>`
                         : ''
                     }
-            </div>
-        </div>
-        <div class="col-sm-6 ${active_view == 0 ? 'col-lg-6 col-md-6' : 'col-lg-7 col-md-7'}">
-            <div class="card card-body">
-                ${title(breakdown_title[active_view])}
-                ${this.breakdown_markup()}
+
             </div>
         </div>
         </div>
@@ -576,7 +578,9 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
             <div class="row">
-                <div class="blue-card card card-body col-lg-9 col-md-9 col-12">
+                <div class="col-lg-2 col-md-2 col-12">
+                </div>
+                <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
                     <div class="row row_cancel">
                         <div class='col'></div>
                         <div class="col-lg-5 col-md-5 col-12">
@@ -588,9 +592,14 @@ export default class PortfolioPerformance extends HTMLElement {
                         <div class='col'></div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-3 col-12">
+                <div class="col-lg-2 col-md-2 col-12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
                     <select id="date_range" class="form-control">
-                        <option value="10000000000000000" ${this.state.date_range == 10000000000000000 ? 'selected' : ''}>Lifetime</option>
+                        <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
                         <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
                         <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
                         <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
@@ -603,6 +612,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
                     </select>
                 </div>
+                <div class="col"></div>
             </div>
             <div id="home-row" class="row">
                 <div class="col-lg-6 col-md-6 col-12">
