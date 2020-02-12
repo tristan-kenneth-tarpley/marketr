@@ -563,16 +563,21 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
         </div>
         </div>
-        <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
-            <div class="">
-                ${title('insights')}    
+        ${this.analytics
+            ? ``
+            : `
+            <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
+                <div class="">
+                    ${title('insights')}    
+                </div>
             </div>
-        </div>
-        <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
-            <div class="card card-body">
-                ${title('recommendations')}
-            </div>
-        </div>
+            <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
+                <div class="card card-body">
+                    ${title('recommendations')}
+                </div>
+            </div>`
+        
+        }
         `
     }
 
@@ -707,8 +712,10 @@ export default class PortfolioPerformance extends HTMLElement {
                 })
                 .then(el=>{
                     this.reset_charts(el)
-                    el.querySelector("#recommendations div").appendChild(recs)
-                    el.querySelector('#insights div').appendChild(insights)
+                    if (!this.analytics) {
+                        el.querySelector("#recommendations div").appendChild(recs)
+                        el.querySelector('#insights div').appendChild(insights)
+                    }
                     return el
                 })
                 .then( el => this.shadow.appendChild(this.view_controller(el)) )
@@ -749,6 +756,8 @@ export default class PortfolioPerformance extends HTMLElement {
         this.insights_json = eval(this.getAttribute('insights'))
         this.ltv = this.getAttribute('ltv')
         this.demo = this.getAttribute('demo')
+        this.analytics = this.getAttribute('analytics') ? true : false
+
         this.render()
 
     }

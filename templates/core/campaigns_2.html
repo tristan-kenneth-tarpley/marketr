@@ -65,7 +65,8 @@
     funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
     ltv="{{page.data['core']['core'][0]['ltv']}}"
     demo="{{demo}}"
-    insights="{{page.data['insights']['insights']}}">
+    insights="{{page.data['insights']['insights']}}"
+    analytics="{{ page.data['core']['core'][0]['analytics'] }}">
 </portfolio-performance>
 
 {#<portfolio-budget
@@ -94,6 +95,7 @@
             document.querySelector("#performance_loader").innerHTML = dots_loader()
         </script>
         {{ performance(page) }}
+       
         {% if not page.data['core']['core'][0]['data_synced'] %}
             {{ section(
                 link=None,

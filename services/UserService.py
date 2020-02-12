@@ -302,6 +302,8 @@ class UserService:
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1, almost_free_binary = null WHERE id = ?"
 			#payments = PaymentsService('test@test.com')
 			#payments.delete_subscriptions(sub_id=plan_id, customer_id=customer_id)
+		elif plan_table[plan_id] == 'ad_binary':
+			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1, analytics = null WHERE id = ?"
 		else:
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1 WHERE id = ?"
 		db.execute(query, False, (customer_id,), commit=True)
