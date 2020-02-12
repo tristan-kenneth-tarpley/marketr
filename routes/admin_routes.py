@@ -187,12 +187,12 @@ def customers():
 	form = forms.AddRep()
 	page = AdminViewModel(session['permissions'], 'customers', admin=session['admin'])
 	return ViewFuncs.view_admin(
-								page=page,
-								owner=session['owner_logged_in'],
-								admin=session['admin_logged_in'],
-								manager=session['manager_logged_in'],
-								form=form
-								)
+		page=page,
+		owner=session['owner_logged_in'],
+		admin=session['admin_logged_in'],
+		manager=session['manager_logged_in'],
+		form=form
+	)
 
 
 
