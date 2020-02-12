@@ -563,16 +563,14 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
         </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div id="insights" class="card card-body">
-                    ${title('insights')}
-                </div>
+        <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
+            <div class="">
+                ${title('insights')}    
             </div>
-            <div class="col">
-                <div id="recommendations" class="card card-body">
-                    ${title('recommendations')}
-                </div>
+        </div>
+        <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
+            <div class="card card-body">
+                ${title('recommendations')}
             </div>
         </div>
         `
@@ -621,9 +619,9 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div class="col"></div>
             </div>
             <div id="home-row" class="row">
-                <div class="col-lg-6 col-md-6 col-12">
-                    <div class="card card-body">
-                        <div class="row">
+                <div class="card card-body col-lg-6 col-md-6 col-12">
+                    <div class="">
+                        <div class="row row_cancel">
                             <div class="col">
                                 ${title('view by')}
                                 <select class="form-control" id="view_selector">
@@ -709,8 +707,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 })
                 .then(el=>{
                     this.reset_charts(el)
-                    el.querySelector("#recommendations").appendChild(recs)
-                    el.querySelector('#insights').appendChild(insights)
+                    el.querySelector("#recommendations div").appendChild(recs)
+                    el.querySelector('#insights div').appendChild(insights)
                     return el
                 })
                 .then( el => this.shadow.appendChild(this.view_controller(el)) )

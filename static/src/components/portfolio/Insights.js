@@ -18,6 +18,10 @@ const styles = () => {
         .shadow_insights p {
             white-space: pre-wrap;
         }
+        ._insight_row {
+            padding: 4%;
+            border-top: 1px solid rgba(0,0,0,.1);
+        }
  
     </style>
     `.trim()
@@ -40,12 +44,17 @@ export default class Insights extends HTMLElement {
     shell(){
         return `
         <div class="shadow_insights">
-                ${this.state.data.map(ins=>{
+                ${this.state.data.map((ins, index)=>{
+  
+
                     /*html*/
                     return `
                     ${this.css}
-                    <p class='dark_blue small_txt'>${ins.time}</p>
-                    <p>${ins.body}</p>
+                    <div class="_insight_row">
+                        <h1 class="widget__title">${index + 1}) From ${ins.admin}</h1>
+                        <h3 class='widget__title small dark_blue small_txt'>Written on ${ins.time}</h3>
+                        <p class="truncate">${ins.body}</p>
+                    </div>
                     `
                 }).join("")}
                 <hr>

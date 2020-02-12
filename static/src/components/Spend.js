@@ -120,11 +120,13 @@ export default class AdSpend extends HTMLElement {
         const budget_ = this.data.budget
         this.update_cta(this.data.allocation[0].num_campaigns, _el)
         const data = this.data
+
+        let counter = 0
         
         /*html*/
         const el = `
             <p>Here are the campaigns that we recommend:</p>
-            ${this.data.allocation.map(set=>{
+            ${this.data.allocation.map((set, index)=>{
                 const display_num = this.perc_or_usd == 'perc' ?
                                         percent(set.spend_percent * 100) :
                                         currency_rounded(set.spend)
@@ -143,20 +145,21 @@ export default class AdSpend extends HTMLElement {
                     <div class="row inset">
                         <div class="col small_txt allocation_tactics awareness_tactics">
                             
-                            <ol class="campaign_list">
-                                ${set['campaigns'].map(i=>{
+                            <ul class="campaign_list">
+                                ${set['campaigns'].map((i, _index)=>{
+                                    counter++
                                     /*html*/
                                     return `${inline_article(i)
                                                 ? `
                                                 <li class="campaign_type">
-                                                    ${modal_trigger(i, `${i} <span style="color:#62cde0;">></span>`)}
+                                                    ${modal_trigger(i, `${counter}: ${i} <span style="color:#62cde0;">></span>`)}
                                                     ${right_modal('', inline_article(i), i)}
                                                 </li>
                                                 `
-                                                : `<li>${i}</li>`
+                                                : `<li>${counter}: ${i}</li>`
                                             }`
                                 }).join("")}
-                            </ol>
+                            </ul>
                         </div>
                     </div>
                 `.trim()
@@ -289,10 +292,10 @@ export default class AdSpend extends HTMLElement {
             </div>
 
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-3 col-md-3 col-sm-12">
                     <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="col-lg-5 col-md-5 col-sm-12">
                     <br>
                     <div style="margin:0 auto;text-align:center;">
                         <button class="spend_num_type view_perc allocation_toggle btn ${
