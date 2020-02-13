@@ -33,7 +33,7 @@ class BigQuery(object):
 class GoogleORM(BigQuery):
     def __init__(self, company_name):
         super().__init__()
-        disallow = ["(", ")", ";"]
+        disallow = ["(", ")", ";", ",", "."]
         for d in disallow:
             company_name = company_name.replace(d, "")
 
