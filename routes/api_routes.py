@@ -461,11 +461,16 @@ def compile_master_index():
     demo = True if req.get('customer_id') == '181' else False
 
     date_range = req.get('date_range')
+
     if not demo:
-        ltv = req.get('ltv')
+        ltv = float(req.get('ltv').replace(",", ""))
         orm = GoogleORM(req.get('company_name'))
-        search_df = orm.search_index(date_range)
-        social_df = orm.social_index(date_range)
+        run_social = req.get('facebook')
+        run_search = req.get('google')
+    
+        search_df = orm.search_index(date_range) if run_search else None
+
+        social_df = orm.social_index(date_range) if run_social else None
     else:
         ltv = 5000
         search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where datediff(day, date_start, getdate()) < {date_range}")
@@ -485,7 +490,7 @@ def compile_master_index():
         val = compiled.get('aggregate')
 
         db.execute(query, False, (req.get('customer_id'), val), commit=True)
-    elif compiled and not demo:
+    elif not compiled and not demo:
         compiled = []
 
     return json.dumps(compiled)

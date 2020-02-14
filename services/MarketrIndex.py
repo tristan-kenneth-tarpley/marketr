@@ -24,9 +24,11 @@ class MarketrIndex(object):
     
     def pp1ki(self, ctr, lcr, spend, impressions):
         # translation: profit potential per 1,000 impressions
+
         try:
             formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
-        except:
+        except Exception as e:
+            print(e)
             formula = 0
         return formula
     
@@ -43,7 +45,7 @@ class MarketrIndex(object):
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
 
         df = df.groupby(columns).agg(self.agg_set).reset_index()
-
+  
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         
         return df
@@ -89,7 +91,7 @@ class MarketrIndex(object):
         elif index <  mean - breakpoint:
             _action = 'kill it'
         else:
-            _action = 'leave it alone'
+            _action = 'unclear'
 
         return _action
 
@@ -258,8 +260,10 @@ class PortfolioIndex(MarketrIndex):
         dfs = list()
         arr = list()
         for arg in args:
-            arr.append(condition(arg['index'], arg['cost']))
-            dfs.append(arg['raw'])
+            if arg is not None:
+                print(arg['raw'].pp1ki.sum())
+                arr.append(condition(arg['index'], arg['cost']))
+                dfs.append(arg['raw'])
             
         df = pd.concat(dfs).groupby('date_start').agg(self.agg_set).reset_index()
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
@@ -270,32 +274,36 @@ class PortfolioIndex(MarketrIndex):
         }
 
 
+
 ######### compile ##########
 def compile_master(ltv=None, search_df=None, social_df=None):
-    if search_df is not None or social_df is not None:
-        amount_spent = search_df.cost.sum() + social_df.cost.sum()
-    else:
-        return None
+    if search_df is not None and social_df is not None:
+        total_spent = search_df.cost.sum() + social_df.cost.sum()
+    elif search_df is not None and social_df is None:
+        total_spent = search_df.cost.sum()
+    elif social_df is not None and not search_df is None:
+        total_spent = social_df.cost.sum()
 
     # init objects
     ad_index_obj = AdIndex(ltv) 
     group_index_obj = AdGroupIndex(ltv)
     campaign_index = CampaignIndex(ltv)
     bucket_index = BucketIndex(ltv)
-    index = PortfolioIndex(ltv, amount_spent)
+    index = PortfolioIndex(ltv, total_spent)
 
     def compile_search(ltv=ltv, search_df=search_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         try:
             # initialize at ad level
             search_index = ad_index_obj.PrepIndex(search_df, search=True)
-            new_search_index = search_df[['campaign_name', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset ="adid")
+            new_search_index = search_df[['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset ="adid")
+     
             # export to view performance metrics by creative
             search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
+         
             # ad group level
             search_t4 = group_index_obj.PrepIndex(search_index, search=True)
             # campaign level
             search_t3 = campaign_index.PrepIndex(search_t4, search=True)
-
 
             # bucket level
             search_t2 = bucket_index.PrepIndex(search_t3)
@@ -307,7 +315,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
                 _id_map[_id] = name
 
             search_t3['campaign_name'] = search_t3.campaignid.apply(lambda x: _id_map[x])
-        except:
+        except Exception as e:
+            print(e)
             search_index=search_t2=search_t3=search_t4 = None
 
         return search_index, search_t2, search_t3, search_t4
@@ -342,31 +351,24 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             social_index=social_t2=social_t3=social_t4 = None
         return social_index, social_t2, social_t3, social_t4
 
+
     social_index, social_t2, social_t3, social_t4 = compile_social()
     search_index, search_t2, search_t3, search_t4 = compile_search()
-
+    
     t1 = index.PrepIndex(social_t2, search_t2)
     
     def export(df):
-        df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
-        return json.loads(df.to_json(orient='records'))
-    
+        if df is not None:
+            df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
+            return json.loads(df.to_json(orient='records'))
+        else:
+            return None
+
+
+
     struct = {
-        'total_spent': search_df.cost.sum() + social_df.cost.sum(),
-        'buckets': [
-            {
-                'type': 'social',
-                'cost': social_t2['cost'],
-                'index': social_t2['index'],
-                'raw': export(social_t2['raw'])
-            },
-            {
-                'type': 'search',
-                'cost': search_t2['cost'],
-                'index': search_t2['index'],
-                'raw': export(search_t2['raw'])
-            }
-        ],
+        'total_spent': total_spent,
+        'buckets': [],
         'campaigns': {
             'social': export(social_t3),
             'search': export(search_t3)
@@ -380,12 +382,24 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             'search': export(search_index)
         },
         'aggregate': {
-            'index': t1['index'],
-            'raw': export(t1['raw'])
+            'index': t1.get('index'),
+            'raw': export(t1.get('raw'))
         }
     }
+
+    if search_df is not None:
+        struct['buckets'].append({
+            'type': 'search',
+            'cost': search_t2.get('cost'),
+            'index': search_t2.get('index'),
+            'raw': export(search_t2.get('raw'))
+        })
+    if social_df is not None:
+        struct['buckets'].append({
+            'type': 'social',
+            'cost': social_t2.get('cost'),
+            'index': social_t2.get('index'),
+            'raw': export(social_t2['raw'])
+        })
+
     return struct
-
-#     return social_index, search_t4, search_t3, search_t2
-
-    

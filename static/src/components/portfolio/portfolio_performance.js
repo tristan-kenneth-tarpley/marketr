@@ -133,7 +133,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     borderColor: "#62cde0",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
                     borderWidth: 2,
-                    pointRadius: 7,
+                    pointRadius: 2,
                     pointBackgroundColor: "rgb(154, 238, 252)",
                     pointBorderColor: "rgba(98, 205, 224, 0.9)",
                     data: pp1ki,
@@ -147,7 +147,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     borderColor: "#ca7d66",
                     backgroundColor: "rgba(202, 125, 100, 0.8)",
                     borderWidth: 2,
-                    pointRadius: 7,
+                    pointRadius: 2,
                     pointBackgroundColor: "rgb(224, 167, 148)",
                     pointBorderColor: "rgba(202, 125, 100, 0.8)",
                     data: cpm,
@@ -230,8 +230,6 @@ export default class PortfolioPerformance extends HTMLElement {
         const group_buckets = i => {
 
             sub_filters.push(i.type)
-   
-
             buckets = [...buckets, {
                 type: i.type,
                 dates: i.raw.map(x => x.date_start),
@@ -262,7 +260,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 creative = {
                     headline: `${i.headline1} | ${i.headline2}`,
                     description: i.description,
-                    url: i.finalurl
+                    url: i.finalurl,
+                    imageadurl: i.imageadurl
                 }
             } else {
                 creative = {
@@ -439,26 +438,26 @@ export default class PortfolioPerformance extends HTMLElement {
                 `
                 break
             case 1:
-                let social = remove_duplicates(data.social.reverse(), 'campaign_id')
-                let search = remove_duplicates(data.search.reverse(), 'campaign_id')
-
+                let social = data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
+                let search = data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
+  
                 markup = `
-                    ${social.map(_row=>{
+                    ${social ? social.map(_row=>{
                         return row(
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
                             _row.conversions != 0 ? _row.cost/_row.conversions : 0
                         )
-                    }).join("")}
-                    ${search.map(_row=>{
+                    }).join("") : ''}
+                    ${search ? search.map(_row=>{
                         return row(
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
                             _row.conversions != 0 ? _row.cost/_row.conversions : 0
                         )
-                    }).join("")}
+                    }).join("") : ''}
                 `         
                 break
             case 2:
@@ -470,15 +469,25 @@ export default class PortfolioPerformance extends HTMLElement {
                 `
                 break
             case 3:
-                
-                const is_search = data.creative.headline == undefined ? false : true;
-                const is_social = data.creative.headline == undefined ? true : false;
+                let is_search;
+                let is_social;
+                if (data) {
+                    is_search = data.creative.headline == undefined ? false : true;
+                    is_social = data.creative.headline == undefined ? true : false;
+                }
 
-                if (is_search) markup = google(
-                    data.creative.headline,
-                    JSON.parse(data.creative.url)[0],
-                    data.creative.description
-                )
+                if (is_search) {
+                    if (data.creative.headline != '0 | 0') {
+                        markup = google(
+                            data.creative.headline,
+                            JSON.parse(data.creative.url)[0],
+                            data.creative.description
+                        )
+                    } else {
+                        console.log(data)
+                        markup = facebook('', data.creative.imageadurl, '')
+                    }
+                }
                 else if (is_social) markup = facebook('', data.creative.thumbnail, data.creative.body)
 
                 break
@@ -505,8 +514,8 @@ export default class PortfolioPerformance extends HTMLElement {
         }
 
         let recommendation_map = {
-            'leave it alone': `Just give it some time. Our machine learning engines predict that, while the performance isn't where we want it now, it will turn around soon.`,
-            'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it.`,
+            'unclear': `This one probably needs some more time. The performance isn't where we want it now, but it could turn around soon with some optimization. Refer to the profitability spread as a predictor of how this can continue to track and leverage your intel tab on methods to turn it around.`,
+            'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it. Make use of the intel tab. If you need some inspiration, just reach out to your Market(r) guide in the chat!`,
             'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
         /*html*/
@@ -514,12 +523,12 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="col-lg-6 col-md-6 col-12">
                 <div class="card card-body">
                     <div class="row row_cancel">
-                        <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col">
-                            ${title(`${meta_map[active_view]} health score`)}
+                        <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col-lg-6 col-md-6 col-sm-12">
+                            ${title(`${meta_map[active_view]}<br>Market(r) Index`)}
                             ${value(number(marketr_index ? marketr_index : 0))}
                         </div>
-                        <div class="col">
-                            ${title('total health score')}
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            ${title('company<br>health score')}
                             ${value(number(company_index ? company_index : 0))}
                         </div>
                     </div>
@@ -586,24 +595,27 @@ export default class PortfolioPerformance extends HTMLElement {
 
         /*html*/
         return `
-            <div class="row">
-                <div class="col-lg-2 col-md-2 col-12">
-                </div>
-                <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
-                    <div class="row row_cancel">
-                        <div class='col'></div>
-                        <div class="col-lg-5 col-md-5 col-12">
-                            ${title(`Funds remaining: ${value(currency(this.funds_remaining ? this.funds_remaining : 0))}`)}
-                        </div>
-                        <div class="col-lg-5 col-md-5 col-12">
-                            ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`)}
-                        </div>
-                        <div class='col'></div>
+            ${this.analytics ? ''
+            : `
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-12">
                     </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-12">
-                </div>
-            </div>
+                    <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
+                        <div class="row row_cancel">
+                            <div class='col'></div>
+                            <div class="col-lg-5 col-md-5 col-12">
+                                ${title(`Funds remaining: ${value(currency(this.funds_remaining ? this.funds_remaining : 0))}`)}
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-12">
+                                ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`)}
+                            </div>
+                            <div class='col'></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-12">
+                    </div>
+                </div>`
+            }
             <div class="row">
                 <div class="col"></div>
                 <div class="col">
@@ -732,11 +744,14 @@ export default class PortfolioPerformance extends HTMLElement {
                     customer_id: this.customer_id,
                     company_name: this.customer_id == 200 ? "o3" : this.company_name,
                     ltv: this.ltv,
-                    date_range: this.state.date_range
+                    date_range: this.state.date_range,
+                    facebook: this.facebook_id,
+                    google: this.google_id
                 })
             })
             .then(res=> res.json())
             .then(res => {
+                console.log(res)
 
                     document.querySelector('#performance_loader').style.display = 'none'
                     this.state.data = res
@@ -748,8 +763,8 @@ export default class PortfolioPerformance extends HTMLElement {
 
     connectedCallback(start=now()) {
         this.customer_id = this.getAttribute('customer-id')
-        this.facebook_id = this.getAttribute('facebook_id') != null ? true : false
-        this.google_id = this.getAttribute('google_id') != null ? true : false
+        this.facebook_id = this.getAttribute('facebook_id') ? true : false
+        this.google_id = this.getAttribute('google_id') ? true : false
         this.company_name = this.getAttribute('company-name')
         this.spend_rate = this.getAttribute('spend_rate') != null ? parseFloat(this.getAttribute('spend_rate')) : 0
         this.funds_remaining = this.getAttribute('funds_remaining') != null ? parseFloat(this.getAttribute('funds_remaining')) : 0
@@ -757,6 +772,7 @@ export default class PortfolioPerformance extends HTMLElement {
         this.ltv = this.getAttribute('ltv')
         this.demo = this.getAttribute('demo')
         this.analytics = this.getAttribute('analytics') ? true : false
+
 
         this.render()
 
