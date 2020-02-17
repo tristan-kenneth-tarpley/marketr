@@ -469,8 +469,8 @@ def compile_master_index():
         run_search = req.get('google')
     
         search_df = orm.search_index(date_range) if run_search else None
-
         social_df = orm.social_index(date_range) if run_social else None
+        
     else:
         ltv = 5000
         search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where datediff(day, date_start, getdate()) < {date_range}")

@@ -6,8 +6,8 @@ import json
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
-        self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
-        self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
+        self.social_columns = ['id', 'adset_id', 'campaign_id', '_cost',  pd.Grouper(key='date_start', freq='W-MON')]
+        self.search_columns = ['adid', 'adgroupid', 'campaignid', '_cost', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cost': 'sum',
             'conversions': 'sum', 'ctr' : 'sum', 'clicks':'sum',
@@ -220,7 +220,7 @@ class BucketIndex(MarketrIndex):
         super().__init__(ltv)
         
     def PrepIndex(self, df):
-        cost = df.cost.sum()
+        cost = df.head(1)['_cost'][0]
         index = np.average(df.marketr_index, weights=df.cost)
         df = df.groupby('date_start').agg(self.agg_set).reset_index()
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
@@ -261,7 +261,6 @@ class PortfolioIndex(MarketrIndex):
         arr = list()
         for arg in args:
             if arg is not None:
-                print(arg['raw'].pp1ki.sum())
                 arr.append(condition(arg['index'], arg['cost']))
                 dfs.append(arg['raw'])
             
@@ -278,9 +277,9 @@ class PortfolioIndex(MarketrIndex):
 ######### compile ##########
 def compile_master(ltv=None, search_df=None, social_df=None):
     if search_df is not None and social_df is not None:
-        total_spent = search_df.cost.sum() + social_df.cost.sum()
+        total_spent = search_df.head(1)['_cost'][0] + social_df.cost.sum()
     elif search_df is not None and social_df is None:
-        total_spent = search_df.cost.sum()
+        total_spent = search_df.head(1)['_cost'][0]
     elif social_df is not None and not search_df is None:
         total_spent = social_df.cost.sum()
 
