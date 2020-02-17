@@ -213,7 +213,8 @@ class AdminViewModel:
 				'num_campaigns': returned[5],
 				'data_synced': True if returned[6] else False,
 				'phone': returned[7],
-				'email': returned[8]
+				'email': returned[8],
+				'analytics': returned[9]
 			}
 		}
 

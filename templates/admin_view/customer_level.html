@@ -57,7 +57,7 @@
             </div> 
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <p class="small_txt"><strong>Current Plan</strong></p>
-                <p>{{ page.data['customer']['plan'] }}</p>
+                <p>{{ page.data['customer']['plan'] if not page.data['customer']['analytics'] else 'analytics' }}</p>
             </div> 
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <p class="small_txt"><strong>Data synced in Stitch?</strong></p>
