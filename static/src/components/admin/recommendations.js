@@ -35,6 +35,10 @@ const styles = () => {
         #rec_body {
             padding: 4%;
         }
+        #past {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
     </style>
     `.trim()
 }

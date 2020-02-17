@@ -19,30 +19,54 @@
 
 
     {{ admin_breadcrumb(page, view="dashboard") }}
-    <h4>{{ page.customer_name }}</h4>
-    <p>Customer ID: {{page.user}}</p>
-    <div class="row">
-        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
-            <p class="small_txt">Funds remaining</p>
-            {% if page.data['customer']['funds_remaining'] %}
-            <h5>${{ page.data['customer']['funds_remaining'] }}</h5>
-            {% else %}
-            <h5>Wallet empty</h5>
-            {% endif %}
-        </div> 
-        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
-            <p class="small_txt">Spend Rate</p>
-            {% if page.data['customer']['spend_rate'] %}
-            <h5>${{ page.data['customer']['spend_rate'] }}/month</h5>
-            {% else %}
-            <h5>Spend rate not set</h5>
-            {% endif %}
-        </div> 
-        <div class="card negative_card col-lg-4 col-md-4 col-sm-12">
-            <p class="small_txt">Current Plan</p>
-            <h5>{{ page.data['customer']['plan'] }}</h5>
-        </div> 
-
+    <div class="card card-body">
+        <h4 class="widget__title">{{ page.customer_name }}</h4>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p><strong>Customer ID:</strong>
+                <p>{{page.user}}</p>
+            </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p><strong>Email:</strong></p>
+                <p>{{page.data['customer']['email']}}</p>
+            </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p><strong>Phone:</strong></p>
+                <p>{{page.data['customer']['phone']}}</p>
+            </div> 
+        </div>
+        
+        
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p class="small_txt"><strong>Funds remaining</strong></p>
+                {% if page.data['customer']['funds_remaining'] %}
+                <p>${{ page.data['customer']['funds_remaining'] }}</p>
+                {% else %}
+                <p>Wallet empty</h5>
+                {% endif %}
+            </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p class="small_txt"><strong>Spend Rate</strong></p>
+                {% if page.data['customer']['spend_rate'] %}
+                <p>${{ page.data['customer']['spend_rate'] }}/month</p>
+                {% else %}
+                <p>Spend rate not set</p>
+                {% endif %}
+            </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p class="small_txt"><strong>Current Plan</strong></p>
+                <p>{{ page.data['customer']['plan'] }}</p>
+            </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p class="small_txt"><strong>Data synced in Stitch?</strong></p>
+                <select data-customer_id="{{page.user}}" id="sync_data_handler" class="form-control">
+                    <option value="true" {{ 'selected' if page.data['customer']['data_synced'] else ''}}>Yes</option>
+                    <option value="false" {{ 'selected' if not page.data['customer']['data_synced'] else ''}}>No</option>
+                </select>
+            </div> 
+        </div>
     </div>
 
     <div class="row">
@@ -58,7 +82,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="card">                
+            <div class="card card-body">                
                 <admin-recommendations
                     customer-id="{{page.user}}"
                     admin-id="{{page.admin}}">
@@ -80,6 +104,8 @@
     </script>
     <script type="module">
         import AdminRecs from '/static/src/components/admin/recommendations.js'
+
+
         Talk.ready.then(function() {
             let admin = parseInt({{page.admin}})
             let photo;

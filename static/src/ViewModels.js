@@ -24,6 +24,21 @@ export class CoreViewModels {
         }
     }
 
+    sync_data(){
+        document.querySelector("#sync_data_handler").addEventListener('change', e=>{
+            let status = eval(e.currentTarget.value)
+            let customer_id = e.currentTarget.dataset.customer_id
+            fetch(`/customers/${customer_id}/data_synced`, {
+                method: 'POST',
+                headers : new Headers({
+                    "content-type": "application/json"
+                }),
+                body: JSON.stringify({status})
+            })
+            .then(res=>res.json())
+        })
+    }
+
     left_nav_update(e) {
         let target = $(e.currentTarget)
         let id = target.attr('id')

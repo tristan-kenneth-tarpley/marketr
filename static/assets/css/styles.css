@@ -12345,8 +12345,7 @@ html.modal-active, body.modal-active {
   margin-bottom: 5%;
   font-weight: 300;
   text-transform: capitalize;
-  overflow: hidden;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .widget__title.wrap {

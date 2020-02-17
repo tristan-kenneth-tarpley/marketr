@@ -66,8 +66,8 @@ const Controller = class {
 		function hasNumber(myString) {
 			return /\d/.test(myString);
 		}
-		
 		if (route.substring(0, 10) == "/customers" && hasNumber(route)){
+			
 			if (route.substring(27) == '/ad_audit' && hasNumber(route)) {
 				return 'audit'
 			} else {
@@ -164,6 +164,7 @@ const Controller = class {
 					view_model.messages()
 					view_model.dashboard()
 					view_model.dashboard()
+					view_model.sync_data()
 					
 					break
 				case 'audit':

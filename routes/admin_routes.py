@@ -195,7 +195,13 @@ def customers():
 	)
 
 
-
+@app.route('/customers/<customer_id>/data_synced', methods=['POST', 'GET'])
+@admin_required
+def data_synced(customer_id):
+	req = request.get_json()
+	status = 1 if req.get('status') == True else None
+	db.execute("update customer_basic set data_synced = ? where id = ?", False, (status, customer_id), commit=True)
+	return customer_id
 
 @app.route('/customers/<customer_id>', methods=['POST', 'GET'])
 @admin_required

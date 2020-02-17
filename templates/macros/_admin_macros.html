@@ -265,16 +265,15 @@
 			{% for insight in base %}
 
 				{% if loop.index == 1 %}
-					<h6>The last insight you sent to {{page.customer_name}} was on {{insight['time']}}</h6>
-					<br><br>
-					<label>Past insights:</label>
-					<br><br>
+					<h5 class="widget__title">The last insight you sent to {{page.customer_name}} was on {{insight['time']}}</h5>
+					<p>Past insights:</p>
 				{% endif %}
 
-				<div class="card">
+				<div>
 					<p><strong>{{ insight['time'] }}</strong></p>
 					<p>{{ insight['body'] }}</p>
 				</div>
+				{% if base | length > 1 %}<div class="separator"></div>{% endif %}
 		
 			{% endfor %}
 		</div>

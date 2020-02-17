@@ -191,33 +191,15 @@ class AdminViewModel:
 		returned = cursor.fetchone()
 
 		if returned[2]:
-			plan = 'Ads Mid'
+			num_campaigns = returned[5]
+			plan = f'{num_campaigns} active campaigns'
 		elif returned[3]:
 			plan = 'Almost free'
 		elif returned[4]:
 			plan = 'Ads Premium'
 		else:
 			plan = 'No Active Plan'
-
-		now = UserService.now()
-		temp_data = eval(returned[5]) if returned[5] else None
-
-		if temp_data:	
-			last_date = temp_data['ad_view'][0]['end_date']
-			now = datetime.datetime.strptime(now[:10], '%Y-%m-%d')
-			last_date = datetime.datetime.strptime(last_date[:10], '%Y-%m-%d')
-			time_diff = str(now-last_date)
-			
-			if time_diff[1].isdigit():
-				data_due = True
-			elif int(str(time_diff)[0]) > 6:
-				data_due = True
-			else:
-				data_due = False
-		else:
-			last_date = None
-			data_due = True
-		
+			temp_data = None
 		
 
 		self.data = {
@@ -228,8 +210,10 @@ class AdminViewModel:
 				'funds_remaining': returned[0],
 				'spend_rate': returned[1],
 				'plan': plan,
-				'last_audit': str(last_date)[:10],
-				'data_due': data_due
+				'num_campaigns': returned[5],
+				'data_synced': True if returned[6] else False,
+				'phone': returned[7],
+				'email': returned[8]
 			}
 		}
 

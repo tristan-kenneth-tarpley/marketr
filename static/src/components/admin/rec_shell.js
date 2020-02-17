@@ -632,13 +632,10 @@ export default class Rec_shell extends HTMLElement {
         const shell = `
         <div id="modal-container">
             <div class="modal-background">
-                <div class="modal">
-                    <h2>${title}</h2>
+                <div class="safe modal">
+                    <h5 class="widget__title">${title}</h5>
                     <p>${body}</p>
                     <p>Rec id: ${id}</p>
-                    <svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
-                        <rect x="0" y="0" fill="none" width="226" height="162" rx="3" ry="3"></rect>
-                    </svg>
                 </div>
             </div>
         </div>
@@ -704,7 +701,7 @@ export default class Rec_shell extends HTMLElement {
             <div class="rec-container">
                 <div class="rec">
                     <div id="six" class="button">
-                        <h5 class="rec-title">
+                        <h5 class="widget__title rec-title">
                             ${this.title}
                         </h5>
                     </div>
