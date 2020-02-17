@@ -690,6 +690,15 @@ export default class PortfolioPerformance extends HTMLElement {
         return insights
     }
 
+    error_markup(){
+        const div = `
+        <div class="center_it">
+            <p>Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
+        </div>
+        `
+        return div
+    }
+
 
 
     render(init=true){
@@ -757,6 +766,31 @@ export default class PortfolioPerformance extends HTMLElement {
                     this.state.data = res
                     run()
     
+            })
+            .catch(e=>{
+                document.querySelector('#performance_loader').style.display = 'none'
+                this.shadow.innerHTML = `
+                    ${this.css}
+                    <div class="row">
+                        <div class="card card-body col-lg-12 col-md-12 col-sm-12">${this.error_markup()}</div>
+                        <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
+                            <div class="">
+                                <h1 class="widget__title">Insights</h1>    
+                            </div>
+                        </div>
+                        <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card card-body">
+                                <h1 class="widget__title">Recommendations</h1>
+                            </div>
+                        </div>
+                    </div>
+                `
+                
+                if (!this.analytics) {
+                    this.shadow.querySelector("#recommendations div").appendChild(this.recs())
+                    this.shadow.querySelector('#insights div').appendChild(this.insights())
+                }
+                console.log(e)
             })
         } else run()
     }

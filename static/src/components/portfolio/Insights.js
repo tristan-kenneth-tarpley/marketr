@@ -43,13 +43,14 @@ export default class Insights extends HTMLElement {
 
     shell(){
         return `
+        ${this.css}
         <div class="shadow_insights">
                 ${this.state.data.map((ins, index)=>{
   
 
                     /*html*/
                     return `
-                    ${this.css}
+                    
                     <div class="_insight_row">
                         <h1 class="widget__title">${index + 1}) From ${ins.admin}</h1>
                         <h3 class='widget__title small dark_blue small_txt'>Written on ${ins.time}</h3>
