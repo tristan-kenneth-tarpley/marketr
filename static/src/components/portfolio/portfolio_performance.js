@@ -772,9 +772,13 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.shadow.innerHTML = `
                     ${this.css}
                     <div class="row">
-                        <div class="card card-body col-lg-12 col-md-12 col-sm-12">${this.error_markup()}</div>
-                        <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
-                            <div class="">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="card card-body">
+                                ${this.error_markup()}
+                            </div>
+                        </div>
+                        <div id="insights" class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="card card-body">
                                 <h1 class="widget__title">Insights</h1>    
                             </div>
                         </div>

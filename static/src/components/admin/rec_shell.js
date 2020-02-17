@@ -646,27 +646,39 @@ export default class Rec_shell extends HTMLElement {
 
     modal_handlers(){
         
-        const modal_container = this.shadow.querySelectorAll("#modal-container")
-        const body = document.querySelector('body')
-        this.shadow.querySelectorAll('.button').forEach(el => {
-            el.addEventListener('click', e=>{
+    const modal_container = this.shadow.querySelectorAll("#modal-container")
+    const body = document.querySelector('body')
+    const parent = this.shadow
+    
+    parent.querySelectorAll('.button').forEach(el => {
+        el.addEventListener('click', e=>{
                 let buttonId = e.currentTarget.getAttribute('id')
-                
+            
                 modal_container.forEach(el=>{
-                    el.removeAttribute('class')
-                    el.classList.add(buttonId)
+                    if (el.dataset.uid == e.currentTarget.dataset.uid) {
+                        el.removeAttribute('class')
+                        el.classList.add(buttonId)
+                        body.classList.add('modal-active')
+                    }
                 })
-                body.classList.add('modal-active')
-            })
-        }); 
-
-        modal_container.forEach(el=>{
-            el.addEventListener('click', e=>{
+        })
+    }); 
+    parent.querySelectorAll('.safe').forEach(el=>{
+        const text = el.querySelector('p')
+        text.innerHTML = urlify(text.textContent)
+        el.addEventListener('click', e=>{
+            e.stopPropagation()
+        })
+    })
+    modal_container.forEach(el=>{
+        el.addEventListener('click', e=>{
+            if (el.dataset.uid == e.currentTarget.dataset.uid) {
                 const _this = e.currentTarget
                 _this.classList.add('out')
-            })
-            body.classList.remove('modal-active')
+                body.classList.remove('modal-active')
+            }
         })
+    })
     }
 
 

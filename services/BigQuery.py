@@ -129,7 +129,7 @@ class GoogleORM(BigQuery):
 
             (
             select sum(cost) from (
-                select distinct cost / 1000000 as cost from `marketr-app`.`intrinsically_safe_store_google`.`ACCOUNT_PERFORMANCE_REPORT`
+                select distinct cost / 1000000 as cost from `{self.project_id}`.`{self.company_name}_google`.`ACCOUNT_PERFORMANCE_REPORT`
                 where date_diff(CURRENT_DATE(), CAST(DATE(day) AS DATE), day) <= {_range}
             )) as _cost
 

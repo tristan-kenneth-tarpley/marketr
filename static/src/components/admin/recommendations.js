@@ -71,10 +71,12 @@ export default class AdminRecs extends HTMLElement {
         /* html */
         const el = `
         <form method="POST" id="new_rec">
-            <label for="rec_title">Recommendation title</label>
-            <input name="rec_title" type="text" class="form-control" placeholder="Recommendation title">
-            
-            <label for="rec_body">Recommendation</label>
+            <h5 for="rec_title widget__title">Recommendation title</h5>
+            <div class="input-group">
+                <input name="rec_title" type="text" class="form-control" placeholder="Recommendation title">
+                <span class="form-control-border"></span>
+            </div>
+            <h5 for="rec_body widget__title">Recommendation</h5>
             <textarea type="text" id="rec_body" name="rec_body" class="form-control" placeholder="Recommendation body"></textarea>
             
             <input type="submit" class="btn btn-primary">
@@ -165,7 +167,7 @@ export default class AdminRecs extends HTMLElement {
             /*html */
             el.innerHTML = `
                 ${this.css}
-                <h5>Recommendations</h5>
+                <h5 class="widget__title">Recommendations</h5>
                 <div class="row">
                     <div class="col-lg-6 col-sm-12">
                         ${this.form()}
