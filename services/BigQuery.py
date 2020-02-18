@@ -121,6 +121,7 @@ class GoogleORM(BigQuery):
 
         where campaign_name is not null
         and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= 30
+        and creative.image_url is not null
         """
         
         return self.get(facebook)
