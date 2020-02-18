@@ -74,6 +74,20 @@ class GoogleORM(BigQuery):
                 except:
                     return None
 
+    def social_campaigns(self):
+        query = f"""
+        select distinct 'facebook' as type, effective_status as state, name as campaign_name, id as campaign_id from `{self.project_id}`.`{self.company_name}_facebook`.`campaigns`
+        """
+
+        return self.get(query)
+    
+    def search_campaigns(self):
+        query = f"""
+        select distinct 'google' as type, campaignstate as state, campaign as campaign_name, campaignid as campaign_id from `{self.project_id}`.`{self.company_name}_google`.`AD_PERFORMANCE_REPORT`
+        """
+
+        return self.get(query)
+
     def cost_past_7(self):
         query = f"""
         select sum(cost) as cost from (
@@ -95,7 +109,7 @@ class GoogleORM(BigQuery):
 
         facebook = f"""
         select distinct
-                (select sum(spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= 30) as _cost,
+                (select sum(spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= {_range}) as _cost,
                 
                 (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
                 
@@ -120,7 +134,7 @@ class GoogleORM(BigQuery):
 
 
         where campaign_name is not null
-        and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= 30
+        and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= {_range}
         and creative.image_url is not null
         """
         

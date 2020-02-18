@@ -350,7 +350,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
                 this.sub_filters = sub_filters
                 let copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
-                console.log(copied_ads)
+    
+                
                 this.state.breakdown = copied_ads[0]
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
@@ -485,7 +486,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             data.creative.description
                         )
                     } else {
-                        console.log(data)
+               
                         markup = facebook('', data.creative.imageadurl, '')
                     }
                 }

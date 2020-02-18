@@ -23,6 +23,7 @@ from services.gamify import Achievements, Credits, Rewards
 from services.BigQuery import GoogleORM
 from services.RecService import RecommendationService, Recommendation
 from services.WebListener import Listener
+from services.CampaignManager import CampaignMetaManager
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -520,6 +521,31 @@ def index_trendline():
 # @app.route('/api/index/trendline/view', methods=['POST'])
 # def portfolio_view_func():
 #     pass
+
+@app.route('/api/campaigns', methods=['POST'])
+def get_campaigns():
+    req = request.get_json()
+    company_name = req.get('company_name')
+    orm = GoogleORM(company_name)
+    campaigns = list()
+    if req.get('google'):
+        campaigns.append(orm.search_campaigns())
+    if req.get('facebook'):
+        campaigns.append(orm.social_campaigns())
+
+    manager = CampaignMetaManager(req.get('customer_id'))
+    
+    return manager.group(campaigns)
+
+@app.route('/api/claim_campaign', methods=['POST'])
+def claim_campaign():
+    req = request.get_json()
+    manager = CampaignMetaManager(req.get('customer_id'))
+    manager.claim(req.get('campaign_name'), req.get('customer_id'), req.get('campaign_id'), req.get('type'))
+
+    return 'success'
+
+
 
 
 

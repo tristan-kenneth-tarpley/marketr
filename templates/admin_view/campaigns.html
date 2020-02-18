@@ -39,6 +39,7 @@
     </div>
 </div>
 
+
 <div class="hidden views" id="existing_view">
     <campaign-analyzer customer-id="{{page.user}}"></campaign-analyzer>
 </div>
@@ -48,13 +49,29 @@
 </div>
 
 
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <campaign-meta-manager
+                company_name="{{page.accounts['meta']['company_name']}}"
+                google="{{page.accounts['google_id']}}"
+                facebook="{{page.accounts['facebook_id']}}"
+                customer-id="{{page.user}}">
+            </campaign-meta-manager>
+        </div>
+    </div>
+</div>
+
+
+
 
 {% block js %}
-<script type="module">
+<script type="module" async>
     //import {CampaignInitial} from '/static/src/components/campaign-initial.js'
     import CampaignCreator from '/static/src/components/campaign_creator.js'
     import CampaignAnalyzer from '/static/src/components/existing-campaigns.js'
     import CampaignViewModel from '/static/src/CampaignViewModel.js'
+    import MetaManager from '/static/src/components/admin/campaign_meta.js'
     
     const vm = new CampaignViewModel()
     vm.run()

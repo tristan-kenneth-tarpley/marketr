@@ -161,10 +161,13 @@ class AdminViewModel:
 		query = "select facebook_id, google_id, twitter_id from customer_basic where id = ?"
 		data, cursor = db.execute(query, True, (self.user,))
 		data = cursor.fetchone()
+
+		meta = self.admin_dashboard()
 		self.accounts = {
 			'facebook_id': data[0],
 			'google_id': data[1],
-			'twitter_id': data[2]
+			'twitter_id': data[2],
+			'meta': self.admin_dashboard()
 		}
 	
 	def tags(self):
@@ -177,15 +180,7 @@ class AdminViewModel:
 		self.image = meta['0']['image']
 		self.category = meta['0']['category']
 
-	def acct_mgmt(self):
-		service = AdminUserService(self.user, self.admin)
-		messages = service.messaging.get_messages()
-		tasks = service.tasks.get_tasks()
-		self.task_form = forms.TaskForm()
-		self.customer_name = self.admin_service.get_customer_name(self.user)
-		insights_service = InsightsService(self.user, admin_id=self.admin, user='admin')
-		insights = insights_service.fetch()
-
+	def admin_dashboard(self):
 		query = 'SELECT * from admin_dashboard(?)'
 		returned, cursor = db.execute(query, True, (self.user,))
 		returned = cursor.fetchone()
@@ -200,22 +195,37 @@ class AdminViewModel:
 		else:
 			plan = 'No Active Plan'
 			temp_data = None
-		
 
+		_return = {
+			'funds_remaining': returned[0],
+			'spend_rate': returned[1],
+			'plan': plan,
+			'num_campaigns': returned[5],
+			'data_synced': True if returned[6] else False,
+			'phone': returned[7],
+			'email': returned[8],
+			'analytics': returned[9],
+			'company_name': returned[10]
+		}
+
+		return _return
+
+	def acct_mgmt(self):
+		service = AdminUserService(self.user, self.admin)
+		messages = service.messaging.get_messages()
+		tasks = service.tasks.get_tasks()
+		self.task_form = forms.TaskForm()
+		self.customer_name = self.admin_service.get_customer_name(self.user)
+		insights_service = InsightsService(self.user, admin_id=self.admin, user='admin')
+		insights = insights_service.fetch()
+
+		returned = self.admin_dashboard()
+		
 		self.data = {
 			'tasks': tasks,
 			'insights': insights,
 			'messages': messages,
-			'customer': {
-				'funds_remaining': returned[0],
-				'spend_rate': returned[1],
-				'plan': plan,
-				'num_campaigns': returned[5],
-				'data_synced': True if returned[6] else False,
-				'phone': returned[7],
-				'email': returned[8],
-				'analytics': returned[9]
-			}
+			'customer': returned
 		}
 
 	def personnel(self) -> None:
