@@ -92,30 +92,36 @@ class GoogleORM(BigQuery):
         return self.get(query)
 
     def social_index(self, _range):
-        facebook = f"""
-            select
-                ai.campaign_name as ad_name, ai.date_start, ads.creative.id, ads.adset_id, ads.campaign_id,
-                creative.thumbnail_url, creative.body,
-                ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend / 1000 as cost, null as conversions,
-                adsets.daily_budget, ca.name as campaign_name
 
-            from `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
+        facebook = f"""
+        select distinct
+                (select sum(spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= 30) as _cost,
+                
+                (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
+                
+                ads.creative.id, ads.adset_id, ads.campaign_id,
+                
+                creative.image_url as thumbnail_url, creative.body,
+                
+                ai.campaign_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
+                
+                ca.name as campaign_name
+
+            from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+            
+            join `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
+            on ai.ad_id = ads.id
 
             join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
             on creative.id = ads.creative.id
 
-            join `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
-            on ai.ad_id = ads.id
-            
-            join `{self.project_id}`.`{self.company_name}_facebook`.`adsets` as adsets
-            on adsets.campaign_id = ads.campaign_id
-            
             join `{self.project_id}`.`{self.company_name}_facebook`.`campaigns` as ca
             on ca.id = ads.campaign_id
-            
-            where creative.thumbnail_url is not null and campaign_name is not null
-            and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= {_range}
-            """
+
+
+        where campaign_name is not null
+        and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= 30
+        """
         
         return self.get(facebook)
     

@@ -283,7 +283,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         total_spent = search_df.head(1)['_cost'][0]
     elif social_df is not None and search_df is None:
         total_spent = social_df.cost.sum()
- 
 
     # init objects
     ad_index_obj = AdIndex(ltv) 
@@ -327,7 +326,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             # initialize at ad level
             social_index = ad_index_obj.PrepIndex(social_df, social=True)
 
-            new_social_index = social_df[['campaign_name', 'id', 'thumbnail_url', 'body', 'daily_budget']].drop_duplicates(subset = 'id')
+            new_social_index = social_df[['campaign_name', 'id', 'thumbnail_url', 'body']].drop_duplicates(subset = 'id')
             # export to view performance metrics by creative
             social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
 
@@ -348,7 +347,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             social_t3['campaign_name'] = social_t3.campaign_id.apply(lambda x: _id_map[x])
         # bucket level
         # portfolio level
-        except:
+        except Exception as e:
+            print(e)
             social_index=social_t2=social_t3=social_t4 = None
         return social_index, social_t2, social_t3, social_t4
 
