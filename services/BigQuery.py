@@ -108,21 +108,22 @@ class GoogleORM(BigQuery):
     def social_index(self, _range):
 
         facebook = f"""
-        select distinct
-                (select sum(spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= {_range}) as _cost,
-                
+            select distinct
+                (select sum(distinct spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= {_range}) as _cost,
+
                 (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
-                
+
                 ads.creative.id, ads.adset_id, ads.campaign_id,
-                
+
                 creative.image_url as thumbnail_url, creative.body,
-                
-                ai.campaign_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
-                
-                ca.name as campaign_name
+
+                ai.ad_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
+
+                ca.name as campaign_name,
+                null as daily_budget
 
             from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
-            
+
             join `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
             on ai.ad_id = ads.id
 
@@ -133,16 +134,19 @@ class GoogleORM(BigQuery):
             on ca.id = ads.campaign_id
 
 
-        where campaign_name is not null
-        and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= {_range}
-        and creative.image_url is not null
+            where campaign_name is not null
+            and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= {_range}
+            and creative.image_url is not null
+
+            order by date_start
+
         """
         
         return self.get(facebook)
     
     def search_index(self, _range):
         google = f"""
-              select 
+            select 
 
             distinct 
 

@@ -69,14 +69,15 @@ export default class MetaManager extends HTMLElement {
             <th>claimed?</th>
         </thead>
         ${this.state.data.map(camp=>{
-            let {type_x, state, campaign_name_x, campaign_id, claimed} = camp
+            console.log(camp.claimed)
+            let {type, state, campaign_name, campaign_id, claimed} = camp
             /*html*/
             return `
             <tr>
-                <td><p>${type_x}</p></td>
+                <td><p>${type}</p></td>
                 <td><p>${state}</p></td>
-                <td><p>${campaign_name_x}</p></td>
-                <td><input data-campaign_name="${campaign_name_x}" data-campaign_id="${campaign_id}" data-type="${type_x}" class="claimed form-control" type="checkbox" ${claimed == 1 ? 'checked' : ''}></td>
+                <td><p>${campaign_name}</p></td>
+                <td><input data-campaign_name="${campaign_name}" data-campaign_id="${campaign_id}" data-type="${type}" class="claimed form-control" type="checkbox" ${claimed ? 'checked' : ''}></td>
             </tr>
             `
         }).join("")}

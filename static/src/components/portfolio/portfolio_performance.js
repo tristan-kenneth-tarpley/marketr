@@ -9,6 +9,19 @@ import { dots_loader } from '/static/src/components/UI_elements.js'
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = text => `<h1 class="widget__value">${text}</h1>`
+const marketr_score = text => {
+    let score = parseFloat(text)
+    let color;
+    if (score <= 1.5) {
+        color = "#e84c85"
+    } else if (score > 1.5 && score <= 2.25) {
+        color = "#fcd12a"
+    } else if (score > 2.25) {
+        color = "#12c457"
+    }
+
+    return `<h1 style="color:${color}" class="widget__value">${text}</h1>`
+}
 
 const styles = () => {
     /*html*/
@@ -17,7 +30,9 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-
+        .comparison_table tr {
+            border-bottom: 1px solid #f2f2ff;
+        }
         .metric_display {
             color: var(--primary);
             font-weight: bold;
@@ -90,6 +105,13 @@ const styles = () => {
             margin-left: auto;
             margin-bottom: 0;
         }
+        .secondary_value {
+            color: var(--secondary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: auto;
+            margin-bottom: 0;
+        }
 
 
     </style>
@@ -117,6 +139,20 @@ export default class PortfolioPerformance extends HTMLElement {
         this.css = styles()
     }
 
+    abort(){
+        this.state = {
+            data: null,
+            date_range: 30,
+            active_view: 0,
+            active_data: {
+                profitability: {
+                    
+                }
+            }
+        }
+        this.render()
+    }
+
     profit_chart(target){
         var chart = target.getContext('2d')
 
@@ -128,7 +164,7 @@ export default class PortfolioPerformance extends HTMLElement {
             labels: dates,
             datasets: [
                 {
-                    label: "Profit potential",
+                    label: "Profit potential per thousand impressions",
                     fill: false,
                     borderColor: "#62cde0",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
@@ -247,13 +283,21 @@ export default class PortfolioPerformance extends HTMLElement {
                 date_start: camp.date_start,
                 marketr_index:camp.marketr_index,
                 action: camp.action,
-                cost: camp.cost
+                conversions: camp.conversions,
+                cost: camp.cost,
+                cost_comp: camp.cost_comp,
+                pp1ki_comp: camp.pp1ki_comp,
+                index_comp: camp.index_comp,
+                cost_comp: camp.cost_comp,
+                cpl_comp: camp.cpl_comp
             }]
             if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
 
         }
         const group_ads = i => {
             let id = i.id == undefined ? i['adid'] : i['id']
+            
+            let name = i.ad_name == undefined || 0 ? id : i.ad_name
             let creative;
 
             if (i.id == undefined) {
@@ -278,9 +322,17 @@ export default class PortfolioPerformance extends HTMLElement {
                 date_start: i.date_start,
                 action: i.action,
                 cost: i.cost,
-                creative
+                creative,
+                name,
+                conversions: i.conversions,
+                cost_comp: i.cost_comp,
+                pp1ki_comp: i.pp1ki_comp,
+                index_comp: i.index_comp,
+                cost_comp: i.cost_comp,
+                cpl_comp: i.cpl_comp
             }]
-            if (!sub_filters.includes(id)) sub_filters.push(id)
+   
+            if (!sub_filters.includes(name)) sub_filters.push(name)
         }
          //dates = Array.from(new Set([...dates, i.date_start]))
        
@@ -310,6 +362,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // campaigns
             case 2:
+                console.log(data.campaigns)
                 if (data.campaigns.search) {
                     data.campaigns.search.map(camp=>{
                         group_campaigns(camp)
@@ -338,6 +391,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // ads
             case 3:
+
                 if (data.ads.search) {
                     data.ads.search.map(camp=>{
                         group_ads(camp)
@@ -349,9 +403,14 @@ export default class PortfolioPerformance extends HTMLElement {
                     })
                 }
                 this.sub_filters = sub_filters
-                let copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
-    
                 
+                let _copied_ads = ads.filter(x=>x.name == this.state.active_sub_view)
+ 
+                let copied_ads;
+                if (_copied_ads.length == 0) copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
+                else copied_ads = _copied_ads
+           
+
                 this.state.breakdown = copied_ads[0]
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
@@ -383,6 +442,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
         el.querySelector("#sub_target").addEventListener('change', e=>{
             this.sub_edited = true
+
             const first = async () => this.state.active_sub_view = e.currentTarget.value
             first().then(()=>this.data_controller()).then(() => {
                 setTimeout(()=>{
@@ -429,6 +489,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </li>
             `
         } 
+
         
         switch(this.state.active_view) {
             case 0:
@@ -486,15 +547,89 @@ export default class PortfolioPerformance extends HTMLElement {
                             data.creative.description
                         )
                     } else {
-               
+                        
                         markup = facebook('', data.creative.imageadurl, '')
                     }
                 }
-                else if (is_social) markup = facebook('', data.creative.thumbnail, data.creative.body)
+                else if (is_social) markup =  `
+                    ${modal_trigger('view_creative', 'view creative')}
+                    ${modal('', facebook('', data.creative.thumbnail, data.creative.body), 'view_creative')}
+                `
 
                 break
         }
         return markup
+    }
+
+    comparison_markup(){
+        console.log(this.state.breakdown)
+        let breakdown;
+        try {
+            breakdown = this.state.breakdown[0] == undefined ? this.state.breakdown : this.state.breakdown[0]
+        } catch (error) {
+            console.log(error)
+            this.abort()
+        }
+
+        
+        
+        let {cost, cost_comp, pp1ki, pp1ki_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
+        let cpl = conversions > 0 ? cost / conversions : null
+        
+        const metric_name = text => `<td><p style="font-size: 70%;">${text}</p></td>`
+        const this_value = text => `<td style="font-size: 90%;">${value(text)}</td>`
+        const perc_variance = (_value, low_is_good=false) => {
+            let value = !isNaN(_value) ? parseFloat(_value) : 'n/a'
+            let green = '#12c457'
+            let red = '#e84c85'
+            let color;
+            if (value > 0) {
+                if (!low_is_good) color = green
+                else if (low_is_good) color = red
+            } else if (value <= 0) {
+                if (!low_is_good) color = red
+                else if (low_is_good) color = green
+            } else {
+                color = 'rgba(0,0,0,.3)'
+            }
+            
+            
+            return `<td><h1 style="color:${color}; font-size: 90%;" class="widget__value">${value}%</h1></td>`
+        }
+
+        const el = /*html*/ `
+            <table id="comparison_table" class="table table-responsive table-borderless" style="width: 100%;">
+                <thead>
+                    <th></th>
+                    <th>${title('This value')}</th>
+                    <th>${title('Compared to the rest')}</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        ${metric_name('cost')}
+                        ${this_value(currency_rounded(cost))}
+                        ${perc_variance(cost_comp ? number(cost_comp) : 'n/a', true)}
+                    </tr>
+                    <tr>
+                        ${metric_name('cost per<br>conversion')}
+                        ${this_value(cpl ? currency_rounded(cpl) : 'n/a')}
+                        ${perc_variance(cpl_comp ? number(cpl_comp) : 'n/a', true)}
+                    </tr>
+                    <tr>
+                        ${metric_name('health score')}
+                        ${this_value(number(marketr_index))}
+                        ${perc_variance(index_comp ? number(index_comp) : 'n/a')}
+                    </tr>
+                    <tr>
+                        ${metric_name('profit potential<br>per thousand impressions')}
+                        ${this_value(currency(pp1ki))}
+                        ${perc_variance(pp1ki_comp ? number(pp1ki_comp) : 'n/a')}
+                    </tr>
+                </tbody>
+            </table>
+            `
+
+        return el
     }
 
     template(){
@@ -516,25 +651,31 @@ export default class PortfolioPerformance extends HTMLElement {
         }
 
         let recommendation_map = {
-            'unclear': `This one probably needs some more time. The performance isn't where we want it now, but it could turn around soon with some optimization. Refer to the profitability spread as a predictor of how this can continue to track and leverage your intel tab on methods to turn it around.`,
+            'middle of the pack': 'middle of the pack',
             'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it. Make use of the intel tab. If you need some inspiration, just reach out to your Market(r) guide in the chat!`,
             'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
         /*html*/
         return `
             <div class="col-lg-6 col-md-6 col-12">
+                ${![0].includes(active_view)
+                ? `
                 <div class="card card-body">
                     <div class="row row_cancel">
+                        
                         <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col-lg-6 col-md-6 col-sm-12">
-                            ${title(`${meta_map[active_view]}<br>Market(r) Index`)}
+                            ${title(`${meta_map[active_view]}<br>Health score`)}
                             ${value(number(marketr_index ? marketr_index : 0))}
                         </div>
+          
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             ${title('company<br>health score')}
                             ${value(number(company_index ? company_index : 0))}
                         </div>
+
                     </div>
-                </div>
+                </div>`
+                : ``}
             </div>
         </div>
         <div class="col-sm-6 col-lg-6 col-md-6">
@@ -554,17 +695,16 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="card card-body">
                 ${title(breakdown_title[active_view])}
                 ${this.breakdown_markup()}
-              
+
+                <div class="divider"></div>
                     ${
                     ![0,1].includes(active_view)
                         ? `
-                        <div class="separator"></div>
                         <div class="row">
                             <div class="col">
 
-                                ${title('our recommendation:')}
-                                ${value(action ? action : "")}
-                                <p>${recommendation_map[action]}</p>
+                                ${title(`Our recommendation: ${action ? action : ""}`)}
+                                ${this.comparison_markup()}
                   
                             </div>
                         </div>`
@@ -600,21 +740,22 @@ export default class PortfolioPerformance extends HTMLElement {
             ${this.analytics ? ''
             : `
                 <div class="row">
-                    <div class="col-lg-2 col-md-2 col-12">
+                    <div class="col-lg-1 col-md-1 col-12">
                     </div>
-                    <div class="blue-card card card-body col-lg-8 col-md-8 col-12">
+                    <div class="blue-card card card-body col-lg-10 col-md-10 col-12">
                         <div class="row row_cancel">
-                            <div class='col'></div>
-                            <div class="col-lg-5 col-md-5 col-12">
+                            <div class="col-lg-4 col-md-4 col-12">
+                                ${title(`Company health score: ${marketr_score(number(this.state.data.aggregate.index))}`)}
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-12">
                                 ${title(`Funds remaining: ${value(currency(this.funds_remaining ? this.funds_remaining : 0))}`)}
                             </div>
-                            <div class="col-lg-5 col-md-5 col-12">
+                            <div class="col-lg-4 col-md-4 col-12">
                                 ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`)}
                             </div>
-                            <div class='col'></div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-12">
+                    <div class="col-lg-1 col-md-1 col-12">
                     </div>
                 </div>`
             }
@@ -659,6 +800,7 @@ export default class PortfolioPerformance extends HTMLElement {
                                         ${title('filter by', true)}
                                         <select id="sub_target" class="form-control">
                                             ${this.sub_filters.map((filter, index)=>{
+                                               
                                                 return (
                                                     `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
                                                         ${filter}
@@ -739,7 +881,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         el.querySelector("#recommendations div").appendChild(recs)
                         el.querySelector('#insights div').appendChild(insights)
                     }
-                    return el
+                    return modal_handlers(el)
                 })
                 .then( el => this.shadow.appendChild(this.view_controller(el)) )
         }
@@ -762,7 +904,7 @@ export default class PortfolioPerformance extends HTMLElement {
             })
             .then(res=> res.json())
             .then(res => {
-                console.log(res)
+
 
                     document.querySelector('#performance_loader').style.display = 'none'
                     this.state.data = res

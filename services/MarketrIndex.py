@@ -18,7 +18,15 @@ class MarketrIndex(object):
 
     def clean(self, df):
         df.fillna(0, inplace=True)
-        df['lcr'] = df.conversions.sum() / df.clicks.sum() if df.clicks.sum() > 0 else .02
+        df.drop_duplicates(subset=['cost', 'clicks'], inplace=True)
+
+        def lcr(conversions, clicks):
+            if clicks > 0:
+                return conversions / clicks
+            else:
+                return 0
+            
+        df['lcr'] = df.apply(lambda x: lcr(x['conversions'], x['clicks']), axis=1)
         df['ltv'] = self.ltv
         return df
     
@@ -32,14 +40,43 @@ class MarketrIndex(object):
             formula = 0
         return formula
     
+    def IndexFormula(self, number):
+        _base = 0.00077572178
+        base = _base if _base > 0 else _base * -1
+        exp = 1.3198878401
+        
+        formula = base * abs(number) ** exp
+        return formula
+    
+    def Comparisons(self, df):
+        if df.pp1ki.mean() > 0:
+            df['pp1ki_comp'] = df['pp1ki'] - df.pp1ki.mean() / df.pp1ki.mean() * 100
+            
+        if df.marketr_index.mean() > 0:
+            df['index_comp'] = df['marketr_index'] - df.marketr_index.mean() / df.marketr_index.mean() * 100
+        
+        if df.cost.mean() > 0:
+            df['cost_comp'] = df['cost'] - df.cost.mean() / df.cost.mean() * 100
+            
+        if df.conversions.mean() > 0:
+            df['cpl_comp'] = (
+                (df['cost'] / df['conversions'])
+                - (df.cost.mean() / df.conversions.mean())
+                / (df.cost.mean() / df.conversions.mean())
+                * 100
+            )
+            
+        return df
+    
     def Prep(self, DF, search=False, social=False):
         assert search == True or social == True, self.assertion_error
         if search:
             columns = self.search_columns
         elif social:
             columns = self.social_columns
-        
+            
         df = self.clean(DF)
+            
         df['cpm'] = 1000 * df.cost / df.impressions
         df['date_start'] = pd.to_datetime(df['date_start']) - pd.to_timedelta(7, unit='d')
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
@@ -49,14 +86,7 @@ class MarketrIndex(object):
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         
         return df
-    
-    def IndexFormula(self, number):
-        _base = 0.00077572178
-        base = _base if _base > 0 else _base * -1
-        exp = 1.3198878401
-        
-        formula = base * abs(number) ** exp
-        return formula
+
     
     def Assign(self, df, column_selector, search=False, social=False):
         assert search or social, self.assertion_error
@@ -65,7 +95,7 @@ class MarketrIndex(object):
         
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         df['marketr_index'] = self.IndexFormula(df.pp1ki)
-        
+
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
         mi_std = df.marketr_index.std()
@@ -73,6 +103,8 @@ class MarketrIndex(object):
         df['action'] = df.sort_values(by=['marketr_index'])['marketr_index'].apply(
             lambda x: self.eval_action(x, mi_sum, mi_mean, mi_std)
         )
+        
+        df = self.Comparisons(df)
 
         return df
     
@@ -87,11 +119,11 @@ class MarketrIndex(object):
 #         print('mean', mean)
 #         print('index', index)
         if index > mean + breakpoint:
-            _action = 'invest more'
+            _action = 're-invest!'
         elif index <  mean - breakpoint:
             _action = 'kill it'
         else:
-            _action = 'unclear'
+            _action = 'hold on'
 
         return _action
 
@@ -125,6 +157,8 @@ class AdIndex(MarketrIndex):
         df = self.Prep(df, search=search, social=social)
         df['marketr_index'] = self.IndexFormula(df.pp1ki)
         
+        df = self.Comparisons(df)
+
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
         mi_std = df.marketr_index.std()
@@ -263,7 +297,7 @@ class PortfolioIndex(MarketrIndex):
             if arg is not None:
                 arr.append(condition(arg['index'], arg['cost']))
                 dfs.append(arg['raw'])
-            
+        
         df = pd.concat(dfs).groupby('date_start').agg(self.agg_set).reset_index()
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
             
@@ -276,7 +310,6 @@ class PortfolioIndex(MarketrIndex):
 
 ######### compile ##########
 def compile_master(ltv=None, search_df=None, social_df=None):
-
     if search_df is not None and social_df is not None:
         total_spent = search_df.head(1)['_cost'][0] + social_df.head(1)['_cost'][0]
     elif search_df is not None and social_df is None:
@@ -295,7 +328,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         try:
             # initialize at ad level
             search_index = ad_index_obj.PrepIndex(search_df, search=True)
-            new_search_index = search_df[['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset ="adid")
+            new_search_index = search_df[['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset = "adid")
      
             # export to view performance metrics by creative
             search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
@@ -326,7 +359,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             # initialize at ad level
             social_index = ad_index_obj.PrepIndex(social_df, social=True)
 
-            new_social_index = social_df[['campaign_name', 'id', 'thumbnail_url', 'body']].drop_duplicates(subset = 'id')
+            new_social_index = social_df[['campaign_name', 'ad_name', 'id', 'thumbnail_url', 'body', 'daily_budget']].drop_duplicates(subset = 'id')
             # export to view performance metrics by creative
             social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
 
@@ -340,8 +373,9 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             id_map = social_df[['campaign_name', 'campaign_id']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
             for row, value in id_map.iterrows():
-                name = (social_df.iloc[row]['campaign_name'])
-                _id = (social_df.iloc[row]['campaign_id'])
+                
+                name = (social_df.loc[row]['campaign_name'])
+                _id = (social_df.loc[row]['campaign_id'])
                 _id_map[_id] = name
 
             social_t3['campaign_name'] = social_t3.campaign_id.apply(lambda x: _id_map[x])
@@ -350,6 +384,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         except Exception as e:
             print(e)
             social_index=social_t2=social_t3=social_t4 = None
+            
         return social_index, social_t2, social_t3, social_t4
 
 
@@ -365,7 +400,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         else:
             return None
 
-
+#     return social_index
 
     struct = {
         'total_spent': total_spent,

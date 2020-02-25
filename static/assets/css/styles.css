@@ -11926,6 +11926,7 @@ html.modal-active, body.modal-active {
       border-radius: 3px;
       font-weight: 300;
       width: 95%;
+      max-height: 50%;
       position: relative;
       overflow-y: scroll;
     }

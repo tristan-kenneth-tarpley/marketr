@@ -208,6 +208,8 @@ const modal_handlers = (parent) => {
         })
     })
 
+    return parent
+
 }
 
 

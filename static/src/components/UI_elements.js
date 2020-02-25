@@ -103,8 +103,12 @@ export const google = (headline, website, description) => {
 export const facebook = (headline, img, copy) => {
     return (
         `
-        <img class="fb_graphics" style="width:100%;" src="${img}">
-        <p style="font-size: 80%;">${copy}</p>
+        <div class="center_it">
+            <img class="fb_graphics" style="width:30%;" src="${img}">
+        </div>
+        <div style="width:70%;margin: 0 auto;">
+            <p style="font-size: 80%;">${copy}</p>
+        </div>
         `
     )
 }
