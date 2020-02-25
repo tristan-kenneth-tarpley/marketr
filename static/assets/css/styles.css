@@ -12411,3 +12411,14 @@ html.modal-active, body.modal-active {
 .bg-white {
   background: transparent !important;
 }
+
+
+._green {
+  color: #12c457 !important;
+}
+._yellow {
+  color: #fcd12a !important;
+}
+._red {
+  color: #e84c85 !important;
+}

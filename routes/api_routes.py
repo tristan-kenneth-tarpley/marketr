@@ -465,11 +465,12 @@ def compile_master_index():
 
     if not demo:
         ltv = float(req.get('ltv').replace(",", ""))
-        print(ltv)
+
         company_name = req.get('company_name')
         orm = GoogleORM(company_name)
         run_social = req.get('facebook')
         run_search = req.get('google')
+        print(run_search)
         search_df = orm.search_index(date_range) if run_search else None        
         social_df = orm.social_index(date_range) if run_social else None
 

@@ -9,18 +9,18 @@ import { dots_loader } from '/static/src/components/UI_elements.js'
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = text => `<h1 class="widget__value">${text}</h1>`
-const marketr_score = text => {
+const marketr_score = (text, sub=false) => {
     let score = parseFloat(text)
-    let color;
-    if (score <= 1.5) {
-        color = "#e84c85"
-    } else if (score > 1.5 && score <= 2.25) {
-        color = "#fcd12a"
-    } else if (score > 2.25) {
-        color = "#12c457"
+    let _class;
+    if (score <= 1) {
+        _class = '_red'
+    } else if (score > 1 && score <= 2) {
+        _class = '_yellow'
+    } else if (score > 2) {
+        _class = '_green'
     }
 
-    return `<h1 style="color:${color}" class="widget__value">${text}</h1>`
+    return `<h1 class="${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">(health score)</p>` : ''}</h1>`
 }
 
 const styles = () => {
@@ -90,7 +90,7 @@ const styles = () => {
             vertical-align: baseline;
             margin-bottom: 0;
         }
-        .stat h2 {
+        .stat h1 {
             color: var(--darker-blue);
             font-weight: 600;
             font-size: 25px;
@@ -362,7 +362,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // campaigns
             case 2:
-                console.log(data.campaigns)
+
                 if (data.campaigns.search) {
                     data.campaigns.search.map(camp=>{
                         group_campaigns(camp)
@@ -401,6 +401,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     data.ads.social.map(camp=>{
                         group_ads(camp)
                     })
+                } else {
+                    console.log('testing')
                 }
                 this.sub_filters = sub_filters
                 
@@ -428,7 +430,7 @@ export default class PortfolioPerformance extends HTMLElement {
     view_controller(el){
         
         el.querySelector('#view_selector').addEventListener('change', e => {
-
+            this.sub_edited = false
             const first = async () => {
                 this.state.active_view = parseInt(e.currentTarget.value)
             } 
@@ -442,7 +444,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
         el.querySelector("#sub_target").addEventListener('change', e=>{
             this.sub_edited = true
-
+            console.log(e.currentTarget.value)
             const first = async () => this.state.active_sub_view = e.currentTarget.value
             first().then(()=>this.data_controller()).then(() => {
                 setTimeout(()=>{
@@ -479,7 +481,7 @@ export default class PortfolioPerformance extends HTMLElement {
             return`
                 <li class="stat-wrapper">
                     <div class="stat">
-                        <h2>${number(index)} <p style="font-size:40%;">(health score)</p></h2>
+                        ${marketr_score(number(index), true)}
                         <span>${description} <p style="font-size:40%;">(${description_sub})</p></span>
                         <h3>
                             ${currency(cost)}
@@ -562,7 +564,7 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     comparison_markup(){
-        console.log(this.state.breakdown)
+  
         let breakdown;
         try {
             breakdown = this.state.breakdown[0] == undefined ? this.state.breakdown : this.state.breakdown[0]
@@ -592,9 +594,8 @@ export default class PortfolioPerformance extends HTMLElement {
             } else {
                 color = 'rgba(0,0,0,.3)'
             }
-            
-            
-            return `<td><h1 style="color:${color}; font-size: 90%;" class="widget__value">${value}%</h1></td>`
+            let display_value = value == 'n/a' ? value : `${value}%`
+            return `<td><h1 style="color:${color}; font-size: 90%;" class="widget__value">${display_value}</h1></td>`
         }
 
         const el = /*html*/ `
@@ -862,7 +863,7 @@ export default class PortfolioPerformance extends HTMLElement {
             `
             el = document.createElement('div')
             el.innerHTML = markup
-
+            console.log(this.state.active_sub_view, this.sub_filters)
             if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0]
             this.data_controller()
 
