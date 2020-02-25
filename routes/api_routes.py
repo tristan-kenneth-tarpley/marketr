@@ -467,12 +467,31 @@ def compile_master_index():
         ltv = float(req.get('ltv').replace(",", ""))
 
         company_name = req.get('company_name')
-        orm = GoogleORM(company_name)
+        
         run_social = req.get('facebook')
         run_search = req.get('google')
-        print(run_search)
-        search_df = orm.search_index(date_range) if run_search else None        
-        social_df = orm.social_index(date_range) if run_social else None
+
+        async def dataframes(run_social, run_search):
+            orm = GoogleORM(company_name)
+
+            if run_search:
+                search_df = loop.run_in_executor(None, orm.search_index, date_range)
+            else:
+                search_df = None
+
+            if run_social:
+                social_df = loop.run_in_executor(None, orm.social_index, date_range)
+            else:
+                social_df = None
+
+            search = await search_df
+            social = await social_df
+
+            return search, social
+
+        asyncio.set_event_loop(asyncio.new_event_loop())
+        loop = asyncio.get_event_loop()
+        search_df, social_df = loop.run_until_complete(dataframes(run_social, run_search))
 
     else:
         ltv = 5000

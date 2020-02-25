@@ -472,9 +472,9 @@ export default class PortfolioPerformance extends HTMLElement {
 
         const row = (index, description, description_sub, cost) => {
             let third_sub = {
-                0: `<p style="font-size:40%;">(total spent)</p>`,
-                1: `<p style="font-size:40%;">(cost per conversion)</p>`,
-                2: `<p style="font-size:40%;">(cost per conversion)</p>`,
+                0: `<p style="font-size:50%;">(total spent)</p>`,
+                1: `<p style="font-size:50%;">(cost per conversion)</p>`,
+                2: `<p style="font-size:50%;">(cost per conversion)</p>`,
                 3: ``
             }
             /*html*/
@@ -607,7 +607,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </thead>
                 <tbody>
                     <tr>
-                        ${metric_name('cost')}
+                        ${metric_name('spend over<br>time period')}
                         ${this_value(currency_rounded(cost))}
                         ${perc_variance(cost_comp ? number(cost_comp) : 'n/a', true)}
                     </tr>
@@ -704,7 +704,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         <div class="row">
                             <div class="col">
 
-                                ${title(`Our recommendation: ${action ? action : ""}`)}
+                                ${title(`Our recommendation: <strong>${action ? action : ""}</strong>`)}
                                 ${this.comparison_markup()}
                   
                             </div>

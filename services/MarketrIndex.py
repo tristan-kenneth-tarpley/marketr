@@ -343,8 +343,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             id_map = search_df[['campaign_name', 'campaignid']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
             for row, value in id_map.iterrows():
-                name = (search_df.iloc[row]['campaign_name'])
-                _id = (search_df.iloc[row]['campaignid'])
+                name = (search_df.loc[row]['campaign_name'])
+                _id = (search_df.loc[row]['campaignid'])
                 _id_map[_id] = name
 
             search_t3['campaign_name'] = search_t3.campaignid.apply(lambda x: _id_map[x])
