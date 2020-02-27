@@ -205,7 +205,8 @@ class AdminViewModel:
 			'phone': returned[7],
 			'email': returned[8],
 			'analytics': returned[9],
-			'company_name': returned[10]
+			'company_name': returned[10],
+			'real_customer': returned[11]
 		}
 
 		return _return

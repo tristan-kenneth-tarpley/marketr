@@ -34,6 +34,13 @@
                 <p><strong>Phone:</strong></p>
                 <p>{{page.data['customer']['phone']}}</p>
             </div> 
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <p class="small_txt"><strong>Is this a real customer?</strong></p>
+                <select data-customer_id="{{page.user}}" id="set_real_customer" class="form-control">
+                    <option value="true" {{ 'selected' if page.data['customer']['real_customer'] else ''}}>Yes</option>
+                    <option value="false" {{ 'selected' if not page.data['customer']['real_customer'] else ''}}>No</option>
+                </select>
+            </div> 
         </div>
         
         
@@ -42,10 +49,11 @@
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <p class="small_txt"><strong>Funds remaining</strong></p>
                 {% if page.data['customer']['funds_remaining'] %}
-                <p>${{ page.data['customer']['funds_remaining'] }}</p>
+                    <p>${{ page.data['customer']['funds_remaining'] }}</p>
                 {% else %}
-                <p>Wallet empty</h5>
+                    <p>Wallet empty</h5>
                 {% endif %}
+                <admin-wallet customer_id="{{page.user}}"></admin-wallet>
             </div> 
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <p class="small_txt"><strong>Spend Rate</strong></p>

@@ -168,9 +168,9 @@ const modal = (title, body, uid) => {
     return shell
 }
 
-const modal_trigger = (uid, copy) => {
+const modal_trigger = (uid, copy, padding=true) => {
     /*html*/
-    return `<div id="six" data-uid="${uid}" class="modal-controller button"><p>${copy}</p></div>`
+    return `<div style="${padding ? '' : 'padding: 0;'}" id="six" data-uid="${uid}" class="modal-controller button"><p>${copy}</p></div>`
 }
 
 

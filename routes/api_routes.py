@@ -24,6 +24,7 @@ from services.BigQuery import GoogleORM
 from services.RecService import RecommendationService, Recommendation
 from services.WebListener import Listener
 from services.CampaignManager import CampaignMetaManager
+from services.WalletService import Wallet
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -570,3 +571,27 @@ def claim_campaign():
 
 
 
+
+
+
+
+
+### wallet
+
+@app.route('/api/wallet/meta', methods=['POST'])
+def wallet_meta():
+    req = request.get_json()
+    wallet = Wallet(req.get('customer_id'))
+
+    return wallet.meta()
+
+@app.route('/api/wallet/update', methods=['POST'])
+def update_wallet():
+    req = request.get_json()
+    wallet = Wallet(req.get('customer_id'))
+    try:
+        wallet.update_balance(req.get('amount'))
+        return json.dumps({'result': 200})
+    except Exception as e:
+        print(e)
+        return json.dumps({'result': 500})

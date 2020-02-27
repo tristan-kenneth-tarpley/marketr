@@ -203,6 +203,15 @@ def data_synced(customer_id):
 	db.execute("update customer_basic set data_synced = ? where id = ?", False, (status, customer_id), commit=True)
 	return customer_id
 
+
+@app.route('/customers/<customer_id>/real_customer', methods=['POST', 'GET'])
+@admin_required
+def real_customer(customer_id):
+	req = request.get_json()
+	status = 1 if req.get('status') == True else None
+	db.execute("update customer_basic set real_customer = ? where id = ?", False, (status, customer_id), commit=True)
+	return customer_id
+
 @app.route('/customers/<customer_id>', methods=['POST', 'GET'])
 @admin_required
 def acct_mgmt(customer_id):

@@ -165,6 +165,7 @@ const Controller = class {
 					view_model.dashboard()
 					view_model.dashboard()
 					view_model.sync_data()
+					view_model.set_real_customer()
 					
 					break
 				case 'audit':

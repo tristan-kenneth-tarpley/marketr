@@ -24,6 +24,25 @@ export class CoreViewModels {
         }
     }
 
+    set_real_customer(){
+
+        if (document.querySelector("#set_real_customer")) {
+            document.querySelector("#set_real_customer").addEventListener('change', e=>{
+                let status = eval(e.currentTarget.value)
+                let customer_id = e.currentTarget.dataset.customer_id
+                fetch(`/customers/${customer_id}/real_customer`, {
+                    method: 'POST',
+                    headers : new Headers({
+                        "content-type": "application/json"
+                    }),
+                    body: JSON.stringify({status})
+                })
+                .then(res=>res.json())
+            })
+        }
+
+    }
+
     sync_data(){
         if (document.querySelector("#sync_data_handler")) {
             document.querySelector("#sync_data_handler").addEventListener('change', e=>{
