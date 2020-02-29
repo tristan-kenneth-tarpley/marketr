@@ -8,7 +8,7 @@ import { dots_loader } from '/static/src/components/UI_elements.js'
 
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
-const value = text => `<h1 class="widget__value">${text}</h1>`
+const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
 const marketr_score = (text, sub=false) => {
     let score = parseFloat(text)
     let _class;
@@ -20,7 +20,7 @@ const marketr_score = (text, sub=false) => {
         _class = '_green'
     }
 
-    return `<h1 class="${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">(health score)</p>` : ''}</h1>`
+    return `<h1 class="${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
 }
 
 const styles = () => {
@@ -37,6 +37,23 @@ const styles = () => {
             color: var(--primary);
             font-weight: bold;
             font-size: 120%;
+        }
+
+        #profit_chart_container {
+            width: 100% !important;
+            max-height: 400px !important; 
+        }
+
+        #profit_chart {
+            width: 100% !important;
+        }
+        #insights {
+            max-height: 500px;
+            overflow-y: scroll;
+        }
+
+        #recommendations {
+            overflow-y: scroll;
         }
 
         .metric_labels {
@@ -166,10 +183,10 @@ export default class PortfolioPerformance extends HTMLElement {
                 {
                     label: "Profit potential per thousand impressions",
                     fill: false,
-                    borderColor: "#62cde0",
+                    borderColor: "#09A1BC",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: 5,
+                    pointRadius: 0,
                     pointBackgroundColor: "rgb(154, 238, 252)",
                     pointBorderColor: "rgba(98, 205, 224, 0.9)",
                     data: pp1ki,
@@ -182,8 +199,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     fill: false,
                     borderColor: "#ca7d66",
                     backgroundColor: "rgba(202, 125, 100, 0.8)",
-                    borderWidth: 2,
-                    pointRadius: 2,
+                    borderWidth: 5,
+                    pointRadius: 0,
                     pointBackgroundColor: "rgb(224, 167, 148)",
                     pointBorderColor: "rgba(202, 125, 100, 0.8)",
                     data: cpm,
@@ -195,6 +212,7 @@ export default class PortfolioPerformance extends HTMLElement {
         };
         let font_color = `#b8b8d9`
         const options = {
+            maintainAspectRatio: false,
             legend: {
                 display: true,
                 labels: {
@@ -444,7 +462,6 @@ export default class PortfolioPerformance extends HTMLElement {
 
         el.querySelector("#sub_target").addEventListener('change', e=>{
             this.sub_edited = true
-            console.log(e.currentTarget.value)
             const first = async () => this.state.active_sub_view = e.currentTarget.value
             first().then(()=>this.data_controller()).then(() => {
                 setTimeout(()=>{
@@ -463,6 +480,17 @@ export default class PortfolioPerformance extends HTMLElement {
         return el
     }
 
+    mas_campaigns_cta() {
+        return `
+        <div class="center_it"> 
+        <br><br>
+            <h1 style="margin-bottom:0;" class="widget__title">There are a lot of platforms out there to choose from</h1>
+            <p>Need help finding some more opportunities? Head over to chat and tell your Market(r) guide.</p>
+            <a href="${!this.demo ? '/home?view=messages' : '#'}" class="btn btn-outline btn-outline-secondary">Let's chat</a>
+        </div>
+        `
+    }
+
     breakdown_markup(){
         let markup;
         let data = this.state.breakdown
@@ -472,9 +500,9 @@ export default class PortfolioPerformance extends HTMLElement {
 
         const row = (index, description, description_sub, cost) => {
             let third_sub = {
-                0: `<p style="font-size:50%;">(total spent)</p>`,
-                1: `<p style="font-size:50%;">(cost per conversion)</p>`,
-                2: `<p style="font-size:50%;">(cost per conversion)</p>`,
+                0: `<p style="font-size:8pt;">total spent</p>`,
+                1: `<p style="font-size:8pt;">cost per<br>conversion</p>`,
+                2: `<p style="font-size:8pt;">cost per<br>conversion</p>`,
                 3: ``
             }
             /*html*/
@@ -482,7 +510,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 <li class="stat-wrapper">
                     <div class="stat">
                         ${marketr_score(number(index), true)}
-                        <span>${description} <p style="font-size:40%;">(${description_sub})</p></span>
+                        <br>
+                        <span>${description}<br> <p style="font-size: 8pt;">${description_sub}</p></span>
                         <h3>
                             ${currency(cost)}
                             ${third_sub[active_view]}
@@ -500,12 +529,23 @@ export default class PortfolioPerformance extends HTMLElement {
                 ${data.map(_row=>{
                     return row(_row.index, _row.type, 'campaign type', _row.cost)
                 }).join('')}
+                
                 `
+
+                if (data.length < 3) markup += this.mas_campaigns_cta()
+
                 break
             case 1:
-                let social = data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
-                let search = data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
-  
+                let run_search = this.state.active_sub_view == 'search' ? true : false
+                let run_social = this.state.active_sub_view == 'social' ? true : false
+
+                let social = run_social && data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
+                let search = run_search && data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
+                
+                let length;
+                if (run_search) length = search.length
+                else if (run_social) length = social.length
+
                 markup = `
                     ${social ? social.map(_row=>{
                         return row(
@@ -523,7 +563,11 @@ export default class PortfolioPerformance extends HTMLElement {
                             _row.conversions != 0 ? _row.cost/_row.conversions : 0
                         )
                     }).join("") : ''}
-                `         
+                `
+                if (length < 3) {
+                    markup += this.mas_campaigns_cta()
+                }
+                
                 break
             case 2:
                 /*html*/
@@ -563,6 +607,29 @@ export default class PortfolioPerformance extends HTMLElement {
         return markup
     }
 
+    date_range(){
+        return `
+        <div class="col"></div>
+        <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="select">
+                <select id="date_range" class="fancy">
+                    <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
+                    <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
+                    <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
+                    <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
+                    <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
+                    <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
+                    <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
+                    <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
+                    <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
+                    <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
+                    <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
+                </select>
+            </div>
+        </div>
+        <div class="col"></div>`
+    }
+
     comparison_markup(){
   
         let breakdown;
@@ -579,7 +646,7 @@ export default class PortfolioPerformance extends HTMLElement {
         let cpl = conversions > 0 ? cost / conversions : null
         
         const metric_name = text => `<td><p style="font-size: 70%;">${text}</p></td>`
-        const this_value = text => `<td style="font-size: 90%;">${value(text)}</td>`
+        const this_value = text => `<td style="font-size: 70%;">${value(text)}</td>`
         const perc_variance = (_value, low_is_good=false) => {
             let value = !isNaN(_value) ? parseFloat(_value) : 'n/a'
             let green = '#12c457'
@@ -612,7 +679,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         ${perc_variance(cost_comp ? number(cost_comp) : 'n/a', true)}
                     </tr>
                     <tr>
-                        ${metric_name('cost per<br>conversion')}
+                        ${metric_name('conversion cost')}
                         ${this_value(cpl ? currency_rounded(cpl) : 'n/a')}
                         ${perc_variance(cpl_comp ? number(cpl_comp) : 'n/a', true)}
                     </tr>
@@ -633,16 +700,52 @@ export default class PortfolioPerformance extends HTMLElement {
         return el
     }
 
-    template(){
-        let {marketr_index, action, cost} = this.state.active_data.profitability
-        let {active_view} = this.state
+    profit_spread() {
+        return `
+        <div class="h--500 card card-body">
+            ${title('profitability spread')}
+            <br>
+
+            <div id="profit_chart_container">
+                <canvas style="width: 100%; height: 100%;" id="profit_chart"></canvas>
+            </div>
+
+        </div>
+        `
+    }
+
+    summary() {
         let company_index = this.state.data.aggregate.index
+        let {marketr_index, action, cost} = this.state.active_data.profitability
         let meta_map = {
             0: '',
             1: 'platform',
             2: 'campaign',
             3: 'ad'
         }
+        let {active_view} = this.state
+        return  `
+            <div class="card card-body">
+                <div class="row row_cancel">
+                    
+                    <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col-lg-6 col-md-6 col-sm-12">
+                        ${title(`${meta_map[active_view]}<br>Health score`)}
+                        ${value(number(marketr_index ? marketr_index : 0))}
+                    </div>
+        
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        ${title('company<br>health score')}
+                        ${value(number(company_index ? company_index : 0))}
+                    </div>
+
+                </div>
+            </div>`
+    }
+
+    template(){
+        let {marketr_index, action, cost} = this.state.active_data.profitability
+        let {active_view} = this.state
+
 
         let breakdown_title = {
             0: 'active platforms',
@@ -656,78 +759,57 @@ export default class PortfolioPerformance extends HTMLElement {
             'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it. Make use of the intel tab. If you need some inspiration, just reach out to your Market(r) guide in the chat!`,
             'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
+        let class_list = `col`
+
+        let column_set = ![0,1].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
-            <div class="col-lg-6 col-md-6 col-12">
-                ${![0].includes(active_view)
-                ? `
-                <div class="card card-body">
-                    <div class="row row_cancel">
-                        
-                        <div style="display: ${active_view != 0 ? 'auto' : 'none'};" class="col-lg-6 col-md-6 col-sm-12">
-                            ${title(`${meta_map[active_view]}<br>Health score`)}
-                            ${value(number(marketr_index ? marketr_index : 0))}
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <div class="row">
+                    <div class="${column_set}">
+                        <div class="h--500 card card-body">
+                            ${title(breakdown_title[active_view])}
+                            ${this.breakdown_markup()}
                         </div>
-          
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            ${title('company<br>health score')}
-                            ${value(number(company_index ? company_index : 0))}
-                        </div>
-
                     </div>
-                </div>`
-                : ``}
+                    ${
+                        ![0,1].includes(active_view)
+                            ? `
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="h--500 card card-body">
+                                    ${title(`Our recommendation: <span class="action">${action ? action : ""}</span>`)}
+                                    ${this.comparison_markup()}
+                                </div>
+                            </div>`
+                            : ''
+                        }
+                </div>
             </div>
-        </div>
-        <div class="col-sm-6 col-lg-6 col-md-6">
-            <div class="row">
-                <div class="col card card-body">
-                    ${title('profitability spread')}
-                    <br>
-                    <div class="row">
-                        <div class="col" id="profit_chart_container">
-                            <canvas id="profit_chart"></canvas>
-                        </div>
-                    </div>
+
+
+
+            <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
+                <div class="h--500 card card-body">
+                    <h1 class="widget__title">Recommendations</h1>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-lg-6 col-md-6">
-            <div class="card card-body">
-                ${title(breakdown_title[active_view])}
-                ${this.breakdown_markup()}
 
-                <div class="divider"></div>
-                    ${
-                    ![0,1].includes(active_view)
-                        ? `
-                        <div class="row">
-                            <div class="col">
-
-                                ${title(`Our recommendation: <strong>${action ? action : ""}</strong>`)}
-                                ${this.comparison_markup()}
-                  
-                            </div>
-                        </div>`
-                        : ''
-                    }
-
-            </div>
-        </div>
-        </div>
         ${this.analytics
             ? ``
             : `
-            <div id="insights" class="card card-body col-lg-6 col-md-6 col-sm-12">
-                <div class="">
-                    ${title('insights')}    
+                <div class="row">
+                    <div class="h--500 col-lg-6 col-md-6 col-sm-12">
+                        ${this.profit_spread()}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div id="insights" class="card card-responsive card-body">
+                            ${title('insights')}    
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
-                <div class="card card-body">
-                    ${title('recommendations')}
-                </div>
-            </div>`
+                `
         
         }
         `
@@ -738,84 +820,44 @@ export default class PortfolioPerformance extends HTMLElement {
 
         /*html*/
         return `
-            ${this.analytics ? ''
-            : `
+            <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-1 col-md-1 col-12">
-                    </div>
-                    <div class="blue-card card card-body col-lg-10 col-md-10 col-12">
+                    ${this.date_range()}
+                </div>
+                <div class="row row_cancel">
+                    <div class="col">
                         <div class="row row_cancel">
-                            <div class="col-lg-4 col-md-4 col-12">
-                                ${title(`Company health score: ${marketr_score(number(this.state.data.aggregate.index))}`)}
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-12">
-                                ${title(`Funds remaining: ${value(currency(this.funds_remaining ? this.funds_remaining : 0))}`)}
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-12">
-                                ${title(`spend rate: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`)}
+                            ${this.analytics ? ''
+                            : `
+                                <div class="col-lg-6 col-md-6 col-12">
+                                    <div class="h--300  card card-body">
+                                        <div class="row row_cancel">
+                                            <div class="col-lg-4 col-md-4 col-12">
+                                                ${title(`health score: ${marketr_score(number(this.state.data.aggregate.index))}`, true)}
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-12">
+                                                ${title(`Funds: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
+                                            </div>
+                                            <div class="col-lg-4 col-md-4 col-12">
+                                                ${title(`budget: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`, true)}`, true)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `
+                            }
+
+                            <div class="col-lg-6 col-md-6 col-12">
+                                ${this.view_by()}
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-1 col-md-1 col-12">
-                    </div>
-                </div>`
-            }
-            <div class="row">
-                <div class="col"></div>
-                <div class="col">
-                    <select id="date_range" class="form-control">
-                        <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
-                        <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
-                        <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
-                        <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
-                        <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
-                        <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
-                        <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
-                        <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
-                        <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
-                        <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
-                        <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
-                    </select>
+
                 </div>
-                <div class="col"></div>
             </div>
-            <div id="home-row" class="row">
-                <div class="card card-body col-lg-6 col-md-6 col-12">
-                    <div class="">
-                        <div class="row row_cancel">
-                            <div class="col">
-                                ${title('view by')}
-                                <select class="form-control" id="view_selector">
-                                    <option value="0" ${this.state.active_view == 0 ? 'selected' : ''}>portfolio</option>
-                                    <option value="1" ${this.state.active_view == 1 ? 'selected' : ''}>platforms</option>
-                                    <option value="2" ${this.state.active_view == 2 ? 'selected' : ''}>campaigns</option>
-                                    <option value="3" ${this.state.active_view == 3 ? 'selected' : ''}>ads</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                ${
-                                    this.state.active_view != 0
-                                    /*html*/
-                                    ? `
-                                
-                                        ${title('filter by', true)}
-                                        <select id="sub_target" class="form-control">
-                                            ${this.sub_filters.map((filter, index)=>{
-                                               
-                                                return (
-                                                    `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
-                                                        ${filter}
-                                                    </option>
-                                                    `
-                                                )
-                                            }).join('')}
-                                        </select>`
-                                    : `<select id="sub_target" style="visibility:hidden;" class="form-control"></select>`
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+            <div style="padding-left: 0; padding-right: 0;" class="container-fluid" id="home-row">
+            </div>
            
         `
     }
@@ -863,7 +905,7 @@ export default class PortfolioPerformance extends HTMLElement {
             `
             el = document.createElement('div')
             el.innerHTML = markup
-            console.log(this.state.active_sub_view, this.sub_filters)
+
             if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0]
             this.data_controller()
 
@@ -880,7 +922,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     this.reset_charts(el)
                     if (!this.analytics) {
                         el.querySelector("#recommendations div").appendChild(recs)
-                        el.querySelector('#insights div').appendChild(insights)
+                        el.querySelector('#insights').appendChild(insights)
                     }
                     return modal_handlers(el)
                 })
@@ -927,11 +969,6 @@ export default class PortfolioPerformance extends HTMLElement {
                                 <h1 class="widget__title">Insights</h1>    
                             </div>
                         </div>
-                        <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="card card-body">
-                                <h1 class="widget__title">Recommendations</h1>
-                            </div>
-                        </div>
                     </div>
                 `
                 
@@ -942,6 +979,45 @@ export default class PortfolioPerformance extends HTMLElement {
                 console.log(e)
             })
         } else run()
+    }
+
+    view_by(){
+        return `
+        <div class="h--300 card card-body">
+            <div class="row row_cancel">
+                <div class="col">
+                    ${title('view by', true)}
+                    <select style="margin-top: 0;" class="form-control" id="view_selector">
+                        <option value="0" ${this.state.active_view == 0 ? 'selected' : ''}>portfolio</option>
+                        <option value="1" ${this.state.active_view == 1 ? 'selected' : ''}>platforms</option>
+                        <option value="2" ${this.state.active_view == 2 ? 'selected' : ''}>campaigns</option>
+                        <option value="3" ${this.state.active_view == 3 ? 'selected' : ''}>ads</option>
+                    </select>
+                </div>
+                <div class="col">
+                    ${
+                        this.state.active_view != 0
+                        /*html*/
+                        ? `
+                    
+                            ${title('filter by', true)}
+                            <select id="sub_target" class="form-control">
+                                ${this.sub_filters.map((filter, index)=>{
+                                    
+                                    return (
+                                        `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
+                                            ${filter}
+                                        </option>
+                                        `
+                                    )
+                                }).join('')}
+                            </select>`
+                        : `<select id="sub_target" style="visibility:hidden;" class="form-control"></select>`
+                    }
+                </div>
+            </div>
+        </div>
+        `
     }
 
     connectedCallback(start=now()) {

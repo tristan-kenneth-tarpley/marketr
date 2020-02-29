@@ -42,7 +42,7 @@ const styles = () => {
                             /*html*/
                             return `
                             <tr>
-                                <td>${res.title}</td>
+                                <td><p>${res.title}</p></td>
                                 <td><a target="__blank" href="${res.url}">View</a></td>
                             </tr>
                             `

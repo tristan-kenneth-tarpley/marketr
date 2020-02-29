@@ -8,9 +8,9 @@ const styles = () => {
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        .rec-container {
-            padding: 1%;
-            max-height: 500px;
+
+        #rec-container {
+            max-height: 420px;
             overflow-y: scroll;
         }
         .rec {
@@ -115,7 +115,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     render(state = false){
-        this.shadow.innerHTML = ""
+        this.shadow.innerHTML = `<div id="rec-container"></div>`
         let el = document.createElement('div')
 
         const append = res => {
@@ -127,8 +127,9 @@ export default class Recommendations extends HTMLElement {
             } else for (let i in res) el.appendChild(this.recommendation(res[i], i))
         }
 
+        const append_to_shadow = el => this.shadow.querySelector("#rec-container").appendChild(el)
+
         if (state == false) {
-            this.shadow.innerHTML = dots_loader()
             fetch('/api/outstanding_recs', {
                 method: 'POST',
                 headers : new Headers({
@@ -142,13 +143,10 @@ export default class Recommendations extends HTMLElement {
                 .then(res=>res.json())
                 .then( res=> this.state.data = res )
                 .then(res=>append(res))
-                .then(()=>{
-                    this.shadow.innerHTML = ""
-                    this.shadow.appendChild(el)
-                })
+                .then(() => append_to_shadow(el))
         } else {
             append(this.state.data)
-            this.shadow.appendChild(el)
+            append_to_shadow(el)
         }
     }
 

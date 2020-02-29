@@ -1,165 +1,92 @@
 
-{% macro settings_link(target="") %}
-<li class="{{ target }}">
+{% macro settings_link(target=None) %}
+
+<li class="sidebar_li {{ target }}">
 	<a href="{{ url_for('settings') }}">
 		<i class="now-ui-icons ui-1_settings-gear-63"></i>
-		<p>Account and Billing</p>
+		<p class="nav_desc">Account</p>
 	</a>
 </li>
 
 {% endmacro %}
 
-{% macro campaigns() %}
-<li class="{{ campaigns }}">
-	<a href="/home?view=campaigns">
+{% macro campaigns(plan) %}
+<li id="campaigns-nav" class="sidebar_li {{ plan }}">
+	<a href="{{ '/home?view=campaigns' if not demo else '/home?view=campaigns' }} ">
 		<i class="now-ui-icons business_chart-pie-36"></i>
-		<p>Marketing</p>
+		<p class="nav_desc">Marketing</p>
 	</a>	
 </li>
 {% endmacro %}
 
-{% macro profile() %}
-<li class="{{ profile }}">
-	<a class="render_tactics" href="{{ url_for('home', view='profile') }}">
+{% macro profile(plan) %}
+<li id="profile-nav" class="sidebar_li {{ plan }}">
+	<a class="render_tactics" href="{{ url_for('home', view='profile') if not demo else '/demo?view=profile' }}">
 		<i class="now-ui-icons business_badge"></i>
-		<p>Market(r) Profile</p>
+		<p class="nav_desc">Profile</p>
 	</a>
 </li>
 {% endmacro %}
-{% macro achievements(target="") %}
-<li class="{{ target }}">
+{% macro achievements(target=None) %}
+<li class="sidebar_li {{ target }}">
 	<a href="/home/achievements">
 		<i class="now-ui-icons business_money-coins"></i>
-		<p>Achievements & Store <span style="display:none;" class="pulse ach_note"></span></p>
+		<p class="nav_desc">Rewards <span style="display:none;" class="pulse ach_note"></span></p>
 	</a>	
 </li>
 {% endmacro %}
 
-{% macro messages() %}
-<li class="{{ messages }}">
-	<a href="/home?view=messages">
+{% macro messages(plan) %}
+<li id="messages-nav" class="sidebar_li {{ plan }}">
+	<a href="{{'/home?view=messages' if not demo else '/demo?view=messages'}}">
 		<i class="now-ui-icons ui-2_chat-round"></i>
-		<p>Chat</p>
+		<p class="nav_desc">Chat</p>
 	</a>	
 </li>
 {% endmacro %}
 
-{% macro competitive_intelligence(active) %}
-<li class="{{ 'active' if active }}">
-	<a class="render_competitors" href="/home?view=competitors">
+{% macro competitive_intelligence(plan) %}
+<li id="competitors-nav" class="sidebar_li {{ plan }}">
+	<a class="render_competitors" href="{{'/home?view=competitors' if not demo else '/demo?view=competitors'}}">
 		<i class="now-ui-icons business_globe"></i>
-		<p>Competitive Intelligence</p>
+		<p class="nav_desc">Intel</p>
 	</a>	
 </li>
 {% endmacro %}
 
 {% macro logout() %}
-<li>
-	<a href="{{ url_for('logout') }}">
+<li class="sidebar_li">
+	<a href="{{ url_for('logout') if not demo else '#' }}">
 		<i class="now-ui-icons objects_key-25"></i>
-		<p>Logout</p>
+		<p class="nav_desc">Logout</p>
 	</a>
 </li>
 {% endmacro %}
 
-{% if not demo %}
+
 <div class="sidebar" data-color="orange">
 	<div class="logo">
 	  <a href="{{ url_for('home') }}" class="simple-text logo-normal">
-	    <img src="/static/assets/img/marketrblack.png">
+	    <img src="/static/assets/img/favicon.png">
 	  </a>
 	</div>
 	<div class="sidebar-wrapper tab-content">
-		<div id="campaigns-nav">		
-			<ul class="nav">
-				<li class="{{ plan }}">
-					<a href="{{ url_for('home', view='campaigns') }}">
-						<i class="now-ui-icons business_chart-pie-36"></i>
-						<p>Marketing</p>
-					</a>	
-					<ul class="sub_nav nav">
-						{% if customer %}<li><a class="perf targeted" href="#perf">Portfolio</a></li>{% endif %}
-						<li><a class="spend" href="#spend">How much to spend</a></li>
-						<li><a class="where" href="#where">Where to spend it</a></li>
-					</ul>
-				</li>
-				{{ competitive_intelligence() }}
-				{{ profile() }}
-				{{ messages() }}
-				{{ achievements() }}
-				{{ settings_link() }}
-				{{ logout() }}
-			</ul>
-		</div>
-		<div id="profile-nav" class="hidden">
-			<ul class="nav">
-				{{ campaigns() }}
-				{{ competitive_intelligence() }}
-				<li class="{{ plan }}">
-					<a href="/home?view=profile">
-						<i class="now-ui-icons business_badge"></i>
-						<p>Market(r) Profile</p>
-					</a>
-
-					{% if plan=='active' %}
-
-						<ul class="sub_nav nav">
-							<li><a class="targeted profile_information" href="#profile_information">Profile Information</a></li>
-							<li><a class="company" href="#company">Company Information</a></li>
-							<li><a class="audience" href="#audience">Target Market</a></li>
-							<li><a class="products" href="#products">Products</a></li>
-							<li><a class="salescycle" href="#salescycle">Sales Cycle</a></li>
-							<li><a class="platforms" href="#platforms">Platforms</a></li>
-						</ul>
-
-					{% endif %}
-				</li>
-				{{ messages() }}
-				{{ achievements() }}
-				{{ settings_link() }}
-				{{ logout() }}
-			</ul>
-		</div>
-		<div id="messages-nav" class="hidden">		
-			<ul class="nav">
-				{{ campaigns() }}
-				{{ competitive_intelligence() }}
-				{{ profile() }}
-				<li class="{{ plan }}">
-					<a href="{{ url_for('home', view='messages') }}">
-						<i class="now-ui-icons ui-2_chat-round"></i>
-						<p>Messages</p>
-					</a>	
-					<ul class="sub_nav nav">
-						<li><a class="targeted profile_information" href="#to_do">Messages</a></li>
-					</ul>
-				</li>
-				{{ achievements() }}
-				{{ settings_link() }}
-				{{ logout() }}
-			</ul>
-		</div>
-
-		<div id="competitors-nav" class="hidden">		
-			<ul class="nav">
-				{{ campaigns() }}
-				{{ competitive_intelligence(True) }}
-				{{ profile() }}
-				{{ messages() }}
-				{{ achievements() }}
-				{{ settings_link() }}
-				{{ logout() }}
-			</ul>
-		</div>
-
-
+		<ul class="nav">
+			{{ campaigns(plan) }}
+			{{ competitive_intelligence() }}
+			{{ profile() }}
+			{{ messages() }}
+			{% if not demo %} {{ achievements() }} {% endif %}
+			{% if not demo %} {{ settings_link() }} {% endif %}
+			{% if not demo %} {{ logout() }} {% endif %}
+		</ul>
 	</div>
 </div>
-{% else %}
-<div class="sidebar" data-color="orange">
+
+{#<div class="sidebar" data-color="orange">
 	<div class="logo">
 		<a href="{{ url_for('pricing') }}" class="simple-text logo-normal">
-		  <img src="/static/assets/img/marketrblack.png">
+		  <img src="/static/assets/img/favicon.png">
 		</a>
 	  </div>
 	<div class="sidebar-wrapper tab-content">
@@ -179,5 +106,27 @@
 		</div>
 		
 	</div>	
-</div>
-{% endif %}
+</div>#}
+
+{#
+<header data-v-c0f0d58e="" class="sidebar app-sidebar">
+	<a data-v-c0f0d58e="" href="/" class="logo">Baremetrics</a>
+	<nav data-v-c0f0d58e="" class="app-navigation app-navigation--active-features">
+		<a data-v-c0f0d58e="" href="/" class="nav-link active">
+			<img data-v-c0f0d58e="" src="/packs/media/images/header/icon-home-7e7bd6c328b517619360bc111d9e0981.svg" width="38" height="38" class="feature-icon-default"> <img data-v-c0f0d58e="" src="/packs/media/images/header/icon-home-active-181977fe0aaaa137bb78a1ad68ae321f.svg" width="38" height="38" class="feature-icon-active">
+			<span data-v-c0f0d58e="">Home</span>
+			<div data-v-c0f0d58e="" class="vue-tooltip right small">
+			Home
+			</div>
+		</a>
+		<a data-v-c0f0d58e="" href="/stats/mrr" class="nav-link">
+			<img data-v-c0f0d58e="" src="/packs/media/images/header/icon-metrics-53782280cd1f3b11409cec69f1a66184.svg" width="38" height="38" class="feature-icon-default">
+			<img data-v-c0f0d58e="" src="/packs/media/images/header/icon-metrics-active-432f0a400e5b381f76604b2fa043bbf8.svg" width="38" height="38" class="feature-icon-active">
+			<span data-v-c0f0d58e="">Metrics</span>
+			<div data-v-c0f0d58e="" class="vue-tooltip right small">
+				Metrics
+			  </div>
+		</a>
+	</nav>
+</header>
+#}

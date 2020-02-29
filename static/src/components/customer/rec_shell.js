@@ -90,7 +90,7 @@ export default class Rec_shell extends HTMLElement {
             <div class="rec-container">
                 <div style="border-left: 4px solid ${colors[this.index]}" class="rec">
                     <span class="x dismiss">X</span> 
-                    <h5 class="rec-title">${this.title}</h5>
+                    <p class="rec-title">${this.title}</p>
                     <div class="row">
                         <div class="col-md-6 col-12">
                             <div data-uid="${this.title}" id="six" class="button">Read more</div>

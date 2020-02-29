@@ -51,6 +51,7 @@ const Controller = class {
 			"/history/platforms": "platforms",
 			"/history/platforms/past": "past",
 			// done with intake routes
+			"/demo": "demo",
 			"/home": "home",
 			"/customers": "customers",
 			"/admin": "admin",
@@ -185,6 +186,7 @@ const Controller = class {
 					const audit_request = new AuditRequest()
 					audit_request.ready()
 					break
+				case 'demo':
 				case 'home':
 					// const tactics = new Tactics(this.params)
 

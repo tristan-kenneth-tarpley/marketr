@@ -1399,7 +1399,7 @@ p.description {
   font-weight: 300; }
 
 .root-card {
-  padding: 2%;
+  padding: 0 2% 2% 2%;
 }
 .intake.root-card {
   background-color: transparent;
@@ -2755,7 +2755,7 @@ Created using IcoMoon - icomoon.io
   top: 0;
   height: 100%;
   bottom: 0;
-  width: 260px;
+  width: var(--sidebar-width);
   left: 0;
   z-index: 0; }
   .sidebar .sidebar-wrapper,
@@ -2763,7 +2763,7 @@ Created using IcoMoon - icomoon.io
     position: relative;
     height: calc(100vh - 75px);
     overflow: auto;
-    width: 260px;
+    width: var(--sidebar-width);
     z-index: 4;
     padding-bottom: 100px; }
     .sidebar .sidebar-wrapper .dropdown .dropdown-backdrop,
@@ -2814,7 +2814,6 @@ Created using IcoMoon - icomoon.io
       text-transform: uppercase;
       cursor: pointer;
       font-size: 0.7142em;
-      padding: 10px 8px;
       line-height: 1.625rem; }
     .sidebar .nav li:first-child > a,
     .off-canvas-sidebar .nav li:first-child > a {
@@ -2831,11 +2830,12 @@ Created using IcoMoon - icomoon.io
         color: var(--primary);
         transition: all 300ms ease-in-out .2s !important; 
          }
-    .sidebar .nav li.active > a,
-    .off-canvas-sidebar .nav li.active > a {
-      background: linear-gradient(to right,  #e1e9f5 0%,#cbd0d8 70%) !important;
+    .sidebar .nav li.active i,
+    .off-canvas-sidebar .nav li.active i {
+      background: var(--primary);
       /*border-left: 3px solid white;*/
-      box-shadow: var(--silicon-depressed)
+      box-shadow: var(--silicon-depressed);
+      border-radius: 50px;
     }
     .sidebar .nav li > a {
       background-color: transparent;
@@ -2846,8 +2846,7 @@ Created using IcoMoon - icomoon.io
       line-height: 30px;
       position: relative;
       display: block;
-      height: auto;
-      white-space: nowrap; }
+      height: auto; }
     .sidebar .nav i,
     .off-canvas-sidebar .nav i {
       font-size: 20px;
@@ -2988,7 +2987,7 @@ Created using IcoMoon - icomoon.io
     color: rgba(0,0,0,.8); }
     .sidebar[data-color="orange"] .nav li.active > a i,
     .off-canvas-sidebar[data-color="orange"] .nav li.active > a i {
-      color: var(--secondary); }
+      color: #fff; }
   .sidebar[data-color="red"]:after,
   .off-canvas-sidebar[data-color="red"]:after {
     background: #FF3636; }
@@ -3014,6 +3013,7 @@ Created using IcoMoon - icomoon.io
   transition-duration: .2s;
 }
 .sidebar .nav li a > i {
+  width: 100%;
   color: var(--nav-color);
 }
 .sidebar .nav li a {
@@ -3045,7 +3045,7 @@ Created using IcoMoon - icomoon.io
 .main-panel {
   position: relative;
   float: right;
-  width: calc(100% - 260px);
+  width: calc(100% - var(--sidebar-width));
   background: var(--panel-bg);
   -webkit-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
   -moz-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
@@ -3053,9 +3053,8 @@ Created using IcoMoon - icomoon.io
   -ms-transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
   transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1); }
   .main-panel > .content {
-    padding: 0 5px 5px;
     min-height: calc(100vh - 123px);
-    margin-top: -30px; }
+    margin-top: -40px; }
   .main-panel > .navbar {
     margin-bottom: 0; }
   .main-panel .header {
@@ -3075,9 +3074,9 @@ Created using IcoMoon - icomoon.io
   color: rgba(0,0,0,.5);
 }
 .panel-header {
-  height: 200px;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  height: 0;
+  padding-top: 30px;
+  /* padding-bottom: 50px; */
   background: #141E30;
   /* fallback for old browsers */
   background: var(--panel-bg);
@@ -3094,7 +3093,8 @@ Created using IcoMoon - icomoon.io
       color: #FFFFFF; }
 
 .panel-header-sm {
-  height: 75px; }
+  /* height: 75px;  */
+}
 /* anchor */
 .panel-header-lg {
   height: 200px; }
@@ -3334,6 +3334,17 @@ Created using IcoMoon - icomoon.io
     transform-origin: 0 0; }
   .fixed-plugin .bootstrap-switch {
     margin: 0; }
+
+
+
+.row.equal {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-responsive {
+  height: 100%;
+}
 
 .card {
   border: 0;
@@ -3783,7 +3794,7 @@ Created using IcoMoon - icomoon.io
     opacity: 1;
     top: 0;
     right: 0;
-    left: 260px;
+    left: var(--sidebar-width);
     content: "";
     z-index: 9999;
     overflow-x: hidden;
@@ -3810,7 +3821,7 @@ Created using IcoMoon - icomoon.io
     display: block;
     top: 0;
     height: 100%;
-    width: 260px;
+    width: var(--sidebar-width);
     right: auto;
     left: 0;
     z-index: 1032;
@@ -4147,6 +4158,9 @@ to   { opacity: 1; }
 }
 .row_cancel {
   padding-bottom: 0;
+}
+.row_small {
+  margin-bottom: var(--row-padding);
 }
 .inset {
   margin-left: var(--inset-padding);
@@ -4881,6 +4895,7 @@ to   { opacity: 1; }
 }
 .target {
   box-shadow: var(--card-box-shadow);
+  background-color: #fff;
   padding: 0 !important;
   margin-bottom: 20px;
 }
@@ -4888,18 +4903,15 @@ to   { opacity: 1; }
   box-shadow: none;
   margin-bottom: 0;
 }
-.target_container > h5 {
+
+.target_container .widget__title { 
   position: relative;
-  font-size: 110%;
-}
-.target_container h5 {
   left: 2%;
   top: 35%;
   width: 50%;
 }
 .target_container {
   position: relative;
-  background: var(--panel-bg);
   /* border-top: 1px solid hsl(220, 12%, 95%); */
   height: 60px;
   width: 100%;
@@ -5761,7 +5773,7 @@ ul#product {
 }
 
 .small_txt {
-  font-size: 85%;
+  font-size: 85% !important;
 }
 
 .x_small_txt {
@@ -10017,6 +10029,9 @@ ul#product {
   margin:4% 0 0;
 }
 .credits_container {
+  position: absolute;
+  right: 10px;
+  top: 10px;
   max-width: 250px;
   border-radius: 15px;
   box-shadow: var(--inset-box-shadow);
@@ -11202,10 +11217,13 @@ left: -6px;
 
 
 .ach_note {
-  width: 30px;
-  height: 30px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   color: #fff;
+  left: 10px;
+  top: -70px;
+  position: relative;
   text-align: center;
   border: 1px solid var(--plum);
   background-color: var(--plum);
@@ -12421,4 +12439,108 @@ html.modal-active, body.modal-active {
 }
 ._red {
   color: #e84c85 !important;
+}
+
+
+
+.nav_desc {
+  display: block;
+  font-size: 10px !important;
+  color: #9595c0;
+  text-align: center;
+  text-transform: lowercase;
+}
+
+
+
+
+
+.app-sidebar {
+  background: #fff;
+  z-index: 13;
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  top: 0;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar_li {
+  height: 11%;
+}
+
+
+
+.fancy {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: var(--primary);
+  color: white;
+  background-image: none;
+  border-bottom: 0 !important;
+}
+/* Remove IE arrow */
+.fancy select::-ms-expand {
+  display: none;
+}
+/* Custom Select */
+.select {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  line-height: 3;
+  background: var(--primary);
+  overflow: hidden;
+  border-radius: .25em;
+  border-bottom: 0 !important; 
+}
+.fancy {
+  flex: 1;
+  padding: 0 .5em;
+  color: #fff !important;
+  cursor: pointer;
+}
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 1em;
+  background: var(--primary);
+  opacity: .8;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+/* Transition */
+.select:hover::after {
+  color: var(--secondary);
+}
+
+
+.h--300 {
+  height: 100px !important;
+}
+
+.h--500 {
+  height: 500px !important;
+}
+
+.action {
+  font-weight: bold;
+  color: var(--darker-blue);
 }

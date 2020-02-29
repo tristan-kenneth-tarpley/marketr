@@ -11,6 +11,10 @@ const styles = () => {
             width: 100%;
             height: 100%;
         }
+        .allocation_display {
+            color: var(--darker-blue);
+            font-weight: bold;
+        }
     </style>
     `.trim()
 }
@@ -90,7 +94,7 @@ export default class AdSpend extends HTMLElement {
         }
         /*html*/
         return (
-            `<div class="row">
+            `<div class="row row-cancel">
             <div class="col-md-3">
                 <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
             </div>
@@ -132,7 +136,7 @@ export default class AdSpend extends HTMLElement {
                                         currency_rounded(set.spend)
                 /*html */
                 return `
-                    <p>${display_num}
+                    <p><span class="allocation_display">${display_num}</span>
                        
                             | ${set.bucket}
 
@@ -152,11 +156,11 @@ export default class AdSpend extends HTMLElement {
                                     return `${inline_article(i)
                                                 ? `
                                                 <li class="campaign_type">
-                                                    ${modal_trigger(i, `${counter}: ${i} <span style="color:#62cde0;">></span>`)}
+                                                    ${modal_trigger(i, `campaign #${counter}: ${i} <span style="color:#62cde0;">></span>`)}
                                                     ${right_modal('', inline_article(i), i)}
                                                 </li>
                                                 `
-                                                : `<li>${counter}: ${i}</li>`
+                                                : `<li>campaign #${counter}: ${i}</li>`
                                             }`
                                 }).join("")}
                             </ul>
@@ -222,6 +226,30 @@ export default class AdSpend extends HTMLElement {
         new Chart(ctx, {type: 'pie', data: chart_data, options});
     }
 
+    next_steps() {
+        return `<div class="col-lg-5 col-md-5 col-sm-12">        
+        <div class="next_steps">
+            <h6>Next steps</h6>
+            <div class="top">
+                <h5>Do it yourself</h5>
+                <p>Go forth and conquer.  Keep us posted on your successes!</p>
+
+                <h5 class="center_it">or</h5>
+
+                <h5>We can help</h5>
+                <p>Market(r) will create, manage, and optimize your campaign(s) overtime for a flat-monthly fee.</p>
+
+            </div>
+            <div class="bottom">
+                <div class="center_it">
+                    <a class="btn btn-secondary" href="/pricing">view plans</a><br>
+                    <a href="/schedule">want to chat first?</a>
+                </div>
+            </div>
+        </div>
+    </div>`
+    }
+
     shell(){
         const modal_markup = `<p>We provide a recommended budget based on the following factors:</p>
         <ul class='no-dec'>
@@ -242,26 +270,13 @@ export default class AdSpend extends HTMLElement {
         return (
             
             `<div class="row ${this.active_plan ? '' : 'hidden'}">
-                <div class="center_it col">
-                    <button class="budget_type actual_budget_view allocation_toggle btn ${
-                        this.state.real == true
-                        ? 'btn btn-secondary'
-                        : 'allocation_toggle-inactive'}">real budget</button>
-                    <button class="budget_type rec_budget_view allocation_toggle btn ${
-                        this.state.real == false
-                        ? 'btn btn-secondary'
-                        : 'allocation_toggle-inactive'}">recommended</button>
-                </div>
-            </div>
-            <div class="row row_cancel">
-                <div class="col-md-2 col-12"></div>
-                <div class="${this.state.real && this.active_plan ? 'col-md-8 col-12' : 'col-md-4 col-12'}">
-                    <p><strong>
+                <div class="${this.state.real && this.active_plan ? 'col-md-6 col-12' : 'col-md-6 col-12'}">
+                    <p class="center_it"><strong>
                         ${this.state.real
                             ? `Ad spend budget:`
                             : `Recommended budget:`}
                     </strong></p>
-                    <div style="padding-top:7%;" class="card center_it negative_card">
+                    <div class="center_it">
                         <h5>
                             <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
                             ${this.state.real && this.active_plan && this.demo != 'True' ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
@@ -276,7 +291,20 @@ export default class AdSpend extends HTMLElement {
                         `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
                     </div>
                 </div>
-                <div class="col-md-4 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
+                <div class="center_it col">
+                    <button class="budget_type actual_budget_view allocation_toggle btn ${
+                        this.state.real == true
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">real budget</button>
+                    <button class="budget_type rec_budget_view allocation_toggle btn ${
+                        this.state.real == false
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">recommended</button>
+                </div>
+            </div>
+            <div class="row row_cancel">
+                <div class="col-md-2 col-12"></div>
+                <div class="col-md-10 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
                     <p class="small_txt">View recommendations with new budget:</p>
                     <div class="form-group">
                         <input type="number" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
@@ -292,10 +320,7 @@ export default class AdSpend extends HTMLElement {
             </div>
 
             <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12">
-                    <canvas width="100%" height="100%" id="allocation_canvas"></canvas>
-                </div>
-                <div class="col-lg-5 col-md-5 col-sm-12">
+                <div class="col-lg-7 col-md-7 col-sm-12">
                     <br>
                     <div style="margin:0 auto;text-align:center;">
                         <button class="spend_num_type view_perc allocation_toggle btn ${
@@ -310,27 +335,12 @@ export default class AdSpend extends HTMLElement {
                     <div id="stage_breakdown" class="inset">
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12">        
-                    <div class="next_steps">
-                        <h6>Next steps</h6>
-                        <div class="top">
-                            <h5>Do it yourself</h5>
-                            <p>Go forth and conquer.  Keep us posted on your successes!</p>
-
-                            <h5 class="center_it">or</h5>
-
-                            <h5>We can help</h5>
-                            <p>Market(r) will create, manage, and optimize your campaign(s) overtime for a flat-monthly fee.</p>
-
-                        </div>
-                        <div class="bottom">
-                            <div class="center_it">
-                                <a class="btn btn-secondary" href="/pricing">view plans</a><br>
-                                <a href="/schedule">want to chat first?</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+       
+                ${!this.active_plan || this.demo
+                    ? this.next_steps()
+                    : ``
+                }
+                    
             </div>
             
             `
@@ -422,9 +432,9 @@ export default class AdSpend extends HTMLElement {
                 })
             })
 
-            setTimeout(()=>{
-                this.mount_chart(_el.querySelector('#allocation_canvas'))
-            }, 100)
+            // setTimeout(()=>{
+            //     this.mount_chart(_el.querySelector('#allocation_canvas'))
+            // }, 100)
             
             return _el
         }
@@ -497,10 +507,11 @@ export default class AdSpend extends HTMLElement {
         this.competitiveness = this.getAttribute('competitiveness')
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
-        this.demo = this.getAttribute('demo')
+        this.demo = this.getAttribute('demo') == 'False' || !this.getAttribute('demo') ? false : true
         this.active_plan = this.getAttribute('active_plan') == 'None'
                             ? false
                             : true
+    
 
         this.spend_rate = this.getAttribute('spend_rate') != null && this.getAttribute('spend_rate') != 'None'
                             ? this.getAttribute('spend_rate')

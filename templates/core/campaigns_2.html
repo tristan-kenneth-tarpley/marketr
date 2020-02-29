@@ -36,23 +36,6 @@
 {% set company_name = page.data['core']['company_name'] %}
 
 
-{% macro spend_allocation(page) %}
-{% set base = page.data['core']['core'][0] %}
-<ad-spend
-    customer_id="{{page.data['core']['core'][0]['id']}}"
-    type="{{page.data['spend_rec']['spend_rec'][0]['model']}}"
-    stage="{{base.get('stage')}}"
-    revenue="{{base.get('revenue')}}"
-    brand_strength="{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}"
-    growth_needs="{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}"
-    competitiveness="{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}"
-    selling_to="{{base.get('selling_to')}}"
-    biz_model="{{base.get('biz_model')}}"
-    active_plan="{{base.get('current_plan')}}"
-    demo="{{demo}}"
-    spend_rate="{{ base.get('spend_rate') }}">
-</ad-spend>
-{% endmacro %}
 
 
 {% macro performance(page) %}
@@ -149,18 +132,30 @@
 {% endif %}
 
 
-<div id="where" class="row">
-    <div class="col">
-        {{ section(
-            link=None,
-            title="Ad Spend",
-            body=spend_allocation(page),
-            hash="Allocation",
-            admin=page.admin,
-            demo=demo
-        ) }}
-    </div>
-</div>
-        
+{% macro spend_allocation(page) %}
+{% set base = page.data['core']['core'][0] %}
+<ad-spend
+    customer_id="{{page.data['core']['core'][0]['id']}}"
+    type="{{page.data['spend_rec']['spend_rec'][0]['model']}}"
+    stage="{{base.get('stage')}}"
+    revenue="{{base.get('revenue')}}"
+    brand_strength="{{base.get('brand_strength') if base.get('brand_strength') else 'medium' }}"
+    growth_needs="{{base.get('growth_needs') if base.get('growth_needs') else 'medium' }}"
+    competitiveness="{{base.get('competitiveness') if base.get('competitiveness') else 'medium' }}"
+    selling_to="{{base.get('selling_to')}}"
+    biz_model="{{base.get('biz_model')}}"
+    active_plan="{{base.get('current_plan')}}"
+    demo="{{demo}}"
+    spend_rate="{{ base.get('spend_rate') }}">
+</ad-spend>
+{% endmacro %}
 
+{{ section(
+    link=None,
+    title="Ad Spend",
+    body=spend_allocation(page),
+    hash="Allocation",
+    admin=page.admin,
+    demo=demo
+) }}
 

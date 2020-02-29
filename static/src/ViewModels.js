@@ -83,12 +83,10 @@ export class CoreViewModels {
                 param_val = "competitors"
                 break
         }
-        let new_url = updateURLParameter(this.url_path, 'view', param_val)
-        
+        let new_url = updateURLParameter(this.url_path, 'view', param_val)    
         history.pushState(null, null, new_url)
-        
-        nav_target.removeClass('hidden')
-        $(".sidebar-wrapper div").not(nav_target).addClass('hidden')
+        nav_target.addClass('active')
+        $(".sidebar_li").not(nav_target).removeClass('active')
     }
 
     tabs() {
@@ -235,15 +233,12 @@ export class CoreViewModels {
         
         $(window).on('load', e => {
             const show_nav = target => {
-                $(`#${target}`).addClass('active')
-                $(`#${target}-tab`).addClass('active')
-                $(`#${target}-tab`).addClass('show')
-                $(`#${target}-nav`).removeClass('hidden')
+                $(".sidebar_li").removeClass("active")
+                $(`#${target}-nav`).addClass('active')
             }
             
             const urlParams = new URLSearchParams(window.location.search);
             let view = urlParams.get('view') != null || undefined ? urlParams.get('view') : 'campaigns'
-            $(".sidebar-wrapper div").addClass('hidden')
             show_nav(view)
         })
     }
