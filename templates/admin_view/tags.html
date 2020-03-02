@@ -1,3 +1,5 @@
+    {% from 'macros/_admin_macros.html' import render_field %}
+    
     {% macro render_area(label=None, form_attr=None) %}
         {% macro render_tag(field)%}
             {{ field(**kwargs)|safe }}
