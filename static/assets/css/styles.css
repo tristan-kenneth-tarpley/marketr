@@ -426,9 +426,8 @@ html {
 }
 
 .btn, .navbar .navbar-nav > a.btn {
-  text-transform: uppercase;
-  transition: .5s;
-  font-weight: bold !important; 
+  text-transform: capitalize;
+  transition: .5s; 
   border-width: 2px;
   font-weight: 400;
   font-size: 0.8571em;
@@ -889,7 +888,9 @@ fieldset[disabled] .btn-link.active {
 
 .btn-group.select .btn {
   text-align: left; }
-
+.btn {
+  text-decoration: capitalize !important;
+}
 .btn-group.select .caret {
   position: absolute;
   top: 50%;
@@ -1339,6 +1340,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400; }
 h2, h3, h4 {
   color: var(--nav-color) !important;
+}
+p {
+  line-height: 1.8rem;
+  margin: 0 0 24px;
 }
 a {
   color: var(--secondary); }

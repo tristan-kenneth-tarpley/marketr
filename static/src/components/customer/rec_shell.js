@@ -9,27 +9,34 @@ const styles = () => {
             padding: 1%;
         }
         .rec {
-            border-left: 4px solid gray;
             margin-bottom: 2%;
-            padding: 5% 2% 0 5%;
+            padding: 5% 0 0;
+            border-bottom: 1px solid #f2f2ff;
+            overflow-x: hidden;
         }
         .dismiss {
             position: relative;
-            left: 85%;
             top: 0;
+            margin: 0px 1px 15px !important;
+            font-weight: 500;
+            text-transform: lowercase;
         }
         .rec-title {
+            position: relative;
+            top: 0;
+            left: 0;
             margin-bottom: 0;
             padding-bottom: 0;
-            font-size: 97%;
         }
         .rec-apply {
             font-size: 75%;
+            padding: 5px 10px;
             /*float: right;*/
         }
         .read-more {
             margin: auto;
         }
+
         
 
 
@@ -88,14 +95,16 @@ export default class Rec_shell extends HTMLElement {
             ${this.css}
             ${modal(this.title, this.body, this.title)}
             <div class="rec-container">
-                <div style="border-left: 4px solid ${colors[this.index]}" class="rec">
-                    <span class="x dismiss">X</span> 
-                    <p class="rec-title">${this.title}</p>
+                <div class="rec">
                     <div class="row">
-                        <div class="col-md-6 col-12">
-                            <div data-uid="${this.title}" id="six" class="button">Read more</div>
+                        <div class="col-lg-7 col-md-7 col-sm-12">
+                            <p class="rec-title small_txt">${this.title}</p>
+                            <div data-uid="${this.title}" id="six" class="small_txt button">[Read more]</div>
                         </div>
-                        <div class="col-md-6 col-12"><button class="rec-apply btn btn-secondary">Do it</button></div>
+                        <div style="text-align:right;" class="col-lg-5 col-md-5 col-sm-12">
+                            <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button> 
+                            <button class="small_txt rec-apply btn btn-outline btn-outline-secondary">Do it</button>
+                        </div>
                     </div>
                 </div>
             </div>
