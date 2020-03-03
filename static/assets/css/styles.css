@@ -4906,6 +4906,7 @@ to   { opacity: 1; }
   box-shadow: var(--card-box-shadow);
   background-color: #fff;
   padding: 0 !important;
+  border-radius: 6px;
   margin-bottom: 20px;
 }
 .target .top_card {
@@ -12604,6 +12605,10 @@ h2 p,
 h3 p,
 span p {
   font-weight: 500;
+}
+
+p, span {
+  color: var(--nav-color);
 }
 
 

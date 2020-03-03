@@ -107,7 +107,6 @@ const styles = () => {
         .stat span {
             vertical-align: baseline;
             margin-bottom: 0;
-            color: rgba(0,0,0,.5);
         }
         .stat h1 {
             color: var(--darker-blue);
