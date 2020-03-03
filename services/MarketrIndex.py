@@ -1,17 +1,18 @@
 import pandas as pd
 import numpy as np
 import json
+
 ######################### SUPER CLASS #########################
 
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
-        self.social_columns = ['id', 'adset_id', 'campaign_id', '_cost',  pd.Grouper(key='date_start', freq='W-MON')]
-        self.search_columns = ['adid', 'adgroupid', 'campaignid', '_cost', pd.Grouper(key='date_start', freq='W-MON')]
+        self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
+        self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cost': 'sum',
-            'conversions': 'sum', 'ctr' : 'sum', 'clicks':'sum',
-            'lcr': 'mean', 'impressions': 'sum'
+            'conversions': 'sum', 'ctr' : 'mean', 'clicks':'sum',
+            'lcr': 'mean', 'impressions': 'sum', '_cost': 'mean'
         }
     
         self.assertion_error = 'dataset type required, e.g. search=True || social=True'
@@ -32,12 +33,12 @@ class MarketrIndex(object):
     
     def pp1ki(self, ctr, lcr, spend, impressions):
         # translation: profit potential per 1,000 impressions
-
         try:
             formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
         except Exception as e:
             print(e)
             formula = 0
+
         return formula
     
     def IndexFormula(self, number):
@@ -82,9 +83,9 @@ class MarketrIndex(object):
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
 
         df = df.groupby(columns).agg(self.agg_set).reset_index()
-  
+          
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
-        
+
         return df
 
     
@@ -115,15 +116,12 @@ class MarketrIndex(object):
     
     def eval_action(self, index, sum, mean, std):   
         breakpoint = 1*std
-#         print('std', std)
-#         print('mean', mean)
-#         print('index', index)
         if index > mean + breakpoint:
-            _action = 're-invest!'
+            _action = 'invest more'
         elif index <  mean - breakpoint:
             _action = 'kill it'
         else:
-            _action = 'hold on'
+            _action = 'unclear'
 
         return _action
 
@@ -223,17 +221,38 @@ class CampaignIndex(MarketrIndex):
     def __init__(self, ltv):
         super().__init__(ltv)
         
-    def PrepIndex(self, df, search=False, social=False):
-        
+    def PrepIndex(self, df, search=False, social=False): 
         if search:
             column_selector = self.search_columns[2:]
         elif social:
             column_selector = self.social_columns[2:]
-        
+
         df = self.Assign(df, column_selector, search=search, social=social)
         df['marketr_index'] = df.apply(self.reorder_m_index, axis=1)
+        agg = self.agg_set
+        agg['marketr_index'] = 'mean'
+        
+        grouped = df.groupby(column_selector[0])
+        
+        def get_perc_change(_id):
+            mi_perc_change = df[df[column_selector[0]] == _id] \
+                .sort_values(by='date_start', ascending=False) \
+                .groupby([column_selector[0], pd.Grouper(key='date_start', freq='W-MON')]) \
+                .agg({'marketr_index': 'mean'}).marketr_index.pct_change().reset_index()
+            
+            returned = mi_perc_change.loc[mi_perc_change['date_start'] == mi_perc_change['date_start'].max()]['marketr_index']
+            
+            return returned.iloc[0]
+ 
+        agg_df = grouped.agg(agg).reset_index()
+        agg_df = self.Assign(agg_df, column_selector[0], search=search, social=social)
+        agg_df['perc_change'] = agg_df[column_selector[0]].apply(lambda x: get_perc_change(x))
 
-        return df
+        return {
+            'range': df,
+            'agg': agg_df
+        }
+    
 
 ######################### TIER 2 #########################
 """
@@ -255,9 +274,11 @@ class BucketIndex(MarketrIndex):
         
     def PrepIndex(self, df):
         cost = df.head(1)['_cost'][0]
+
         index = np.average(df.marketr_index, weights=df.cost)
-        df = df.groupby('date_start').agg(self.agg_set).reset_index()
+#         df = df.groupby('date_start').agg(self.agg_set).reset_index()
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+
         return {
             'cost': cost,
             'index': index,
@@ -298,7 +319,7 @@ class PortfolioIndex(MarketrIndex):
                 arr.append(condition(arg['index'], arg['cost']))
                 dfs.append(arg['raw'])
         
-        df = pd.concat(dfs).groupby('date_start').agg(self.agg_set).reset_index()
+        df = pd.concat(dfs, sort=True)
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
             
         return {
@@ -339,7 +360,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             search_t3 = campaign_index.PrepIndex(search_t4, search=True)
 
             # bucket level
-            search_t2 = bucket_index.PrepIndex(search_t3)
+            search_t2 = bucket_index.PrepIndex(search_t3['agg'])
             id_map = search_df[['campaign_name', 'campaignid']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
             for row, value in id_map.iterrows():
@@ -347,7 +368,9 @@ def compile_master(ltv=None, search_df=None, social_df=None):
                 _id = (search_df.loc[row]['campaignid'])
                 _id_map[_id] = name
 
-            search_t3['campaign_name'] = search_t3.campaignid.apply(lambda x: _id_map[x])
+            search_t3['agg']['campaign_name'] = search_t3['agg'].campaignid.apply(lambda x: _id_map[x])
+            search_t3['range']['campaign_name'] = search_t3['range'].campaignid.apply(lambda x: _id_map[x])
+
         except Exception as e:
             print(e)
             search_index=search_t2=search_t3=search_t4 = None
@@ -368,17 +391,18 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             # campaign level
             social_t3 = campaign_index.PrepIndex(social_t4, social=True)
 
-            social_t2 = bucket_index.PrepIndex(social_t3)
+            social_t2 = bucket_index.PrepIndex(social_t3['agg'])
 
             id_map = social_df[['campaign_name', 'campaign_id']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
+
             for row, value in id_map.iterrows():
-                
                 name = (social_df.loc[row]['campaign_name'])
                 _id = (social_df.loc[row]['campaign_id'])
                 _id_map[_id] = name
 
-            social_t3['campaign_name'] = social_t3.campaign_id.apply(lambda x: _id_map[x])
+            social_t3['agg']['campaign_name'] = social_t3['agg'].campaign_id.apply(lambda x: _id_map[x])
+            social_t3['range']['campaign_name'] = social_t3['range'].campaign_id.apply(lambda x: _id_map[x])
         # bucket level
         # portfolio level
         except Exception as e:
@@ -395,19 +419,24 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     
     def export(df):
         if df is not None:
-            df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
+            try:
+                df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
+            except Exception as e:
+                print(e)
             return json.loads(df.to_json(orient='records'))
         else:
             return None
-
-#     return social_index
 
     struct = {
         'total_spent': total_spent,
         'buckets': [],
         'campaigns': {
-            'social': export(social_t3),
-            'search': export(search_t3)
+            'social': export(social_t3['agg']),
+            'search': export(search_t3['agg'])
+        },
+        'ranged_campaigns': {
+            'social': export(social_t3['range']),
+            'search': export(search_t3['range'])
         },
         'ad_groups': {
             'social': export(social_t4),

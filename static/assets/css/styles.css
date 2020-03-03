@@ -949,6 +949,7 @@ label {
 }
 
 .form-control {
+  font-family: var(--primary-font);
   background-color: transparent;
   border-top: 3px solid transparent;
   border-left: 3px solid transparent;
@@ -1336,7 +1337,9 @@ textarea {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400; }
-
+h2, h3, h4 {
+  color: var(--nav-color) !important;
+}
 a {
   color: var(--secondary); }
   a:hover, a:focus {
@@ -3348,7 +3351,8 @@ Created using IcoMoon - icomoon.io
 
 .card {
   border: 0;
-  border-radius: 0.1875rem;
+  /* border-radius: 0.1875rem; */
+  border-radius: 6px;
   display: inline-block;
   position: relative;
   width: 100%;
@@ -12371,7 +12375,9 @@ html.modal-active, body.modal-active {
   white-space: pre-wrap;
 }
 
-
+.center_it .widget__title.small {
+  justify-content: center;
+}
 .widget__title.small {
   color: #b8b8d9;
   display: flex;
@@ -12543,4 +12549,193 @@ html.modal-active, body.modal-active {
 .action {
   font-weight: bold;
   color: var(--darker-blue);
+}
+
+.direction_icons {
+  width: 22px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  order: 0;
+  margin-right: 5px;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+.good_direction {
+  color: rgba(18,196,87,0.5);
+}
+.bad_direction {
+  color: rgba(232,76,133,0.5);
+}
+
+.stat-trend {
+  display: flex;
+  align-items: center;
+  text-align:center;
+  margin: 0;
+  justify-content: center;
+}
+
+.center_vertically {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 80%;
+  align-items: center;
+}
+.oversized_text {
+  font-size: 3.5rem;
+}
+h1 p,
+h2 p,
+h3 p,
+span p {
+  font-weight: 500;
+}
+
+
+
+
+
+.select-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+  font-size: 18px;
+  color: #60666d;
+}
+@media (min-width: 768px) {
+  .select-box {
+    width: 70%;
+  }
+}
+@media (min-width: 992px) {
+  .select-box {
+    width: 50%;
+  }
+}
+@media (min-width: 1200px) {
+  .select-box {
+    width: 30%;
+  }
+}
+.select-box__current {
+  position: relative;
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  outline: none;
+}
+.select-box__current:focus + .select-box__list {
+  opacity: 1;
+  -webkit-animation-name: none;
+          animation-name: none;
+}
+.select-box__current:focus + .select-box__list .select-box__option {
+  cursor: pointer;
+}
+.select-box__current:focus .select-box__icon {
+  -webkit-transform: translateY(-50%) rotate(180deg);
+          transform: translateY(-50%) rotate(180deg);
+}
+.select-box__icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 20px;
+  opacity: 0.3;
+  -webkit-transition: 0.2s ease;
+  transition: 0.2s ease;
+}
+.select-box__value {
+  display: -webkit-box;
+  display: flex;
+}
+.select-box__input {
+  display: none;
+}
+.select-box__input:checked + .select-box__input-text {
+  display: block;
+}
+.select-box__input-text {
+  display: none;
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+  background-color: #fff;
+}
+.select-box__list {
+  position: absolute;
+  width: 100%;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  -webkit-animation-name: HideList;
+          animation-name: HideList;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-timing-function: step-start;
+          animation-timing-function: step-start;
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+}
+.select-box__option {
+  display: block;
+  padding: 15px;
+  background-color: #fff;
+}
+.select-box__option:hover, .select-box__option:focus {
+  color: #546c84;
+  background-color: #fbfbfb;
+}
+
+@-webkit-keyframes HideList {
+  from {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+  to {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+  }
+}
+
+@keyframes HideList {
+  from {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+  to {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+  }
+}
+
+
+.trend__group {
+  text-align: center;
+  /* padding: 2em 0.5em; */
+  flex-grow: 1;
+}
+
+.main-graph__trend {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+  padding: 0 0.5em;
+  min-height: 60px;
 }

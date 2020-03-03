@@ -5,6 +5,7 @@ import {Achievements, Store, Rewards} from './gamify.js'
 import {IntakeProgressMeter, CoreViewModels, AuditRequest, PriceViewModel, AuditViewModel, WalletViewModel} from './ViewModels.js'
 import {PaymentsService} from './services.js'
 import InitFuncs from './future_refactor/InitFuncs.js'
+import {select_controller} from '/static/src/components/UI_elements.js'
 
 
 
@@ -81,6 +82,7 @@ const Controller = class {
 	}
 
 	run() {
+		select_controller()
 		if (this.intake.includes(this.url_path)){
 			const run_page = (resolve, reject) => {
 				const init = new InitFuncs()

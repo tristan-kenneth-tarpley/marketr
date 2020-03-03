@@ -5,7 +5,8 @@
   --secondary: #ca7d66;
   --plum: #CB2780;
   --body-copy: rgb(87,102,126);
-  --panel-bg: #f2faff;
+  /* --panel-bg: #f2faff; */
+  --panel-bg: #F7F7FC;
   --label-color: rgba(87,102,126, .9);
   --darker-blue: #09A1BC;
 
@@ -25,6 +26,7 @@
   --primary-font: "Montserrat", sans-serif !important;
   --secondary-font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --alt-font: "Pacifico", sans-serif;
+  --body-color: #333333;
 
     /* nav styles */
   --nav-shadow: -3px 0 5px 0 #555;

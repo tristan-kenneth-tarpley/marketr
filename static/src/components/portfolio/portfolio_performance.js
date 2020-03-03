@@ -4,12 +4,12 @@ import Insights from '/static/src/components/portfolio/Insights.js'
 import Creative from '/static/src/components/portfolio/Creative.js'
 import {google, facebook} from '/static/src/components/UI_elements.js'
 import Recommendations from '/static/src/components/customer/recommendations.js'
-import { dots_loader } from '/static/src/components/UI_elements.js'
+import { dots_loader, custom_select_body } from '/static/src/components/UI_elements.js'
 
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
-const marketr_score = (text, sub=false) => {
+const marketr_score = (text, sub=false, huge=false) => {
     let score = parseFloat(text)
     let _class;
     if (score <= 1) {
@@ -20,7 +20,7 @@ const marketr_score = (text, sub=false) => {
         _class = '_green'
     }
 
-    return `<h1 class="${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+    return `<h1 class="${huge ? 'oversized_text' : ''} ${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
 }
 
 const styles = () => {
@@ -29,6 +29,7 @@ const styles = () => {
     <style>
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
+        @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         .comparison_table tr {
             border-bottom: 1px solid #f2f2ff;
@@ -106,6 +107,7 @@ const styles = () => {
         .stat span {
             vertical-align: baseline;
             margin-bottom: 0;
+            color: rgba(0,0,0,.5);
         }
         .stat h1 {
             color: var(--darker-blue);
@@ -116,7 +118,6 @@ const styles = () => {
             margin-bottom: 0;
         }
         .stat h3 {
-            color: var(--secondary);
             font-size: 18px;
             font-weight: 600;
             margin-left: auto;
@@ -293,25 +294,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 cost: i.cost
             }]
         }
-        const group_campaigns = camp => {
-            campaigns = [...campaigns, {
-                campaign_name: camp.campaign_name,
-                pp1ki: camp.pp1ki,
-                cpm: camp.cpm,
-                date_start: camp.date_start,
-                marketr_index:camp.marketr_index,
-                action: camp.action,
-                conversions: camp.conversions,
-                cost: camp.cost,
-                cost_comp: camp.cost_comp,
-                pp1ki_comp: camp.pp1ki_comp,
-                index_comp: camp.index_comp,
-                cost_comp: camp.cost_comp,
-                cpl_comp: camp.cpl_comp
-            }]
-            if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
 
-        }
         const group_ads = i => {
             let id = i.id == undefined ? i['adid'] : i['id']
             
@@ -380,30 +363,60 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // campaigns
             case 2:
+                const campaign_struct = (camp) => {
+                    return {
+                        campaign_name: camp.campaign_name,
+                        pp1ki: camp.pp1ki,
+                        cpm: camp.cpm,
+                        date_start: camp.date_start,
+                        marketr_index:camp.marketr_index,
+                        action: camp.action,
+                        conversions: camp.conversions,
+                        cost: camp.cost,
+                        cost_comp: camp.cost_comp,
+                        pp1ki_comp: camp.pp1ki_comp,
+                        index_comp: camp.index_comp,
+                        cost_comp: camp.cost_comp,
+                        cpl_comp: camp.cpl_comp,
+                        perc_change: camp.perc_change
+                    }
+                } 
+                let ranged_campaigns = []
+                const group_ranged_campaigns = camp => {
+                    ranged_campaigns = [...ranged_campaigns, campaign_struct(camp)]
+                    if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
+                }
+                const group_campaigns = camp => {
+                    campaigns = [...campaigns, campaign_struct(camp)]
+                }
 
+                if (data.ranged_campaigns.search) {
+                    data.ranged_campaigns.search.map(camp=> group_ranged_campaigns(camp) )
+                }
+                if (data.ranged_campaigns.social) {
+                    data.ranged_campaigns.social.map(camp=> group_ranged_campaigns(camp) )
+                }
                 if (data.campaigns.search) {
-                    data.campaigns.search.map(camp=>{
-                        group_campaigns(camp)
-                    })
+                    data.campaigns.search.map(camp=> group_campaigns(camp) )
                 }
                 if (data.campaigns.social) {
-                    data.campaigns.social.map(camp=>{
-                        group_campaigns(camp)
-                    })
+                    data.campaigns.social.map(camp=> group_campaigns(camp) )
                 }
 
                 this.sub_filters = sub_filters
+                let _ranged_campaigns = ranged_campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let _campaigns = campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
+                let copied_ranged_campaigns = _ranged_campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let copied_campaigns = _campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 this.state.breakdown = remove_duplicates(copied_campaigns, 'campaign_name')
 
                 this.state.active_data.profitability = {
-                    dates: copied_campaigns.map(_camp=>_camp.date_start),
-                    pp1ki: copied_campaigns.map(_camp=>_camp.pp1ki),
-                    cpm: copied_campaigns.map(_camp=>_camp.cpm),
-                    marketr_index: copied_campaigns.map(_camp=>_camp.marketr_index)[copied_campaigns.map(_camp=>_camp.marketr_index).length - 1],
-                    action: copied_campaigns.map(i=>i.action)[copied_campaigns.map(i=>i.action).length - 1],
-                    cost: copied_campaigns.map(i=>i.cost).reduce((a, b) => a + b, 0)
+                    dates: copied_ranged_campaigns.map(_camp=>_camp.date_start),
+                    pp1ki: copied_ranged_campaigns.map(_camp=>_camp.pp1ki),
+                    cpm: copied_ranged_campaigns.map(_camp=>_camp.cpm),
+                    marketr_index: copied_ranged_campaigns.map(_camp=>_camp.marketr_index)[copied_ranged_campaigns.map(_camp=>_camp.marketr_index).length - 1],
+                    action: copied_ranged_campaigns.map(i=>i.action)[copied_ranged_campaigns.map(i=>i.action).length - 1],
+                    cost: copied_ranged_campaigns.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
         
                 break
@@ -419,13 +432,10 @@ export default class PortfolioPerformance extends HTMLElement {
                     data.ads.social.map(camp=>{
                         group_ads(camp)
                     })
-                } else {
-                    console.log('testing')
                 }
+
                 this.sub_filters = sub_filters
-                
                 let _copied_ads = ads.filter(x=>x.name == this.state.active_sub_view)
- 
                 let copied_ads;
                 if (_copied_ads.length == 0) copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
                 else copied_ads = _copied_ads
@@ -485,7 +495,7 @@ export default class PortfolioPerformance extends HTMLElement {
         <div class="center_it"> 
         <br><br>
             <h1 style="margin-bottom:0;" class="widget__title">There are a lot of platforms out there to choose from</h1>
-            <p>Need help finding some more opportunities? Head over to chat and tell your Market(r) guide.</p>
+            <p class="small_txt">Need help finding some more opportunities? Head over to chat and tell your Market(r) guide.</p>
             <a href="${!this.demo ? '/home?view=messages' : '#'}" class="btn btn-outline btn-outline-secondary">Let's chat</a>
         </div>
         `
@@ -501,7 +511,7 @@ export default class PortfolioPerformance extends HTMLElement {
         const row = (index, description, description_sub, cost) => {
             let third_sub = {
                 0: `<p style="font-size:8pt;">total spent</p>`,
-                1: `<p style="font-size:8pt;">cost per<br>conversion</p>`,
+                1: `<p style="font-size:8pt;">total spent</p>`,
                 2: `<p style="font-size:8pt;">cost per<br>conversion</p>`,
                 3: ``
             }
@@ -512,12 +522,39 @@ export default class PortfolioPerformance extends HTMLElement {
                         ${marketr_score(number(index), true)}
                         <br>
                         <span>${description}<br> <p style="font-size: 8pt;">${description_sub}</p></span>
-                        <h3>
+                        <h3 style="text-align:right;">
                             ${currency(cost)}
                             ${third_sub[active_view]}
                         </h3>
                     </div>
                 </li>
+            `
+        } 
+
+        const meta = (index, perc_change) => {
+            let third_sub = {
+                0: `<p style="font-size:8pt;">total spent</p>`,
+                1: `<p style="font-size:8pt;">total spent</p>`,
+                2: `<p style="font-size:8pt;">total spent</p>`,
+                3: ``
+            }
+            let up = `<i class="fas direction_icons good_direction fa-arrow-circle-up"></i>`
+            let down = `<i class="fas direction_icons bad_direction fa-arrow-circle-down"></i>`
+            /*html*/
+            return`
+                <div class="center_vertically">
+                    <div class="center_it">
+                        ${title('health score', true)}
+                        ${marketr_score(number(index), false, true)}
+                    </div>
+                    
+                    <div class="center_it stat-trend up green">
+                        ${perc_change > 0 ? up : down }
+                        <p class="center_it"><span class="${perc_change > 0 ? '_green' : '_red'}">${number_rounded(perc_change * 100)}%</span> in past 7 days</p>
+                    </div>
+                </div>
+                
+                
             `
         } 
 
@@ -536,9 +573,10 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 break
             case 1:
+
                 let run_search = this.state.active_sub_view == 'search' ? true : false
                 let run_social = this.state.active_sub_view == 'social' ? true : false
-
+      
                 let social = run_social && data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
                 let search = run_search && data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
                 
@@ -552,7 +590,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
-                            _row.conversions != 0 ? _row.cost/_row.conversions : 0
+                            _row.cost
                         )
                     }).join("") : ''}
                     ${search ? search.map(_row=>{
@@ -560,7 +598,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             _row.marketr_index,
                             _row.campaign_name,
                             'campaign name',
-                            _row.conversions != 0 ? _row.cost/_row.conversions : 0
+                            _row.cost
                         )
                     }).join("") : ''}
                 `
@@ -573,7 +611,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 /*html*/
                 markup = `
                 ${data.map(_row=>{
-                    return row(_row.marketr_index, currency(_row.pp1ki), 'profit potential<br>per thousand impressions', _row.cost)
+                    return meta(_row.marketr_index, _row.perc_change)
                 }).join("")}
                 `
                 break
@@ -608,11 +646,24 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     date_range(){
+        let options = [
+            {'value': 365, 'title': 'Past year'},
+            {'value': 180, 'title': 'Past 6 months'},
+            {'value': 90, 'title': 'Past 90 days'},
+            {'value': 60, 'title': 'Past 60 days'},
+            {'value': 45, 'title': 'Past 45 days'},
+            {'value': 30, 'title': 'Past 30 days'},
+            {'value': 21, 'title': 'Past 21 days'},
+            {'value': 14, 'title': 'Past 14 days'},
+            {'value': 7, 'title': 'Past 7 days'},
+            {'value': 3, 'title': 'Past 3 days'}
+        ]
         return `
         <div class="col"></div>
         <div class="col-lg-4 col-md-4 col-sm-12">
-            <div class="select">
-                <select id="date_range" class="fancy">
+
+                ${title('Filter by', true)}
+                <select class="form-control" id="date_range">
                     <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
                     <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
                     <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
@@ -625,7 +676,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
                     <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
                 </select>
-            </div>
+ 
         </div>
         <div class="col"></div>`
     }
@@ -822,36 +873,43 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
                 <div class="row">
-                    ${this.date_range()}
-                </div>
-                <div class="row row_cancel">
-                    <div class="col">
-                        <div class="row row_cancel">
-                            ${this.analytics ? ''
-                            : `
-                                <div class="col-lg-6 col-md-6 col-12">
-                                    <div class="h--300  card card-body">
-                                        <div class="row row_cancel">
-                                            <div class="col-lg-4 col-md-4 col-12">
-                                                ${title(`health score: ${marketr_score(number(this.state.data.aggregate.index))}`, true)}
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-12">
-                                                ${title(`Funds: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-12">
-                                                ${title(`budget: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`, true)}`, true)}
-                                            </div>
+                    ${this.analytics ? ''
+                    : `
+                        <div class="col-lg-12 col-md-12 col-12">
+                            <div class="card card-body">
+                                <div class="main-group__trend row row_cancel">
+                                    <div class="col-lg-4 col-md-4 col-12"> 
+                                        <div class="center_it trend__group">
+                                            ${title(`health score: ${marketr_score(number(this.state.data.aggregate.index))}`, true)}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="center_it trend__group">
+                                            ${title(`Funds: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="center_it trend__group">  
+                                            ${title(`budget: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`, true)}
                                         </div>
                                     </div>
                                 </div>
-                            `
-                            }
-
-                            <div class="col-lg-6 col-md-6 col-12">
-                                ${this.view_by()}
                             </div>
                         </div>
-                    </div>
+                    `
+                    }
+                    
+                </div>
+                <div class="row row_cancel">
+      
+                        <div class="col-lg-6 col-md-6 col-12">
+                            ${this.view_by()}
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                            <div class="card card-body h--300">
+                                ${this.date_range()}
+                            </div>
+                        </div>
 
                 </div>
             </div>
