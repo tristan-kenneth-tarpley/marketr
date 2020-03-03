@@ -274,7 +274,6 @@ export default class PortfolioPerformance extends HTMLElement {
         let buckets = []
         let sub_filters = []
         let campaigns = []
-        let ads = []
     
         const append_data = (iterable, value) => [...iterable, value]
         const group = i => {
@@ -295,46 +294,6 @@ export default class PortfolioPerformance extends HTMLElement {
             }]
         }
 
-        const group_ads = i => {
-            let id = i.id == undefined ? i['adid'] : i['id']
-            
-            let name = i.ad_name == undefined || 0 ? id : i.ad_name
-            let creative;
-
-            if (i.id == undefined) {
-                creative = {
-                    headline: `${i.headline1} | ${i.headline2}`,
-                    description: i.description,
-                    url: i.finalurl,
-                    imageadurl: i.imageadurl
-                }
-            } else {
-                creative = {
-                    thumbnail: i.thumbnail_url,
-                    body: i.body
-                }
-            }
-
-            ads = [...ads, {
-                id: id,
-                pp1ki: i.pp1ki,
-                cpm: i.cpm,
-                marketr_index:i.marketr_index,
-                date_start: i.date_start,
-                action: i.action,
-                cost: i.cost,
-                creative,
-                name,
-                conversions: i.conversions,
-                cost_comp: i.cost_comp,
-                pp1ki_comp: i.pp1ki_comp,
-                index_comp: i.index_comp,
-                cost_comp: i.cost_comp,
-                cpl_comp: i.cpl_comp
-            }]
-   
-            if (!sub_filters.includes(name)) sub_filters.push(name)
-        }
          //dates = Array.from(new Set([...dates, i.date_start]))
        
         switch(active_view) {
@@ -422,26 +381,129 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // ads
             case 3:
+                let ads = []
+                let ranged_ads = []
+                const ads_struct = (i, id, name, creative) => {
+                    return {
+                        id: id,
+                        pp1ki: i.pp1ki,
+                        cpm: i.cpm,
+                        marketr_index:i.marketr_index,
+                        date_start: i.date_start,
+                        action: i.action,
+                        cost: i.cost,
+                        creative,
+                        name,
+                        conversions: i.conversions,
+                        cost_comp: i.cost_comp,
+                        pp1ki_comp: i.pp1ki_comp,
+                        index_comp: i.index_comp,
+                        cost_comp: i.cost_comp,
+                        cpl_comp: i.cpl_comp,
+                        perc_change: i.perc_change
+                    }
+                }
+
+                const group_ranged_ads = i => {
+                    let id = i.id == undefined ? i['adid'] : i['id']
+                    
+                    let name = i.ad_name == undefined || 0 ? id : i.ad_name
+                    let creative;
+
+                    if (i.id == undefined) {
+                        creative = {
+                            headline: `${i.headline1} | ${i.headline2}`,
+                            description: i.description,
+                            url: i.finalurl,
+                            imageadurl: i.imageadurl
+                        }
+                    } else {
+                        creative = {
+                            thumbnail: i.thumbnail_url,
+                            body: i.body
+                        }
+                    }
+
+                    ranged_ads = [...ranged_ads, ads_struct(i, id, name, creative)]
+                    if (!sub_filters.includes(name)) sub_filters.push(name)
+                }
+                
+
+                if (data.ranged_ads.search) {
+                    data.ranged_ads.search.map(ad=>{
+                        group_ranged_ads(ad)
+                    })
+                }
+                if (data.ranged_ads.social) {
+                    data.ranged_ads.social.map(ad=>{
+                        group_ranged_ads(ad)
+                    })
+                }
+
+
+
+
+                const group_ads = i => {
+                    let id = i.id == undefined ? i['adid'] : i['id']
+                        
+                    let name = i.ad_name == undefined || 0 ? id : i.ad_name
+                    let creative;
+
+                    if (i.id == undefined) {
+                        creative = {
+                            headline: `${i.headline1} | ${i.headline2}`,
+                            description: i.description,
+                            url: i.finalurl,
+                            imageadurl: i.imageadurl
+                        }
+                    } else {
+                        creative = {
+                            thumbnail: i.thumbnail_url,
+                            body: i.body
+                        }
+
+                    }
+
+                    ads = [...ads, ads_struct(i, id, name, creative)]
+
+                }
 
                 if (data.ads.search) {
-                    data.ads.search.map(camp=>{
-                        group_ads(camp)
+                    data.ads.search.map(ad=>{
+                        group_ads(ad)
                     })
                 }
                 if (data.ads.social) {
-                    data.ads.social.map(camp=>{
-                        group_ads(camp)
+                    data.ads.social.map(ad=>{
+                        group_ads(ad)
                     })
                 }
 
                 this.sub_filters = sub_filters
-                let _copied_ads = ads.filter(x=>x.name == this.state.active_sub_view)
+                
+                let _copied_ads = ranged_ads.filter(x=>x.name == this.state.active_sub_view)
                 let copied_ads;
-                if (_copied_ads.length == 0) copied_ads = ads.filter(x=>x.id == this.state.active_sub_view)
-                else copied_ads = _copied_ads
-           
 
-                this.state.breakdown = copied_ads[0]
+                if (_copied_ads.length == 0) copied_ads = ranged_ads.filter(x=>x.id == this.state.active_sub_view)
+                else copied_ads = _copied_ads
+
+                let _breakdown_ads = ads.filter(x=>x.name == this.state.active_sub_view)
+                let breakdown_ads;
+
+                if (_breakdown_ads.length == 0) {
+                    try {
+                        breakdown_ads = ads.filter(x=>x.id === this.state.active_sub_view)
+                    } catch (error) {
+                        console.log(error)
+                        breakdown_ads = _breakdown_ads
+                    }   
+                } else {
+                    breakdown_ads = _breakdown_ads
+                }
+
+                this.state.breakdown = breakdown_ads[0]
+                console.log(breakdown_ads)
+
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
                     pp1ki: copied_ads.map(_camp=>_camp.pp1ki),
@@ -531,7 +593,7 @@ export default class PortfolioPerformance extends HTMLElement {
             `
         } 
 
-        const meta = (index, perc_change) => {
+        const meta = (index, perc_change, condensed=false) => {
             let third_sub = {
                 0: `<p style="font-size:8pt;">total spent</p>`,
                 1: `<p style="font-size:8pt;">total spent</p>`,
@@ -542,7 +604,7 @@ export default class PortfolioPerformance extends HTMLElement {
             let down = `<i class="fas direction_icons bad_direction fa-arrow-circle-down"></i>`
             /*html*/
             return`
-                <div class="center_vertically">
+                <div class="center_vertically ${condensed ? 'condensed' : '' }">
                     <div class="center_it">
                         ${title('health score', true)}
                         ${marketr_score(number(index), false, true)}
@@ -618,25 +680,28 @@ export default class PortfolioPerformance extends HTMLElement {
             case 3:
                 let is_search;
                 let is_social;
+
                 if (data) {
                     is_search = data.creative.headline == undefined ? false : true;
                     is_social = data.creative.headline == undefined ? true : false;
                 }
+                markup = meta(data.marketr_index, data.perc_change, true) + `<div class='separator'></div>`
 
                 if (is_search) {
                     if (data.creative.headline != '0 | 0') {
-                        markup = google(
+                        markup += google(
                             data.creative.headline,
                             JSON.parse(data.creative.url)[0],
                             data.creative.description
                         )
                     } else {
                         
-                        markup = facebook('', data.creative.imageadurl, '')
+                        markup += facebook('', data.creative.imageadurl, '')
                     }
                 }
-                else if (is_social) markup =  `
-                    ${modal_trigger('view_creative', 'view creative')}
+
+                else if (is_social) markup +=  `
+                    <div class="center_it">${modal_trigger('view_creative', 'view creative')}</div>
                     ${modal('', facebook('', data.creative.thumbnail, data.creative.body), 'view_creative')}
                 `
 
@@ -659,9 +724,9 @@ export default class PortfolioPerformance extends HTMLElement {
             {'value': 3, 'title': 'Past 3 days'}
         ]
         return `
-        <div class="col"></div>
-        <div class="col-lg-4 col-md-4 col-sm-12">
-
+        <div class="row">
+        <div class="col">
+                
                 ${title('Filter by', true)}
                 <select class="form-control" id="date_range">
                     <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
@@ -678,7 +743,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 </select>
  
         </div>
-        <div class="col"></div>`
+        <div class="col"></div>
+        </div>`
     }
 
     comparison_markup(){
@@ -720,7 +786,7 @@ export default class PortfolioPerformance extends HTMLElement {
             <table id="comparison_table" class="table table-responsive table-borderless" style="width: 100%;">
                 <thead>
                     <th></th>
-                    <th>${title('This value')}</th>
+                    <th>${title('')}</th>
                     <th>${title('Compared to the rest')}</th>
                 </thead>
                 <tbody>

@@ -11869,9 +11869,6 @@ left: -6px;
 
 
 
-
-
-
 p.modal {
     white-space: pre-wrap !important;
 }
@@ -11892,7 +11889,8 @@ html.modal-active, body.modal-active {
     z-index: 1000 !important;
 }
 .modal-backdrop {
-  position: static !important;
+  z-index: -2;
+  position: fixed;
 }
 @media only screen and (max-width: 990px) {
     #modal-container {
@@ -11947,8 +11945,9 @@ html.modal-active, body.modal-active {
       display: inline-block;
       border-radius: 3px;
       font-weight: 300;
-      width: 95%;
-      max-height: 50%;
+      width: 80%;
+      top: -60px;
+      max-height: 80%;
       position: relative;
       overflow-y: scroll;
     }
@@ -12589,6 +12588,9 @@ html.modal-active, body.modal-active {
   height: 80%;
   align-items: center;
 }
+.center_vertically.condensed {
+  height: 50% !important;
+}
 .oversized_text {
   font-size: 3.5rem;
 }
@@ -12608,9 +12610,9 @@ span p {
   display: block;
   width: 100%;
   margin: 0 auto;
-  font-family: 'Open Sans', 'Helvetica Neue', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
   font-size: 18px;
-  color: #60666d;
+  color: var(--nav-color);
+  z-index: 10000;
 }
 @media (min-width: 768px) {
   .select-box {

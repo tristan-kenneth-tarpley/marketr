@@ -4,6 +4,8 @@ import json
 
 ######################### SUPER CLASS #########################
 
+######################### SUPER CLASS #########################
+
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
@@ -52,13 +54,13 @@ class MarketrIndex(object):
     def Comparisons(self, df):
         if df.pp1ki.mean() > 0:
             df['pp1ki_comp'] = df['pp1ki'] - df.pp1ki.mean() / df.pp1ki.mean() * 100
-            
+
         if df.marketr_index.mean() > 0:
             df['index_comp'] = df['marketr_index'] - df.marketr_index.mean() / df.marketr_index.mean() * 100
-        
+
         if df.cost.mean() > 0:
             df['cost_comp'] = df['cost'] - df.cost.mean() / df.cost.mean() * 100
-            
+
         if df.conversions.mean() > 0:
             df['cpl_comp'] = (
                 (df['cost'] / df['conversions'])
@@ -66,8 +68,19 @@ class MarketrIndex(object):
                 / (df.cost.mean() / df.conversions.mean())
                 * 100
             )
-            
+
         return df
+    
+    def get_perc_change(self, _id, df, column_selector, google=True):
+        mi_perc_change = df[df[column_selector[0]] == _id] \
+            .sort_values(by='date_start', ascending=False) \
+            .groupby([column_selector[0], pd.Grouper(key='date_start', freq='W-MON')]) \
+            .agg({'marketr_index': 'mean'}).marketr_index.pct_change().reset_index()
+
+        returned = mi_perc_change.loc[mi_perc_change['date_start'] == mi_perc_change['date_start'].max()]['marketr_index']
+
+        return returned.iloc[0]
+
     
     def Prep(self, DF, search=False, social=False):
         assert search == True or social == True, self.assertion_error
@@ -153,6 +166,7 @@ class AdIndex(MarketrIndex):
     
     def PrepIndex(self, df, search=False, social=False):
         df = self.Prep(df, search=search, social=social)
+        
         df['marketr_index'] = self.IndexFormula(df.pp1ki)
         
         df = self.Comparisons(df)
@@ -160,11 +174,29 @@ class AdIndex(MarketrIndex):
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
         mi_std = df.marketr_index.std()
+
+
         df['action'] = df.sort_values(by=['marketr_index'])['marketr_index'].apply(
             lambda x: self.eval_action(x, mi_sum, mi_mean, mi_std)
         )
+
+        agg = dict(self.agg_set)
+        agg['marketr_index'] = 'mean'
+
+
+        if search and not social:
+            column_selector = ['adid']
+        if social and not search:
+            column_selector = ['id']
+
+        agg_df = self.Assign(df, column_selector[0], search=search, social=social)
         
-        return df
+        agg_df['perc_change'] = agg_df[column_selector[0]].apply(lambda x: self.get_perc_change(x, df, column_selector, google=search))
+        
+        return {
+            'range': df,
+            'agg': agg_df
+        }
 
 
 
@@ -229,25 +261,15 @@ class CampaignIndex(MarketrIndex):
 
         df = self.Assign(df, column_selector, search=search, social=social)
         df['marketr_index'] = df.apply(self.reorder_m_index, axis=1)
+        
         agg = self.agg_set
         agg['marketr_index'] = 'mean'
         
         grouped = df.groupby(column_selector[0])
-        
-        def get_perc_change(_id):
-            mi_perc_change = df[df[column_selector[0]] == _id] \
-                .sort_values(by='date_start', ascending=False) \
-                .groupby([column_selector[0], pd.Grouper(key='date_start', freq='W-MON')]) \
-                .agg({'marketr_index': 'mean'}).marketr_index.pct_change().reset_index()
-            
-            returned = mi_perc_change.loc[mi_perc_change['date_start'] == mi_perc_change['date_start'].max()]['marketr_index']
-            
-            return returned.iloc[0]
- 
         agg_df = grouped.agg(agg).reset_index()
         agg_df = self.Assign(agg_df, column_selector[0], search=search, social=social)
-        agg_df['perc_change'] = agg_df[column_selector[0]].apply(lambda x: get_perc_change(x))
-
+        agg_df['perc_change'] = agg_df[column_selector[0]].apply(lambda x: self.get_perc_change(x, df, column_selector))
+    
         return {
             'range': df,
             'agg': agg_df
@@ -349,13 +371,20 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         try:
             # initialize at ad level
             search_index = ad_index_obj.PrepIndex(search_df, search=True)
+
+            
             new_search_index = search_df[['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset = "adid")
-     
+            
+            
+            
             # export to view performance metrics by creative
-            search_index = pd.merge(new_search_index, search_index, left_on='adid', right_on='adid')
-         
+            search_index_agg = pd.merge(new_search_index, search_index['agg'], left_on='adid', right_on='adid')
+            search_index = pd.merge(new_search_index, search_index['range'], left_on='adid', right_on='adid')
+            
+        
             # ad group level
             search_t4 = group_index_obj.PrepIndex(search_index, search=True)
+
             # campaign level
             search_t3 = campaign_index.PrepIndex(search_t4, search=True)
 
@@ -373,9 +402,9 @@ def compile_master(ltv=None, search_df=None, social_df=None):
 
         except Exception as e:
             print(e)
-            search_index=search_t2=search_t3=search_t4 = None
+            search_index_agg,search_index=search_t2=search_t3=search_t4 = None
 
-        return search_index, search_t2, search_t3, search_t4
+        return search_index_agg, search_index, search_t2, search_t3, search_t4
 
     def compile_social(ltv=ltv, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         try:
@@ -383,8 +412,12 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             social_index = ad_index_obj.PrepIndex(social_df, social=True)
 
             new_social_index = social_df[['campaign_name', 'ad_name', 'id', 'thumbnail_url', 'body', 'daily_budget']].drop_duplicates(subset = 'id')
+            
+            
             # export to view performance metrics by creative
-            social_index = pd.merge(new_social_index, social_index, left_on='id', right_on='id')
+            social_index_agg = pd.merge(new_social_index, social_index['agg'], left_on='id', right_on='id')
+            social_index = pd.merge(new_social_index, social_index['range'], left_on='id', right_on='id')
+            
 
             # ad group level
             social_t4 = group_index_obj.PrepIndex(social_index, social=True)
@@ -407,13 +440,13 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         # portfolio level
         except Exception as e:
             print(e)
-            social_index=social_t2=social_t3=social_t4 = None
+            social_index_agg=social_index=social_t2=social_t3=social_t4 = None
             
-        return social_index, social_t2, social_t3, social_t4
+        return social_index_agg, social_index, social_t2, social_t3, social_t4
 
 
-    social_index, social_t2, social_t3, social_t4 = compile_social()
-    search_index, search_t2, search_t3, search_t4 = compile_search()
+    social_index_agg, social_index, social_t2, social_t3, social_t4 = compile_social()
+    search_index_agg, search_index, search_t2, search_t3, search_t4 = compile_search()
     
     t1 = index.PrepIndex(social_t2, search_t2)
     
@@ -426,6 +459,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             return json.loads(df.to_json(orient='records'))
         else:
             return None
+        
 
     struct = {
         'total_spent': total_spent,
@@ -443,6 +477,10 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             'search': export(search_t4)
         },
         'ads': {
+            'social': export(social_index_agg),
+            'search': export(search_index_agg)
+        },
+        'ranged_ads': {
             'social': export(social_index),
             'search': export(search_index)
         },

@@ -69,7 +69,14 @@
 			</li>
 		{% endif %}
 		  {% if admin %}
-			{% set view = 'acct_mgmt' if stage == 'acct_mgmt' else 'customers' %}
+			{% if stage == 'test' %}
+				{% set view = 'test' %}
+			{% elif stage == 'acct_mgmt' %}
+				{% set view = 'acct_mgmt' %}
+			{% else %}
+				{% set view = 'customers' %}
+			{% endif %}
+			
 		    <li class="{{ set_active(view) }}">
 		      <a href="/customers">
 		        <i class="now-ui-icons users_single-02"></i>
