@@ -54,7 +54,7 @@ export default class Insights extends HTMLElement {
                     <div class="_insight_row">
                         <h1 class="widget__title">${index + 1}) From ${ins.admin}</h1>
                         <h3 class='widget__title small dark_blue small_txt'>Written on ${ins.time}</h3>
-                        <p class="truncate">${ins.body}</p>
+                        <p class="truncate">${urlify(ins.body)}</p>
                     </div>
                     `
                 }).join("")}

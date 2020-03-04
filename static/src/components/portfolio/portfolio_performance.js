@@ -772,10 +772,10 @@ export default class PortfolioPerformance extends HTMLElement {
             if (value > 0) {
                 if (low_is_good == true) color = green
                 else if (low_is_good == false) color = red
-            } else if (value <= 0) {
+            } else if (value < 0) {
                 if (low_is_good == false) color = red
                 else if (low_is_good == true) color = green
-            }
+            } else if (value == 0) color = 'rgba(0,0,0,.3)'
             
             if (low_is_good == null) color = 'rgba(0,0,0,.3)'
             return color
@@ -811,31 +811,29 @@ export default class PortfolioPerformance extends HTMLElement {
             `
         }
 
-        console.log(cost_comp)
-
         // ${perc_change > 0 ? up : down }
         // <p class="center_it"><span class="${perc_change > 0 ? '_green' : '_red'}">${number_rounded(perc_change * 100)}%</span> in past 7 days</p>
         const el = /*html*/ `
             <br><br>
             ${comparison_row(
                 {__title: 'spend over<br>time period'},
-                {__value: cost, _currency: true, score: false},
-                {comp: cost_comp, low_is_good: null}
+                {__value: cost ? cost : 0, _currency: true, score: false},
+                {comp: cost_comp ? cost_comp : 0, low_is_good: null}
             )}
             ${comparison_row(
                 {__title: 'health score'},
-                {__value: marketr_index, _currency: false, score: true},
-                {comp: index_comp, low_is_good: false}
+                {__value: marketr_index ? marketr_index : 0, _currency: false, score: true},
+                {comp: index_comp ? index_comp : 0, low_is_good: false}
             )}
             ${comparison_row(
                 {__title: 'conversion cost'},
-                {__value: cpl, _currency: true, score: false},
-                {comp: cpl_comp, low_is_good: true}
+                {__value: cpl ? cpl : 0, _currency: true, score: false},
+                {comp: cpl_comp ? cpl_comp : 0, low_is_good: true}
             )}
             ${comparison_row(
                 {__title: 'profit potential per 1k impressions'},
-                {__value: pp1ki, _currency: true, score: false},
-                {comp: pp1ki_comp, low_is_good: false}
+                {__value: pp1ki ? pp1ki : 0, _currency: true, score: false},
+                {comp: pp1ki_comp ? pp1ki_comp : 0, low_is_good: false}
             )}
 
             ${modal('Health Score', `An overall health metric of your portfolio.  It’s a metric without limit.  And much like a stock price, ideally increases over time. 
