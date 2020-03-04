@@ -59,7 +59,7 @@ class MarketrIndex(object):
             df['index_comp'] = df['marketr_index'] - df.marketr_index.mean() / df.marketr_index.mean() * 100
 
         if df.cost.mean() > 0:
-            df['cost_comp'] = df['cost'] - df.cost.mean() / df.cost.mean() * 100
+            df['cost_comp'] = (df['cost'] - df.cost.mean()) / df.cost.mean() * 100
 
         if df.conversions.mean() > 0:
             df['cpl_comp'] = (
@@ -134,7 +134,7 @@ class MarketrIndex(object):
         elif index <  mean - breakpoint:
             _action = 'kill it'
         else:
-            _action = 'unclear'
+            _action = 'uncertain'
 
         return _action
 

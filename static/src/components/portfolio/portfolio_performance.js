@@ -31,8 +31,9 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        .comparison_table tr {
-            border-bottom: 1px solid #f2f2ff;
+        #comparison_table td {
+            /*border-bottom: 1px solid #f2f2ff;*/
+            padding: 2%;
         }
         .metric_display {
             color: var(--primary);
@@ -757,60 +758,97 @@ export default class PortfolioPerformance extends HTMLElement {
         }
 
         
-        
+        console.log(breakdown)
         let {cost, cost_comp, pp1ki, pp1ki_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
         let cpl = conversions > 0 ? cost / conversions : null
         
-        const metric_name = text => `<td><p style="font-size: 70%;">${text}</p></td>`
+        const metric_name = text => `<td><p class="squashed" style="font-size: 70%;">${text}</p></td>`
         const this_value = text => `<td style="font-size: 70%;">${value(text)}</td>`
         const perc_variance = (_value, low_is_good=false) => {
             let value = !isNaN(_value) ? parseFloat(_value) : 'n/a'
-            let green = '#12c457'
-            let red = '#e84c85'
+            let green = '_green'
+            let red = '_red'
             let color;
             if (value > 0) {
-                if (!low_is_good) color = green
-                else if (low_is_good) color = red
+                if (low_is_good == true) color = green
+                else if (low_is_good == false) color = red
             } else if (value <= 0) {
-                if (!low_is_good) color = red
-                else if (low_is_good) color = green
-            } else {
-                color = 'rgba(0,0,0,.3)'
+                if (low_is_good == false) color = red
+                else if (low_is_good == true) color = green
             }
-            let display_value = value == 'n/a' ? value : `${value}%`
-            return `<td><h1 style="color:${color}; font-size: 90%;" class="widget__value">${display_value}</h1></td>`
+            
+            if (low_is_good == null) color = 'rgba(0,0,0,.3)'
+            return color
         }
 
+        const comparison_row = (_title, _value, perc) => {
+            let {__title} = _title,
+                {__value, _currency, score} = _value,
+                {comp, low_is_good} = perc
+
+            let display_value;
+            if (_currency) display_value = value(currency(__value))
+            else if (score) display_value = marketr_score(number(__value))
+            else display_value = value(number_rounded(__value))
+
+
+            /*html*/
+            return `
+            <div class="">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <span>${__title}</span>
+                    </div>
+                    <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-12">
+                        ${display_value}
+                        <p style="font-size: 8pt;">
+                            <span class="${perc_variance(comp, low_is_good)}">${number_rounded(comp)}%</span>
+                            vs. avg.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            `
+        }
+
+        console.log(cost_comp)
+
+        // ${perc_change > 0 ? up : down }
+        // <p class="center_it"><span class="${perc_change > 0 ? '_green' : '_red'}">${number_rounded(perc_change * 100)}%</span> in past 7 days</p>
         const el = /*html*/ `
-            <table id="comparison_table" class="table table-responsive table-borderless" style="width: 100%;">
-                <thead>
-                    <th></th>
-                    <th>${title('')}</th>
-                    <th>${title('Compared to the rest')}</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        ${metric_name('spend over<br>time period')}
-                        ${this_value(currency_rounded(cost))}
-                        ${perc_variance(cost_comp ? number(cost_comp) : 'n/a', true)}
-                    </tr>
-                    <tr>
-                        ${metric_name('conversion cost')}
-                        ${this_value(cpl ? currency_rounded(cpl) : 'n/a')}
-                        ${perc_variance(cpl_comp ? number(cpl_comp) : 'n/a', true)}
-                    </tr>
-                    <tr>
-                        ${metric_name('health score')}
-                        ${this_value(number(marketr_index))}
-                        ${perc_variance(index_comp ? number(index_comp) : 'n/a')}
-                    </tr>
-                    <tr>
-                        ${metric_name('profit potential<br>per thousand impressions')}
-                        ${this_value(currency(pp1ki))}
-                        ${perc_variance(pp1ki_comp ? number(pp1ki_comp) : 'n/a')}
-                    </tr>
-                </tbody>
-            </table>
+            <br><br>
+            ${comparison_row(
+                {__title: 'spend over<br>time period'},
+                {__value: cost, _currency: true, score: false},
+                {comp: cost_comp, low_is_good: null}
+            )}
+            ${comparison_row(
+                {__title: 'health score'},
+                {__value: marketr_index, _currency: false, score: true},
+                {comp: index_comp, low_is_good: false}
+            )}
+            ${comparison_row(
+                {__title: 'conversion cost'},
+                {__value: cpl, _currency: true, score: false},
+                {comp: cpl_comp, low_is_good: true}
+            )}
+            ${comparison_row(
+                {__title: 'profit potential per 1k impressions'},
+                {__value: pp1ki, _currency: true, score: false},
+                {comp: pp1ki_comp, low_is_good: false}
+            )}
+
+            ${modal('Health Score', `An overall health metric of your portfolio.  It’s a metric without limit.  And much like a stock price, ideally increases over time. 
+            It’s a function of:
+            Customer lifetime value
+            Lead close rates
+            Click through rates
+            Cost per impression
+            Impression share ranking
+            Marketing portfolio strength
+            
+            This value is calculated and compared at the lowest levels of your marketing tactics and rolled up to the Account Portfolio level.
+            `, 'health_score')}
             `
 
         return el
@@ -894,7 +932,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             ? `
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="h--500 card card-body">
-                                    ${title(`Our recommendation: <span class="action">${action ? action : ""}</span>`)}
+                                    ${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}
                                     ${this.comparison_markup()}
                                 </div>
                             </div>`

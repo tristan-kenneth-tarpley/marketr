@@ -4,22 +4,25 @@ const styles = () => {
     <style>
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
+        @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        
         .rec-container {
-            padding: 1%;
+            padding: 4%;
+            border-bottom: 1px solid #f2f2ff;
         }
         .rec {
             margin-bottom: 2%;
             padding: 5% 0 0;
-            border-bottom: 1px solid #f2f2ff;
             overflow-x: hidden;
         }
         .dismiss {
             position: relative;
             top: 0;
             margin: 0px 1px 15px !important;
-            font-weight: 500;
+            font-weight: 400;
             text-transform: lowercase;
+            font-weight: 
         }
         .rec-title {
             position: relative;
@@ -32,9 +35,11 @@ const styles = () => {
             font-size: 75%;
             padding: 5px 10px;
             /*float: right;*/
+            font-weight: 300;
         }
         .read-more {
             margin: auto;
+            padding: 0;
         }
 
         
@@ -97,13 +102,14 @@ export default class Rec_shell extends HTMLElement {
             <div class="rec-container">
                 <div class="rec">
                     <div class="row">
-                        <div class="col-lg-7 col-md-7 col-sm-12">
-                            <p class="rec-title small_txt">${this.title}</p>
-                            <div data-uid="${this.title}" id="six" class="small_txt button">[Read more]</div>
+                        <div class="col-lg-8 col-md-8 col-sm-12">
+                            <p class="squashed rec-title small_txt">${this.title}</p>
+                            <div data-uid="${this.title}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
                         </div>
-                        <div style="text-align:right;" class="col-lg-5 col-md-5 col-sm-12">
-                            <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button> 
-                            <button class="small_txt rec-apply btn btn-outline btn-outline-secondary">Do it</button>
+                        <div style="text-align:right;margin: auto;" class="col-lg-4 col-md-4 col-sm-12">
+                            <button class="small_txt rec-apply btn btn-secondary">do it</button>
+                            <br>
+                            <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button>
                         </div>
                     </div>
                 </div>

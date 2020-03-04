@@ -729,11 +729,10 @@ html {
   color: #121212 !important;
   opacity: .7 !important;
 }
-
 .btn-neutral {
   background-color: transparent;
-  font-weight: bold;
-  text-transform: uppercase;
+  font-weight: 400;
+  text-transform: lowercase;
   color: var(--secondary); }
   .btn-neutral:hover, .btn-neutral:focus, .btn-neutral:not(:disabled):not(.disabled):active, .btn-neutral:not(:disabled):not(.disabled).active, .btn-neutral:not(:disabled):not(.disabled):active:focus, .btn-neutral:not(:disabled):not(.disabled).active:focus, .btn-neutral:active:hover, .btn-neutral.active:hover, .show > .btn-neutral.dropdown-toggle, .show > .btn-neutral.dropdown-toggle:focus, .show > .btn-neutral.dropdown-toggle:hover {
     background-color: #FFFFFF;
@@ -788,6 +787,9 @@ html {
       text-decoration: none;
       box-shadow: none; }
 
+.btn-neutral-secondary {
+  color: var(--primary) !important;
+}
 .btn:disabled, .btn[disabled], .btn.disabled {
   opacity: 0.5;
   filter: alpha(opacity=50);
@@ -1329,11 +1331,16 @@ textarea.form-control {
 .form-horizontal .form-check-inline {
   margin-top: 6px; }
 
+.hide-overflow {
+  overflow-x: hidden;
+}
+
 button,
 input,
 optgroup,
 select,
-textarea {
+textarea,
+.button {
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif; }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1344,6 +1351,10 @@ h2, h3, h4 {
 p {
   line-height: 1.8rem;
   margin: 0 0 24px;
+}
+p.squashed {
+  line-height: 1.5em;
+  margin-bottom: 0;
 }
 a {
   color: var(--secondary); }
@@ -3342,6 +3353,12 @@ Created using IcoMoon - icomoon.io
     transform-origin: 0 0; }
   .fixed-plugin .bootstrap-switch {
     margin: 0; }
+
+
+.flex__container {
+  display: flex;
+  flex-direction: row;
+}
 
 
 
@@ -12026,7 +12043,8 @@ html.modal-active, body.modal-active {
     .button {
         color: var(--secondary);
         cursor: pointer;
-        padding: 11px 5px;
+        padding: 11px 2px;
+        font-weight: 300;
     }
     .button:hover {
         text-decoration: underline;
@@ -12751,3 +12769,7 @@ p, span {
   padding: 0 0.5em;
   min-height: 60px;
 }
+
+
+
+
