@@ -23,9 +23,13 @@ class MarketrIndex(object):
         df.fillna(0, inplace=True)
         df.drop_duplicates(subset=['cost', 'clicks'], inplace=True)
 
-        def lcr(conversions, clicks):
+        def lcr(conversions, clicks): # translation: lead conversion rate
             if clicks > 0:
-                return conversions / clicks
+                if conversions > 0:
+                    return conversions / clicks
+                else:
+                    # assuming conversion rate just shy of industry avg. 2.35% until we start to see metrics
+                    return .02
             else:
                 return 0
             
