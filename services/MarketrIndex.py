@@ -52,7 +52,8 @@ class MarketrIndex(object):
     
     def Comparisons(self, df):
         if df.pp1ki.mean() != 0:
-            df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / df.pp1ki.mean() * 100
+#             df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / df.pp1ki.mean() * 100
+            df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / abs( df.pp1ki.mean() )* 100
 
         if df.marketr_index.mean() != 0:
             df['index_comp'] = (df['marketr_index'] - df.marketr_index.mean()) / df.marketr_index.mean() * 100
@@ -99,15 +100,17 @@ class MarketrIndex(object):
         
         def clean_impressions(imp):
             if imp < 20:
-                penalty = imp * .1
+                penalty = .1
             elif imp >= 20 and imp < 40:
-                penalty = imp * .3
+                penalty = .3
             elif imp >= 40 and imp < 60:
-                penalty = imp * .6
+                penalty = .6
             elif imp >= 60 and imp < 100:
-                penalty = imp * .8
+                penalty = .8
             else:
-                penalty = imp
+                penalty = 1
+                
+            print(penalty)
                 
             return penalty
         
