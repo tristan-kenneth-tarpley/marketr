@@ -42,13 +42,18 @@ class MarketrIndex(object):
 
         return formula
     
-    def IndexFormula(self, number):
-        _base = 0.00077572178
-        base = _base if _base > 0 else _base * -1
-        exp = 1.3198878401
+    def IndexFormula(self, pp1ki):
+        def formula(pp1ki):
+            _base = 0.00077572178
+            base = _base if pp1ki > 0 else _base * -1
+            exp = 1.3198878401
+
+            formula = base * abs(pp1ki) ** exp
+            return formula
         
-        formula = base * abs(number) ** exp
-        return formula
+        returned = pp1ki.apply(formula)
+        
+        return returned
     
     def Comparisons(self, df):
         if df.pp1ki.mean() != 0:
@@ -109,8 +114,6 @@ class MarketrIndex(object):
                 penalty = .8
             else:
                 penalty = 1
-                
-            print(penalty)
                 
             return penalty
         
