@@ -477,16 +477,17 @@ def compile_master_index():
 
             if run_search:
                 search_df = loop.run_in_executor(None, orm.search_index, date_range)
+                search = await search_df
             else:
                 search_df = None
+                search = None
 
             if run_social:
                 social_df = loop.run_in_executor(None, orm.social_index, date_range)
+                social = await social_df
             else:
                 social_df = None
-
-            search = await search_df
-            social = await social_df
+                social = None
 
             return search, social
 

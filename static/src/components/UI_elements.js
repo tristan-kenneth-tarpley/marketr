@@ -94,8 +94,8 @@ export const google = (headline, website, description) => {
     return (
         `<div style="text-align:left;" class="google_ad_preview_container">
             <h5 style="font-size: 110%;">${headline}</h5>
-            <p class="website"><span>Ad</span> ${website}</p>
-            <p>${description}</p>
+            <p class="small_txt _clip website"><span>Ad</span> ${website}</p>
+            <p class="small_txt">${description}</p>
         </div>`
     )
 }

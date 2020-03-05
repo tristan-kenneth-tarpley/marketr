@@ -40,6 +40,18 @@ class GoogleORM(BigQuery):
 
         self.company_name = company_name.replace(" ", "_").lower()
 
+    def clean_query(self, query, dataset):
+        _query = query.split()
+        for word in enumerate(_query):
+            if word[1][0] == '`' and word[1][-1] == '`':
+                project, _dataset, table = word[1].split('.')
+                _query[word[0]] = f"`{self.project_id}`.`{dataset}`.{table}"
+
+        new_query = " ".join(_query)
+
+        return new_query
+
+
     def google_performance(self):
         sql = f"""
         SELECT ctr, clicks, conversions, cost, impressions, interactions, week FROM `{self.project_id}.{self.company_name}_google.ACCOUNT_PERFORMANCE_REPORT` order by week desc
@@ -108,41 +120,49 @@ class GoogleORM(BigQuery):
     def social_index(self, _range):
 
         facebook = f"""
+            DECLARE _range INT64;
+            DECLARE project STRING;
+            SET (_range, project) = ({_range}, '`marketr-app`.`placeholder`');
+
             select distinct
-                (select sum(distinct spend) from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= {_range}) as _cost,
+            (select sum(distinct spend) from `marketr-app`.`placeholder`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= _range) as _cost,
 
-                (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
+            (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
 
-                ads.creative.id, ads.adset_id, ads.campaign_id,
+            ads.creative.id, ads.adset_id, ads.campaign_id,
 
-                creative.image_url as thumbnail_url, creative.body,
+            creative.image_url as thumbnail_url, creative.body,
 
-                ai.ad_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
+            ai.ad_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
 
-                ca.name as campaign_name,
-                null as daily_budget
+            ca.name as campaign_name,
+            null as daily_budget
 
-            from `{self.project_id}`.`{self.company_name}_facebook`.`ads_insights` as ai
+            from `marketr-app`.`placeholder`.`ads_insights` as ai
 
-            join `{self.project_id}`.`{self.company_name}_facebook`.`ads` as ads
+            join `marketr-app`.`placeholder`.`ads` as ads
             on ai.ad_id = ads.id
 
-            join `{self.project_id}`.`{self.company_name}_facebook`.`adcreative` as creative
+            join `marketr-app`.`placeholder`.`adcreative` as creative
             on creative.id = ads.creative.id
 
-            join `{self.project_id}`.`{self.company_name}_facebook`.`campaigns` as ca
+            join `marketr-app`.`placeholder`.`campaigns` as ca
             on ca.id = ads.campaign_id
 
 
             where campaign_name is not null
-            and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= {_range}
+            and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= _range
             and creative.image_url is not null
 
             order by date_start
 
         """
+
+        client_set = f'{self.company_name}_facebook'
+        new_query = self.clean_query(facebook, client_set)
         
-        return self.get(facebook)
+        return self.get(new_query)
+
     
     def search_index(self, _range):
         retry_count = 0
@@ -152,7 +172,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             (
             select sum(cost) from (
@@ -175,7 +195,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             (
             select sum(cost) from (
@@ -194,13 +214,19 @@ class GoogleORM(BigQuery):
         """
 
         retry_count = 1
-        returned = self.get(google)
+        client_set = f'{self.company_name}_google'
+        _google = self.clean_query(google, client_set)
+        returned = self.get(_google)
+
+        print(_google)
 
         if returned is not None:
             return returned
         else:
-            returned = self.get(second_google)
+            _second_google = self.clean_query(second_google, client_set)
+            returned = self.get(_second_google)
             retry_count += 1
+
             if returned is not None:
                 return returned
             else:

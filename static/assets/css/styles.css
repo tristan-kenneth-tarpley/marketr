@@ -1356,6 +1356,11 @@ p.squashed {
   line-height: 1.5em;
   margin-bottom: 0;
 }
+._clip {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 a {
   color: var(--secondary); }
   a:hover, a:focus {

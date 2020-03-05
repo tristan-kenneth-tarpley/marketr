@@ -10,17 +10,29 @@ import { dots_loader, custom_select_body } from '/static/src/components/UI_eleme
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
 const marketr_score = (text, sub=false, huge=false) => {
-    let score = parseFloat(text)
+
+    let score = number(remove_commas_2(text))
     let _class;
+    let display;
+
     if (score <= 1) {
+        display = score
         _class = '_red'
     } else if (score > 1 && score <= 2) {
+        display = score
         _class = '_yellow'
     } else if (score > 2) {
+        display = score
+        _class = '_green'
+    } else if (score > 10) {
+        display = 10
+        _class = '_green'
+    } else {
+        display = 10
         _class = '_green'
     }
 
-    return `<h1 class="${huge ? 'oversized_text' : ''} ${_class} widget__value">${text} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+    return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${display} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
 }
 
 const styles = () => {
@@ -581,7 +593,7 @@ export default class PortfolioPerformance extends HTMLElement {
             return`
                 <li class="stat-wrapper">
                     <div class="stat">
-                        ${marketr_score(number(index), true)}
+                        ${marketr_score(index, true)}
                         <br>
                         <span>${description}<br> <p style="font-size: 8pt;">${description_sub}</p></span>
                         <h3 style="text-align:right;">
@@ -607,7 +619,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div class="center_vertically ${condensed ? 'condensed' : '' }">
                     <div class="center_it">
                         ${title('health score', true)}
-                        ${marketr_score(number(index), false, true)}
+                        ${marketr_score(number(remove_commas_2(index)), false, true)}
                     </div>
                     
                     <div class="center_it stat-trend up green">
@@ -756,9 +768,6 @@ export default class PortfolioPerformance extends HTMLElement {
             console.log(error)
             this.abort()
         }
-
-        
-        console.log(breakdown)
         let {cost, cost_comp, pp1ki, pp1ki_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
         let cpl = conversions > 0 ? cost / conversions : null
         
@@ -788,7 +797,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
             let display_value;
             if (_currency) display_value = value(currency(__value))
-            else if (score) display_value = marketr_score(number(__value))
+            else if (score) display_value = marketr_score(number(remove_commas_2(__value)))
             else display_value = value(number_rounded(__value))
 
 
@@ -920,7 +929,7 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
-                        <div class="h--500 card card-body">
+                        <div style="overflow-y:scroll;" class="h--500 card card-body">
                             ${title(breakdown_title[active_view])}
                             ${this.breakdown_markup()}
                         </div>
@@ -940,14 +949,22 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>
 
 
+            ${this.analytics ? `
+            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
+                ${this.profit_spread()}
+            </div>
+            ` : ''}
+
+            ${this.analytics ? `` : `
 
             <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
                 <div class="h--500 card card-body">
                     <h1 class="widget__title">Recommendations</h1>
                 </div>
-            </div>
-        </div>
+            </div>`
 
+            }
+        </div>
         ${this.analytics
             ? ``
             : `
@@ -973,7 +990,7 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
-                <div class="row">
+                <div class="row row_cancel">
                     ${this.analytics ? ''
                     : `
                         <div class="col-lg-12 col-md-12 col-12">
@@ -1090,6 +1107,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
 
         if (init == true) {
+            document.querySelector('#performance_loader').style.display = 'block'
             fetch('/api/index/detailed', {
                 method: 'POST',
                 headers : new Headers({
@@ -1121,11 +1139,6 @@ export default class PortfolioPerformance extends HTMLElement {
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="card card-body">
                                 ${this.error_markup()}
-                            </div>
-                        </div>
-                        <div id="insights" class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="card card-body">
-                                <h1 class="widget__title">Insights</h1>    
                             </div>
                         </div>
                     </div>

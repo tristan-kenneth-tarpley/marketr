@@ -4,8 +4,6 @@ import json
 
 ######################### SUPER CLASS #########################
 
-######################### SUPER CLASS #########################
-
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
@@ -23,21 +21,18 @@ class MarketrIndex(object):
         df.fillna(0, inplace=True)
         df.drop_duplicates(subset=['cost', 'clicks'], inplace=True)
 
-        def lcr(conversions, clicks): # translation: lead conversion rate
+        def lcr(conversions, clicks):
             if clicks > 0:
-                if conversions > 0:
-                    return conversions / clicks
-                else:
-                    # assuming conversion rate just shy of industry avg. 2.35% until we start to see metrics
-                    return .02
+                return conversions / clicks
             else:
                 return 0
             
         df['lcr'] = df.apply(lambda x: lcr(x['conversions'], x['clicks']), axis=1)
         df['ltv'] = self.ltv
+        
         return df
     
-    def pp1ki(self, ctr, lcr, spend, impressions):
+    def pp1ki(self, ctr, lcr, spend, impressions):        
         # translation: profit potential per 1,000 impressions
         try:
             formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
@@ -63,7 +58,7 @@ class MarketrIndex(object):
             df['index_comp'] = df['marketr_index'] - df.marketr_index.mean() / df.marketr_index.mean() * 100
 
         if df.cost.mean() > 0:
-            df['cost_comp'] = (df['cost'] - df.cost.mean()) / df.cost.mean() * 100
+            df['cost_comp'] = df['cost'] - df.cost.mean() / df.cost.mean() * 100
 
         if df.conversions.mean() > 0:
             df['cpl_comp'] = (
@@ -98,10 +93,26 @@ class MarketrIndex(object):
         df['cpm'] = 1000 * df.cost / df.impressions
         df['date_start'] = pd.to_datetime(df['date_start']) - pd.to_timedelta(7, unit='d')
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
-
         df = df.groupby(columns).agg(self.agg_set).reset_index()
           
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        
+        def clean_impressions(imp):
+            if imp < 20:
+                penalty = imp * .1
+            elif imp >= 20 and imp < 40:
+                penalty = imp * .3
+            elif imp >= 40 and imp < 60:
+                penalty = imp * .6
+            elif imp >= 60 and imp < 100:
+                penalty = imp * .8
+            else:
+                penalty = imp
+                
+            return penalty
+        
+        df['pp1ki'] = df.apply(lambda x: x['pp1ki'] * clean_impressions(x['impressions']), axis=1)
+                
 
         return df
 
@@ -138,7 +149,7 @@ class MarketrIndex(object):
         elif index <  mean - breakpoint:
             _action = 'kill it'
         else:
-            _action = 'uncertain'
+            _action = 'unclear'
 
         return _action
 
@@ -268,7 +279,7 @@ class CampaignIndex(MarketrIndex):
         
         agg = self.agg_set
         agg['marketr_index'] = 'mean'
-        
+
         grouped = df.groupby(column_selector[0])
         agg_df = grouped.agg(agg).reset_index()
         agg_df = self.Assign(agg_df, column_selector[0], search=search, social=social)
@@ -298,17 +309,20 @@ class BucketIndex(MarketrIndex):
     def __init__(self, ltv):
         super().__init__(ltv)
         
-    def PrepIndex(self, df):
-        cost = df.head(1)['_cost'][0]
+    def PrepIndex(self, ranged_df, agg_df):
+        
+        cost = agg_df.head(1)['_cost'][0]
 
-        index = np.average(df.marketr_index, weights=df.cost)
-#         df = df.groupby('date_start').agg(self.agg_set).reset_index()
-        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        index = np.average(agg_df.marketr_index, weights=agg_df.cost)
+        
+        print(ranged_df.columns)
+        ranged_df = ranged_df.groupby('date_start').agg(self.agg_set).reset_index()
+        ranged_df['pp1ki'] = self.pp1ki(ranged_df.ctr, ranged_df.lcr, ranged_df.cost, ranged_df.impressions)
 
         return {
             'cost': cost,
             'index': index,
-            'raw': df
+            'raw': ranged_df
         }
 
 
@@ -393,7 +407,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             search_t3 = campaign_index.PrepIndex(search_t4, search=True)
 
             # bucket level
-            search_t2 = bucket_index.PrepIndex(search_t3['agg'])
+            search_t2 = bucket_index.PrepIndex(search_t3['range'], search_t3['agg'])
             id_map = search_df[['campaign_name', 'campaignid']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
             for row, value in id_map.iterrows():
@@ -428,7 +442,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             # campaign level
             social_t3 = campaign_index.PrepIndex(social_t4, social=True)
 
-            social_t2 = bucket_index.PrepIndex(social_t3['agg'])
+            social_t2 = bucket_index.PrepIndex(social_t3['range'], social_t3['agg'])
 
             id_map = social_df[['campaign_name', 'campaign_id']].drop_duplicates(subset = 'campaign_name')
             _id_map = {}
@@ -468,14 +482,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     struct = {
         'total_spent': total_spent,
         'buckets': [],
-        'campaigns': {
-            'social': export(social_t3['agg']),
-            'search': export(search_t3['agg'])
-        },
-        'ranged_campaigns': {
-            'social': export(social_t3['range']),
-            'search': export(search_t3['range'])
-        },
+        'campaigns': {},
+        'ranged_campaigns': {},
         'ad_groups': {
             'social': export(social_t4),
             'search': export(search_t4)
@@ -501,12 +509,19 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             'index': search_t2.get('index'),
             'raw': export(search_t2.get('raw'))
         })
+        struct['campaigns']['search'] = export(search_t3.get('agg'))
+        struct['ranged_campaigns']['search'] = export(search_t3.get('range'))
+        
     if social_df is not None:
         struct['buckets'].append({
             'type': 'social',
             'cost': social_t2.get('cost'),
             'index': social_t2.get('index'),
             'raw': export(social_t2['raw'])
-        })
+        })     
+        
+        struct['campaigns']['social'] = export(social_t3.get('agg'))
+        struct['ranged_campaigns']['social'] = export(social_t3.get('range')) 
+        
 
     return struct
