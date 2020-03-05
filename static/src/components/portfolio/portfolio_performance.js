@@ -397,6 +397,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 let ranged_ads = []
                 const ads_struct = (i, id, name, creative) => {
                     return {
+                        campaign_name: i.campaign_name,
                         id: id,
                         pp1ki: i.pp1ki,
                         cpm: i.cpm,
@@ -771,16 +772,15 @@ export default class PortfolioPerformance extends HTMLElement {
         let {cost, cost_comp, pp1ki, pp1ki_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
         let cpl = conversions > 0 ? cost / conversions : null
         
-        const metric_name = text => `<td><p class="squashed" style="font-size: 70%;">${text}</p></td>`
-        const this_value = text => `<td style="font-size: 70%;">${value(text)}</td>`
         const perc_variance = (_value, low_is_good=false) => {
             let value = !isNaN(_value) ? parseFloat(_value) : 'n/a'
             let green = '_green'
             let red = '_red'
             let color;
+        
             if (value > 0) {
-                if (low_is_good == true) color = green
-                else if (low_is_good == false) color = red
+                if (low_is_good == true) color = red
+                else if (low_is_good == false) color = green
             } else if (value < 0) {
                 if (low_is_good == false) color = red
                 else if (low_is_good == true) color = green
@@ -811,8 +811,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-12">
                         ${display_value}
                         <p style="font-size: 8pt;">
-                            <span class="${perc_variance(comp, low_is_good)}">${number_rounded(comp)}%</span>
-                            vs. avg.
+                            <span class="${perc_variance(comp, low_is_good)}">${comp > 1 ? "+" : ""}${number_rounded(comp)}%</span>
+                            vs. campaign avg.
                         </p>
                     </div>
                 </div>
@@ -823,16 +823,16 @@ export default class PortfolioPerformance extends HTMLElement {
         // ${perc_change > 0 ? up : down }
         // <p class="center_it"><span class="${perc_change > 0 ? '_green' : '_red'}">${number_rounded(perc_change * 100)}%</span> in past 7 days</p>
         const el = /*html*/ `
-            <br><br>
-            ${comparison_row(
-                {__title: 'spend over<br>time period'},
-                {__value: cost ? cost : 0, _currency: true, score: false},
-                {comp: cost_comp ? cost_comp : 0, low_is_good: null}
-            )}
+            ${this.state.active_view == 3 ? `<p class="small_txt">Campaign: ${breakdown.campaign_name ? breakdown.campaign_name : ''}</p>` : ''}
             ${comparison_row(
                 {__title: 'health score'},
                 {__value: marketr_index ? marketr_index : 0, _currency: false, score: true},
                 {comp: index_comp ? index_comp : 0, low_is_good: false}
+            )}
+            ${comparison_row(
+                {__title: 'spend over<br>time period'},
+                {__value: cost ? cost : 0, _currency: true, score: false},
+                {comp: cost_comp ? cost_comp : 0, low_is_good: null}
             )}
             ${comparison_row(
                 {__title: 'conversion cost'},
@@ -938,7 +938,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         ![0,1].includes(active_view)
                             ? `
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="h--500 card card-body">
+                                <div style="overflow-y:scroll;" class="h--500 card card-body">
                                     ${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}
                                     ${this.comparison_markup()}
                                 </div>

@@ -51,19 +51,19 @@ class MarketrIndex(object):
         return formula
     
     def Comparisons(self, df):
-        if df.pp1ki.mean() > 0:
-            df['pp1ki_comp'] = df['pp1ki'] - df.pp1ki.mean() / df.pp1ki.mean() * 100
+        if df.pp1ki.mean() != 0:
+            df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / df.pp1ki.mean() * 100
 
-        if df.marketr_index.mean() > 0:
-            df['index_comp'] = df['marketr_index'] - df.marketr_index.mean() / df.marketr_index.mean() * 100
+        if df.marketr_index.mean() != 0:
+            df['index_comp'] = (df['marketr_index'] - df.marketr_index.mean()) / df.marketr_index.mean() * 100
 
-        if df.cost.mean() > 0:
-            df['cost_comp'] = df['cost'] - df.cost.mean() / df.cost.mean() * 100
+        if df.cost.mean() != 0:
+            df['cost_comp'] = (df['cost'] - df.cost.mean()) / df.cost.mean() * 100
 
-        if df.conversions.mean() > 0:
+        if df.conversions.mean() != 0:
             df['cpl_comp'] = (
-                (df['cost'] / df['conversions'])
-                - (df.cost.mean() / df.conversions.mean())
+                ((df['cost'] / df['conversions'])
+                - (df.cost.mean() / df.conversions.mean()))
                 / (df.cost.mean() / df.conversions.mean())
                 * 100
             )
@@ -119,8 +119,20 @@ class MarketrIndex(object):
     
     def Assign(self, df, column_selector, search=False, social=False):
         assert search or social, self.assertion_error
+        
+        group_columns = [column_selector]
 
-        df = df.groupby(column_selector).agg(self.agg_set).reset_index()
+        if 'campaign_id' in df.columns:
+            group_columns.append('campaign_id')
+        if 'campaignid' in df.columns:
+            group_columns.append('campaignid')
+
+        group_columns = [item for sublist in group_columns for item in sublist]
+        
+        try:
+            df = df.groupby(group_columns).agg(self.agg_set).reset_index()
+        except:
+            df = df.groupby(column_selector).agg(self.agg_set).reset_index()
         
         df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
         df['marketr_index'] = self.IndexFormula(df.pp1ki)
@@ -310,12 +322,9 @@ class BucketIndex(MarketrIndex):
         super().__init__(ltv)
         
     def PrepIndex(self, ranged_df, agg_df):
-        
         cost = agg_df.head(1)['_cost'][0]
-
         index = np.average(agg_df.marketr_index, weights=agg_df.cost)
         
-        print(ranged_df.columns)
         ranged_df = ranged_df.groupby('date_start').agg(self.agg_set).reset_index()
         ranged_df['pp1ki'] = self.pp1ki(ranged_df.ctr, ranged_df.lcr, ranged_df.cost, ranged_df.impressions)
 
