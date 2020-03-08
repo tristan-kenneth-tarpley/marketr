@@ -180,7 +180,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            rep.avgcpc / 1000000 as cpc, rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             (
             select sum(cost) from (
@@ -203,7 +203,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            rep.avgcpc / 1000000 as cpc, null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             (
             select sum(cost) from (

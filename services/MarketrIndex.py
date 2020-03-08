@@ -11,7 +11,7 @@ class MarketrIndex(object):
         self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
         self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
-            'cpm': 'mean', 'cost': 'sum',
+            'cpm': 'mean', 'cost': 'sum', 'cpc': 'mean',
             'conversions': 'sum', 'ctr' : 'mean', 'clicks':'sum',
             'lcr': 'mean', 'impressions': 'sum', '_cost': 'mean'
         }
@@ -33,10 +33,10 @@ class MarketrIndex(object):
         else:
             return 0
     
-    def pp100(self, ctr, lcr, spend, impressions):        
+    def pp100(self, ctr, lcr, cpc, impressions):        
         # translation: profit potential per 1,000 spent: PP100 = ( [LTV] * [LCR] * (100 / Total Spend)  - 100 )
         try:
-            formula = (self.ltv * lcr * (100 / spend) - 100)
+            formula = (self.ltv * lcr * (100 / cpc) - 100)
         except:
             formula = 0
 
@@ -102,7 +102,7 @@ class MarketrIndex(object):
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
         df = df.groupby(columns).agg(self.agg_set).reset_index()
           
-        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cpc, df.impressions)
         
         def clean_impressions(imp):
             if imp < 20:
@@ -141,7 +141,7 @@ class MarketrIndex(object):
         except:
             df = df.groupby(column_selector).agg(self.agg_set).reset_index()
         
-        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cpc, df.impressions)
         df['marketr_index'] = self.IndexFormula(df.pp100)
 
         mi_sum = df.marketr_index.sum()
@@ -333,7 +333,7 @@ class BucketIndex(MarketrIndex):
         index = np.average(agg_df.marketr_index, weights=agg_df.cost)
         
         ranged_df = ranged_df.groupby('date_start').agg(self.agg_set).reset_index()
-        ranged_df['pp100'] = self.pp100(ranged_df.ctr, ranged_df.lcr, ranged_df.cost, ranged_df.impressions)
+        ranged_df['pp100'] = self.pp100(ranged_df.ctr, ranged_df.lcr, ranged_df.cpc, ranged_df.impressions)
 
         return {
             'cost': cost,
@@ -376,7 +376,7 @@ class PortfolioIndex(MarketrIndex):
                 dfs.append(arg['raw'])
         
         df = pd.concat(dfs, sort=True)
-        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cpc, df.impressions)
             
         return {
             'index': sum(arr),

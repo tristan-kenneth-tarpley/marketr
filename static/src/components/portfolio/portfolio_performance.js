@@ -1129,7 +1129,7 @@ export default class PortfolioPerformance extends HTMLElement {
     error_markup(){
         const div = `
         <div class="center_it">
-            <p>Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
+            <p style="margin: auto;">Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
         </div>
         `
         return div
