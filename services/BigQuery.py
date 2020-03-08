@@ -117,6 +117,14 @@ class GoogleORM(BigQuery):
 
         return self.get(query)
 
+    def keywords(self):
+        query = f"""
+            SELECT keyword, clicks, impressions, ctr, firstpagecpc, cost / 1000000 as cost, qualityscore, searchimprshare, searchtopis, searchlosttopisrank
+            FROM `{self.project_id}`.`{self.company_name}_google`.`KEYWORDS_PERFORMANCE_REPORT`
+        """
+        
+        return self.get(query)
+
     def social_index(self, _range):
 
         facebook = f"""
@@ -217,8 +225,6 @@ class GoogleORM(BigQuery):
         client_set = f'{self.company_name}_google'
         _google = self.clean_query(google, client_set)
         returned = self.get(_google)
-
-        print(_google)
 
         if returned is not None:
             return returned

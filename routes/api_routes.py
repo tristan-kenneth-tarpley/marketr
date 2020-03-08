@@ -25,6 +25,7 @@ from services.RecService import RecommendationService, Recommendation
 from services.WebListener import Listener
 from services.CampaignManager import CampaignMetaManager
 from services.WalletService import Wallet
+from services.DashboardCompiler import compile_data_view
 from ViewModels.ViewModels import ViewFuncs, AdminViewModel, CustomerDataViewModel, SettingsViewModel, TacticViewModel, CompetitorViewModel, TacticOfTheDay
 import hashlib
 import data.db as db
@@ -41,6 +42,7 @@ from selenium.webdriver.firefox.options import Options
 
 ## market(r) index imports
 from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
+from services.OpportunitiesService import compile_topics
 
 @app.route('/api/products', methods=['GET'])
 def get_personas():
@@ -461,63 +463,35 @@ def last_7_spend():
 def compile_master_index():
     req = request.get_json()
     demo = True if req.get('customer_id') == '181' else False
-
     date_range = req.get('date_range')
+    ltv = float(req.get('ltv').replace(",", ""))
+    company_name = req.get('company_name')
+    run_social = req.get('facebook')
+    run_search = req.get('google')
 
-    if not demo:
-        ltv = float(req.get('ltv').replace(",", ""))
+    dfs = compile_data_view(
+        run_social=run_social,
+        run_search=run_search,
+        company_name=company_name,
+        date_range=date_range,
+        demo=demo,
+        ltv=ltv
+    )
 
-        company_name = req.get('company_name')
-        
-        run_social = req.get('facebook')
-        run_search = req.get('google')
-
-        async def dataframes(run_social, run_search):
-            orm = GoogleORM(company_name)
-
-            if run_search:
-                search_df = loop.run_in_executor(None, orm.search_index, date_range)
-                search = await search_df
-            else:
-                search_df = None
-                search = None
-
-            if run_social:
-                social_df = loop.run_in_executor(None, orm.social_index, date_range)
-                social = await social_df
-            else:
-                social_df = None
-                social = None
-
-            return search, social
-
-        asyncio.set_event_loop(asyncio.new_event_loop())
-        loop = asyncio.get_event_loop()
-        search_df, social_df = loop.run_until_complete(dataframes(run_social, run_search))
-
-    else:
-        ltv = 5000
-        search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where datediff(day, date_start, getdate()) < {date_range}")
-        social_df = db.sql_to_df(f"SELECT * FROM demo_data_social where datediff(day, date_start, getdate())  < {date_range}")
+    search_df = dfs.get('search_df')
+    social_df = dfs.get('social_df')
+    opps = dfs.get('topic_opps')
 
     compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+    index = MarketrIndex(ltv)
+    lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-    if compiled and not demo:
-        query = """
-        if not exists (select * from index_log where day(submitted) = day(CURRENT_TIMESTAMP))
-            insert into index_log
-            (customer_id, _index, submitted)
-            
-            values
-            (?, ?, CURRENT_TIMESTAMP)
-        """
-        val = compiled.get('aggregate')
-
-        db.execute(query, False, (req.get('customer_id'), val), commit=True)
-    elif not compiled and not demo:
-        compiled = []
-
-    return json.dumps(compiled)
+    topics = compile_topics(opps, index, lcr)
+ 
+    return json.dumps({
+        'topics': json.loads(topics),
+        'index': compiled
+    })
 
 @app.route('/api/index/trendline', methods=['POST'])
 def index_trendline():

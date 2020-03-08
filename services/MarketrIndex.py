@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 
+
 ######################### SUPER CLASS #########################
 
 class MarketrIndex(object):
@@ -20,45 +21,45 @@ class MarketrIndex(object):
     def clean(self, df):
         df.fillna(0, inplace=True)
         df.drop_duplicates(subset=['cost', 'clicks'], inplace=True)
-
-        def lcr(conversions, clicks):
-            if clicks > 0:
-                return conversions / clicks
-            else:
-                return 0
             
-        df['lcr'] = df.apply(lambda x: lcr(x['conversions'], x['clicks']), axis=1)
+        df['lcr'] = df.apply(lambda x: self.lcr(x['conversions'], x['clicks']), axis=1)
         df['ltv'] = self.ltv
         
         return df
     
-    def pp1ki(self, ctr, lcr, spend, impressions):        
-        # translation: profit potential per 1,000 impressions
+    def lcr(self, conversions, clicks):
+        if clicks > 0:
+            return conversions / clicks
+        else:
+            return 0
+    
+    def pp100(self, ctr, lcr, spend, impressions):        
+        # translation: profit potential per 1,000 spent: PP100 = ( [LTV] * [LCR] * (100 / Total Spend)  - 100 )
         try:
-            formula = (self.ltv * ctr * lcr * 1000) - ((spend / impressions) * 1000)
-        except Exception as e:
-            print(e)
+            formula = (self.ltv * lcr * (100 / spend) - 100)
+        except:
             formula = 0
 
         return formula
     
-    def IndexFormula(self, pp1ki):
-        def formula(pp1ki):
+    
+    def IndexFormula(self, pp100):
+        def formula(pp100):
             _base = 0.00077572178
-            base = _base if pp1ki > 0 else _base * -1
+            base = _base if pp100 > 0 else _base * -1
             exp = 1.3198878401
 
-            formula = base * abs(pp1ki) ** exp
+            formula = base * abs(pp100) ** exp
             return formula
-        
-        returned = pp1ki.apply(formula)
+
+        returned = pp100.apply(formula)
         
         return returned
     
     def Comparisons(self, df):
-        if df.pp1ki.mean() != 0:
-#             df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / df.pp1ki.mean() * 100
-            df['pp1ki_comp'] = (df['pp1ki'] - df.pp1ki.mean()) / abs( df.pp1ki.mean() )* 100
+        if df.pp100.mean() != 0:
+#             df['pp100_comp'] = (df['pp100'] - df.pp100.mean()) / df.pp100.mean() * 100
+            df['pp100_comp'] = (df['pp100'] - df.pp100.mean()) / abs( df.pp100.mean() )* 100
 
         if df.marketr_index.mean() != 0:
             df['index_comp'] = (df['marketr_index'] - df.marketr_index.mean()) / df.marketr_index.mean() * 100
@@ -101,7 +102,7 @@ class MarketrIndex(object):
         df['ctr'] = df.ctr.apply(lambda x: x / 100)
         df = df.groupby(columns).agg(self.agg_set).reset_index()
           
-        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
         
         def clean_impressions(imp):
             if imp < 20:
@@ -117,10 +118,10 @@ class MarketrIndex(object):
                 
             return penalty
         
-        df['pp1ki'] = df.apply(lambda x: x['pp1ki'] * clean_impressions(x['impressions']), axis=1)
+        df['pp100'] = df.apply(lambda x: x['pp100'] * clean_impressions(x['impressions']), axis=1)
                 
 
-        return df
+        return df.sort_values(by="date_start")
 
     
     def Assign(self, df, column_selector, search=False, social=False):
@@ -140,8 +141,8 @@ class MarketrIndex(object):
         except:
             df = df.groupby(column_selector).agg(self.agg_set).reset_index()
         
-        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
-        df['marketr_index'] = self.IndexFormula(df.pp1ki)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
+        df['marketr_index'] = self.IndexFormula(df.pp100)
 
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
@@ -181,13 +182,13 @@ Output(s) Market(r) Index Tier 5 = Power function of Profit Potential per 1,000 
 
 Input(s) - Required data inputs (either assumed, calculated, or input from the user):
 
-Profit Potential per 1,000 Impressions (PP1KI)
+Profit Potential per 1,000 Impressions (pp100)
 Cost per 1,000 Impressions
 LTV
 CTR
 LCR
-NUMBER = [ PP1KI ]
-PP1KI = ( [LTV] [CTR] [Lead Conversion Rate] 1,000 ) - ( ( [Total Spend ] / [ Impressions ] ) 1,000 )
+NUMBER = [ pp100 ]
+pp100 = ( [LTV] [CTR] [Lead Conversion Rate] 1,000 ) - ( ( [Total Spend ] / [ Impressions ] ) 1,000 )
 
 Market(r) Index (T5) = IF( [NUMBER] > 0, 0.00077572178 ABS( [ NUMBER] ) ^ 1.3198878401, -0.00077572178 ABS( [NUMBER] ) ^ 1.3198878401)
 """
@@ -200,7 +201,7 @@ class AdIndex(MarketrIndex):
     def PrepIndex(self, df, search=False, social=False):
         df = self.Prep(df, search=search, social=social)
         
-        df['marketr_index'] = self.IndexFormula(df.pp1ki)
+        df['marketr_index'] = self.IndexFormula(df.pp100)
         
         df = self.Comparisons(df)
 
@@ -332,7 +333,7 @@ class BucketIndex(MarketrIndex):
         index = np.average(agg_df.marketr_index, weights=agg_df.cost)
         
         ranged_df = ranged_df.groupby('date_start').agg(self.agg_set).reset_index()
-        ranged_df['pp1ki'] = self.pp1ki(ranged_df.ctr, ranged_df.lcr, ranged_df.cost, ranged_df.impressions)
+        ranged_df['pp100'] = self.pp100(ranged_df.ctr, ranged_df.lcr, ranged_df.cost, ranged_df.impressions)
 
         return {
             'cost': cost,
@@ -375,7 +376,7 @@ class PortfolioIndex(MarketrIndex):
                 dfs.append(arg['raw'])
         
         df = pd.concat(dfs, sort=True)
-        df['pp1ki'] = self.pp1ki(df.ctr, df.lcr, df.cost, df.impressions)
+        df['pp100'] = self.pp100(df.ctr, df.lcr, df.cost, df.impressions)
             
         return {
             'index': sum(arr),
@@ -400,88 +401,68 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     bucket_index = BucketIndex(ltv)
     index = PortfolioIndex(ltv, total_spent)
 
-    def compile_search(ltv=ltv, search_df=search_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        try:
-            # initialize at ad level
-            search_index = ad_index_obj.PrepIndex(search_df, search=True)
-
-            
-            new_search_index = search_df[['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']].drop_duplicates(subset = "adid")
-            
-            
-            
-            # export to view performance metrics by creative
-            search_index_agg = pd.merge(new_search_index, search_index['agg'], left_on='adid', right_on='adid')
-            search_index = pd.merge(new_search_index, search_index['range'], left_on='adid', right_on='adid')
-            
+    def _compile(ltv=ltv, search_df=search_df, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         
-            # ad group level
-            search_t4 = group_index_obj.PrepIndex(search_index, search=True)
+        search_columns = ['campaign_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']
+        social_columns = ['campaign_name', 'ad_name', 'id', 'thumbnail_url', 'body', 'daily_budget']
+        
+        def trickle(active_df, active_columns, subset, id_key, search=False, social=False):
+            try:
+                index = ad_index_obj.PrepIndex(active_df, search=search, social=social)
+                new_index = active_df[active_columns].drop_duplicates(subset = subset)
 
-            # campaign level
-            search_t3 = campaign_index.PrepIndex(search_t4, search=True)
+                # export to view performance metrics by creative
+                index_agg = pd.merge(new_index, index['agg'], left_on=subset, right_on=subset)
+                index = pd.merge(new_index, index['range'], left_on=subset, right_on=subset)
 
-            # bucket level
-            search_t2 = bucket_index.PrepIndex(search_t3['range'], search_t3['agg'])
-            id_map = search_df[['campaign_name', 'campaignid']].drop_duplicates(subset = 'campaign_name')
-            _id_map = {}
-            for row, value in id_map.iterrows():
-                name = (search_df.loc[row]['campaign_name'])
-                _id = (search_df.loc[row]['campaignid'])
-                _id_map[_id] = name
+                t4 = group_index_obj.PrepIndex(index, search=search, social=social)
+                t3 = campaign_index.PrepIndex(t4, search=search, social=social)
+                t2 = bucket_index.PrepIndex(t3['range'], t3['agg'])
 
-            search_t3['agg']['campaign_name'] = search_t3['agg'].campaignid.apply(lambda x: _id_map[x])
-            search_t3['range']['campaign_name'] = search_t3['range'].campaignid.apply(lambda x: _id_map[x])
+                id_map = active_df[['campaign_name', id_key]].drop_duplicates(subset = 'campaign_name')
+                _id_map = {}
+                for row, value in id_map.iterrows():
+                    name = (active_df.loc[row]['campaign_name'])
+                    _id = (active_df.loc[row][id_key])
+                    _id_map[_id] = name
 
-        except Exception as e:
-            print(e)
-            search_index_agg,search_index=search_t2=search_t3=search_t4 = None
-
-        return search_index_agg, search_index, search_t2, search_t3, search_t4
-
-    def compile_social(ltv=ltv, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
-        try:
-            # initialize at ad level
-            social_index = ad_index_obj.PrepIndex(social_df, social=True)
-
-            new_social_index = social_df[['campaign_name', 'ad_name', 'id', 'thumbnail_url', 'body', 'daily_budget']].drop_duplicates(subset = 'id')
+                t3['agg']['campaign_name'] = t3['agg'][id_key].apply(lambda x: _id_map[x])
+                t3['range']['campaign_name'] = t3['range'][id_key].apply(lambda x: _id_map[x])
+                
+            except Exception as e:
+                print(e)
+                index_agg=index=t2=t3=t4 = None
             
-            
-            # export to view performance metrics by creative
-            social_index_agg = pd.merge(new_social_index, social_index['agg'], left_on='id', right_on='id')
-            social_index = pd.merge(new_social_index, social_index['range'], left_on='id', right_on='id')
-            
-
-            # ad group level
-            social_t4 = group_index_obj.PrepIndex(social_index, social=True)
-            # campaign level
-            social_t3 = campaign_index.PrepIndex(social_t4, social=True)
-
-            social_t2 = bucket_index.PrepIndex(social_t3['range'], social_t3['agg'])
-
-            id_map = social_df[['campaign_name', 'campaign_id']].drop_duplicates(subset = 'campaign_name')
-            _id_map = {}
-
-            for row, value in id_map.iterrows():
-                name = (social_df.loc[row]['campaign_name'])
-                _id = (social_df.loc[row]['campaign_id'])
-                _id_map[_id] = name
-
-            social_t3['agg']['campaign_name'] = social_t3['agg'].campaign_id.apply(lambda x: _id_map[x])
-            social_t3['range']['campaign_name'] = social_t3['range'].campaign_id.apply(lambda x: _id_map[x])
-        # bucket level
-        # portfolio level
-        except Exception as e:
-            print(e)
-            social_index_agg=social_index=social_t2=social_t3=social_t4 = None
-            
-        return social_index_agg, social_index, social_t2, social_t3, social_t4
-
-
-    social_index_agg, social_index, social_t2, social_t3, social_t4 = compile_social()
-    search_index_agg, search_index, search_t2, search_t3, search_t4 = compile_search()
+            return index_agg, index, t2, t3, t4
+        
+        social_index_agg, social_index, social_t2, social_t3, social_t4 = trickle(
+            social_df, social_columns, 'id', 'campaign_id', search=False, social=True 
+        )
+        
+        search_index_agg, search_index, search_t2, search_t3, search_t4 = trickle(
+            search_df, search_columns, 'adid', 'campaignid', search=True, social=False 
+        )
+        
+        returned = {
+            'social': {
+                'social_index_agg': social_index_agg,
+                'social_index': social_index,
+                'social_t2': social_t2,
+                'social_t3': social_t3,
+                'social_t4': social_t4
+            },
+            'search': {
+                'search_index_agg': search_index_agg,
+                'search_index': search_index,
+                'search_t2': search_t2,
+                'search_t3': search_t3,
+                'search_t4': search_t4
+            }
+        }
+        return returned
     
-    t1 = index.PrepIndex(social_t2, search_t2)
+    sets = _compile()
+    t1 = index.PrepIndex(sets['social']['social_t2'], sets['search']['search_t2'])
     
     def export(df):
         if df is not None:
@@ -492,24 +473,38 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             return json.loads(df.to_json(orient='records'))
         else:
             return None
+
+    if search_df is not None:
+        search_conversions = int(search_df.conversions.sum())
+        search_clicks = int(search_df.clicks.sum())
+    else:
+        search_conversions=search_clicks=0
+
+    if social_df is not None:
+        social_conversions = int(social_df.conversions.sum())
+        social_clicks = int(social_df.clicks.sum())
+    else:
+        social_conversions=social_clicks = 0
         
 
     struct = {
+        'total_conversions': social_conversions + search_conversions,
+        'total_clicks': search_clicks + social_clicks,
         'total_spent': total_spent,
         'buckets': [],
         'campaigns': {},
         'ranged_campaigns': {},
         'ad_groups': {
-            'social': export(social_t4),
-            'search': export(search_t4)
+            'social': export(sets['social']['social_t4']),
+            'search': export(sets['search']['search_t4'])
         },
         'ads': {
-            'social': export(social_index_agg),
-            'search': export(search_index_agg)
+            'social': export(sets['social']['social_index_agg']),
+            'search': export(sets['search']['search_index_agg'])
         },
         'ranged_ads': {
-            'social': export(social_index),
-            'search': export(search_index)
+            'social': export(sets['social']['social_index']),
+            'search': export(sets['search']['search_index'])
         },
         'aggregate': {
             'index': t1.get('index'),
@@ -520,23 +515,23 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     if search_df is not None:
         struct['buckets'].append({
             'type': 'search',
-            'cost': search_t2.get('cost'),
-            'index': search_t2.get('index'),
-            'raw': export(search_t2.get('raw'))
+            'cost': sets['search']['search_t2'].get('cost'),
+            'index': sets['search']['search_t2'].get('index'),
+            'raw': export(sets['search']['search_t2'].get('raw'))
         })
-        struct['campaigns']['search'] = export(search_t3.get('agg'))
-        struct['ranged_campaigns']['search'] = export(search_t3.get('range'))
+        struct['campaigns']['search'] = export(sets['search']['search_t3'].get('agg'))
+        struct['ranged_campaigns']['search'] = export(sets['search']['search_t3'].get('range'))
         
     if social_df is not None:
         struct['buckets'].append({
             'type': 'social',
-            'cost': social_t2.get('cost'),
-            'index': social_t2.get('index'),
-            'raw': export(social_t2['raw'])
+            'cost': sets['social']['social_t2'].get('cost'),
+            'index': sets['social']['social_t2'].get('index'),
+            'raw': export(sets['social']['social_t2']['raw'])
         })     
         
-        struct['campaigns']['social'] = export(social_t3.get('agg'))
-        struct['ranged_campaigns']['social'] = export(social_t3.get('range')) 
+        struct['campaigns']['social'] = export(sets['social']['social_t3'].get('agg'))
+        struct['ranged_campaigns']['social'] = export(sets['social']['social_t3'].get('range')) 
         
 
     return struct

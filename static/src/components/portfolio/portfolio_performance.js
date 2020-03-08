@@ -4,6 +4,7 @@ import Insights from '/static/src/components/portfolio/Insights.js'
 import Creative from '/static/src/components/portfolio/Creative.js'
 import {google, facebook} from '/static/src/components/UI_elements.js'
 import Recommendations from '/static/src/components/customer/recommendations.js'
+import Opportunities from '/static/src/components/portfolio/Opportunities.js'
 import { dots_loader, custom_select_body } from '/static/src/components/UI_elements.js'
 
 
@@ -73,6 +74,38 @@ const styles = () => {
         .metric_labels {
             font-weight: 300;
             font-size: 95%;
+        }
+        #select_container .widget__title {
+            margin-bottom: 3%;
+        }
+        #view_selector button {
+            font-size: .7em;
+            margin: 0;
+            width: 100%;
+        }
+        #view_selector div:nth-child(1) button {
+            border-left: 2px solid var(--primary) !important;
+            border-right: 1px solid var(--primary) !important;
+            border-radius: 0.1875rem 0 0 0.1875rem !important;
+        }
+        #view_selector div:nth-child(4) button {
+            border-left: 1px solid var(--primary) !important;
+            border-right: 2px solid var(--primary) !important;
+            border-radius: 0 0.1875rem 0.1875rem 0 !important;
+        }
+        #view_selector div {
+            padding: 0;
+            margin: 0;
+        }
+        #view_selector div button.btn-secondary {
+            padding: 10px 22px !important;
+        }
+        #view_selector div button {
+            border-radius: 0;
+            border-top: 2px solid var(--primary);
+            border-right: 1px solid var(--primary);
+            border-left: 1px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
         }
         #select_range {
             border-top: none;
@@ -188,13 +221,13 @@ export default class PortfolioPerformance extends HTMLElement {
 
         target.innerHTML = ""
 
-        let {dates, pp1ki, cpm} = this.state.active_data.profitability
+        let {dates, pp100, cpm} = this.state.active_data.profitability
    
         const data = {
             labels: dates,
             datasets: [
                 {
-                    label: "Profit potential per thousand impressions",
+                    label: "Profit potential per $100 spent",
                     fill: false,
                     borderColor: "#09A1BC",
                     backgroundColor: "rgba(98, 205, 224, 0.8)",
@@ -202,25 +235,25 @@ export default class PortfolioPerformance extends HTMLElement {
                     pointRadius: 0,
                     pointBackgroundColor: "rgb(154, 238, 252)",
                     pointBorderColor: "rgba(98, 205, 224, 0.9)",
-                    data: pp1ki,
+                    data: pp100,
                     pointHoverBorderWidth: 2,
                     pointHoverRadius: 7,
                     drawBorder: true
                 },
-                {
-                    label: "Cost per thousand impressions",
-                    fill: false,
-                    borderColor: "#ca7d66",
-                    backgroundColor: "rgba(202, 125, 100, 0.8)",
-                    borderWidth: 5,
-                    pointRadius: 0,
-                    pointBackgroundColor: "rgb(224, 167, 148)",
-                    pointBorderColor: "rgba(202, 125, 100, 0.8)",
-                    data: cpm,
-                    pointHoverBorderWidth: 2,
-                    pointHoverRadius: 7,
-                    drawBorder: true
-                }
+                // {
+                //     label: "Cost per thousand impressions",
+                //     fill: false,
+                //     borderColor: "#ca7d66",
+                //     backgroundColor: "rgba(202, 125, 100, 0.8)",
+                //     borderWidth: 5,
+                //     pointRadius: 0,
+                //     pointBackgroundColor: "rgb(224, 167, 148)",
+                //     pointBorderColor: "rgba(202, 125, 100, 0.8)",
+                //     data: cpm,
+                //     pointHoverBorderWidth: 2,
+                //     pointHoverRadius: 7,
+                //     drawBorder: true
+                // }
             ]
         };
         let font_color = `#b8b8d9`
@@ -281,7 +314,7 @@ export default class PortfolioPerformance extends HTMLElement {
     data_controller(){
         let { active_view, data, active_data } = this.state
         let dates = []
-        let pp1ki = []
+        let pp100 = []
         let cpm = []
         let buckets = []
         let sub_filters = []
@@ -290,7 +323,7 @@ export default class PortfolioPerformance extends HTMLElement {
         const append_data = (iterable, value) => [...iterable, value]
         const group = i => {
             dates = append_data(dates, i.date_start)
-            pp1ki = append_data(pp1ki, i.pp1ki)
+            pp100 = append_data(pp100, i.pp100)
             cpm = append_data(cpm, i.cpm)
         }
         const group_buckets = i => {
@@ -300,7 +333,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 type: i.type,
                 dates: i.raw.map(x => x.date_start),
                 cpm: i.raw.map(x => x.cpm),
-                pp1ki: i.raw.map(x => x.pp1ki),
+                pp100: i.raw.map(x => x.pp100),
                 marketr_index:i.index,  
                 cost: i.cost
             }]
@@ -313,7 +346,7 @@ export default class PortfolioPerformance extends HTMLElement {
             case 0:
                 for (let i of data.aggregate.raw) group(i)
                 this.state.breakdown = data.buckets
-                this.state.active_data.profitability = {dates, pp1ki, cpm, marketr_index: this.state.data.aggregate.index}
+                this.state.active_data.profitability = {dates, pp100, cpm, marketr_index: this.state.data.aggregate.index}
                 break
             // platforms
             case 1:
@@ -326,7 +359,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.state.breakdown = data.campaigns
                 this.state.active_data.profitability = {
                     dates: _buckets.map(i => i.dates).flat(),
-                    pp1ki: _buckets.map(i=>i.pp1ki).flat(),
+                    pp100: _buckets.map(i=>i.pp100).flat(),
                     cpm: _buckets.map(i=>i.cpm).flat(),
                     marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
                     cost: _buckets.map(i=>i.cost).reduce((a, b) => a + b, 0)
@@ -337,7 +370,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 const campaign_struct = (camp) => {
                     return {
                         campaign_name: camp.campaign_name,
-                        pp1ki: camp.pp1ki,
+                        pp100: camp.pp100,
                         cpm: camp.cpm,
                         date_start: camp.date_start,
                         marketr_index:camp.marketr_index,
@@ -345,7 +378,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         conversions: camp.conversions,
                         cost: camp.cost,
                         cost_comp: camp.cost_comp,
-                        pp1ki_comp: camp.pp1ki_comp,
+                        pp100_comp: camp.pp100_comp,
                         index_comp: camp.index_comp,
                         cost_comp: camp.cost_comp,
                         cpl_comp: camp.cpl_comp,
@@ -383,7 +416,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 this.state.active_data.profitability = {
                     dates: copied_ranged_campaigns.map(_camp=>_camp.date_start),
-                    pp1ki: copied_ranged_campaigns.map(_camp=>_camp.pp1ki),
+                    pp100: copied_ranged_campaigns.map(_camp=>_camp.pp100),
                     cpm: copied_ranged_campaigns.map(_camp=>_camp.cpm),
                     marketr_index: copied_ranged_campaigns.map(_camp=>_camp.marketr_index)[copied_ranged_campaigns.map(_camp=>_camp.marketr_index).length - 1],
                     action: copied_ranged_campaigns.map(i=>i.action)[copied_ranged_campaigns.map(i=>i.action).length - 1],
@@ -399,7 +432,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     return {
                         campaign_name: i.campaign_name,
                         id: id,
-                        pp1ki: i.pp1ki,
+                        pp100: i.pp100,
                         cpm: i.cpm,
                         marketr_index:i.marketr_index,
                         date_start: i.date_start,
@@ -409,7 +442,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         name,
                         conversions: i.conversions,
                         cost_comp: i.cost_comp,
-                        pp1ki_comp: i.pp1ki_comp,
+                        pp100_comp: i.pp100_comp,
                         index_comp: i.index_comp,
                         cost_comp: i.cost_comp,
                         cpl_comp: i.cpl_comp,
@@ -519,7 +552,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
-                    pp1ki: copied_ads.map(_camp=>_camp.pp1ki),
+                    pp100: copied_ads.map(_camp=>_camp.pp100),
                     cpm: copied_ads.map(_camp=>_camp.cpm),
                     marketr_index: copied_ads.map(_camp=>_camp.marketr_index).reduce((sum, value) => sum + value, 0 / copied_ads.map(_camp=>_camp.marketr_index).length),
                     action: copied_ads.map(i=>i.action)[copied_ads.map(i=>i.action).length - 1],
@@ -532,17 +565,23 @@ export default class PortfolioPerformance extends HTMLElement {
 
     view_controller(el){
         
-        el.querySelector('#view_selector').addEventListener('change', e => {
-            this.sub_edited = false
-            const first = async () => {
-                this.state.active_view = parseInt(e.currentTarget.value)
-            } 
-            first().then(()=>this.data_controller()).then(()=>{
-                setTimeout(()=>{
-                    this.render(false)
-                }, 600)
-            })
+        el.querySelectorAll('#view_selector button').forEach(el=>{
+            el.addEventListener('click', e => {
+                let target = e.currentTarget
+                target.classList.remove('btn-outline')
+                target.classList.remove('btn-outline-secondary')
+                target.classList.add('btn-secondary')
 
+                this.sub_edited = false
+                const first = async () => {
+                    this.state.active_view = parseInt(target.value)
+                } 
+                first().then(()=>this.data_controller()).then(()=>{
+                    setTimeout(()=>{
+                        this.render(false)
+                    }, 600)
+                })
+            })
         })
 
         el.querySelector("#sub_target").addEventListener('change', e=>{
@@ -737,27 +776,21 @@ export default class PortfolioPerformance extends HTMLElement {
             {'value': 3, 'title': 'Past 3 days'}
         ]
         return `
-        <div class="row">
-        <div class="col">
-                
-                ${title('Filter by', true)}
-                <select class="form-control" id="date_range">
-                    <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
-                    <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
-                    <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
-                    <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
-                    <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
-                    <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
-                    <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
-                    <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
-                    <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
-                    <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
-                    <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
-                </select>
- 
-        </div>
-        <div class="col"></div>
-        </div>`
+            ${title('Filter by', true)}
+            <select class="form-control" id="date_range">
+                <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
+                <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
+                <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
+                <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
+                <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
+                <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
+                <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
+                <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
+                <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
+                <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
+                <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
+            </select>
+        `
     }
 
     comparison_markup(){
@@ -769,7 +802,7 @@ export default class PortfolioPerformance extends HTMLElement {
             console.log(error)
             this.abort()
         }
-        let {cost, cost_comp, pp1ki, pp1ki_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
+        let {cost, cost_comp, pp100, pp100_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
         let cpl = conversions > 0 ? cost / conversions : null
         
         const perc_variance = (_value, low_is_good=false) => {
@@ -840,9 +873,9 @@ export default class PortfolioPerformance extends HTMLElement {
                 {comp: cpl_comp ? cpl_comp : 0, low_is_good: true}
             )}
             ${comparison_row(
-                {__title: 'profit potential per 1k impressions'},
-                {__value: pp1ki ? pp1ki : 0, _currency: true, score: false},
-                {comp: pp1ki_comp ? pp1ki_comp : 0, low_is_good: false}
+                {__title: 'profit potential per $100 spent'},
+                {__value: pp100 ? pp100 : 0, _currency: true, score: false},
+                {comp: pp100_comp ? pp100_comp : 0, low_is_good: false}
             )}
 
             ${modal('Health Score', `An overall health metric of your portfolio.  It’s a metric without limit.  And much like a stock price, ideally increases over time. 
@@ -925,7 +958,7 @@ export default class PortfolioPerformance extends HTMLElement {
         let column_set = ![0,1].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
-        <div class="row">
+        <div class="row row_cancel">
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
@@ -953,6 +986,11 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="h--500 col-lg-4 col-md-4 col-sm-12">
                 ${this.profit_spread()}
             </div>
+            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
+                <div class="card card-responsive card-body" id="topic_opps">
+                    ${title('Opportunities')}
+                </div>
+            </div>
             ` : ''}
 
             ${this.analytics ? `` : `
@@ -962,17 +1000,21 @@ export default class PortfolioPerformance extends HTMLElement {
                     <h1 class="widget__title">Recommendations</h1>
                 </div>
             </div>`
-
             }
         </div>
         ${this.analytics
             ? ``
             : `
-                <div class="row">
-                    <div class="h--500 col-lg-6 col-md-6 col-sm-12">
+                <div class="row row_cancel">
+                    <div class="h--500 col-lg-4 col-md-4 col-sm-12">
+                        <div class="card card-responsive card-body" id="topic_opps">
+                            ${title('Opportunities')}
+                        </div>
+                    </div>
+                    <div class="h--500 col-lg-4 col-md-4 col-sm-12">
                         ${this.profit_spread()}
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
                         <div id="insights" class="card card-responsive card-body">
                             ${title('insights')}    
                         </div>
@@ -1025,10 +1067,34 @@ export default class PortfolioPerformance extends HTMLElement {
                         </div>
                         <div class="col-lg-6 col-md-6 col-12">
                             <div class="card card-body h--300">
-                                ${this.date_range()}
+                                <div class="row row_cancel">
+                                    ${
+                                        this.state.active_view != 0
+                                        /*html*/
+                                        ? `
+                                        <div class="col-lg-6 col-sm-6">
+                                            ${title('filter by', true)}
+                                            <select id="sub_target" class="form-control">
+                                                ${this.sub_filters.map((filter, index)=>{
+                                                    
+                                                    return (
+                                                        `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
+                                                            ${filter}
+                                                        </option>
+                                                        `
+                                                    )
+                                                }).join('')}
+                                            </select>
+                                        </div>`
+                                        : `<select id="sub_target" style="display:none;" class="form-control"></select>`
+                                    }
+                                    <div class="${this.state.active_view != 0 ? "col-lg-6 col-sm-6" : "col-lg-9 col-sm-9"}">
+                                        ${this.date_range()}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
+                    </div>
                 </div>
             </div>
 
@@ -1053,6 +1119,13 @@ export default class PortfolioPerformance extends HTMLElement {
         return insights
     }
 
+
+    Opportunities(){
+        const ops = new Opportunities()
+
+        return ops
+    }
+
     error_markup(){
         const div = `
         <div class="center_it">
@@ -1062,6 +1135,45 @@ export default class PortfolioPerformance extends HTMLElement {
         return div
     }
 
+    view_by(){
+        let btn_length = `col-lg-3 col-md-3 col-sm-3`
+        let {active_view} = this.state
+        let active_classlist = `btn-secondary`
+        let inactive_classlist = `btn-outline btn-outline-secondary`
+        /*html*/
+        return `
+        <div class="h--300 card card-body">
+            <div class="row row_cancel">
+                <div id="select_container" class="col-lg-12">
+                    ${title('view by', true)}
+                    <div id="view_selector" class="h--300 row row_cancel">
+                        <div class="${btn_length}">
+                            <button value="0" class="btn ${active_view == 0 ? active_classlist : inactive_classlist}">
+                            portfolio
+                            </button>
+                        </div>
+                        <div class="${btn_length}">
+                            <button value="1" class="btn ${active_view == 1 ? active_classlist : inactive_classlist}">
+                            platforms
+                            </button>
+                        </div>
+                        <div class="${btn_length}">
+                            <button value="2" class="btn ${active_view == 2 ? active_classlist : inactive_classlist}">
+                            campaigns
+                            </button>
+                        </div>
+                        <div class="${btn_length}">
+                            <button value="3" class="btn ${active_view == 3 ? active_classlist : inactive_classlist}">
+                            ads
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+    }
+
 
 
     render(init=true){
@@ -1069,6 +1181,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
         const recs = this.recs()
         const insights = this.insights()
+        const opps = this.Opportunities()
 
         const compile = async () => {
 
@@ -1096,6 +1209,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 })
                 .then(el=>{
                     this.reset_charts(el)
+                    el.querySelector('#topic_opps').appendChild(opps)
                     if (!this.analytics) {
                         el.querySelector("#recommendations div").appendChild(recs)
                         el.querySelector('#insights').appendChild(insights)
@@ -1124,18 +1238,16 @@ export default class PortfolioPerformance extends HTMLElement {
             })
             .then(res=> res.json())
             .then(res => {
-
-
                     document.querySelector('#performance_loader').style.display = 'none'
-                    this.state.data = res
+                    this.state.data = res.index
+                    opps.setAttribute('json', JSON.stringify(res.topics))
                     run()
-    
             })
             .catch(e=>{
                 document.querySelector('#performance_loader').style.display = 'none'
                 this.shadow.innerHTML = `
                     ${this.css}
-                    <div class="row">
+                    <div class="row row_cancel">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="card card-body">
                                 ${this.error_markup()}
@@ -1151,45 +1263,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 console.log(e)
             })
         } else run()
-    }
-
-    view_by(){
-        return `
-        <div class="h--300 card card-body">
-            <div class="row row_cancel">
-                <div class="col">
-                    ${title('view by', true)}
-                    <select style="margin-top: 0;" class="form-control" id="view_selector">
-                        <option value="0" ${this.state.active_view == 0 ? 'selected' : ''}>portfolio</option>
-                        <option value="1" ${this.state.active_view == 1 ? 'selected' : ''}>platforms</option>
-                        <option value="2" ${this.state.active_view == 2 ? 'selected' : ''}>campaigns</option>
-                        <option value="3" ${this.state.active_view == 3 ? 'selected' : ''}>ads</option>
-                    </select>
-                </div>
-                <div class="col">
-                    ${
-                        this.state.active_view != 0
-                        /*html*/
-                        ? `
-                    
-                            ${title('filter by', true)}
-                            <select id="sub_target" class="form-control">
-                                ${this.sub_filters.map((filter, index)=>{
-                                    
-                                    return (
-                                        `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
-                                            ${filter}
-                                        </option>
-                                        `
-                                    )
-                                }).join('')}
-                            </select>`
-                        : `<select id="sub_target" style="visibility:hidden;" class="form-control"></select>`
-                    }
-                </div>
-            </div>
-        </div>
-        `
     }
 
     connectedCallback(start=now()) {

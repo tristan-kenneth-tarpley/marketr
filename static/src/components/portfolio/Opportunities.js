@@ -14,9 +14,9 @@ const styles = () => {
   `.trim()
 }
 
-export default class Budget extends HTMLElement {
+export default class Opportunities extends HTMLElement {
   static get observedAttributes() {
-      return ['customer_id'];
+      return ['json'];
   }
   constructor() {
       super();
@@ -35,13 +35,15 @@ export default class Budget extends HTMLElement {
         ${this.css}
         <p>Test test</p>
     `
-      this.shadow.appendChild(el)
+
+    for (let i of this.state.data) console.log(i)
+    this.shadow.appendChild(el)
   }
 
   connectedCallback() {
-      this.customer_id = this.getAttribute('customer_id')
+      this.state.data = JSON.parse(this.getAttribute('json'))
       this.render()
   }
 }
 
-document.addEventListener( 'DOMContentLoaded', customElements.define('portfolio-budet', Budget))
+document.addEventListener( 'DOMContentLoaded', customElements.define('opportunities-agg', Opportunities))
