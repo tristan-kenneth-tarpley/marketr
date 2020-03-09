@@ -1076,7 +1076,7 @@ export default class PortfolioPerformance extends HTMLElement {
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="center_it trend__group">
-                                            ${title(`Funds: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
+                                            ${title(`Funds remaining: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">

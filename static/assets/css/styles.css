@@ -118,7 +118,6 @@ Copyright (c) 2015 Daniel Eden
     100% {
       transform: rotate(360deg);
     }
-  }
 }
 
 
@@ -137,7 +136,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: rgba(0,0,0,.7);
+  color: var(--nav-color);
 }
 p {
   color: var(--body-copy);

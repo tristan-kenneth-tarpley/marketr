@@ -67,8 +67,8 @@ export default class Insights extends HTMLElement {
                         <div class="rec">
                             <div class="row">
                                 <div class="col">
-                                    <p class="squashed rec-title small_txt">${title}</p>
-                                    <p class="x_small_txt clipped_txt">${body}</p>
+                                    <p style="text-decoration:underline;" class="squashed rec-title small_txt">${title}</p>
+                                    <p class="small_txt clipped_txt">${body}</p>
                                     <div style="padding: 0;" data-uid="${uid}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
                                 </div>
                             </div>
