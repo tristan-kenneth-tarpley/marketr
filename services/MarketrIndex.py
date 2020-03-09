@@ -11,9 +11,8 @@ class MarketrIndex(object):
         self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
         self.search_columns = ['adid', 'adgroupid', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
-            'cpm': 'mean', 'cost': 'sum', 'cpc': 'mean',
-            'conversions': 'sum', 'ctr' : 'mean', 'clicks':'sum',
-            'lcr': 'mean', 'impressions': 'sum', '_cost': 'mean'
+            'cpm': 'mean', 'cpc': 'mean', 'ctr' : 'mean', 'lcr': 'mean', '_cost': 'mean',
+            'cost': 'sum', 'conversions': 'sum', 'clicks':'sum', 'impressions': 'sum'
         }
     
         self.assertion_error = 'dataset type required, e.g. search=True || social=True'
@@ -34,7 +33,7 @@ class MarketrIndex(object):
             return 0
     
     def pp100(self, ctr, lcr, cpc, impressions):        
-        # translation: profit potential per 1,000 spent: PP100 = ( [LTV] * [LCR] * (100 / Total Spend)  - 100 )
+        # translation: profit potential per 100 spent: PP100 = ( [LTV] * [LCR] * (100 / cpc)  - 100 )
         try:
             formula = (self.ltv * lcr * (100 / cpc) - 100)
         except:
@@ -58,7 +57,6 @@ class MarketrIndex(object):
     
     def Comparisons(self, df):
         if df.pp100.mean() != 0:
-#             df['pp100_comp'] = (df['pp100'] - df.pp100.mean()) / df.pp100.mean() * 100
             df['pp100_comp'] = (df['pp100'] - df.pp100.mean()) / abs( df.pp100.mean() )* 100
 
         if df.marketr_index.mean() != 0:
@@ -490,7 +488,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
     struct = {
         'total_conversions': social_conversions + search_conversions,
         'total_clicks': search_clicks + social_clicks,
-        'total_spent': total_spent,
+        'total_spent': float(total_spent),
         'buckets': [],
         'campaigns': {},
         'ranged_campaigns': {},

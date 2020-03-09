@@ -112,12 +112,21 @@ class TopicalOpps(OpportunityScore):
         
         df['opp_score'] = df.apply(lambda x: base_scores.mean() * .5 + x.contrained_mi * .5 if x.impressions > 50 else 0, axis=1)
         
-        return df
+        df['cleaned_keywords'] = df.keyword.apply(lambda x: x.replace("+", "").replace('"', "").replace("[", "").replace("]", ""))
+        
+        df = df.sort_values(by='opp_score', ascending=False)
+        
+        return {
+            'aggregate': json.loads(df.groupby('cleaned_keywords').agg({'opp_score': 'mean'}).sort_values(by='opp_score', ascending=False).reset_index().to_json(orient='records')),
+            'raw': json.loads(df.to_json(orient='records'))
+        }
+
 
 
 
 ### compile 
-def compile_topics(df, index, lcr):
-    opps = TopicalOpps(ltv=10, lcr=lcr)
-    df = opps.AggOppScore(df, index).sort_values(by='opp_score', ascending=False)
-    return df.to_json(orient='records')
+def compile_topics(_df, index, lcr, ltv):
+    opps = TopicalOpps(ltv=ltv, lcr=lcr)
+    dfs = opps.AggOppScore(_df, index)
+
+    return dfs

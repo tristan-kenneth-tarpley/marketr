@@ -4,8 +4,9 @@ const styles = () => {
     <style>
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
+        @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-
+        
         .dark_blue {
             color: var(--darker-blue);
             font-weight: bold;
@@ -21,6 +22,14 @@ const styles = () => {
         ._insight_row {
             padding: 4%;
             border-top: 1px solid rgba(0,0,0,.1);
+        }
+        .clipped_txt {
+            white-space: normal !important;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin: 0;
         }
  
     </style>
@@ -42,30 +51,40 @@ export default class Insights extends HTMLElement {
     }
 
     shell(){
+        /*html*/
         return `
         ${this.css}
         <div class="shadow_insights">
                 ${this.state.data.map((ins, index)=>{
-  
+                    let title = `From ${ins.admin} on ${ins.time}`
+                    let uid = `${ins.time}_${index}`
+                    let body = urlify(ins.body)
 
                     /*html*/
                     return `
-                    
-                    <div class="_insight_row">
-                        <h1 class="widget__title">${index + 1}) From ${ins.admin}</h1>
-                        <h3 class='widget__title small dark_blue small_txt'>Written on ${ins.time}</h3>
-                        <p class="truncate">${urlify(ins.body)}</p>
+                    ${modal(title, body, uid)}
+                    <div class="rec-container">
+                        <div class="rec">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="squashed rec-title small_txt">${title}</p>
+                                    <p class="x_small_txt clipped_txt">${body}</p>
+                                    <div style="padding: 0;" data-uid="${uid}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <hr>
                     `
                 }).join("")}
-                <hr>
+
                 ${this.state.data.length == 0
                     ? `
                     <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
                     <p>Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
                     :  `    
                     <p class="x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
-                    <p>Thanks! ~ Tristan | Founder </p>`
+                    <p class="x_small_txt">Thanks! ~ Tristan | Founder </p>`
                 }
         </div>
         `.trim()
@@ -88,7 +107,7 @@ export default class Insights extends HTMLElement {
         .then(()=>{
             el.innerHTML = this.shell()
         })
-        .then(()=>this.shadow.appendChild(el))
+        .then(()=>this.shadow.appendChild(modal_handlers(el)))
     }
 
     connectedCallback() {

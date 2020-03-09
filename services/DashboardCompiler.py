@@ -22,11 +22,9 @@ def compile_data_view(run_social: bool=False, run_search: bool=True, company_nam
             if run_social:
                 social_df = loop.run_in_executor(None, orm.social_index, date_range)
                 social = await social_df
-                opps = None
             else:
                 social_df = None
                 social = None
-                opps = None
 
             return search, social, opps
 

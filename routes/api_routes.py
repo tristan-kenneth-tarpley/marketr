@@ -486,12 +486,17 @@ def compile_master_index():
     index = MarketrIndex(ltv)
     lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-    topics = compile_topics(opps, index, lcr)
- 
-    return json.dumps({
-        'topics': json.loads(topics),
+    if opps is not None:
+        topics = compile_topics(opps, index, lcr, ltv)
+    else:
+        topics = None
+
+    returned = json.dumps({
+        'topics': topics,
         'index': compiled
     })
+
+    return returned
 
 @app.route('/api/index/trendline', methods=['POST'])
 def index_trendline():

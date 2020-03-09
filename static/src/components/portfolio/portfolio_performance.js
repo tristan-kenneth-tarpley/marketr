@@ -10,30 +10,14 @@ import { dots_loader, custom_select_body } from '/static/src/components/UI_eleme
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
-const marketr_score = (text, sub=false, huge=false) => {
-
-    let score = number(remove_commas_2(text))
+const marketr_score = (value, sub=false, huge=false) => {
     let _class;
-    let display;
+    if (value <= 1) _class = '_red'
+    else if (value > 1 && value <= 2) _class = '_yellow'
+    else if (value > 2) _class = '_green'
 
-    if (score <= 1) {
-        display = score
-        _class = '_red'
-    } else if (score > 1 && score <= 2) {
-        display = score
-        _class = '_yellow'
-    } else if (score > 2) {
-        display = score
-        _class = '_green'
-    } else if (score > 10) {
-        display = 10
-        _class = '_green'
-    } else {
-        display = 10
-        _class = '_green'
-    }
 
-    return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${display} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+    return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${number(value)} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
 }
 
 const styles = () => {
@@ -196,7 +180,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 profitability: {
                     
                 }
-            }
+            },
+            opp_expanded: false
         }
 
         this.css = styles()
@@ -659,7 +644,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div class="center_vertically ${condensed ? 'condensed' : '' }">
                     <div class="center_it">
                         ${title('health score', true)}
-                        ${marketr_score(number(remove_commas_2(index)), false, true)}
+                        ${marketr_score(index, false, true)}
                     </div>
                     
                     <div class="center_it stat-trend up green">
@@ -830,7 +815,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
             let display_value;
             if (_currency) display_value = value(currency(__value))
-            else if (score) display_value = marketr_score(number(remove_commas_2(__value)))
+            else if (score) display_value = marketr_score(__value)
             else display_value = value(number_rounded(__value))
 
 
@@ -936,8 +921,63 @@ export default class PortfolioPerformance extends HTMLElement {
             </div>`
     }
 
+    opps_classList(){
+        let opps_classList;
+
+        if (this.analytics) opps_classList = `h--500 col-lg-4 col-md-4 col-sm-12`
+        if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
+        else opps_classList = `h--500 col-lg-4 col-md-4 col-sm-12`
+
+        return opps_classList
+    }
+
+    opps_title(){
+        let closed = `<i class="far fa-caret-square-right"></i>`,
+            open = `<i class="far fa-caret-square-down"></i>`,
+            expanded = this.state.opp_expanded;
+
+        /*html*/
+        return `
+        <h1 style="margin-bottom: 1em;" class="widget__title">
+            Opportunities
+            <button style="padding: 0;margin: 0;" id="opp_expand" class="btn btn-neutral small_txt">
+                Nerd view
+                ${expanded ? open : closed}
+            </button>
+        </h1>
+    `
+    }
+
+    opps_container(){
+        let el = document.createElement('div')
+
+        if (this.state.opp_expanded) this.shadow.querySelector("#opps_container").style.margin = "0 0 2em 0"
+        /*html*/
+        el.innerHTML = `
+            <div class="card card-body" id="topic_opps">
+                ${this.opps_title()}
+                <div id="append__to"></div>
+            </div>
+        `
+
+        let opp = this.Opportunities()
+        opp.setAttribute('json', JSON.stringify(this.state.data.topics))
+        el.querySelector('#append__to').appendChild(opp)
+
+        el.querySelector("#opp_expand").addEventListener('click', e=>{
+            this.state.opp_expanded = this.state.opp_expanded ? false : true
+            let target = this.shadow.querySelector("#opps_container")
+            target.classList.remove(...target.classList)
+            target.classList.add(...this.opps_classList().split(" "))
+            this.shadow.querySelector('#opps_container').innerHTML = ""
+            this.shadow.querySelector('#opps_container').appendChild(this.opps_container())
+        })
+
+        return el
+    }
+
     template(){
-        let {marketr_index, action, cost} = this.state.active_data.profitability
+        let {action} = this.state.active_data.profitability
         let {active_view} = this.state
 
 
@@ -954,7 +994,6 @@ export default class PortfolioPerformance extends HTMLElement {
             'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
         let class_list = `col`
-
         let column_set = ![0,1].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
@@ -986,11 +1025,8 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="h--500 col-lg-4 col-md-4 col-sm-12">
                 ${this.profit_spread()}
             </div>
-            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
-                <div class="card card-responsive card-body" id="topic_opps">
-                    ${title('Opportunities')}
-                </div>
-            </div>
+            <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
+            
             ` : ''}
 
             ${this.analytics ? `` : `
@@ -1006,11 +1042,7 @@ export default class PortfolioPerformance extends HTMLElement {
             ? ``
             : `
                 <div class="row row_cancel">
-                    <div class="h--500 col-lg-4 col-md-4 col-sm-12">
-                        <div class="card card-responsive card-body" id="topic_opps">
-                            ${title('Opportunities')}
-                        </div>
-                    </div>
+                    <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
                     <div class="h--500 col-lg-4 col-md-4 col-sm-12">
                         ${this.profit_spread()}
                     </div>
@@ -1021,7 +1053,6 @@ export default class PortfolioPerformance extends HTMLElement {
                     </div>
                 </div>
                 `
-        
         }
         `
     }
@@ -1040,7 +1071,7 @@ export default class PortfolioPerformance extends HTMLElement {
                                 <div class="main-group__trend row row_cancel">
                                     <div class="col-lg-4 col-md-4 col-12"> 
                                         <div class="center_it trend__group">
-                                            ${title(`health score: ${marketr_score(number(this.state.data.aggregate.index))}`, true)}
+                                            ${title(`health score: ${marketr_score(this.state.data.aggregate.index)}`, true)}
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">
@@ -1122,14 +1153,32 @@ export default class PortfolioPerformance extends HTMLElement {
 
     Opportunities(){
         const ops = new Opportunities()
-
+        ops.setAttribute('max-height', '400')
+        ops.setAttribute('expanded', this.state.opp_expanded)
         return ops
     }
 
     error_markup(){
         const div = `
-        <div class="center_it">
-            <p style="margin: auto;">Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
+        <div class="row row_cancel">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="center_it card card-body">
+                    <p style="margin: auto;">Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
+                </div>
+            </div>
+        </div>
+        <div class="row row_cancel">
+            <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
+                <div class="h--500 card card-body">
+                    ${title('Recommendations')}  
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div id="insights" class="card card-responsive card-body">
+                    ${title('insights')}    
+                </div>
+            </div>
         </div>
         `
         return div
@@ -1183,11 +1232,15 @@ export default class PortfolioPerformance extends HTMLElement {
         const insights = this.insights()
         const opps = this.Opportunities()
 
-        const compile = async () => {
+        const append_other = el => {
+            if (!this.analytics) {
+                el.querySelector("#recommendations div").appendChild(recs)
+                el.querySelector('#insights').appendChild(insights)
+            }
+        }
 
+        const compile = async () => {
             let el;
-      
-    
             const markup = `
                 ${this.css}
                 ${this.shell()}
@@ -1209,11 +1262,9 @@ export default class PortfolioPerformance extends HTMLElement {
                 })
                 .then(el=>{
                     this.reset_charts(el)
-                    el.querySelector('#topic_opps').appendChild(opps)
-                    if (!this.analytics) {
-                        el.querySelector("#recommendations div").appendChild(recs)
-                        el.querySelector('#insights').appendChild(insights)
-                    }
+                    el.querySelector('#opps_container').appendChild(this.opps_container())
+
+                    append_other(el)
                     return modal_handlers(el)
                 })
                 .then( el => this.shadow.appendChild(this.view_controller(el)) )
@@ -1236,31 +1287,22 @@ export default class PortfolioPerformance extends HTMLElement {
                     google: this.google_id
                 })
             })
-            .then(res=> res.json())
+            .then(res => res.json())
             .then(res => {
-                    document.querySelector('#performance_loader').style.display = 'none'
-                    this.state.data = res.index
-                    opps.setAttribute('json', JSON.stringify(res.topics))
-                    run()
+                document.querySelector('#performance_loader').style.display = 'none'
+                this.state.data = res.index
+                this.state.data.topics = res.topics
+                opps.setAttribute('json', JSON.stringify(res.topics))
+                run()
             })
             .catch(e=>{
+                console.log(e)
                 document.querySelector('#performance_loader').style.display = 'none'
                 this.shadow.innerHTML = `
                     ${this.css}
-                    <div class="row row_cancel">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                            <div class="card card-body">
-                                ${this.error_markup()}
-                            </div>
-                        </div>
-                    </div>
+                    ${this.error_markup()}
                 `
-                
-                if (!this.analytics) {
-                    this.shadow.querySelector("#recommendations div").appendChild(this.recs())
-                    this.shadow.querySelector('#insights div').appendChild(this.insights())
-                }
-                console.log(e)
+                append_other(this.shadow)
             })
         } else run()
     }

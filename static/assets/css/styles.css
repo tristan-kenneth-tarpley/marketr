@@ -153,7 +153,7 @@ optgroup,
 select,
 textarea,
 p,
-h1,
+h1
  {
   font-family: var(--secondary-font) !important}
 
@@ -1341,7 +1341,13 @@ optgroup,
 select,
 textarea,
 .button {
-  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif; }
+  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif; 
+}
+
+.btn-neutral {
+  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif; 
+  font-weight: 300 !important;
+}
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400; }
@@ -12572,6 +12578,9 @@ html.modal-active, body.modal-active {
 
 .h--500 {
   height: 500px !important;
+}
+.h--750 {
+  height: 750px !important;
 }
 
 .action {
