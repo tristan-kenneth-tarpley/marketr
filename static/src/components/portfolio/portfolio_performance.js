@@ -48,11 +48,6 @@ const styles = () => {
         }
         #insights {
             max-height: 500px;
-            overflow-y: scroll;
-        }
-
-        #recommendations {
-            overflow-y: scroll;
         }
 
         .metric_labels {
@@ -593,9 +588,9 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
         <div class="center_it"> 
         <br><br>
-            <h1 style="margin-bottom:0;" class="widget__title">There are a lot of platforms out there to choose from</h1>
-            <p class="small_txt">Need help finding some more opportunities? Head over to chat and tell your Market(r) guide.</p>
-            <a href="${!this.demo ? '/home?view=messages' : '#'}" class="btn btn-outline btn-outline-secondary">Let's chat</a>
+            <h1 style="margin-bottom:0;" class="widget__title">Is there a campaign type you want to run, but we don't offer (yet)?</h1>
+            <p class="small_txt">Head over to chat and tell your Market(r) guide and we'll add it to our list.</p>
+            <a href="${!this.demo ? '/home?view=messages' : '#'}" class="btn btn-outline btn-outline-secondary">Tell us</a>
         </div>
         `
     }
@@ -924,9 +919,9 @@ export default class PortfolioPerformance extends HTMLElement {
     opps_classList(){
         let opps_classList;
 
-        if (this.analytics) opps_classList = `h--500 col-lg-4 col-md-4 col-sm-12`
+        if (this.analytics) opps_classList = `h--500 col-lg-4 col-md-6 col-sm-12`
         if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
-        else opps_classList = `h--500 col-lg-4 col-md-4 col-sm-12`
+        else opps_classList = `h--500 col-lg-4 col-md-6 col-sm-12`
 
         return opps_classList
     }
@@ -1022,7 +1017,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
 
             ${this.analytics ? `
-            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
+            <div class="h--500 col-lg-4 col-md-6 col-sm-12">
                 ${this.profit_spread()}
             </div>
             <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
@@ -1043,10 +1038,11 @@ export default class PortfolioPerformance extends HTMLElement {
             : `
                 <div class="row row_cancel">
                     <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
-                    <div class="h--500 col-lg-4 col-md-4 col-sm-12">
+                    <div class="h--500 col-lg-4 col-md-6 col-sm-12">
                         ${this.profit_spread()}
                     </div>
-                    <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="d-none d-md-block d-lg-none divider"></div>
                         <div id="insights" class="card card-responsive card-body">
                             ${title('insights')}    
                         </div>
