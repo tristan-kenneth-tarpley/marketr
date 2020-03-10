@@ -40,7 +40,7 @@ const styles = () => {
 
         #profit_chart_container {
             width: 100% !important;
-            max-height: 400px !important; 
+            max-height: 380px !important; 
         }
 
         #profit_chart {
@@ -935,7 +935,7 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
         <h1 style="margin-bottom: 1em;" class="widget__title">
             Opportunities
-            <button style="padding: 0;margin: 0;" id="opp_expand" class="btn btn-neutral small_txt">
+            <button style="padding: 0;margin: 0 0 0 7px;" id="opp_expand" class="btn btn-neutral small_txt">
                 Nerd view
                 ${expanded ? open : closed}
             </button>
@@ -1149,7 +1149,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
     Opportunities(){
         const ops = new Opportunities()
-        ops.setAttribute('max-height', '400')
+        ops.setAttribute('max-height', '383')
         ops.setAttribute('expanded', this.state.opp_expanded)
         return ops
     }

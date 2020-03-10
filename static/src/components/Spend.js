@@ -5,6 +5,7 @@ const styles = () => {
     <style>
         @import url('/static/assets/css/bootstrap.min.css');
         @import url('/static/assets/css/styles.css');
+        @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
    
         #allocation_canvas {
@@ -156,7 +157,7 @@ export default class AdSpend extends HTMLElement {
                                     return `${inline_article(i)
                                                 ? `
                                                 <li class="campaign_type">
-                                                    ${modal_trigger(i, `campaign #${counter}: ${i} <span style="color:#62cde0;">></span>`)}
+                                                    ${modal_trigger(i, `campaign #${counter}: ${i} <span style="color:#62cde0;"><i class="fas fa-caret-right"></i></span>`)}
                                                     ${right_modal('', inline_article(i), i)}
                                                 </li>
                                                 `
