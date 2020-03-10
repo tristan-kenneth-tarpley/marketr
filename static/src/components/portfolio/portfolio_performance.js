@@ -32,6 +32,19 @@ const styles = () => {
             /*border-bottom: 1px solid #f2f2ff;*/
             padding: 2%;
         }
+        .custom_modal .button {
+            display: flex;
+            flex-grow: 1;
+            padding: 0;
+            margin: 0;
+            flex-direction: column;
+        }
+        .custom_modal p {
+            display: none;
+        }
+        .custom_modal h1.small {
+            color: var(--nav-color);
+        }
         .metric_display {
             color: var(--primary);
             font-weight: bold;
@@ -177,6 +190,23 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
             },
             opp_expanded: false
+        }
+
+        this.static_copy = {
+            score: `<p>An overall health metric of your portfolio. It’s a metric without limit.</p>
+            <p>And much like a stock price, ideally increases over time. </p>
+            <p>It’s a function of:</p>
+            <ul style="text-align:left;">
+                <li>Customer lifetime value</li>
+                <li>Lead close rates</li>
+                <li>Click through rates</li>
+                <li>Cost per impression</li>
+                <li>Impression share ranking</li>
+                <li>Marketing portfolio strength</li>
+            </ul>
+            
+            <p>This value is calculated and compared at the lowest levels of your marketing tactics and rolled up to the Account Portfolio level.</p>
+            `
         }
 
         this.css = styles()
@@ -857,18 +887,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 {__value: pp100 ? pp100 : 0, _currency: true, score: false},
                 {comp: pp100_comp ? pp100_comp : 0, low_is_good: false}
             )}
-
-            ${modal('Health Score', `An overall health metric of your portfolio.  It’s a metric without limit.  And much like a stock price, ideally increases over time. 
-            It’s a function of:
-            Customer lifetime value
-            Lead close rates
-            Click through rates
-            Cost per impression
-            Impression share ranking
-            Marketing portfolio strength
-            
-            This value is calculated and compared at the lowest levels of your marketing tactics and rolled up to the Account Portfolio level.
-            `, 'health_score')}
             `
 
         return el
@@ -1054,8 +1072,6 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     shell(){
-
-
         /*html*/
         return `
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
@@ -1063,11 +1079,21 @@ export default class PortfolioPerformance extends HTMLElement {
                     ${this.analytics ? ''
                     : `
                         <div class="col-lg-12 col-md-12 col-12">
-                            <div class="card card-body">
+                            <div style="padding: 1.25rem 1.25rem 0 1.25rem;" class="card card-body">
                                 <div class="main-group__trend row row_cancel">
                                     <div class="col-lg-4 col-md-4 col-12"> 
-                                        <div class="center_it trend__group">
-                                            ${title(`health score: ${marketr_score(this.state.data.aggregate.index)}`, true)}
+                                    ${modal('What is the health score?', this.static_copy.score, 'health')}
+                                        <div class="custom_modal center_it trend__group">
+                                            ${modal_trigger(
+                                                'health',
+                                                `${title(
+                                                    `${this.company_name}'s health score:
+                                                    &nbsp;<i class="far fa-question-circle"></i>
+                                                    <br>${marketr_score(
+                                                        this.state.data.aggregate.index
+                                                    )}`,
+                                                true
+                                            )}`)}
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">

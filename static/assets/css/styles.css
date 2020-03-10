@@ -12783,7 +12783,9 @@ p, span {
   min-height: 60px;
 }
 
-
+li {
+  color: var(--nav-color);
+}
 
 
 .dataTable-sorter { font-weight: 500 !important;}
