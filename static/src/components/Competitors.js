@@ -196,7 +196,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col">
-                    <table style="width: 100%;" class="table table-responsive table-borderless">
+                    <table style="width: 100%;overflow: auto;" class="table table-borderless">
                         <thead>
                             <th></th>
                             <th><p>Est. Google Ad Spend per month</p></th>
