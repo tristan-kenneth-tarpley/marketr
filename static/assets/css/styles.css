@@ -11982,7 +11982,7 @@ html.modal-active, body.modal-active {
       top: -60px;
       max-height: 80%;
       position: relative;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     #modal-container .modal._right {
       position: absolute;

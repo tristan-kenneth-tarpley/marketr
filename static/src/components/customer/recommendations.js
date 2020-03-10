@@ -11,7 +11,7 @@ const styles = () => {
 
         #rec-container {
             max-height: 420px;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
         .rec {
             border-left: 4px solid gray;

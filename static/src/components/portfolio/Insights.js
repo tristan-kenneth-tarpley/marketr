@@ -13,7 +13,7 @@ const styles = () => {
         }
         .shadow_insights {
             max-height: 500px;
-            overflow-y: scroll;
+            overflow-y: auto;
             overflow-x: hidden;
         }
     
