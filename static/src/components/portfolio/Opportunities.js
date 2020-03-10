@@ -21,6 +21,7 @@ const styles = (attrs) => {
         margin-bottom: 4%;
         display: flex;
         align-items: center;
+        padding: 1% 5%;
       }
       table .widget__title {
         margin-bottom: 0 !important;
