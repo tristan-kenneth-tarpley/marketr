@@ -12474,7 +12474,7 @@ html.modal-active, body.modal-active {
   color: #12c457 !important;
 }
 ._yellow {
-  color: #fcd12a !important;
+  color: #d6d131 !important;
 }
 ._red {
   color: #e84c85 !important;
@@ -12786,3 +12786,12 @@ p, span {
 
 
 
+.dataTable-sorter { font-weight: 500 !important;}
+.dataTable-table td { font-weight: 400 !important;}
+
+.dataTable-sorter,
+.dataTable-table td {
+  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif !important;
+  font-size: .8em !important;
+  color: var(--nav-color) !important;
+}

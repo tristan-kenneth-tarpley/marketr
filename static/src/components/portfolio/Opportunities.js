@@ -1,5 +1,18 @@
 import {tabs, shadow_events, dots_loader} from '/static/src/components/UI_elements.js'
 
+const _score_color = (val) => {
+  let _class;
+  if (val <= 4) _class = '_red'
+  else if (val > 4 && val <= 7) _class = '_yellow'
+  else if (val > 7) _class = '_green'
+
+  return _class
+}
+const _score = (val) => {
+  let _class = _score_color(val)
+  return `<h1 class="${_class} widget__value">${number(val)}</h1>`
+}
+
 const styles = (attrs) => {
   let {max_height} = attrs
   /*html*/
@@ -27,8 +40,9 @@ const styles = (attrs) => {
         margin-bottom: 0 !important;
         font-size: .7em;
       }
+      
       td {
-        vertical-align:middle !important;
+        vertical-align: middle !important;
       }
       td span {
         font-size: 8pt;
@@ -78,20 +92,33 @@ export default class Opportunities extends HTMLElement {
     const header = (title) => `<h1 class="widget__title">${title}</h1>`
     const value = (val) => `${val}`
     const num_value = (val, options) => {
-      let defaults = {
-        percent: false,
-        rounded: false,
-        currency: false
+      if (val) {
+        let defaults = {
+          percent: false,
+          rounded: false,
+          currency: false,
+          color: false
+        }
+
+        options = Object.assign({}, defaults, options);
+
+        const display = num => {
+          let returned;
+          if (options.rounded) returned = number_rounded(num)
+          else returned = number(num)
+
+          if (options.color) returned = `<span style="font-size:inherit;" class="${_score_color(returned)}">${returned}</span>`
+
+          return returned
+        }
+        
+        return `${options.currency ? "$" : ""}${val ? display(val) : 0}${options.percent ? "%" : ""}`
       }
-
-      options = Object.assign({}, defaults, options);
-
-      const display = num => options.rounded ? number_rounded(num) : number(num)
-      return `${options.currency ? "$" : ""}${val ? display(val) : 0}${options.percent ? "%" : ""}`
+      else return 'n/a'
     }
 
     let headings = [
-      'total opportunity score',
+      'opp. score',
       'keyword',
       'quality score',
       'quality score opportunity score',
@@ -112,11 +139,11 @@ export default class Opportunities extends HTMLElement {
 
     let d_rows = data.map(row=>{
       return [
-        num_value(row.opp_score),
+        num_value(row.opp_score > 0 ? row.opp_score : null, {color: true}),
         value(row.keyword),
         num_value(row.qualityscore),
         num_value(row.qs_opp_score),
-        num_value(row.searchimprshare * 1000, {percent: true}),
+        num_value(row.searchimprshare * 100, {percent: true}),
         num_value(row.is_opp_score),
         num_value(row.searchtopis * 100, {percent: true}),
         num_value(row.top_is_opp_score),
@@ -126,7 +153,7 @@ export default class Opportunities extends HTMLElement {
         num_value(row.contrained_mi),
         num_value(row.impressions, {rounded: true}),
         num_value(row.clicks, {rounded: true}),
-        num_value(row.ctr * 100, {rounded: true, percent: true}),
+        num_value(row.ctr * 100, {percent: true}),
         num_value(row.cpc, {currency: true}),
         num_value(row.cost, {currency: true}),
       ]
@@ -147,14 +174,6 @@ export default class Opportunities extends HTMLElement {
   }
 
   row(keyword, score) {
-    const _score = (val) => {
-      let _class;
-      if (val < 9) _class = '_red'
-      else if (val >= 9 && val <= 14) _class = '_yellow'
-      else if (val > 14) _class = '_green'
-
-      return `<h1 class="${_class} widget__value">${number_rounded(val)}</h1>`
-    }
     /*html*/
     return `
       <div class="opp_row row">

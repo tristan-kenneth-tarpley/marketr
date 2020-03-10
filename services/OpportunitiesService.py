@@ -89,7 +89,7 @@ class TopicalOpps(OpportunityScore):
         df['lost_is_opp_score'] = df.searchlosttopisrank.apply(lambda x: x * 10)
         df['pi_opp_score'] = df.purchase_intent.apply(lambda x: self.ParsePI(x))
         
-        df['contrained_mi'] = self.mi_q_opp_score(df.pp100)
+        df['constrained_mi'] = self.mi_q_opp_score(df.pp100)
         
         return df
     
@@ -101,16 +101,20 @@ class TopicalOpps(OpportunityScore):
 
         Topical Opportunity Score = AVERAGE( [Base Scores] ) * 0.5 + [ Constrained Marketr Index Opp. Score] * 0.5
         
-        NOTE:  IF Impressions < 50, Do not calculate or display
+        NOTE:  IF Impressions < 50 or ctr == 0, Do not calculate or display
         """
         
         # syntax: np.average(x['marketr_index'], weights=x['cost'] if x['cost'] > 0 else 1)
+
         
-        base_scores = (
-            df.qs_opp_score + df.is_opp_score + df.top_is_opp_score + df.lost_is_opp_score + df.pi_opp_score
-        )
+        def opp_score(x):                
+            base_scores = (
+                x.qs_opp_score + x.is_opp_score + x.top_is_opp_score + x.lost_is_opp_score + x.pi_opp_score
+            )
+            exp = ((base_scores / 5) * .5 + x.constrained_mi * .5)
+            return exp if (x.impressions > 50 and x.ctr > 0) else 0
         
-        df['opp_score'] = df.apply(lambda x: base_scores.mean() * .5 + x.contrained_mi * .5 if x.impressions > 50 else 0, axis=1)
+        df['opp_score'] = df.apply(lambda x: opp_score(x), axis=1)
         
         df['cleaned_keywords'] = df.keyword.apply(lambda x: x.replace("+", "").replace('"', "").replace("[", "").replace("]", ""))
         
@@ -122,11 +126,8 @@ class TopicalOpps(OpportunityScore):
         }
 
 
-
-
-### compile 
 def compile_topics(_df, index, lcr, ltv):
     opps = TopicalOpps(ltv=ltv, lcr=lcr)
     dfs = opps.AggOppScore(_df, index)
-
+    
     return dfs

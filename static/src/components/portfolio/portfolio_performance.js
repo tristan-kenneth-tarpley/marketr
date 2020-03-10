@@ -240,7 +240,7 @@ export default class PortfolioPerformance extends HTMLElement {
         const options = {
             maintainAspectRatio: false,
             legend: {
-                display: true,
+                display: false,
                 labels: {
                     fontColor: font_color
                 }
@@ -877,7 +877,7 @@ export default class PortfolioPerformance extends HTMLElement {
     profit_spread() {
         return `
         <div class="h--500 card card-body">
-            ${title('profitability spread')}
+            ${title('profit potential per $100 spent')}
             <br>
 
             <div id="profit_chart_container">
