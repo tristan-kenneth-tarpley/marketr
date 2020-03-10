@@ -1001,7 +1001,7 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
-                        <div style="overflow-y:scroll;" class="h--500 card card-body">
+                        <div style="${[0,1].includes(active_view) ? 'overflow-y:scroll;' : ''}" class="h--500 card card-body">
                             ${title(breakdown_title[active_view])}
                             ${this.breakdown_markup()}
                         </div>
