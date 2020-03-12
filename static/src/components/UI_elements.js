@@ -393,3 +393,97 @@ export const custom_select_body = (options, name, active) => {
         </ul>
     </div>`
 }
+
+
+
+
+export const loading_shell = () => {
+
+    const sections = `
+    <div class="shimmer-sections a"></div>
+    <div class="shimmer-sections b"></div>
+    <div class="shimmer-sections c"></div>
+    <div class="shimmer-sections d"></div>
+    <div class="shimmer-sections e"></div>
+    <div class="shimmer-sections f"></div>
+    <div class="shimmer-sections g"></div>
+    <div class="shimmer-sections h"></div>
+    <div class="shimmer-sections i"></div>
+    <div class="shimmer-sections j"></div>
+    <div class="shimmer-sections k"></div>
+    <div class="shimmer-sections l"></div>`
+
+    /*html*/
+    const el = `
+        <div style="padding-left: 0; padding-right: 0;" class="shimmer-background container-fluid">
+            <div class="row row_cancel">
+                <div class="col-lg-12 col-md-12 col-12">
+                    <div style="padding: 1.25rem 1.25rem 0 1.25rem;" class="card card-body">
+                        ${sections}
+                    </div>
+                </div>
+            </div>
+            <div class="row row_cancel">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="h--300 card card-body">
+                        ${sections}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="card card-body h--300">
+                        ${sections}
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div style="padding-left: 0; padding-right: 0;" class="shimmer-background container-fluid" id="home-row">
+                <div class="row row_cancel">
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div style="overflow-y:auto;" class="h--500 card card-body">
+                                    ${sections}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="h--500 card card-body">
+                            ${sections}
+                        </div>
+                    </div>
+                </div>
+                <div class="row row_cancel">
+                <div style="" class="col-lg-4 col-md-6 col-sm-12" id="opps_container">
+                    <div>
+                        <div class="h--500 card card-body" id="topic_opps">
+                            ${sections}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="h--500 card card-body">
+                        ${sections}
+                    </div>
+                </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="d-none d-md-block d-lg-none divider"></div>
+                        <div id="insights" class="h--500 card card-responsive card-body">
+                            ${sections}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `   
+
+
+        return el
+}
+
+
+export const perc_container = `
+			<div style="text-align: center;" class="container counter">
+	        	<span style="font-size:120%" class="perc"></span>%
+	    	</div>
+	    	`

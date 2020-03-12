@@ -6,6 +6,7 @@ import {google, facebook} from '/static/src/components/UI_elements.js'
 import Recommendations from '/static/src/components/customer/recommendations.js'
 import Opportunities from '/static/src/components/portfolio/Opportunities.js'
 import { dots_loader, custom_select_body } from '/static/src/components/UI_elements.js'
+import {remove_duplicates, iterate_text, modal, modal_trigger, modal_handlers, currency,currency_rounded,number,number_rounded,number_no_commas,percent,remove_commas,remove_commas_2} from '/static/src/convenience/helpers.js'
 
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
@@ -69,6 +70,9 @@ const styles = () => {
         }
         #select_container .widget__title {
             margin-bottom: 3%;
+        }
+        #view_selector {
+            padding: 0 4%;
         }
         #view_selector button {
             font-size: .7em;
@@ -558,7 +562,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
 
                 this.state.breakdown = breakdown_ads[0]
-                console.log(breakdown_ads)
 
                 this.state.active_data.profitability = {
                     dates: copied_ads.map(_camp=>_camp.date_start),
@@ -937,9 +940,9 @@ export default class PortfolioPerformance extends HTMLElement {
     opps_classList(){
         let opps_classList;
 
-        if (this.analytics) opps_classList = `h--500 col-lg-4 col-md-6 col-sm-12`
+        if (this.analytics) opps_classList = `col-lg-4 col-md-6 col-sm-12`
         if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
-        else opps_classList = `h--500 col-lg-4 col-md-6 col-sm-12`
+        else opps_classList = `col-lg-4 col-md-6 col-sm-12`
 
         return opps_classList
     }
@@ -967,7 +970,7 @@ export default class PortfolioPerformance extends HTMLElement {
         if (this.state.opp_expanded) this.shadow.querySelector("#opps_container").style.margin = "0 0 2em 0"
         /*html*/
         el.innerHTML = `
-            <div class="card card-body" id="topic_opps">
+            <div class="h--500 card card-body" id="topic_opps">
                 ${this.opps_title()}
                 <div id="append__to"></div>
             </div>
@@ -1087,7 +1090,7 @@ export default class PortfolioPerformance extends HTMLElement {
                                             ${modal_trigger(
                                                 'health',
                                                 `${title(
-                                                    `${this.company_name}'s health score:
+                                                    `${this.company_name}'<span style="text-transform:lowercase;">s</span> &nbsp;health score:
                                                     &nbsp;<i class="far fa-question-circle"></i>
                                                     <br>${marketr_score(
                                                         this.state.data.aggregate.index
@@ -1161,6 +1164,8 @@ export default class PortfolioPerformance extends HTMLElement {
         const recs_ = new Recommendations()
         recs_.setAttribute('customer-id', this.customer_id)
         recs_.setAttribute('demo', this.demo)
+        recs_.setAttribute('recs_json', this.recs_json)
+        recs_.setAttribute('fetch', false)
         return recs_
     }
 
@@ -1168,7 +1173,8 @@ export default class PortfolioPerformance extends HTMLElement {
     insights(){
         const insights = new Insights()
         insights.setAttribute('customer_id', this.customer_id)
-
+        insights.setAttribute('insights_json', this.insights_json)
+        insights.setAttribute('fetch', false)
         return insights
     }
 
@@ -1244,8 +1250,6 @@ export default class PortfolioPerformance extends HTMLElement {
         </div>
         `
     }
-
-
 
     render(init=true){
         this.shadow.innerHTML = ""
@@ -1329,14 +1333,15 @@ export default class PortfolioPerformance extends HTMLElement {
         } else run()
     }
 
-    connectedCallback(start=now()) {
+    connectedCallback() {
         this.customer_id = this.getAttribute('customer-id')
         this.facebook_id = this.getAttribute('facebook_id') ? true : false
         this.google_id = this.getAttribute('google_id') ? true : false
         this.company_name = this.getAttribute('company-name')
         this.spend_rate = this.getAttribute('spend_rate') != null ? parseFloat(this.getAttribute('spend_rate')) : 0
         this.funds_remaining = this.getAttribute('funds_remaining') != null ? parseFloat(this.getAttribute('funds_remaining')) : 0
-        this.insights_json = eval(this.getAttribute('insights'))
+        this.insights_json = this.getAttribute('insights')
+        this.recs_json = this.getAttribute('recommendations')
         this.ltv = this.getAttribute('ltv')
         this.demo = this.getAttribute('demo')
         this.analytics = this.getAttribute('analytics') ? true : false

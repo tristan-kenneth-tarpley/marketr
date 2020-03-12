@@ -40,68 +40,18 @@ def admin_login():
 
 
 
-@app.route('/admin/<customer_id>')
-@admin_required
-def company_view(customer_id):
-
-
-    page = request.args.get('page')
-    basics_df = db.sql_to_df("""SELECT * FROM dbo.customer_basic WHERE ID = """ + customer_id)
-    company_name = basics_df['company_name'][0]
-
-
-
-    if page == "profile":
-        load_company = basics_df
-        load_company.insert(loc=0, column='is profile', value=True)
-    elif page == "audience":
-        load_company = db.sql_to_df("""SELECT * FROM dbo.audience WHERE customer_id = %d""" % (customer_id,))
-        load_company = load_company.drop(columns=['customer_id', 'age_group_1', 'age_group_2', 'age_group_3', 'age_group_4', 'age_group_5', 'age_group_6', 'age_group_7', 'age_group_8', 'before_1', 'before_2', 'before_3', 'before_4', 'before_5', 'before_6', 'before_7', 'before_8', 'before_9', 'before_10', 'before_freeform', 'after_1', 'after_2', 'after_3', 'after_4', 'after_5', 'after_6', 'after_7', 'after_8', 'after_9', 'after_10', 'after_freeform'])
-        audiences_dict = helpers.clean_audience(customer_id)
-        columns = list(load_company.columns)
-        return render_template('admin_view/company_view.html',columns=columns,audiences=audiences_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
-    elif page == "product":
-        load_company = db.sql_to_df("""SELECT gen_description, quantity, link FROM dbo.product WHERE customer_id = %d""" % (customer_id,))
-        product_dict = helpers.clean_product(customer_id)
-
-        product_list = db.sql_to_df("""SELECT * FROM dbo.product_list WHERE customer_id = %d""" % (customer_id,))
-        product_list = product_list.drop(columns=['customer_id'])
-        product_list = helpers.clean_for_display(product_list)
-
-        return render_template('admin_view/company_view.html',product_list=product_list,product_dict=product_dict, customer_id=customer_id, company=company_name, page=page, data=load_company)
-    elif page == "notes":
-        load_company = db.sql_to_df("""SELECT * from dbo.notes WHERE customer_id = {customer_id} ORDER BY added%d""" % (customer_id,))
-    elif page == "salescycle":
-        awareness = db.sql_to_df("""SELECT tactic FROM dbo.awareness WHERE customer_id = %d""" % (customer_id,))
-        evaluation = db.sql_to_df("""SELECT tactic FROM dbo.evaluation WHERE customer_id = %d""" % (customer_id,))
-        conversion = db.sql_to_df("""SELECT tactic FROM dbo.conversion WHERE customer_id = %d""" % (customer_id,))
-        retention = db.sql_to_df("""SELECT tactic FROM dbo.retention WHERE customer_id = %d""" % (customer_id,))
-        referral = db.sql_to_df("""SELECT tactic FROM dbo.referral WHERE customer_id = %d""" % (customer_id,))
-
-        return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data='hi', awareness=awareness, evaluation=evaluation, conversion=conversion, retention=retention, referral=referral)
-    else:
-        load_company = db.sql_to_df("""SELECT * FROM dbo.""" + page + """ WHERE customer_id = """ + str(customer_id))
-        load_company.insert(loc=0, column='is_profile', value=False)
-    
-    load_company = helpers.clean_for_display(load_company)
-
-    return render_template('admin_view/company_view.html', customer_id=customer_id, company=company_name, page=page, data=load_company)
-
-
 @app.route('/admin/<customer_id>/note', methods=['POST'])
 @admin_required
 def add_note(customer_id):
-    if request.method == 'POST':
-        POST_note = clean(request.form['note'])
-        # ' = `
-        # " = ~
-        POST_note = POST_note.replace("'","`")
-        POST_note = POST_note.replace('"',"~")
-        tup = (customer_id, session['admin_first'], session['admin_last'], POST_note)
-        query = "INSERT INTO dbo.notes (customer_id, author, author_last, content) VALUES(?,?,?,?);commit;"
-        db.execute(query, False, tup)
+	if request.method == 'POST':
+		POST_note = clean(request.form['note'])
+		POST_note = POST_note.replace("'","`")
+		POST_note = POST_note.replace('"',"~")
+		tup = (customer_id, session['admin_first'], session['admin_last'], POST_note)
+		query = "INSERT INTO dbo.notes (customer_id, author, author_last, content) VALUES(?,?,?,?);commit;"
+		db.execute(query, False, tup)
 
-    return redirect(url_for('company_view', customer_id=customer_id, page="notes"))
+	return redirect(url_for('company_view', customer_id=customer_id, page="notes"))
 
 
 
@@ -109,19 +59,19 @@ def add_note(customer_id):
 @app.route('/load_admin')
 @admin_required
 def load_admin():
-    results = db.sql_to_df('SELECT customer_basic.id, customer_basic.company_name, admins.first_name FROM customer_basic, admins WHERE admins.ID = ' + str(session['admin']))
+	results = db.sql_to_df('SELECT customer_basic.id, customer_basic.company_name, admins.first_name FROM customer_basic, admins WHERE admins.ID = ' + str(session['admin']))
 
-    results = results.to_json(orient='records')
+	results = results.to_json(orient='records')
 
-    return results
+	return results
 
 
 @app.route('/admin_availability', methods=['GET'])
 def admin_availability():
-    result = db.sql_to_df('select email from dbo.admins')
-    result = result.to_json(orient='records')
+	result = db.sql_to_df('select email from dbo.admins')
+	result = result.to_json(orient='records')
 
-    return result
+	return result
 
 
 
@@ -129,10 +79,6 @@ def admin_availability():
 @manager_required
 def admin():
 	return redirect(url_for('customers'))
-    # results = db.sql_to_df("SELECT customer_basic.id, customer_basic.company_name, customer_basic.account_created, customer_basic.perc_complete, customer_basic.last_modified, admins.first_name FROM customer_basic, admins WHERE admins.ID = '" + str(session['admin']) + "' ORDER BY company_name ASC")
-    # page = AdminViewModel('owner', 'home', admin=str(session['admin']))
-    # return render_template('admin_view/admin_index.html', page=page, sub=False, results=results, owner=session['owner_logged_in'], admin=session['admin_logged_in'], manager=session['manager_logged_in'])
-
 
 @app.route('/personnel', methods=['POST', 'GET'])
 @owner_required
@@ -534,24 +480,24 @@ def add_admin(a_id):
 	POST_PHONE = request.form['phone']
 	POST_POSITION = clean(request.form['position'])
 	password = sha256_crypt.encrypt("temp1234")
-    # password = sha256_crypt.encrypt(str(POST_PASSWORD))
+	# password = sha256_crypt.encrypt(str(POST_PASSWORD))
 
 	tup = (POST_first_name, POST_last_name, POST_USERNAME, password, POST_PERMISSIONS, POST_PHONE, POST_POSITION)
 	query = """INSERT INTO dbo.admins (
-	                                first_name,
-	                                last_name,
-	                                email,
-	                                password,
-	                                permissions,
-	                                phone_num,
-	                                position)
-	            VALUES (?,
-	                    ?,
-	                    ?,
-	                    ?,
-	                    ?,
-	                    ?,
-	                    ?); commit;"""
+									first_name,
+									last_name,
+									email,
+									password,
+									permissions,
+									phone_num,
+									position)
+				VALUES (?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?); commit;"""
 
 	db.execute(query, False, tup)
 

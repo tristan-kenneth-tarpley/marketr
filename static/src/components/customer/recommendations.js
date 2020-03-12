@@ -128,31 +128,39 @@ export default class Recommendations extends HTMLElement {
         }
 
         const append_to_shadow = el => this.shadow.querySelector("#rec-container").appendChild(el)
+        const init_state = async () => {
+            console.log(this.fetch)
+            console.log(this.recs_json)
+            if (state == false) {
+                if (this.fetch) {
+                    fetch('/api/outstanding_recs', {
+                        method: 'POST',
+                        headers : new Headers({
+                            "content-type": "application/json"
+                        }),
+                        body:  JSON.stringify({
+                            customer_id: this.customer_id,
+                            admin_id: this.admin_id
+                        })
+                    })
+                        .then(res=>res.json())
+                        .then(res=> this.state.data = res)
+                } else this.state.data = this.recs_json ? this.recs_json : []
+            }
+        }
 
-        if (state == false) {
-            fetch('/api/outstanding_recs', {
-                method: 'POST',
-                headers : new Headers({
-                    "content-type": "application/json"
-                }),
-                body:  JSON.stringify({
-                    customer_id: this.customer_id,
-                    admin_id: this.admin_id
-                })
-            })
-                .then(res=>res.json())
-                .then( res=> this.state.data = res )
-                .then(res=>append(res))
-                .then(() => append_to_shadow(el))
-        } else {
+        init_state().then(()=>{
             append(this.state.data)
             append_to_shadow(el)
-        }
+        })
+
     }
 
     connectedCallback(){
         this.demo = this.getAttribute('demo')
         this.customer_id = this.getAttribute('customer-id')
+        this.recs_json = eval(this.getAttribute('recs_json'))
+        this.fetch = eval(this.getAttribute('fetch'))
         this.render()
     }
 }

@@ -1,3 +1,366 @@
+import {perc_container} from '/static/src/components/UI_elements.js'
+
+const get_account_availability = email => {
+	const get_account_availability_handler = (data) => {
+		let target = $("#new_email")
+		if (data == 'False') {
+	
+			target.removeClass('input-success')
+			target.addClass('input-danger')
+	
+			return false
+	
+		} else {
+			target.removeClass('input-danger')
+			target.addClass('input-success')
+	
+			return true
+		}
+	}	
+
+
+	$.get('/availability', {email: email}, function(data){
+		let available = get_account_availability_handler(data)
+		if (available == false) {
+			$('.submit_button').attr('disabled', true)
+			$("#email_availability").html(`<p>An account already exists with the provided email. <a href="/login">Login here.</a></p>`)
+		} else {
+			$('.submit_button').attr('disabled', false)
+		}
+	})
+} 
+
+const platform_row = (name, index) => {	
+	const tile = (title) => {
+		return `
+		<div class="table-responsive hover_box col-lg-5 col-md-">
+			<table class="table">
+				<thead>
+					<tr>
+						<th style="text-align:center;">
+							<h6 style="font-size: 70%;" class="x_small_txt">${title}</h6>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>`
+	}
+	/*html*/
+	const el = `<div class="row platform_row">
+					<div class='col-lg-2 col-sm-12 col-12'>
+						<h5 style="text-align:center;" class="title"><span class="platform_img">${name}</span></h5>
+						<input style="display:none;" type='text' value='${name}' name='platform[${index}]'>
+					</div>
+					<div style="text-align:center;" class='col-lg-4 col-md-4 col-sm-6 col-6'>
+						<h6>Still using?</h6><br>
+						<div class="container row col-12">
+							${tile('yes')}
+							&nbsp;
+							${tile('no')}
+							<input type="text" name="currently_using[${index}]" class="hidden_input hidden">
+						</div>
+					</div>
+					<div class='col-lg-6 col-md-6 col-6'>
+						<h6>How are the results?</h6>
+						<br>
+						<img src='/static/assets/img/frown.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/neutral.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/smile.png' class='col-lg-2 col-5'>
+						<img src='/static/assets/img/grin.png' class='col-lg-2 col-5'>
+						<input type='text' style='display:none;' class='img_input' name='results[${index}]'>
+					</div>
+				</div>`
+	return el
+}
+
+
+const get_container = title => {
+	const container_item = (name, id, page) => {
+		let base_url = "/competitors/company/"
+		let link;
+		if (page == 'audience') {
+			link = base_url + `audience?view_id=${id}&splash=False`
+		} else if (page == 'product_2') {
+			link = base_url + `audience/product/product_2?view_id=${id}&splash=False`
+		}
+		let el = `
+				<a class='col-lg-3 col-md-3 col-sm-6 col-6 past_container' id="${id}" href="${link}">
+					${name}
+				</a>
+				`
+		return el
+	}
+
+	const container_handler = (data, title) => {
+		data = JSON.parse(data)
+		console.log(Object.keys(data).length)
+	
+		if (Object.keys(data).length > 1) {
+			Object.keys(data).forEach(function(key){
+				let id = data[key]['id']
+				let name = data[key]['name']
+				
+				let item;
+				if (name != null && name != "") {
+					item = container_item(name, id, title)
+				} else {
+					item = container_item('Incomplete', id, title)
+				}
+				$("#append_container").append(item)
+			})
+		} else {
+			$("#append_container").css('display', 'none')
+		}
+			
+	
+		const params = new URLSearchParams(window.location.search)
+		let id = params.get('view_id')
+		$("#" + id).addClass('past_container_active')
+	}
+
+
+	$.get('/container', {page: title}, function(data){
+		$("#load_hide").remove()
+		container_handler(data, title)
+	})
+}
+
+const get_account_reps = id => {
+	const account_reps_handler = (data) => {
+		data = JSON.parse(data)
+	}
+
+	$.get(`/account_reps/${id}`, (data)=>{
+		account_reps_handler(data)
+	})
+} 	
+
+const InputMethods = class {
+	populate_inputs (data, key) {
+		$(`select[name=${key}]`).val(data[0][key]).digits()
+		$(`input[name=${key}]`).val(data[0][key]).digits()
+		$(`textarea[name=${key}]`).val(data[0][key]).digits()
+	} //end populate_inputs
+
+	populate_percent_tiles () {
+		$('.in_box').each(function(){
+			if ($(this).val() != "") {
+				const target = $(this).parentsUntil('.hover_box').parent()
+				target.not(target.children()).addClass('hover_box_selected')
+			}
+		})
+	} // end populate_percent_tiles
+
+	populate_tiles () {
+		$('.hidden_input').each(function(){
+			if ($(this).val() != '') {
+				// check if multi or single hover_box
+				const value = $(this).val()
+				// const parent_hover = $(this).parent().parent().parent().parent().parent().parent().parent()
+				let target_val;
+				if ($(this).parent().parent().parent().parent().parent().parent().hasClass('hb_many')) {
+					target_val = $(this).parent().parent().find(`h6:contains('${value}')`)
+				} else {
+					target_val = $(this).parent().siblings('.hover_box').children().children().children().find(`h6:contains('${value}')`)
+				}
+				const target = target_val.parentsUntil('.hover_box').parent()
+				target.not(target.children()).addClass('hover_box_selected')
+			}
+		})
+	} //end populate_tiles
+
+	product_title (data)  {
+		const product_name = data[0]['name']
+		$('#product_name_target').text(product_name)
+	}
+
+	load_sales_cycle (data) {
+		var awareness = data.filter(function(item){
+		    return item.stage == "awareness";         
+		});
+		var evaluation = data.filter(function(item){
+		    return item.stage == "evaluation";         
+		});
+		var conversion = data.filter(function(item){
+		    return item.stage == "conversion";         
+		});
+		var retention = data.filter(function(item){
+		    return item.stage == "retention";         
+		});
+		var referral = data.filter(function(item){
+		    return item.stage == "referral";         
+		});
+
+		var stages = [awareness, evaluation, conversion, retention, referral]
+
+		function get_length(step){
+			var length = step.length
+			return length
+		}
+
+		// $('.stages input').not('.stages input').addClass('hide')
+
+		for (var i=0;i<stages.length;i++){
+			var length = get_length(stages[i])
+			for (var x=0;x<stages[i].length;x++){
+				var toShow = $(".stage_container." + stages[i][x]['stage'] + " input").slice(0, length)
+				toShow.removeClass('hide')
+				if (toShow.val() !== stages[i][x]['tactic']){
+					toShow.eq(x).val(stages[i][x]['tactic'])
+				}
+			} // come back
+		}	
+	} //end load_sales_cycle
+}
+
+const handle_past_inputs = class {
+
+	constructor(data, url_path, debug) {
+		function isJson(str) {
+			try {
+				JSON.parse(str);
+			} catch (e) {
+				return false;
+			}
+			return true;
+		}
+
+		let jsonTest = isJson(data)
+		if (jsonTest == true) {
+			let inputs = JSON.parse(data)
+			this.data = inputs
+			this.url_path = url_path
+			this.debug = debug		
+		} else {
+			this.data = data
+		}
+	}
+
+
+	compile(){
+		let denied_responses = ['nah, not this time', 'nah']
+		if (!denied_responses.includes(this.data)) {
+			if (this.debug == true) {
+				console.log(this.data)
+			}
+
+			let methods = new InputMethods;
+
+			const loop_it = data => {
+				Object.keys(data[0]).forEach(function(key) {
+					let param = new URLSearchParams(window.location.search)	
+					methods.populate_inputs(data, key)
+				})
+			}
+			
+			setTimeout(function(){
+				methods.populate_tiles()
+			}, 300)
+			
+			switch (this.url_path) {
+				case '/competitors/company/audience/product/product_2/salescycle':
+					methods.load_sales_cycle(this.data)
+					break
+				case '/competitors/company':
+					loop_it(this.data)
+					methods.populate_percent_tiles()
+					break
+				case '/competitors/company/audience/product/product_2':
+					loop_it(this.data)
+					methods.product_title(this.data)
+					break
+				default:
+					loop_it(this.data)
+			}	
+		}
+	}
+}
+
+
+const stage_interactions = () => {
+
+	const handle_last_in_left = () => {
+		alert('last of left')
+	}
+
+	const add_row = (active, last=false) => {
+		const path_to_input = active.parent().parent().next().find('input')
+		const condition = (active.val() != '')
+
+		if (last == false) {
+			if (condition) {
+				path_to_input.removeClass('hide')
+				path_to_input.focus()	
+			}
+		} else {
+			const path_to_right_stage = active.parent().parent().parent().parent().parent().parent().next().find('tr:first-of-type > td > input')
+			if (condition) {
+				path_to_right_stage.removeClass("hide")
+				path_to_right_stage.focus()
+			}
+		}
+	}
+
+	const remove_row = (active, on_right=false) => {
+		const path_to_prev = active.parent().parent().prev().find('input')
+		if (on_right == false) {
+			active.addClass('hide')
+			path_to_prev.focus()	
+		} else {
+			const path_to_last_stage = active.parent().parent().parent().parent().parent().parent().prev().find('tr:last-of-type > td > input')
+			active.addClass('hide')
+			path_to_last_stage.focus()
+		}
+	}
+
+	const handle_enter = (event, active, row, path_to_input, stage_container) => {
+        event.preventDefault()
+
+        if (row.is(':not(:last-child)')){
+        	add_row(active)
+	    } else {
+	        if (stage_container.hasClass('left_stage')){
+	        	add_row(active, true)
+	        } 
+	    }
+	}
+
+	const handle_backspace = (event, active, row) => {
+		const not_first_of_left = (row.is(":not(.left_stage tr:first-of-type)"))
+		const not_first_of_right = (row.is(":not(.right_stage tr:first-of-type)"))
+
+		if (active.val() == ''){
+			event.preventDefault()
+			if (not_first_of_left && not_first_of_right) {
+				remove_row(active)
+			} else if (!not_first_of_right) {
+				remove_row(active, true)
+			}
+		}
+	}
+
+	$('.stage_container input').keydown(function(event){
+
+	    const active = $(document.activeElement)
+	    const row = active.parent().parent()
+	    const path_to_input = active.parent().parent().next().find('input')
+	    const stage_container = active.parent().parent().parent().parent().parent().parent()
+
+	    const keycode = (event.keyCode ? event.keyCode : event.which)
+
+	    switch(keycode) {
+	    	case 13:
+	    		handle_enter(event, active, row, path_to_input, stage_container)
+	    		break
+	    	case 8:
+	    	case 46:
+	    		handle_backspace(event, active, row)
+	    		break
+	    }
+	});
+
+}
+
 export default class InitFuncs {
 
 	container(title){
@@ -5,27 +368,7 @@ export default class InitFuncs {
 	}
 
 	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
-		// const motivations = [
-		// 	"You're doing great! Remember, if you need a break, you can always log out and come back later.",
-		// 	"Your progress is saved! If you need to leave, you'll pick up right where you left off.",
-		// 	"You're getting so close! Pretty soon, we'll have everything we need to be able to skyrocket your marketing.",
-		// 	"",
-		// 	"",
-		// 	"",
-		// 	"",
-		// 	"",
-		// 	"Did you know: Charles Darwin’s personal pet tortoise didn’t die until 2006.",
-		// 	"Did you know: The average person will spend six months of their life waiting for red lights to turn green.",
-		// 	"Market(r) uses sophisticated algorithms to grow businesses around the country. All of this is vital information!",
-		// 	"Did you know: Marie Curie’s notebooks are still radioactive."
-		// ]
-		// const line = motivations[Math.floor(Math.random()*motivations.length)];
-		// if (line != "" && !params.has('home')){
-		// 	$(".motivation_container").fadeIn(()=>{
-		// 		$(".motivation_container p").text(line)
-		// 	})
-		// }
-
+		
 
 		const hover_box = () => {
 			$(".in_box").click(function(event){
@@ -127,13 +470,41 @@ export default class InitFuncs {
 		}
 
 		if (!disallowed_urls.includes(url_path)) {
-			get_past_inputs(args, url_path, debug)
+
+			$.get('/load_past_inputs', args, function(data){
+				const inputHandler = new handle_past_inputs(data, url_path, debug)
+				if (inputHandler.data != "nah, not this time"){
+					inputHandler.compile()
+				}
+			})
+
 		}
 
 	} // end all
 
 	admin(){
-		get_admin_availability()
+		const get_admin_availability = () => {
+			const admin_availability_handler = (data) => {
+				data = JSON.parse(data)
+				  for(var i = 0; i<data.length; i++){
+			
+					  if(data[i]['email'] == $('#email').val()){
+						  $('.availability').text('Email is taken.  Please try another.')
+						  $('.availability').css('visibility', 'visible')
+						$('.create_button').attr('disabled','disabled');
+						  return false
+					  } else {
+						  $('.availability').text('username is available!')
+						  $('.availability').css('visibility', 'visible')
+						$('.create_button').prop('disabled', false);
+					  }
+				}
+			}
+		
+			$.get('/admin_availability',function(data){
+				admin_availability_handler(data)	
+			})
+		}
 	} // end admin
 
 	company() {
@@ -223,7 +594,8 @@ export default class InitFuncs {
 		}, 1000));
 	} // end create account
 
-	customers(){
+	customers(){	
+
 		$('#account_reps').click(function(){
 			const id = $(this).attr('id')
 			$('#current_reps').empty()
@@ -241,10 +613,86 @@ export default class InitFuncs {
 	} // end personnel
 
 	platforms(){
+		const get_platforms = () => {
+			const platforms_handler = data => {
+				let x = 0
+				for (let i = 0; i < data.length; i++){
+					if (data[i] != ""){
+						let row = platform_row(data[i], x)
+						x++
+						$('.platforms_container').append(row)
+					}
+				}
+				let length = $(".platform_row").length
+				$('#platform_length').val(length)
+			}
+		
+			$.get('/get_platforms', function(data){
+				$("#load_hide").remove()
+				platforms_handler(JSON.parse(data))
+			})
+		}
 		get_platforms()
 	} // end platforms
 
 	products(i){
+		const get_branch_data = () => {
+			const FormMap = class {
+				constructor(selling_to, biz_model) {
+					this.selling_to = selling_to
+					this.biz_model = biz_model
+				}
+			
+				build_form() {
+					let test;
+					switch (this.selling_to) {
+						case 'B2C':
+							test = 'hi'
+							break
+						case 'B2B':
+							break
+						case 'C2C':
+							break
+						case 'other':
+							break
+					}
+			
+					switch (this.biz_model) {
+						case 'SaaS':
+							break
+						case 'Digital Products':
+							break
+						case 'Tangible Product':
+							break
+						case 'Professional Services':
+							break
+						case 'Manual Services':
+							break
+						case 'Media Provider':
+							break
+						case 'Commission / Rev Share':
+							$("#heading-7").addClass('hidden')
+							break
+					}
+			
+			
+					$("#heading-1").text('Product name')
+		
+			
+				}
+			}	
+		
+			const branch_data_handler = data => {
+				data = JSON.parse(data)
+				const map = new FormMap(data.selling_to, data.biz_model)
+				map.build_form()
+			}
+		
+			$.get('/branch_data', function(data){
+				branch_data_handler(data)
+			})
+		}
+
 		get_branch_data()
 
 		$("#product_table label").not('th > label').remove()

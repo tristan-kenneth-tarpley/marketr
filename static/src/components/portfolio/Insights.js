@@ -1,3 +1,5 @@
+import {urlify, iterate_text, modal, modal_trigger, modal_handlers, currency,currency_rounded,number,number_rounded,number_no_commas,percent,remove_commas,remove_commas_2} from '/static/src/convenience/helpers.js'
+
 const styles = () => {
     /*html*/
     return `
@@ -61,7 +63,7 @@ export default class Insights extends HTMLElement {
                 ${this.state.data.map((ins, index)=>{
                     let title = `From ${ins.admin} on ${ins.time}`
                     let uid = `${ins.time}_${index}`
-                    let body = urlify(ins.body)
+                    let body = urlify(ins.body.replace('/\/g', "-"))
 
                     /*html*/
                     return `
@@ -93,28 +95,36 @@ export default class Insights extends HTMLElement {
         `.trim()
     }
 
-    render(init=true){
+    render(){
         this.shadow.innerHTML = ""
         const el = document.createElement('div')
-        fetch('/api/insights', {
-            method: 'POST',
-            headers : new Headers({
-                "content-type": "application/json"
-            }),
-            body:  JSON.stringify({
-                customer_id: this.customer_id
-            })
-        })
-        .then(res=>res.json())
-        .then(res=>this.state.data = res)
-        .then(()=>{
+        const init_state = async () => {
+            if (this.fetch) {
+                fetch('/api/insights', {
+                    method: 'POST',
+                    headers : new Headers({
+                        "content-type": "application/json"
+                    }),
+                    body:  JSON.stringify({
+                        customer_id: this.customer_id
+                    })
+                })
+                .then(res=>res.json())
+                .then(res=>this.state.data = res)
+            }
+            else this.state.data = this.insights_json ? this.insights_json : []
+        }
+        
+        init_state().then(()=>{
             el.innerHTML = this.shell()
+            this.shadow.appendChild(modal_handlers(el))
         })
-        .then(()=>this.shadow.appendChild(modal_handlers(el)))
     }
 
     connectedCallback() {
         this.customer_id = this.getAttribute('customer_id')
+        this.fetch = eval(this.getAttribute('fetch'))
+        this.insights_json = eval(this.getAttribute('insights_json'))
         this.render()
     }
 }

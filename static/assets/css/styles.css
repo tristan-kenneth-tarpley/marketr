@@ -3988,7 +3988,6 @@ Created using IcoMoon - icomoon.io
   border-radius: 50px;
   margin: auto auto;
   text-align: center;
-  height: 100%;
   background: var(--panel-bg);
   text-shadow: 0 2px 0 rgba(255,255,255,1);
   box-shadow: var(--silicon-raised);
@@ -4139,11 +4138,6 @@ li.breadcrumb-item.active a {
 }
 
 
-.yellow_border {
-  padding-bottom: 1%;
-  /* margin-bottom: 5%; */
-  border-bottom: 10pt solid var(--left-nav);
-}
 
 .blue_header {
   text-transform: none;
@@ -12796,4 +12790,65 @@ li {
   font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif !important;
   font-size: .8em !important;
   color: var(--nav-color) !important;
+}
+
+
+
+
+.shimmer-background .card {
+    background: #fff;
+    height: 50%;
+}
+
+.shimmer-background .shimmer-sections {
+  position: relative;
+  background-color: var(--panel-bg);
+  background-image: linear-gradient(to right, #f6f7f9 0%, #e9ebee 20%, #f6f7f9 40%, #f6f7f9 100%);
+  background-repeat: no-repeat;
+  background-size: 800px 104px;
+  height: 6px;
+  left: 0;
+  position: relative;
+  right: 0;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: placeHolderShimmer;
+  -webkit-animation-timing-function: linear;
+}
+
+.shimmer-background div.a {
+  max-height: 15%;
+  height: 20px;
+  left: 0;
+  right: auto;
+  top: 0;
+  width: 100%;
+}
+
+.shimmer-background div.b {
+  max-height: 10%;
+  height: 5px;
+  left: 0;
+  top: 10%;
+}
+
+.h--500 div.b {
+  max-height: 50%;
+  height: 300px;
+}
+
+@keyframes placeHolderShimmer{
+  
+  0% {
+      background-position: -400px 0;
+  }
+  100% {
+      background-position: 400px 0;
+  }
 }

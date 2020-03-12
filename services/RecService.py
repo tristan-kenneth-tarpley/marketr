@@ -35,7 +35,7 @@ class RecommendationService(object):
         return json.dumps(rec_list)
 
     def get_all_outstanding(self):
-        recs, cursor = db.execute("SELECT * FROM recommendations WHERE customer_id = ? and accepted is null and dismissed is null", True, (self.customer_id,))
+        recs, cursor = db.execute("SELECT * FROM outstanding_recs(?)", True, (self.customer_id,))
         recs = cursor.fetchall()
         rec_list = list()
         for rec in recs:

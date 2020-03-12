@@ -135,13 +135,13 @@
     {% block title %}{% endblock %}
   </head>
   <body>
-      <div class="browser_warning">
+      <!-- <div class="browser_warning">
           <div>
               <h1>Your browser is not supported!</h1>
               <p>Sorry, but we don't currently support <span id="browser_name"></span>. For best results, we recommend using <a target="__blank" href="https://www.google.com/chrome/">Google Chrome</a>.</p>
               <br><button style="border:none;text-decoration: underline; color: #62cde0;" class="m-btn m-btn-neutral" id="clear_warning">Continue anyway</button>
           </div>
-      </div>
+      </div> -->
         <div id="body-cont">
             <div class="home_container">
                 <a href="/" class="button btn back_home">x</a>
@@ -185,7 +185,7 @@
   <script src="/static/branding/js/jquery-3.2.1.min.js"></script>
   {% include "layouts/imports/imports.html" %}
   <script type="text/javascript">
-  $(window).on("load", function() {
+ /* $(window).on("load", function() {
       $("#loading").fadeOut("fast");
       setTimeout(function(){
           $('#content-ready').css('visibility', 'visible')
@@ -234,6 +234,6 @@
       }) 
   } else {
       document.querySelector('.browser_warning').style.display = 'none'
-  }
+  }*/
 </script>
 </html>

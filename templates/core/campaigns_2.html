@@ -49,6 +49,7 @@
     ltv="{{page.data['core']['core'][0]['ltv']}}"
     demo="{{demo}}"
     insights="{{page.data['insights']['insights']}}"
+    recommendations="{{page.data['recommendations']['recommendations']}}"
     analytics="{{ page.data['core']['core'][0]['analytics'] }}">
 </portfolio-performance>
 
@@ -74,8 +75,8 @@
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div id="performance_loader"></div>
         <script type="module">
-            import {dots_loader} from '/static/src/components/UI_elements.js'
-            document.querySelector("#performance_loader").innerHTML = dots_loader()
+            import {loading_shell} from '/static/src/components/UI_elements.js'
+            document.querySelector("#performance_loader").innerHTML = loading_shell()
         </script>
         {{ performance(page) }}
        
@@ -89,44 +90,6 @@
             ) }}
         {% endif %}
 
-        {#{{ section(
-            link=None,
-            title="Portfolio Performance",
-            body=performance(page),
-            hash="perf",
-            admin=page.admin
-        ) }}#}
-    </div>
-    <div class="col-lg-4 col-md-12 col-sm-12">
-        <div class="row">
-            {#<div class="col">
-                {{ section(
-                    link=None,
-                    title="Recommendations",
-                    body=recommendations(page),
-                    hash=None,
-                    admin=page.admin
-                ) }}
-            </div>#}
-        </div>
-        {#<div class="row">
-            <div class="col">
-                {% macro tactics_empty() %}
-                    <div class="tactics_loading" id="loading">
-                        <div class="load-circle"><span class="one"></span></div>
-                    </div>
-                    <div id='tactics_mount'></div>
-                {% endmacro %}
-
-                {{ section(
-                    link=None,
-                    title="Tactic of the Day",
-                    body=tactics_empty(),
-                    hash="tactics",
-                    admin=page.admin
-                ) }}
-            </div>
-        </div>#}
     </div>
 </div>
 {% endif %}

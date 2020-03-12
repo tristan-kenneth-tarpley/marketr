@@ -391,7 +391,6 @@ class CustomerDataViewModel:
 		core_data = core
 		core_values = eval(core[0])
 
-
 		def clean_salescycle(row):
 			if row:
 				core = eval(row)
@@ -406,18 +405,7 @@ class CustomerDataViewModel:
 				'referral': base.get('referral').split('^') if base.get('referral') else ""
 			}
 			return struct
-
-		base = eval(core_data[10]) if core_data[10] else 'empty'
 		
-		if base != 'empty':		
-			cpc = int(base['ad_view'][0]['cpc_last_7'])
-			ctr = int(base['ad_view'][0]['ctr_last_7'])
-			clicks_per_1000 = (1000 / cpc * ctr)
-		else:
-			cpc = ''
-			ctr = ''
-			clicks_per_1000 = None
-
 		return_data = {
 			'core': core_values,
 			'products': eval(core_data[1]) if core_data[1] else "",
@@ -430,11 +418,11 @@ class CustomerDataViewModel:
 			'salescycle': clean_salescycle(core_data[8]),
 			'insights': eval(core_data[9]) if core_data[9] else "",
 			'temp_ad_data': eval(core_data[10]) if core_data[10] else None,
-			'clicks_per_1000': clicks_per_1000,
 			'achievements': eval(core_data[11]) if core_data[11] else None,
 			'all_tactics': eval(core_data[12]) if core_data[12] else None,
 			'rewards': eval(core_data[13]) if core_data[13] else None,
-			'spend_rec': eval(core_data[14] if core_data[14] else None)
+			'spend_rec': eval(core_data[14] if core_data[14] else None),
+			'recommendations': eval(core_data[15]) if core_data[15] else None
 		}
 
 		self.data = return_data

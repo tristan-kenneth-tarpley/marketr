@@ -393,7 +393,7 @@ def get_competitors():
 def insights():
     req = request.get_json()
     tup = (req.get('customer_id'),)
-    query = "SELECT body, FORMAT(time, 'MM-dd-yyyy') as time, (select top 1 name from map_am(admin_id)) as name FROM insights WHERE customer_id = ? order by time desc"
+    query = "SELECT * FROM homepage_insights(?) order by time desc"
     insights, cursor = db.execute(query, True, tup)
     insights = cursor.fetchall()
     returned = [{'body': row[0],'time': str(row[1]), 'admin': str(row[2])} for row in insights]

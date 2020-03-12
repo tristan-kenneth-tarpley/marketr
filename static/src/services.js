@@ -32,6 +32,27 @@ export class NotificationsService {
         this.admin = admin
     }
 
+    notificationEl (type, copy, admin) {
+        let link;
+        if (admin == false){
+            switch(type){
+                case 'message':
+                    link = "/home?view=messages"
+                    break
+                case 'task':
+                    link = "/home?view=campaigns"
+                    break
+                case 'insight':
+                    link = "/home?view=campaigns#insights"
+                    break
+            }
+        } else {
+            link = "#"
+        }
+        const el = `<a href="${link}" class="notification dropdown-item text-warning">New ${type}: ${copy}</a>`
+        return el
+    }
+
     update(notifications) {
         let data = JSON.parse(notifications)
         let messages = []
@@ -60,7 +81,7 @@ export class NotificationsService {
             }
 
             if (push) {
-                const row = notificationEl(type, notification, this.admin)
+                const row = this.notificationEl(type, notification, this.admin)
                 $("#notifications").append(row)
             }
         })
@@ -170,8 +191,23 @@ export class MessagingService {
         $.post('/api/send_message', params)
     }
 
+    chat_box (copy, time, date) {
+	
+        const el = `
+                    <div class="message_container">
+                        <div class="chat_label">
+                            <p><strong>${date} ${time}</strong></p>
+                        </div>
+                        <div class="chat_box chat-user">
+                            ${copy}
+                        </div>
+                    </div>
+                    `
+        return el
+    }
+
     update_messages (msg) {
-        let chat = chat_box(msg, this.get_time(), this.get_date())
+        let chat = this.chat_box(msg, this.get_time(), this.get_date())
         $('.chat').prepend(chat)
         $('#msg').val("")
     }

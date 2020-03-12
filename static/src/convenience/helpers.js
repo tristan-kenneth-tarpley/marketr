@@ -1,4 +1,7 @@
-function validateEmail(email) {
+
+export const isNumber = input => typeof input == 'number'
+
+export function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
@@ -13,29 +16,9 @@ $.fn.digits = function(){
     })
 }
 
-const smilesMapper = (name) => {
-	let path = "/static/assets/img/"
-	let map = {
-		"bing": "Bing.png",
-		"google": "GoogleAds.png",
-		"linkedin": "LinkedIn.png",
-		"instagram": "Instagram.png",
-		"amazon": "Amazon.png",
-		"twitter": "twitter.png",
-		"snapchat": "Snapchat.png",
-		"youtube": "YouTube.png",
-		"yelp": "Yelp.png",
-		"facebook": "Facebook.png"
-	}
-	let url = path + map[name]
-	return url
-}
 
 
-const isNumber = input => typeof input == 'number'
-
-
-function updateURLParameter(url, param, paramVal)
+export function updateURLParameter(url, param, paramVal)
 {
     var TheAnchor = null;
     var newAdditionalURL = "";
@@ -82,7 +65,7 @@ function updateURLParameter(url, param, paramVal)
 
 
 
-function html(elemName, props, ...children) {
+export function html(elemName, props, ...children) {
     const elem = document.createElement(elemName);
     if (props) {
         Object.assign(elem, props);
@@ -99,27 +82,27 @@ function html(elemName, props, ...children) {
     return elem;
 }
 
-const setQueryString = (name, value) => {
+export const setQueryString = (name, value) => {
 	const params = new URLSearchParams(location.search);
 	params.set(name, value);
 	window.history.replaceState({}, "", decodeURIComponent(`${location.pathname}?${params}`));
 }
 
-const params = () => new URLSearchParams(location.search);
+export const params = () => new URLSearchParams(location.search);
 
 // Create a new event
-const query_change = new CustomEvent('query_change');
+export const query_change = new CustomEvent('query_change');
 
-const currency = num => `$${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-const currency_rounded = num => `$${num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-const number = num => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-const number_rounded = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-const number_no_commas = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-const percent = num => `${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`
-const remove_commas = num => num.toFixed(2).replace(/\,/g, '')
-const remove_commas_2 = num => parseFloat(num.toString().replace(/\,/g,''))
+export const currency = num => `$${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+export const currency_rounded = num => `$${num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+export const number = num => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+export const number_rounded = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+export const number_no_commas = num => num.toFixed().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+export const percent = num => `${num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}%`
+export const remove_commas = num => num.toFixed(2).replace(/\,/g, '')
+export const remove_commas_2 = num => parseFloat(num.toString().replace(/\,/g,''))
 
-const now = () => {
+export const now = () => {
     let date = new Date();
     let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 ))
                         .toISOString()
@@ -128,7 +111,7 @@ const now = () => {
 } 
 
 
-function urlify(text) {
+export function urlify(text) {
     var urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.replace(urlRegex, function(url) {
         return `<a target="__blank" href="${url}">${url}</a>`
@@ -138,7 +121,7 @@ function urlify(text) {
 }
 
 
-const iterate_text = (lines, target) => {
+export const iterate_text = (lines, target) => {
     let counter = 1;
     let staller;
     target.innerHTML = `<span>${lines[0]}</span>`
@@ -153,7 +136,7 @@ const iterate_text = (lines, target) => {
     
 }
 
-const modal = (title, body, uid) => {
+export const modal = (title, body, uid) => {
     /*html*/
     const shell = `
     <div data-uid="${uid}" id="modal-container">
@@ -169,13 +152,13 @@ const modal = (title, body, uid) => {
     return shell
 }
 
-const modal_trigger = (uid, copy, padding=true) => {
+export const modal_trigger = (uid, copy, padding=true) => {
     /*html*/
     return `<div style="${padding ? '' : 'padding: 0;'}" id="six" data-uid="${uid}" class="modal-controller button"><p>${copy}</p></div>`
 }
 
 
-const modal_handlers = (parent) => {
+export const modal_handlers = (parent) => {
     const modal_container = parent.querySelectorAll("#modal-container")
     const body = document.querySelector('body')
     
@@ -215,7 +198,7 @@ const modal_handlers = (parent) => {
 
 
 
-const remove_duplicates = (arr, filter) => {
+export const remove_duplicates = (arr, filter) => {
     let _new = [];
 
     for (let i of arr) {

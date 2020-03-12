@@ -1,4 +1,5 @@
 import {NotificationsService, ScoreService, MessagingService, TaskService, AdAuditService} from './services.js'
+import {params, updateURLParameter} from '/static/src/convenience/helpers.js'
 
 export class IntakeProgressMeter {
     constructor() {
@@ -124,6 +125,24 @@ export class CoreViewModels {
 
 
     dashboard() {
+        const smilesMapper = (name) => {
+            let path = "/static/assets/img/"
+            let map = {
+                "bing": "Bing.png",
+                "google": "GoogleAds.png",
+                "linkedin": "LinkedIn.png",
+                "instagram": "Instagram.png",
+                "amazon": "Amazon.png",
+                "twitter": "twitter.png",
+                "snapchat": "Snapchat.png",
+                "youtube": "YouTube.png",
+                "yelp": "Yelp.png",
+                "facebook": "Facebook.png"
+            }
+            let url = path + map[name]
+            return url
+        }
+
         document.querySelectorAll('.truncate').forEach(el=>{
             let text = el.textContent
             if (text.length > 49) {
