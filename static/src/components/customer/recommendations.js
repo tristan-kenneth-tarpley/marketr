@@ -129,8 +129,6 @@ export default class Recommendations extends HTMLElement {
 
         const append_to_shadow = el => this.shadow.querySelector("#rec-container").appendChild(el)
         const init_state = async () => {
-            console.log(this.fetch)
-            console.log(this.recs_json)
             if (state == false) {
                 if (this.fetch) {
                     fetch('/api/outstanding_recs', {

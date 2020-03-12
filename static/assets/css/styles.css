@@ -5244,17 +5244,7 @@ ul#product {
   text-align:center !important;
   border-bottom: 0;
 }
-@media only screen and (max-width: 770px) {
-  .nav-tabs {
-    width: 100% !important;
-  }
-  .nav-tabs li {
-    width: 100% !important;
-  }
-  .tab-link {
-    margin-right: 0;
-  }
-}
+
 
 .tab-link {
   border-radius: 100px !important;
@@ -10120,6 +10110,84 @@ ul#product {
 
   }
 }
+
+@media only screen 
+  and (min-width: 320px) 
+  and (max-width: 700px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .mobile-hide {
+        display: none;
+    }
+    .mobile-show {
+        display: block;
+    }
+    .nav.nav-tabs {
+        top: 93%;
+        position: fixed;
+        display: flex;
+        flex-direction: row;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        z-index: 10000;
+        height: 7%;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .nav.nav-tabs::before {
+        content: "";
+        height: 4px;
+        background-color: #62cde0;
+        position: absolute;
+        width: 100%;
+        
+    }
+    .nav-item {
+        display: flex;
+        flex-direction: row;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 25% !important;
+        background-color: #fff;
+    }
+    .tab-link.nav-link {
+        width: 100% !important;
+        background: #fff !important;
+        border-radius: 0 !important;
+        margin: 0;
+        padding: 0 !important;
+        box-shadow: none;
+    }
+    .nav-link span {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+    }
+    .nav-link span.mobile-show {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .nav-link.active {
+        box-shadow: none;
+        background-color: #62cde0 !important;
+    }
+    .tab-link.nav-link.active i {
+        color: #fff;
+    }
+    .tab-link.nav-link i {
+        font-size: 2em;
+        display: block;
+        justify-content: center;
+        align-items: center !important;
+    }
+
+}
+
+
 
 
 .toast__container {

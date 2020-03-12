@@ -8,6 +8,7 @@ import {isNumber} from './convenience/helpers.js'
 import InitFuncs from './future_refactor/InitFuncs.js'
 import {select_controller} from '/static/src/components/UI_elements.js'
 
+
 $('#new_email').on("blur", (event) => {
 	let email = $("#new_email").val()
 	if (validateEmail(email)){
@@ -255,6 +256,8 @@ const callback = function(){
 	VC.run()
 };
   
+
+
 if (
 	document.readyState === "complete" ||
 	(document.readyState !== "loading" && !document.documentElement.doScroll)
