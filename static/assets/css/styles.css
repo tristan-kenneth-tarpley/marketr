@@ -3584,10 +3584,10 @@ Created using IcoMoon - icomoon.io
   .nav-open .main-panel {
     right: 0;
     -webkit-transform: translate3d(260px, 0, 0);
-    -moz-transform: translate3d(260px, 0, 0);
-    -o-transform: translate3d(260px, 0, 0);
-    -ms-transform: translate3d(260px, 0, 0);
-    transform: translate3d(260px, 0, 0); }
+    -moz-transform: translate3d(var(--sidebar-width), 0, 0);
+    -o-transform: translate3d(var(--sidebar-width), 0, 0);
+    -ms-transform: translate3d(var(--sidebar-width), 0, 0);
+    transform: translate3d(var(--sidebar-width), 0, 0); }
   .nav-open .sidebar.intake-sidear {
     -webkit-transform: translate3d(0px, 0, 0);
     -moz-transform: translate3d(0px, 0, 0);
@@ -3858,8 +3858,8 @@ Created using IcoMoon - icomoon.io
     top: 0;
     height: 100%;
     width: var(--sidebar-width);
-    right: auto;
-    left: 0;
+    right: 120px;
+    left: auto;
     z-index: 1032;
     visibility: visible;
     overflow-y: visible;
@@ -4939,7 +4939,6 @@ to   { opacity: 1; }
   position: relative;
   left: 2%;
   top: 35%;
-  width: 50%;
 }
 .target_container {
   position: relative;
@@ -10111,10 +10110,64 @@ ul#product {
   }
 }
 
+
+
+/* galaxy s5 */
+@media only screen 
+  and (max-width: 360px) {
+    .sidebar, .bootstrap-navbar {
+      right: 104px !important;
+    }
+}
+/* pixel 2 */
+@media only screen 
+  and (max-width: 411px) {
+    .sidebar, .bootstrap-navbar {
+      right: 155px;
+    }
+}
+
+
+/* iphone 5/se */
+@media only screen 
+  and (max-width: 320px){
+    .sidebar, .bootstrap-navbar {
+      right: 60px !important;
+    }
+}
+/* iphone 6/7/8 */
+@media only screen 
+  and (max-width: 375px)  {
+    .sidebar, .bootstrap-navbar {
+      right: 116px;
+    }
+}
+
+/* iphone 6/7/8 plus */
+@media only screen 
+  and (max-width: 414px) {
+    .sidebar, .bootstrap-navbar {
+      right: 155px;
+    }
+}
+/* iphone x */
+@media only screen 
+  and (max-width: 375px) {
+    .sidebar, .bootstrap-navbar {
+      right: 120px;
+    }
+}
+
+
+
+/*mobile navigation*/
 @media only screen 
   and (min-width: 320px) 
   and (max-width: 700px)
   and (-webkit-min-device-pixel-ratio: 2) {
+    .tab-content {
+        margin-top: 15%;
+    }
     .mobile-hide {
         display: none;
     }
@@ -10122,7 +10175,7 @@ ul#product {
         display: block;
     }
     .nav.nav-tabs {
-        top: 93%;
+        top: 90%;
         position: fixed;
         display: flex;
         flex-direction: row;
@@ -10131,7 +10184,7 @@ ul#product {
         left: 0;
         width: 100%;
         z-index: 10000;
-        height: 7%;
+        height: 10%;
         width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
@@ -10180,9 +10233,8 @@ ul#product {
     }
     .tab-link.nav-link i {
         font-size: 2em;
+        margin-bottom: 3%;
         display: block;
-        justify-content: center;
-        align-items: center !important;
     }
 
 }
