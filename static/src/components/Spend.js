@@ -70,7 +70,7 @@ export default class AdSpend extends HTMLElement {
                 <p>High |  Need rapid growth at all costs.</p>`
 
             },
-            "market<br>competitiveness": {
+            "competition": {
                 id: "competitiveness",
                 hover: `<p>Competitiveness specifies how crowded and intense the competition is within your specific market and niche.  </p>
                 <p>Low |  Only a couple players and/or low intensity competition.  Lots of green-field available to expand into.</p>
@@ -84,8 +84,8 @@ export default class AdSpend extends HTMLElement {
             return (
             /*html*/
                 `
-                <div class='col-lg-3 col-md-3 col-sm-12 center_it'>   
-                    <div id="six" data-uid="${title}" class="modal-controller button"><p>${title}</p></div>
+                <div class='col-lg-3 col-md-3 col-sm-6 col-6 center_it'>   
+                    <div id="six" data-uid="${title}" class="left-modal modal-controller button"><p>${title}</p></div>
                     ${modal(title, considerations_meta[title].hover, title)}
                     <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
                         <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
@@ -105,7 +105,7 @@ export default class AdSpend extends HTMLElement {
 
             ${shell(this.brand_strength, "brand<br>strength")}
             ${shell(this.growth_needs, "growth<br>needs")}
-            ${shell(this.competitiveness, "market<br>competitiveness")}
+            ${shell(this.competitiveness, "competition")}
             <div class="col"></div>
             <div class="col center_it">
                 <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>

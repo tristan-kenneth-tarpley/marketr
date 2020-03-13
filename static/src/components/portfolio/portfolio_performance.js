@@ -851,10 +851,10 @@ export default class PortfolioPerformance extends HTMLElement {
             return `
             <div class="">
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                         <span>${__title}</span>
                     </div>
-                    <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-12">
+                    <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6">
                         ${display_value}
                         <p style="font-size: 8pt;">
                             <span class="${perc_variance(comp, low_is_good)}">${comp > 1 ? "+" : ""}${number_rounded(comp)}%</span>
@@ -970,7 +970,7 @@ export default class PortfolioPerformance extends HTMLElement {
         if (this.state.opp_expanded) this.shadow.querySelector("#opps_container").style.margin = "0 0 2em 0"
         /*html*/
         el.innerHTML = `
-            <div class="h--500 card card-body" id="topic_opps">
+            <div class="h--500 mobile--h--700 card card-body" id="topic_opps">
                 ${this.opps_title()}
                 <div id="append__to"></div>
             </div>
@@ -1017,7 +1017,7 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
-                        <div style="overflow-y:auto;" class="h--500 card card-body">
+                        <div style="overflow-y:auto;" class="h--500 mobile--h--cancel card card-body">
                             ${title(breakdown_title[active_view])}
                             ${this.breakdown_markup()}
                         </div>
@@ -1026,7 +1026,7 @@ export default class PortfolioPerformance extends HTMLElement {
                         ![0,1].includes(active_view)
                             ? `
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div style="overflow-y:auto;" class="h--500 card card-body">
+                                <div style="overflow-y:auto;" class="h--500 mobile--h--600 card card-body">
                                     ${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}
                                     ${this.comparison_markup()}
                                 </div>
@@ -1122,7 +1122,7 @@ export default class PortfolioPerformance extends HTMLElement {
                             ${this.view_by()}
                         </div>
                         <div class="col-lg-6 col-md-6 col-12">
-                            <div class="card card-body h--300">
+                            <div class="card card-body mobile--h--225 h--300">
                                 <div class="row row_cancel">
                                     ${
                                         this.state.active_view != 0
@@ -1219,7 +1219,7 @@ export default class PortfolioPerformance extends HTMLElement {
         let inactive_classlist = `btn-outline btn-outline-secondary`
         /*html*/
         return `
-        <div class="h--300 card card-body">
+        <div class="h--300 mobile--h--225 card card-body">
             <div class="row row_cancel">
                 <div id="select_container" class="col-lg-12">
                     ${title('view by', true)}

@@ -66,6 +66,7 @@ export class CoreViewModels {
         let id = target.attr('id')
         let nav_target,
             param_val;
+        console.log(id)
         switch (id) {
             case "profile-tab":
                 nav_target = $("#profile-nav")

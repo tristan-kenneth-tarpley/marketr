@@ -10159,13 +10159,67 @@ ul#product {
 }
 
 
-
+/*mobile typography*/
+@media only screen 
+  and (min-width: 200px) 
+  and (max-width: 700px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    select {
+      margin-bottom: 10%;
+    }
+    #content-ready {
+      margin-top: 15%;
+    }
+    .trend__group {
+      margin-bottom: 6% !important;
+    }
+    .mobile--h--225 {
+      height: 225px !important;
+    }
+    .mobile--h--cancel {
+      height: 100% !important;
+    }
+    .stat-wrapper {
+      padding: 0 !important;
+    }
+    .stat h3 {
+      margin: auto;
+    }
+    #insights {
+      margin-top: 10%;
+    }
+    .content {
+      padding-bottom: 20%;
+    }
+    .separator {
+      border-bottom: 3px solid transparent
+    }
+    .left-modal {
+      text-align: left;
+    }
+    .modal._right {
+      left: 0;
+      width: 100%;
+    }
+    #stage_breakdown.inset {
+      margin-left: 0;
+    }
+    .mobile--h--700 {
+      height: 700px;
+    }
+    .mobile--h--600 {
+      height: 600px;
+    }
+    .smilesHome {
+      height: 50px;
+    }
+  }
 /*mobile navigation*/
 @media only screen 
   and (min-width: 320px) 
   and (max-width: 700px)
   and (-webkit-min-device-pixel-ratio: 2) {
-    .tab-content {
+    .tabs__custom .tab-content {
         margin-top: 15%;
     }
     .mobile-hide {
@@ -10174,8 +10228,8 @@ ul#product {
     .mobile-show {
         display: block;
     }
-    .nav.nav-tabs {
-        top: 90%;
+    .tabs__custom.nav.nav-tabs {
+        top: 90% !important;
         position: fixed;
         display: flex;
         flex-direction: row;
@@ -10184,12 +10238,12 @@ ul#product {
         left: 0;
         width: 100%;
         z-index: 10000;
-        height: 10%;
+        height: 10% !important;
         width: 100% !important;
         padding: 0 !important;
         margin: 0 !important;
     }
-    .nav.nav-tabs::before {
+    .tabs__custom.nav.nav-tabs::before {
         content: "";
         height: 4px;
         background-color: #62cde0;
@@ -10197,7 +10251,7 @@ ul#product {
         width: 100%;
         
     }
-    .nav-item {
+    .tabs__custom .nav-item {
         display: flex;
         flex-direction: row;
         padding: 0 !important;
@@ -10205,7 +10259,7 @@ ul#product {
         width: 25% !important;
         background-color: #fff;
     }
-    .tab-link.nav-link {
+    .tabs__custom .tab-link.nav-link {
         width: 100% !important;
         background: #fff !important;
         border-radius: 0 !important;
@@ -10213,25 +10267,25 @@ ul#product {
         padding: 0 !important;
         box-shadow: none;
     }
-    .nav-link span {
+    .tabs__custom .nav-link span {
         width: 100%;
         padding: 0;
         margin: 0;
         height: 100%;
     }
-    .nav-link span.mobile-show {
+    .tabs__custom .nav-link span.mobile-show {
         display: flex;
         justify-content: center;
         align-items: center;
     }
-    .nav-link.active {
+    .tabs__custom .nav-link.active {
         box-shadow: none;
         background-color: #62cde0 !important;
     }
-    .tab-link.nav-link.active i {
+    .tabs__custom .tab-link.nav-link.active i {
         color: #fff;
     }
-    .tab-link.nav-link i {
+    .tabs__custom .tab-link.nav-link i {
         font-size: 2em;
         margin-bottom: 3%;
         display: block;
@@ -12686,14 +12740,14 @@ html.modal-active, body.modal-active {
 
 
 .h--300 {
-  height: 100px !important;
+  height: 100px;
 }
 
 .h--500 {
-  height: 500px !important;
+  height: 500px;
 }
 .h--750 {
-  height: 750px !important;
+  height: 750px;
 }
 
 .action {

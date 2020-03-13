@@ -67,10 +67,10 @@ export default class Opportunities extends HTMLElement {
   collapsed_view() {
     return `
     <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-6">
         <h1 class="widget__title small">Topic</h1>
       </div>
-      <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 ">
+      <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6 ">
         <h1 style="justify-content: flex-end;" class="widget__title small">Opportunity score</h1>
       </div>
     </div>

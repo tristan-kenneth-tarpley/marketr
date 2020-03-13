@@ -9,7 +9,23 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         th p {
-            font-size: 80%;
+            font-size: .5em;
+        }
+        /*mobile typography*/
+        @media only screen 
+        and (min-width: 200px) 
+        and (max-width: 700px)
+        and (-webkit-min-device-pixel-ratio: 2) {
+            td {
+                padding: 0;
+            }
+        }
+
+        .nav-tabs li {
+            width: 100%;
+        }
+        .nav-tabs {
+            padding: 0;
         }
         tr {
             width: 25%;
@@ -138,7 +154,6 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     `
                 )
             } 
-            
             /*html*/
             return `
             <p>Google Ads</p>
@@ -197,7 +212,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col">
-                    <table style="width: 100%;overflow: auto;" class="table table-borderless">
+                    <table style="width: 100%;overflow: auto;" class="table table-responsive table-borderless">
                         <thead>
                             <th></th>
                             <th><p>Est. Google Ad Spend per month</p></th>
