@@ -16,7 +16,8 @@ def intake_page_map():
             0: 'begin',
             1: 'competitors',
             2: 'company',
-			3: 'home'
+			3: 'audience',
+			4: 'home'
             # 3: 'audience',
             # 4: 'product',
             # 5: 'product_2',
@@ -42,11 +43,12 @@ def load_last_page(user):
 		data = int(data[0][0]) / 10
 	except:
 		data = 0
-	if data < 3:
+
+	if data < 4:
 		val = data
 		session['onboarding_complete'] = False
 	else:
-		val = 3
+		val = 4
 		session['onboarding_complete'] = True
 	cursor.close()
 	return pages[val]
@@ -533,7 +535,7 @@ class IntakeService:
 		return str(result[0])
 
 	def audience(self, data, persona_id):
-
+		self.perc_complete(40)
 		vals, keys = get_args_from_form(data)
 		db_actions = DBActions(table='audience', keys=keys, vals=vals, owner_id=self.id)
 		query = db_actions.update()

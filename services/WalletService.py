@@ -13,18 +13,22 @@ class Wallet:
         query = "SELECT * FROM wallet_meta(?) order by date_added desc"
         data, cursor = db.execute(query, True, (self.customer_id,))
         data = cursor.fetchall()
+        if data:
+            funds_remaining = data[0][0]
+        else:
+            funds_remaining = 0
 
-        funds_remaining = data[0][0]
         returned = {
             'funds_remaining': funds_remaining,
             'transactions': list()
         }
         
-        for row in data:
-            returned['transactions'].append({
-                'date_added': row[1],
-                'amount': row[2],
-                'transaction_id': row[3]
-            })
+        if data:
+            for row in data:
+                returned['transactions'].append({
+                    'date_added': row[1],
+                    'amount': row[2],
+                    'transaction_id': row[3]
+                })
 
         return json.dumps(returned)

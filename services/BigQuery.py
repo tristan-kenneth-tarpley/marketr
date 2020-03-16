@@ -166,10 +166,62 @@ class GoogleORM(BigQuery):
 
         """
 
+        second_facebook = f"""
+            DECLARE _range INT64;
+            DECLARE project STRING;
+            SET (_range, project) = ({_range}, '`marketr-app`.`placeholder`');
+
+            select distinct
+            (select sum(distinct spend) from `marketr-app`.`placeholder`.`ads_insights` where date_diff(CURRENT_DATE(), CAST(DATE(date_start) AS DATE), day) <= _range) as _cost,
+
+            (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
+
+            ads.creative.id, ads.adset_id, ads.campaign_id,
+
+            creative.thumbnail_url, creative.body,
+
+            ai.ad_name as ad_name, ai.date_start as date_start, ai.ctr, ai.cpc, ai.impressions, ai.clicks, ai.spend as cost, 
+
+            ca.name as campaign_name,
+            null as daily_budget
+
+            from `marketr-app`.`placeholder`.`ads_insights` as ai
+
+            join `marketr-app`.`placeholder`.`ads` as ads
+            on ai.ad_id = ads.id
+
+            join `marketr-app`.`placeholder`.`adcreative` as creative
+            on creative.id = ads.creative.id
+
+            join `marketr-app`.`placeholder`.`campaigns` as ca
+            on ca.id = ads.campaign_id
+
+
+            where campaign_name is not null
+            and date_diff(CURRENT_DATE(), CAST(DATE(ai.date_start) AS DATE), day) <= _range
+
+            order by date_start
+
+        """
+
         client_set = f'{self.company_name}_facebook'
-        new_query = self.clean_query(facebook, client_set)
+        query = self.clean_query(facebook, client_set)
+        new_query = self.clean_query(second_facebook, client_set)
         
-        return self.get(new_query)
+        retry_count = 1
+        client_set = f'{self.company_name}_google'
+        returned = self.get(query)
+
+        if returned is not None:
+            return returned
+        else:
+            returned = self.get(new_query)
+            retry_count += 1
+            print(new_query)
+            if returned is not None:
+                return returned
+            else:
+                return None
 
     
     def search_index(self, _range):
@@ -232,7 +284,7 @@ class GoogleORM(BigQuery):
             _second_google = self.clean_query(second_google, client_set)
             returned = self.get(_second_google)
             retry_count += 1
-
+            print(_second_google)
             if returned is not None:
                 return returned
             else:

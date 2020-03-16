@@ -70,7 +70,6 @@ def update_password(token):
 
 @app.route('/login', methods=['GET', 'POST'])
 def customer_login():
-
     form = forms.CustomerLogin()
 
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
