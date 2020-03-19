@@ -6,8 +6,8 @@
   "author": "Creative Tim",
   "license": "Creative Tim License <www.creative-tim.com/license>",
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
     "gulp-babel": "^8.0.0-beta.2",
