@@ -16,7 +16,7 @@ const styles = () => {
             font-weight: bold;
         }
         .shadow_insights {
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
             overflow-x: hidden;
         }

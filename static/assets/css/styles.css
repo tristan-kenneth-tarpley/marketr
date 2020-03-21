@@ -3122,7 +3122,7 @@ Created using IcoMoon - icomoon.io
       color: #FFFFFF; }
 
 .panel-header-sm {
-  /* height: 75px;  */
+  height: 50px; 
 }
 /* anchor */
 .panel-header-lg {
@@ -3858,7 +3858,6 @@ Created using IcoMoon - icomoon.io
     top: 0;
     height: 100%;
     width: var(--sidebar-width);
-    right: 120px;
     left: auto;
     z-index: 1032;
     visibility: visible;
@@ -13025,4 +13024,31 @@ li {
   100% {
       background-position: 400px 0;
   }
+}
+
+#date_popup_back {
+  z-index: 2;
+  background-color: rgba(0,0,0,.4);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+#date_popup {
+  padding: 5%;
+  display: flex;
+  position: fixed;
+  z-index: 1 !important;
+  background-color: white;
+  width: 90%;
+  justify-content: center;
+  height: 100%;
+  top: 5%;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  height: 90%;
+  border-radius: 6px;
 }

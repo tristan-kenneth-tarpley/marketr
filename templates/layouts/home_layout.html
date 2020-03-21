@@ -14,8 +14,8 @@
 	{% if not page.admin %}
 		{% with plan="active", customer = page.data['core']['core'][0]['current_plan'], demo=demo %}
 			{% include "/core/navbar/sidebar.html" %}
+			{% include "/core/navbar/topbar.html" %}
 		{% endwith %}
-		{% include "/core/navbar/topbar.html" %}
 	{% else %}
 		{{ admin_sidebar('test', owner, admin, manager) }}
 		{% include "/topbar/topbar-admin.html" %}

@@ -7,7 +7,7 @@ import Recommendations from '/static/src/components/customer/recommendations.js'
 import Opportunities from '/static/src/components/portfolio/Opportunities.js'
 import { dots_loader, custom_select_body } from '/static/src/components/UI_elements.js'
 import {remove_duplicates, iterate_text, modal, modal_trigger, modal_handlers, currency,currency_rounded,number,number_rounded,number_no_commas,percent,remove_commas,remove_commas_2} from '/static/src/convenience/helpers.js'
-
+import NanocalRanger from 'https://unpkg.com/nanocal-ranger'
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
@@ -29,6 +29,47 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        
+        #info_bar {
+            position: absolute;
+            right: 1%;
+            top: -75px;
+            width: 35%;
+        }
+        #info_bar p {
+            display: flex;
+            justify-content: flex-end;
+            font-size: .7em;
+            line-height: 1.5em;
+            margin: 0;
+            white-space: nowrap;
+        }
+        #info_bar i {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            font-size: 1.3em;
+            /*box-shadow: var(--silicon-raised);
+            width: 30px;
+            height: 34px;
+            background-color: var(--panel-bg);
+            border-radius: 100px;*/
+        }
+        #select_date_range:hover {
+            box-shadow: none;
+            border-radius: 6px;
+        }
+        #select_date_range span {
+            color: inherit;
+            font-size: inherit;
+            padding: 2%;
+            border-bottom: 1px solid var(--primary);
+            border-right: 1px solid transparent;
+            border-right: 1px solid transparent;
+        }
+        #select_date_range span:hover {
+            background-color: rgba(0,0,0,.1);
+        }
         #comparison_table td {
             /*border-bottom: 1px solid #f2f2ff;*/
             padding: 2%;
@@ -39,6 +80,10 @@ const styles = () => {
             padding: 0;
             margin: 0;
             flex-direction: column;
+        }
+        #select_date_range {
+            font-size: .7em;
+            margin: 0;
         }
         .custom_modal p {
             display: none;
@@ -174,12 +219,16 @@ const styles = () => {
 
 
     </style>
+
     `.trim()
 }
 
 export default class PortfolioPerformance extends HTMLElement {
     static get observedAttributes() {
-        return ['customer-id', 'company-name', 'facebook_id', 'google_id', 'spend_rate', 'funds_remaining', 'insights'];
+        return [
+            'start_date_1', 'end_date_1', 'start_date_2', 'end_date_2',
+            'customer-id', 'company-name', 'facebook_id', 'google_id', 'spend_rate', 'funds_remaining', 'insights'
+        ];
     }
     constructor() {
         super();
@@ -193,7 +242,8 @@ export default class PortfolioPerformance extends HTMLElement {
                     
                 }
             },
-            opp_expanded: false
+            opp_expanded: false,
+            null_data: false
         }
 
         this.static_copy = {
@@ -573,46 +623,70 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
                 break
         }
-
     }
 
-    view_controller(el){
+    select_date_range(){
+        let back = document.querySelector('#date_popup_back')
+        back.style.display = 'flex'
+        back.onclick = e => {
+            if (e.target.id == 'date_popup_back') e.currentTarget.style.display = 'none'
+        }
         
-        el.querySelectorAll('#view_selector button').forEach(el=>{
-            el.addEventListener('click', e => {
-                let target = e.currentTarget
-                target.classList.remove('btn-outline')
-                target.classList.remove('btn-outline-secondary')
-                target.classList.add('btn-secondary')
+        const ranger = new NanocalRanger({ target: document.getElementById('ranger') })
+        ranger.on('selectedRange', ([start, end]) => {
+            const close = () => back.style.display = 'none'
+            const apply = document.querySelector('#apply_date')
+            const cancel = document.querySelector('#cancel_date')
 
-                this.sub_edited = false
-                const first = async () => {
-                    this.state.active_view = parseInt(target.value)
-                } 
-                first().then(()=>this.data_controller()).then(()=>{
+            apply.style.display = 'flex'
+            cancel.style.display = 'flex'
+
+            apply.addEventListener('click', e=>{
+                this.start_date_1 = `${start.year}-${start.month}-${start.day} 00:00:00 UTC`
+                this.end_date_1 = `${end.year}-${end.month}-${end.day} 00:00:00 UTC`
+                
+                this.render()
+                close()
+            })
+            cancel.addEventListener('click', e=> close() )
+        })
+    }
+
+    view_controller(el, error=false){
+        if (!error) {
+            el.querySelectorAll('#view_selector button').forEach(el=>{
+                el.addEventListener('click', e => {
+                    let target = e.currentTarget
+                    target.classList.remove('btn-outline')
+                    target.classList.remove('btn-outline-secondary')
+                    target.classList.add('btn-secondary')
+
+                    this.sub_edited = false
+                    const first = async () => {
+                        this.state.active_view = parseInt(target.value)
+                    } 
+                    first().then(()=>this.data_controller()).then(()=>{
+                        setTimeout(()=>{
+                            this.render(false)
+                        }, 600)
+                    })
+                })
+            })
+
+            el.querySelector("#sub_target").addEventListener('change', e=>{
+                this.sub_edited = true
+                const first = async () => this.state.active_sub_view = e.currentTarget.value
+                first().then(()=>this.data_controller()).then(() => {
                     setTimeout(()=>{
                         this.render(false)
                     }, 600)
                 })
+
             })
-        })
+        }
 
-        el.querySelector("#sub_target").addEventListener('change', e=>{
-            this.sub_edited = true
-            const first = async () => this.state.active_sub_view = e.currentTarget.value
-            first().then(()=>this.data_controller()).then(() => {
-                setTimeout(()=>{
-                    this.render(false)
-                }, 600)
-            })
+        el.querySelector('#select_date_range').addEventListener('click', e=> this.select_date_range() )
 
-        })
-
-        el.querySelector('#date_range').addEventListener('change', e=>{
-            this.state.date_range = parseInt(e.currentTarget.value)
-            this.data_controller()
-            this.render(true)
-        })
 
         return el
     }
@@ -776,33 +850,12 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     date_range(){
-        let options = [
-            {'value': 365, 'title': 'Past year'},
-            {'value': 180, 'title': 'Past 6 months'},
-            {'value': 90, 'title': 'Past 90 days'},
-            {'value': 60, 'title': 'Past 60 days'},
-            {'value': 45, 'title': 'Past 45 days'},
-            {'value': 30, 'title': 'Past 30 days'},
-            {'value': 21, 'title': 'Past 21 days'},
-            {'value': 14, 'title': 'Past 14 days'},
-            {'value': 7, 'title': 'Past 7 days'},
-            {'value': 3, 'title': 'Past 3 days'}
-        ]
+        /*html*/
         return `
-            ${title('Filter by', true)}
-            <select class="form-control" id="date_range">
-                <option value="10000000000000000" ${this.state.date_range == 10000000000000 ? 'selected' : ''}>Lifetime</option>
-                <option value="365" ${this.state.date_range == 365 ? 'selected' : ''}>Past year</option>
-                <option value="180" ${this.state.date_range == 180 ? 'selected' : ''}>Past 6 months</option>
-                <option value="90" ${this.state.date_range == 90 ? 'selected' : ''}>Past 90 days</option>
-                <option value="60" ${this.state.date_range == 60 ? 'selected' : ''}>Past 60 days</option>
-                <option value="45" ${this.state.date_range == 45 ? 'selected' : ''}>Past 45 days</option>
-                <option value="30" ${this.state.date_range == 30 ? 'selected' : ''}>Past 30 days</option>
-                <option value="21" ${this.state.date_range == 21 ? 'selected' : ''}>Past 21 days</option>
-                <option value="14" ${this.state.date_range == 14 ? 'selected' : ''}>Past 14 days</option>
-                <option value="7" ${this.state.date_range == 7 ? 'selected' : ''}>Past 7 days</option>
-                <option value="3" ${this.state.date_range == 3 ? 'selected' : ''}>Past 3 days</option>
-            </select>
+            <button id="select_date_range" class="btn btn-outline btn-outline-secondary">
+                <span>${this.start_date_1.slice(0, -13)} <i class="far fa-caret-square-down"></i></span>
+                / <span>${this.end_date_1.slice(0, -13)} <i class="far fa-caret-square-down"></i></span>
+            </button>
         `
     }
 
@@ -866,8 +919,6 @@ export default class PortfolioPerformance extends HTMLElement {
             `
         }
 
-        // ${perc_change > 0 ? up : down }
-        // <p class="center_it"><span class="${perc_change > 0 ? '_green' : '_red'}">${number_rounded(perc_change * 100)}%</span> in past 7 days</p>
         const el = /*html*/ `
             ${this.state.active_view == 3 ? `<p class="small_txt">Campaign: ${breakdown.campaign_name ? breakdown.campaign_name : ''}</p>` : ''}
             ${comparison_row(
@@ -897,15 +948,9 @@ export default class PortfolioPerformance extends HTMLElement {
 
     profit_spread() {
         return `
-        <div class="h--500 card card-body">
-            ${title('profit potential per $100 spent')}
-            <br>
-
             <div id="profit_chart_container">
                 <canvas style="width: 100%; height: 100%;" id="profit_chart"></canvas>
             </div>
-
-        </div>
         `
     }
 
@@ -940,9 +985,9 @@ export default class PortfolioPerformance extends HTMLElement {
     opps_classList(){
         let opps_classList;
 
-        if (this.analytics) opps_classList = `col-lg-4 col-md-6 col-sm-12`
+        if (this.analytics) opps_classList = `col-lg-4 col-md-4 col-sm-12`
         if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
-        else opps_classList = `col-lg-4 col-md-6 col-sm-12`
+        else opps_classList = `col-lg-4 col-md-4 col-sm-12`
 
         return opps_classList
     }
@@ -1013,13 +1058,81 @@ export default class PortfolioPerformance extends HTMLElement {
         let column_set = ![0,1].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
+
+        <div class="row row_cancel">
+            <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container">
+            </div>
+
+            ${this.analytics ? `` : /*html*/ `
+                <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="h--500 card card-body">
+                        <h1 class="widget__title">Recommendations</h1>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                   <!-- <div class="d-none d-md-block d-lg-none divider"></div>-->
+                    <div id="insights" class="card card-responsive card-body">
+                        ${title('insights')}    
+                    </div>
+                </div>`
+            }
+        </div>
+
+
+        <div class="row row_cancel">
+      
+            <div class="col-lg-6 col-md-6 col-12">
+                ${this.view_by()}
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="card card-body mobile--h--225 h--300">
+                    <div class="row row_cancel">
+                        ${
+                            this.state.active_view != 0
+                            /*html*/
+                            ? `
+                            <div class="col-lg-6 col-sm-6">
+                                ${title('filter by', true)}
+                                <select id="sub_target" class="form-control">
+                                    ${ !this.state.null_data
+                                        ?
+                                            this.sub_filters.map((filter, index)=>{
+                                                /*html*/
+                                                return (
+                                                    `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
+                                                        ${filter}
+                                                    </option>
+                                                    `
+                                                )
+                                            }).join('')
+                                        : `<option></option>`
+                                }
+                                </select>
+                            </div>`
+                            : `<select id="sub_target" style="display:none;" class="form-control"></select>`
+                        }
+                        <div class="${this.state.active_view != 0 ? "col-lg-6 col-sm-6" : "col-lg-9 col-sm-9"}">
+                            ${title(`Select dates`, true)}
+                            ${this.date_range()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row row_cancel">
             <div class="col-lg-8 col-md-8 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
                         <div style="overflow-y:auto;" class="h--500 mobile--h--cancel card card-body">
                             ${title(breakdown_title[active_view])}
-                            ${this.breakdown_markup()}
+                            ${ !this.state.null_data
+                                ?
+                                    this.breakdown_markup()
+                                :
+                                    `${this.null_state()}`
+                            }
                         </div>
                     </div>
                     ${
@@ -1028,7 +1141,12 @@ export default class PortfolioPerformance extends HTMLElement {
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div style="overflow-y:auto;" class="h--500 mobile--h--600 card card-body">
                                     ${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}
-                                    ${this.comparison_markup()}
+                                    ${ !this.state.null_data
+                                        ?
+                                            this.comparison_markup()
+                                        :
+                                            `${this.null_state()}`
+                                    }
                                 </div>
                             </div>`
                             : ''
@@ -1036,41 +1154,26 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
 
-
-            ${this.analytics ? `
             <div class="h--500 col-lg-4 col-md-6 col-sm-12">
-                ${this.profit_spread()}
+                <div class="h--500 card card-body">
+                    ${title('profit potential per $100 spent')}
+                    <br>
+                    ${ !this.state.null_data
+                        ?
+                            this.profit_spread()
+                        :
+                            `${this.null_state()}`
+                    }
+
+                </div>
             </div>
+            ${this.analytics ? `
+
             <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
             
             ` : ''}
 
-            ${this.analytics ? `` : `
-
-            <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
-                <div class="h--500 card card-body">
-                    <h1 class="widget__title">Recommendations</h1>
-                </div>
-            </div>`
-            }
         </div>
-        ${this.analytics
-            ? ``
-            : `
-                <div class="row row_cancel">
-                    <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
-                    <div class="h--500 col-lg-4 col-md-6 col-sm-12">
-                        ${this.profit_spread()}
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="d-none d-md-block d-lg-none divider"></div>
-                        <div id="insights" class="card card-responsive card-body">
-                            ${title('insights')}    
-                        </div>
-                    </div>
-                </div>
-                `
-        }
         `
     }
 
@@ -1078,79 +1181,44 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
-                <div class="row row_cancel">
+                <div id="info_bar" class="row row_cancel">
                     ${this.analytics ? ''
-                    : `
-                        <div class="col-lg-12 col-md-12 col-12">
-                            <div style="padding: 1.25rem 1.25rem 0 1.25rem;" class="card card-body">
-                                <div class="main-group__trend row row_cancel">
-                                    <div class="col-lg-4 col-md-4 col-12"> 
-                                    ${modal('What is the health score?', this.static_copy.score, 'health')}
-                                        <div class="custom_modal center_it trend__group">
-                                            ${modal_trigger(
-                                                'health',
-                                                `${title(
-                                                    `${this.company_name}'<span style="text-transform:lowercase;">s</span> &nbsp;health score:
-                                                    &nbsp;<i class="far fa-question-circle"></i>
-                                                    <br>${marketr_score(
-                                                        this.state.data.aggregate.index
-                                                    )}`,
-                                                true
-                                            )}`)}
-                                        </div>
+                    : /*html*/`
+
+                        <div class="row row_cancel">
+                            <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6"> 
+                                <div class="row row_cancel">
+                                    <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                                        ${marketr_score(
+                                            this.state.data ? this.state.data.aggregate.index : 0
+                                        )}
                                     </div>
-                                    <div class="col-lg-4 col-md-4 col-12">
-                                        <div class="center_it trend__group">
-                                            ${title(`Funds remaining: ${value(currency_rounded(this.funds_remaining ? this.funds_remaining : 0))}`, true)}
-                                        </div>
+                                    <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                                        <p style="white-space:nowrap;">${this.company_name}'s<br>Health score</p>
                                     </div>
-                                    <div class="col-lg-4 col-md-4 col-12">
-                                        <div class="center_it trend__group">  
-                                            ${title(`budget: ${value(`${currency_rounded(this.spend_rate ? this.spend_rate : 0)}/month`)}`, true)}
-                                        </div>
+                                </div>
+                            </div>
+                            <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                                <div class="row row_cancel">
+                                    <div class="align-self-center col-lg-3 col-md-3 col-sm-3 col-3">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="align-self-center col-lg-9 col-md-9 col-sm-9 col-9">
+                                        <p style="margin-bottom: 0;">
+                                            <strong>${currency_rounded(this.funds_remaining ? this.funds_remaining : 0)}</strong>&nbsp;
+                                            remaining
+                                        </p>
+                                        <p><strong>${currency_rounded(this.spend_rate ? this.spend_rate : 0)}</strong>/mo budget</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     `
                     }
                     
                 </div>
-                <div class="row row_cancel">
-      
-                        <div class="col-lg-6 col-md-6 col-12">
-                            ${this.view_by()}
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-12">
-                            <div class="card card-body mobile--h--225 h--300">
-                                <div class="row row_cancel">
-                                    ${
-                                        this.state.active_view != 0
-                                        /*html*/
-                                        ? `
-                                        <div class="col-lg-6 col-sm-6">
-                                            ${title('filter by', true)}
-                                            <select id="sub_target" class="form-control">
-                                                ${this.sub_filters.map((filter, index)=>{
-                                                    
-                                                    return (
-                                                        `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
-                                                            ${filter}
-                                                        </option>
-                                                        `
-                                                    )
-                                                }).join('')}
-                                            </select>
-                                        </div>`
-                                        : `<select id="sub_target" style="display:none;" class="form-control"></select>`
-                                    }
-                                    <div class="${this.state.active_view != 0 ? "col-lg-6 col-sm-6" : "col-lg-9 col-sm-9"}">
-                                        ${this.date_range()}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                
                 </div>
             </div>
 
@@ -1186,12 +1254,19 @@ export default class PortfolioPerformance extends HTMLElement {
         return ops
     }
 
+    null_state(){
+        return `<p>no data available</p>`
+    }
+
     error_markup(){
+        /*html*/
         const div = `
         <div class="row row_cancel">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="center_it card card-body">
-                    <p style="margin: auto;">Looks like your data hasn't finished syncing yet. This usually takes 24-72 hours, depending on how much there is. Check back later to see your marketing health!</p>
+                    <p style="margin: auto;">There's no data for this time period.</p>
+                    <p class="small_txt" style="margin: auto;">Either your data hasn't finished syncing yet or your looking at a timeframe where you didn't have any data.</p>
+                    ${this.date_range()}
                 </div>
             </div>
         </div>
@@ -1275,25 +1350,28 @@ export default class PortfolioPerformance extends HTMLElement {
             el.innerHTML = markup
 
             if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0]
-            this.data_controller()
+            if (!this.state.null_data) this.data_controller()
 
             return el
         } 
 
         const run = () => {
+            this.shadow.innerHTML = ""
             compile()
                 .then(el=>{
                     el.querySelector('#home-row').innerHTML += this.template()
                     return el
                 })
                 .then(el=>{
-                    this.reset_charts(el)
+                    if (!this.state.null_data) this.reset_charts(el)
                     el.querySelector('#opps_container').appendChild(this.opps_container())
 
                     append_other(el)
                     return modal_handlers(el)
                 })
                 .then( el => this.shadow.appendChild(this.view_controller(el)) )
+                .then(() => document.querySelector('#performance_loader').style.display = 'none')
+ 
         }
 
 
@@ -1308,18 +1386,24 @@ export default class PortfolioPerformance extends HTMLElement {
                     customer_id: this.customer_id,
                     company_name: this.customer_id == 200 ? "o3" : this.company_name,
                     ltv: this.ltv,
-                    date_range: this.state.date_range,
+                    start_date_1: this.start_date_1,
+                    end_date_1: this.end_date_1,
                     facebook: this.facebook_id,
                     google: this.google_id
                 })
             })
             .then(res => res.json())
             .then(res => {
-                document.querySelector('#performance_loader').style.display = 'none'
-                this.state.data = res.index
-                this.state.data.topics = res.topics
+                console.log(res)
+                if (res.index) {
+                    this.state.null_data = false
+                    this.state.data = res.index
+                    this.state.data.topics = res.topics ? res.topics : null
+                } else this.state.null_data = true
+
                 opps.setAttribute('json', JSON.stringify(res.topics))
                 run()
+                
             })
             .catch(e=>{
                 console.log(e)
@@ -1329,8 +1413,20 @@ export default class PortfolioPerformance extends HTMLElement {
                     ${this.error_markup()}
                 `
                 append_other(this.shadow)
+                this.view_controller(this.shadow, true)
             })
         } else run()
+    }
+
+    attributeChangedCallback(name, oldValue, newValue){
+        switch(name){
+            case 'start_date_1':
+            case 'end_date_1':
+            case 'start_date_2':
+            case 'end_date_2':
+                console.log(newValue)
+                break
+        }
     }
 
     connectedCallback() {
@@ -1346,6 +1442,14 @@ export default class PortfolioPerformance extends HTMLElement {
         this.demo = this.getAttribute('demo')
         this.analytics = this.getAttribute('analytics') ? true : false
 
+        const today = new Date()
+        this.start_date_1 = this.getAttribute('start_date_1')
+                                ? this.getAttribute('start_date_1')
+                                : `${today.getFullYear()}-${today.getMonth()}-${today.getDate()} 00:00:00 UTC`
+
+        this.end_date_1 = this.getAttribute('end_date_1')
+                            ? this.getAttribute('end_date_1')
+                            : `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00 UTC`
 
         this.render()
 

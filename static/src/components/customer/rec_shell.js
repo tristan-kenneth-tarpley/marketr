@@ -138,8 +138,8 @@ export default class Rec_shell extends HTMLElement {
     connectedCallback(){
         this.rec_id = parseInt(this.getAttribute('rec-id'))
         this.customer_id = this.getAttribute('customer-id')
-        this.title = this.getAttribute('title')
-        this.body = this.getAttribute('body')
+        this.title = this.getAttribute('title').replace(/\\/g, '')
+        this.body = this.getAttribute('body').replace(/\\/g, '')
         this.index = parseInt(this.getAttribute('index')) % 4
         this.demo = this.getAttribute('demo')
 

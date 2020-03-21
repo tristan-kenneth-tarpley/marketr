@@ -17,7 +17,9 @@
       <span class="navbar-toggler-bar navbar-kebab"></span>
     </button>#}
     {% set credits = page.data['core']['core'][0]['credits'] %}
-    {{ credit_amount(credits if credits else 0) }}
+    {#
+      {{ credit_amount(credits if credits else 0) }}
+    #}
 
     {#<div class="collapse navbar-collapse justify-content-end" id="navigation">
       <ul class="navbar-nav">

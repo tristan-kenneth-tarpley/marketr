@@ -65,6 +65,7 @@ export default class Opportunities extends HTMLElement {
   }
 
   collapsed_view() {
+
     return `
     <div class="row">
       <div class="col-lg-6 col-md-6 col-sm-6 col-6">
@@ -179,7 +180,7 @@ export default class Opportunities extends HTMLElement {
     return `
       <div class="opp_row row">
         <div class="col-lg-6 col-md-6 col-sm-6">
-          <span>${keyword}</span>
+          <p class="small_txt">${keyword}</p>
         </div>
         <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6">
           ${_score(score)}

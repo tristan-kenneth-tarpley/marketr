@@ -292,7 +292,6 @@ def get_achievements():
 def new_recommendation():
 
     req = request.get_json()
-
     service = RecommendationService(customer_id=req.get('customer_id'), admin_id=req.get('admin_id'))
 
     title = req.get('title')
@@ -463,32 +462,40 @@ def last_7_spend():
 def compile_master_index():
     req = request.get_json()
     demo = True if req.get('customer_id') == '181' else False
-    date_range = req.get('date_range')
+    start_date_1 = req.get('start_date_1')
+    end_date_1 = req.get('end_date_1')
     ltv = float(req.get('ltv').replace(",", ""))
     company_name = req.get('company_name')
     run_social = req.get('facebook')
     run_search = req.get('google')
 
-    dfs = compile_data_view(
-        run_social=run_social,
-        run_search=run_search,
-        company_name=company_name,
-        date_range=date_range,
-        demo=demo,
-        ltv=ltv
-    )
+    try:
+        dfs = compile_data_view(
+            run_social=run_social,
+            run_search=run_search,
+            company_name=company_name,
+            start_date=start_date_1,
+            end_date=end_date_1,
+            demo=demo,
+            ltv=ltv
+        )
 
-    search_df = dfs.get('search_df')
-    social_df = dfs.get('social_df')
-    opps = dfs.get('topic_opps')
+        search_df = dfs.get('search_df')
+        social_df = dfs.get('social_df')
+        opps = dfs.get('topic_opps')
 
-    compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
-    index = MarketrIndex(ltv)
-    lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
+        compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+        index = MarketrIndex(ltv)
+        lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-    if opps is not None:
-        topics = compile_topics(opps, index, lcr, ltv)
-    else:
+        if opps is not None:
+            topics = compile_topics(opps, index, lcr, ltv)
+        else:
+            topics = None
+            
+    except IndexError as e:
+        print(e)
+        compiled = None
         topics = None
 
     returned = json.dumps({

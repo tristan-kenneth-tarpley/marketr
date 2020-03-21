@@ -5,22 +5,23 @@ from services.BigQuery import GoogleORM
 import asyncio
 import data.db as db
 
-def compile_data_view(run_social: bool=False, run_search: bool=True, company_name: str=None, date_range: int=30, demo: bool=False, ltv: float=None):
+def compile_data_view(run_social: bool=False, run_search: bool=True, company_name: str=None, start_date: str=None, end_date: str=None, demo: bool=False, ltv: float=None):
     orm = GoogleORM(company_name)
     if not demo:
         async def dataframes(run_social, run_search):
             if run_search:
-                search_df = loop.run_in_executor(None, orm.search_index, date_range)
+                search_df = loop.run_in_executor(None, orm.search_index, start_date, end_date)
                 search = await search_df
                 _opportunities = loop.run_in_executor(None, orm.keywords)
                 opps = await _opportunities
+ 
             else:
                 search_df = None
                 search = None
                 opps = None
 
             if run_social:
-                social_df = loop.run_in_executor(None, orm.social_index, date_range)
+                social_df = loop.run_in_executor(None, orm.social_index, start_date, end_date)
                 social = await social_df
             else:
                 social_df = None
@@ -34,8 +35,13 @@ def compile_data_view(run_social: bool=False, run_search: bool=True, company_nam
 
     else:
         ltv = 5000
-        search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where datediff(day, date_start, getdate()) < {date_range}")
-        social_df = db.sql_to_df(f"SELECT * FROM demo_data_social where datediff(day, date_start, getdate())  < {date_range}")
+        new_start = start_date.replace(" UTC", ".000")
+        new_end = end_date.replace(" UTC", ".000")
+
+        print(f"SELECT * FROM demo_data_search where date_start between '{new_start}' and '{new_end}'")
+        print(f"SELECT * FROM demo_data_social where date_start between '{new_start}' and '{new_end}'")
+        search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where date_start between '{new_start}' and '{new_end}'")
+        social_df = db.sql_to_df(f"SELECT * FROM demo_data_social where date_start between '{new_start}' and '{new_end}'")
         opps = orm.keywords()
 
     return {

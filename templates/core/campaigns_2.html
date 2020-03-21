@@ -67,6 +67,28 @@
 </customer-recommendations>
 {% endmacro %}
 
+<div style="display:none;" id="date_popup_back">
+  <div id="date_popup">
+    <h1 style="padding:0;" class="widget__title center_it">Select date range</h1>
+    <div id="ranger"></div>
+    <button style="display:none;" id="apply_date" class="btn btn-secondary">ok</button>
+    <button style="display:none;" id="cancel_date" class="btn btn-neutral">cancel</button>
+
+    <style>
+      .day.in-range { background-color: #62cde0 !important; }
+      #date_popup {
+        display:block;
+      }
+      #date_popup .btn {
+        display: flex;
+        position: absolute;
+        bottom: 5%;
+      }
+      #date_popup .btn-secondary { right: 5%; }
+      #date_popup .btn-neutral { right: 15%; }
+    </style>
+  </div>
+</div>
 
 
 
