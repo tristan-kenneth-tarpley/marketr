@@ -486,6 +486,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         if df is not None:
             try:
                 df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
+                df = df.sort_values(by='date_start')
             except Exception as e:
                 print(e)
             return json.loads(df.to_json(orient='records'))
