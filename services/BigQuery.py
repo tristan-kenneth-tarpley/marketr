@@ -141,7 +141,7 @@ class GoogleORM(BigQuery):
 
             (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
 
-            ads.creative.id, ads.adset_id, ads.campaign_id,
+            ads.creative.id, ads.adset_id, ai.adset_name, ads.campaign_id,
 
             creative.image_url as thumbnail_url, creative.body,
 
@@ -178,7 +178,7 @@ class GoogleORM(BigQuery):
 
             (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
 
-            ads.creative.id, ads.adset_id, ads.campaign_id,
+            ads.creative.id, ads.adset_id, ai.adset_name, ads.campaign_id,
 
             creative.thumbnail_url, creative.body,
 
@@ -213,6 +213,8 @@ class GoogleORM(BigQuery):
         retry_count = 1
         client_set = f'{self.company_name}_google'
         returned = self.get(query)
+
+        print(new_query)
 
         if returned is not None:
             return returned
@@ -254,7 +256,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            rep.avgcpc / 1000000 as cpc, rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            rep.avgcpc / 1000000 as cpc, rep.imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid as adset_id, rep.adgroup as adset_name, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             {total_cost}
 
@@ -272,7 +274,7 @@ class GoogleORM(BigQuery):
 
             distinct 
 
-            rep.avgcpc / 1000000 as cpc, null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
+            rep.avgcpc / 1000000 as cpc, null as imageadurl, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid as adset_id, rep.adgroup as adset_name, rep.adid, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget,
 
             {total_cost}
 
