@@ -5,6 +5,7 @@ import Creative from '/static/src/components/portfolio/Creative.js'
 import {google, facebook} from '/static/src/components/UI_elements.js'
 import Recommendations from '/static/src/components/customer/recommendations.js'
 import Opportunities from '/static/src/components/portfolio/Opportunities.js'
+import Filter from '/static/src/components/portfolio/filter_by.js'
 import { dots_loader, custom_select_body } from '/static/src/components/UI_elements.js'
 import {remove_duplicates, iterate_text, modal, modal_trigger, modal_handlers, currency,currency_rounded,number,number_rounded,number_no_commas,percent,remove_commas,remove_commas_2} from '/static/src/convenience/helpers.js'
 import NanocalRanger from 'https://unpkg.com/nanocal-ranger'
@@ -35,7 +36,7 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        
+
         #info_bar {
             position: absolute;
             right: 1%;
@@ -61,6 +62,11 @@ const styles = () => {
             background-color: var(--panel-bg);
             border-radius: 100px;*/
         }
+        #select_date_range {
+            border-left: 3px solid transparent !important;
+            border-right: 3px solid transparent !important;
+            border-top: 3px solid transparent !important; 
+        }
         #select_date_range:hover {
             box-shadow: none;
             border-radius: 6px;
@@ -69,9 +75,6 @@ const styles = () => {
             color: inherit;
             font-size: inherit;
             padding: 2%;
-            border-bottom: 1px solid var(--primary);
-            border-right: 1px solid transparent;
-            border-right: 1px solid transparent;
         }
         #select_date_range span:hover {
             background-color: rgba(0,0,0,.1);
@@ -252,6 +255,15 @@ export default class PortfolioPerformance extends HTMLElement {
             null_data: false
         }
 
+        // this.observer = new MutationObserver(mutations=>{
+        //     mutations.forEach(mutation => {
+        //         if (mutation.type == "attributes") {
+        //             if (mutation.attributeName == 'applied') this.apply(mutation.target)
+        //             else if (mutation.attributeName == 'dismissed') this.dismiss(mutation.target)
+        //         }
+        //     });
+        // });
+
         this.static_copy = {
             score: `<p>An overall health metric of your portfolio. It’s a metric without limit.</p>
             <p>And much like a stock price, ideally increases over time. </p>
@@ -391,27 +403,21 @@ export default class PortfolioPerformance extends HTMLElement {
             campaigns = [],
             adsets = []
     
+        const sub_filter_struct = (sub) => {
+            return {
+                key: sub.key,
+                campaign_name: sub.campaign_name,
+                adset_name: sub.adset_name,
+                marketr_index: sub.marketr_index
+            }
+        }
         const append_data = (iterable, value) => [...iterable, value]
         const group = i => {
             dates = append_data(dates, i.date_start)
             pp100 = append_data(pp100, i.pp100)
             cpm = append_data(cpm, i.cpm)
         }
-        const group_buckets = i => {
 
-            sub_filters.push(i.type)
-            buckets = [...buckets, {
-                type: i.type,
-                dates: i.raw.map(x => x.date_start),
-                cpm: i.raw.map(x => x.cpm),
-                pp100: i.raw.map(x => x.pp100),
-                marketr_index:i.index,  
-                cost: i.cost
-            }]
-        }
-
-         //dates = Array.from(new Set([...dates, i.date_start]))
-       
         switch(active_view) {
             // portfolio
             case 0:
@@ -442,7 +448,11 @@ export default class PortfolioPerformance extends HTMLElement {
                 let ranged_campaigns = []
                 const group_ranged_campaigns = camp => {
                     ranged_campaigns = [...ranged_campaigns, campaign_struct(camp)]
-                    if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(camp.campaign_name)
+
+                    if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(sub_filter_struct({
+                        key: camp.campaign_name,
+                        marketr_index: camp.marketr_index
+                    }))
                 }
                 const group_campaigns = camp => {
                     campaigns = [...campaigns, campaign_struct(camp)]
@@ -514,7 +524,11 @@ export default class PortfolioPerformance extends HTMLElement {
                 let ranged_adsets = []
                 const group_ranged_adsets = group => {
                     ranged_adsets = [...ranged_adsets, group_struct(group)]
-                    if (!sub_filters.includes(group.adset_name)) sub_filters.push(group.adset_name)
+                    if (!sub_filters.includes(group.adset_name)) sub_filters.push(sub_filter_struct({
+                        key: group.adset_name,
+                        campaign_name: group.campaign_name,
+                        marketr_index: group.marketr_index
+                    }))
                 }
                 const group_adsets = group => {
                     adsets = [...adsets, group_struct(group)]
@@ -556,6 +570,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 const ads_struct = (i, id, name, creative) => {
                     return {
                         campaign_name: i.campaign_name,
+                        adset_name: i.adset_name,
                         id: id,
                         pp100: i.pp100,
                         cpm: i.cpm,
@@ -596,7 +611,12 @@ export default class PortfolioPerformance extends HTMLElement {
                     }
 
                     ranged_ads = [...ranged_ads, ads_struct(i, id, name, creative)]
-                    if (!sub_filters.includes(name)) sub_filters.push(name)
+                    if (!sub_filters.includes(name)) sub_filters.push(sub_filter_struct({
+                        key: name,
+                        campaign_name: i.campaign_name,
+                        adset_name: i.adset_name,
+                        marketr_index: i.marketr_index
+                    }))
                 }
                 
 
@@ -1161,7 +1181,8 @@ export default class PortfolioPerformance extends HTMLElement {
                             ? `
                             <div class="col-lg-6 col-sm-6">
                                 ${title('filter by', true)}
-                                <select id="sub_target" class="form-control">
+                                <div id="sub_target"></div>
+          <!--                      <select id="sub_target" class="form-control">
                                     ${ !this.state.null_data
                                         ?
                                             this.sub_filters.map((filter, index)=>{
@@ -1175,7 +1196,7 @@ export default class PortfolioPerformance extends HTMLElement {
                                             }).join('')
                                         : `<option></option>`
                                 }
-                                </select>
+                                </select> -->
                             </div>`
                             : `<select id="sub_target" style="display:none;" class="form-control"></select>`
                         }
@@ -1304,6 +1325,13 @@ export default class PortfolioPerformance extends HTMLElement {
         return recs_
     }
 
+    Filter(){
+        const filter = new Filter()
+        filter.setAttribute('sub_list', JSON.stringify(this.sub_filters))
+        filter.setAttribute('active_sub_view', this.state.active_sub_view)
+        filter.setAttribute('active_view', this.state.active_view)
+        return filter
+    }
 
     insights(){
         const insights = new Insights()
@@ -1405,6 +1433,8 @@ export default class PortfolioPerformance extends HTMLElement {
                 el.querySelector("#recommendations div").appendChild(recs)
                 el.querySelector('#insights').appendChild(insights)
             }
+            
+            if (this.state.active_view > 0) el.querySelector('#sub_target').appendChild(this.Filter())
         }
 
         const compile = async () => {
@@ -1416,7 +1446,7 @@ export default class PortfolioPerformance extends HTMLElement {
             el = document.createElement('div')
             el.innerHTML = markup
 
-            if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0]
+            if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0].key
             if (!this.state.null_data) this.data_controller()
 
             return el
