@@ -256,11 +256,12 @@ class AdGroupIndex(MarketrIndex):
             column_selector = self.search_columns[1:]
         elif social:
             column_selector = self.social_columns[1:]
-            
+        
+        column_selector.append('adset_name')
         range_df = self.Assign(df, column_selector, search=search, social=social)
         range_df['marketr_index'] = range_df.apply(self.reorder_m_index, axis=1)
-        
-        agg = dict(self.agg_set)
+  
+        agg = self.agg_set
         agg['marketr_index'] = 'mean'
 
         agg_df = self.Assign(df, [column_selector[0], 'adset_name'], search=search, social=social)
@@ -272,7 +273,6 @@ class AdGroupIndex(MarketrIndex):
             'agg': agg_df
         }
         
-        return df
 
 
 
@@ -304,7 +304,7 @@ class CampaignIndex(MarketrIndex):
 
         ranged_df = self.Assign(df, column_selector, search=search, social=social)
         ranged_df['marketr_index'] = ranged_df.apply(self.reorder_m_index, axis=1)
-        
+
         agg = self.agg_set
         agg['marketr_index'] = 'mean'
 
@@ -459,7 +459,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         search_index_agg, search_index, search_t2, search_t3, search_t4 = trickle(
             search_df, search_columns, 'adid', 'campaignid', search=True, social=False 
         )
-
         
         returned = {
             'social': {
@@ -487,8 +486,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
             try:
                 df['date_start'] = df.date_start.dt.strftime('%Y-%m-%d')
                 df = df.sort_values(by='date_start')
-            except Exception as e:
-                print(e)
+            except AttributeError:
+                pass
             return json.loads(df.to_json(orient='records'))
         else:
             return None
@@ -538,8 +537,10 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         })
         
         struct['ad_groups']['search'] = export(sets['search']['search_t4'].get('agg'))
-        struct['ranged_ad_groups']['search'] = export(sets['search']['search_t4'].get('agg'))
-
+        struct['ranged_ad_groups']['search'] = export(sets['search']['search_t4'].get('range'))
+        print(export(sets['search']['search_t4'].get('range')))
+        print('\n')
+        print(export(sets['search']['search_t4'].get('agg')))
         struct['campaigns']['search'] = export(sets['search']['search_t3'].get('agg'))
         struct['ranged_campaigns']['search'] = export(sets['search']['search_t3'].get('range'))
         
@@ -552,7 +553,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         })     
         
         struct['ad_groups']['social'] = export(sets['social']['social_t4'].get('agg'))
-        struct['ranged_ad_groups']['social'] = export(sets['social']['social_t4'].get('agg'))
+        struct['ranged_ad_groups']['social'] = export(sets['social']['social_t4'].get('range'))
 
         struct['campaigns']['social'] = export(sets['social']['social_t3'].get('agg'))
         struct['ranged_campaigns']['social'] = export(sets['social']['social_t3'].get('range')) 

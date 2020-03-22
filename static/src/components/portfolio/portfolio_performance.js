@@ -13,12 +13,18 @@ const title = (text, small=false) => `<h1 class="widget__title ${small ? `small`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
 const marketr_score = (value, sub=false, huge=false) => {
     let _class;
-    if (value <= 1) _class = '_red'
-    else if (value > 1 && value <= 2) _class = '_yellow'
-    else if (value > 2) _class = '_green'
+    let returned
+       
+    try {
+        if (value <= 1) _class = '_red'
+        else if (value > 1 && value <= 2) _class = '_yellow'
+        else if (value > 2) _class = '_green'
 
-
-    return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${number(value)} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+        return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${number(value)} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+        
+    } catch (error) {
+        return `<h1 class="${huge ? 'oversized_text' : ''} widget__value">n/a ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+    }
 }
 
 const styles = () => {
@@ -377,12 +383,13 @@ export default class PortfolioPerformance extends HTMLElement {
 
     data_controller(){
         let { active_view, data, active_data } = this.state
-        let dates = []
-        let pp100 = []
-        let cpm = []
-        let buckets = []
-        let sub_filters = []
-        let campaigns = []
+        let dates = [],
+            pp100 = [],
+            cpm = [],
+            buckets = [],
+            sub_filters = [],
+            campaigns = [],
+            adsets = []
     
         const append_data = (iterable, value) => [...iterable, value]
         const group = i => {
@@ -414,23 +421,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 break
             // platforms
             case 1:
-                for (let i of data.buckets) group_buckets(i)
-                this.sub_filters = sub_filters
-                let _buckets = buckets.filter(x=>{
-                    return x.type == this.state.active_sub_view
-                })
-                
-                this.state.breakdown = data.campaigns
-                this.state.active_data.profitability = {
-                    dates: _buckets.map(i => i.dates).flat(),
-                    pp100: _buckets.map(i=>i.pp100).flat(),
-                    cpm: _buckets.map(i=>i.cpm).flat(),
-                    marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
-                    cost: _buckets.map(i=>i.cost).reduce((a, b) => a + b, 0)
-                }
-                break
-            // campaigns
-            case 2:
                 const campaign_struct = (camp) => {
                     return {
                         campaign_name: camp.campaign_name,
@@ -474,17 +464,88 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.sub_filters = sub_filters
                 let _ranged_campaigns = ranged_campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let _campaigns = campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
-                let copied_ranged_campaigns = _ranged_campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
-                let copied_campaigns = _campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
-                this.state.breakdown = remove_duplicates(copied_campaigns, 'campaign_name')
+                this.state.breakdown = remove_duplicates(_campaigns, 'campaign_name')
 
                 this.state.active_data.profitability = {
-                    dates: copied_ranged_campaigns.map(_camp=>_camp.date_start),
-                    pp100: copied_ranged_campaigns.map(_camp=>_camp.pp100),
-                    cpm: copied_ranged_campaigns.map(_camp=>_camp.cpm),
-                    marketr_index: copied_ranged_campaigns.map(_camp=>_camp.marketr_index)[copied_ranged_campaigns.map(_camp=>_camp.marketr_index).length - 1],
-                    action: copied_ranged_campaigns.map(i=>i.action)[copied_ranged_campaigns.map(i=>i.action).length - 1],
-                    cost: copied_ranged_campaigns.map(i=>i.cost).reduce((a, b) => a + b, 0)
+                    dates: _ranged_campaigns.map(_camp=>_camp.date_start),
+                    pp100: _ranged_campaigns.map(_camp=>_camp.pp100),
+                    cpm: _ranged_campaigns.map(_camp=>_camp.cpm),
+                    marketr_index: _ranged_campaigns.map(_camp=>_camp.marketr_index)[_ranged_campaigns.map(_camp=>_camp.marketr_index).length - 1],
+                    action: _ranged_campaigns.map(i=>i.action)[ranged_campaigns.map(i=>i.action).length - 1],
+                    cost: _ranged_campaigns.map(i=>i.cost).reduce((a, b) => a + b, 0)
+                }
+                // for (let i of data.buckets) group_buckets(i)
+                // this.sub_filters = sub_filters
+                // let _buckets = buckets.filter(x=>{
+                //     return x.type == this.state.active_sub_view
+                // })
+                
+                // this.state.breakdown = data.campaigns
+                // this.state.active_data.profitability = {
+                //     dates: _buckets.map(i => i.dates).flat(),
+                //     pp100: _buckets.map(i=>i.pp100).flat(),
+                //     cpm: _buckets.map(i=>i.cpm).flat(),
+                //     marketr_index: _buckets[0] ? _buckets[0]['marketr_index'] : 0,
+                //     cost: _buckets.map(i=>i.cost).reduce((a, b) => a + b, 0)
+                // }
+                break
+            // campaigns
+            case 2:
+                // anchor
+                const group_struct = (group) => {
+                    return {
+                        campaign_name: group.campaign_name,
+                        adset_name: group.adset_name,
+                        pp100: group.pp100,
+                        cpm: group.cpm,
+                        date_start: group.date_start,
+                        marketr_index:group.marketr_index,
+                        action: group.action,
+                        conversions: group.conversions,
+                        cost: group.cost,
+                        cost_comp: group.cost_comp,
+                        pp100_comp: group.pp100_comp,
+                        index_comp: group.index_comp,
+                        cost_comp: group.cost_comp,
+                        cpl_comp: group.cpl_comp,
+                        perc_change: group.perc_change
+                    }
+                } 
+                let ranged_adsets = []
+                const group_ranged_adsets = group => {
+                    ranged_adsets = [...ranged_adsets, group_struct(group)]
+                    if (!sub_filters.includes(group.adset_name)) sub_filters.push(group.adset_name)
+                }
+                const group_adsets = group => {
+                    adsets = [...adsets, group_struct(group)]
+                }
+
+                if (data.ranged_ad_groups.search) {
+                    data.ranged_ad_groups.search.map(ad_groups=> group_ranged_adsets(ad_groups) )
+                }
+                if (data.ranged_ad_groups.social) {
+                    data.ranged_ad_groups.social.map(ad_groups=> group_ranged_adsets(ad_groups) )
+                }
+                if (data.ad_groups.search) {
+                    data.ad_groups.search.map(ad_groups=> group_adsets(ad_groups) )
+                }
+                if (data.ad_groups.social) {
+                    data.ad_groups.social.map(ad_groups=> group_adsets(ad_groups) )
+                }
+
+                this.sub_filters = sub_filters
+               
+                let _ranged_adsets = ranged_adsets.filter(x=>x.adset_name == this.state.active_sub_view)
+                let _adsets = adsets.filter(x=>x.adset_name == this.state.active_sub_view)
+                this.state.breakdown = remove_duplicates(_adsets, 'adset_name')
+
+                this.state.active_data.profitability = {
+                    dates: _ranged_adsets.map(_camp=>_camp.date_start),
+                    pp100: _ranged_adsets.map(_camp=>_camp.pp100),
+                    cpm: _ranged_adsets.map(_camp=>_camp.cpm),
+                    marketr_index: _ranged_adsets.map(_camp=>_camp.marketr_index)[_ranged_adsets.map(_camp=>_camp.marketr_index).length - 1],
+                    action: _ranged_adsets.map(i=>i.action)[_ranged_adsets.map(i=>i.action).length - 1],
+                    cost: _ranged_adsets.map(i=>i.cost).reduce((a, b) => a + b, 0)
                 }
         
                 break
@@ -774,38 +835,44 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 break
             case 1:
-
-                let run_search = this.state.active_sub_view == 'search' ? true : false
-                let run_social = this.state.active_sub_view == 'social' ? true : false
-      
-                let social = run_social && data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
-                let search = run_search && data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
                 
-                let length;
-                if (run_search) length = search.length
-                else if (run_social) length = social.length
-
+                /*html*/
                 markup = `
-                    ${social ? social.map(_row=>{
-                        return row(
-                            _row.marketr_index,
-                            _row.campaign_name,
-                            'campaign name',
-                            _row.cost
-                        )
-                    }).join("") : ''}
-                    ${search ? search.map(_row=>{
-                        return row(
-                            _row.marketr_index,
-                            _row.campaign_name,
-                            'campaign name',
-                            _row.cost
-                        )
-                    }).join("") : ''}
+                ${data.map(_row=>{
+                    return meta(_row.marketr_index, _row.perc_change)
+                }).join("")}
                 `
-                if (length < 3) {
-                    markup += this.mas_campaigns_cta()
-                }
+                // let run_search = this.state.active_sub_view == 'search' ? true : false
+                // let run_social = this.state.active_sub_view == 'social' ? true : false
+      
+                // let social = run_social && data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
+                // let search = run_search && data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
+                
+                // let length;
+                // if (run_search) length = search.length
+                // else if (run_social) length = social.length
+
+                // markup = `
+                //     ${social ? social.map(_row=>{
+                //         return row(
+                //             _row.marketr_index,
+                //             _row.campaign_name,
+                //             'campaign name',
+                //             _row.cost
+                //         )
+                //     }).join("") : ''}
+                //     ${search ? search.map(_row=>{
+                //         return row(
+                //             _row.marketr_index,
+                //             _row.campaign_name,
+                //             'campaign name',
+                //             _row.cost
+                //         )
+                //     }).join("") : ''}
+                // `
+                // if (length < 3) {
+                //     markup += this.mas_campaigns_cta()
+                // }
                 
                 break
             case 2:
@@ -920,7 +987,7 @@ export default class PortfolioPerformance extends HTMLElement {
         }
 
         const el = /*html*/ `
-            ${this.state.active_view == 3 ? `<p class="small_txt">Campaign: ${breakdown.campaign_name ? breakdown.campaign_name : ''}</p>` : ''}
+            ${[2,3].includes(this.state.active_view) ? `<p class="small_txt">Campaign: ${breakdown.campaign_name ? breakdown.campaign_name : ''}</p>` : ''}
             ${comparison_row(
                 {__title: 'health score'},
                 {__value: marketr_index ? marketr_index : 0, _currency: false, score: true},
@@ -1044,9 +1111,9 @@ export default class PortfolioPerformance extends HTMLElement {
 
         let breakdown_title = {
             0: 'active platforms',
-            1: 'active campaigns',
-            2: 'campaign breakdown',
-            3: 'ad creative'
+            1: 'campaign breakdown',
+            2: 'ad group breakdown',
+            3: 'ad breakdown'
         }
 
         let recommendation_map = {
@@ -1055,7 +1122,7 @@ export default class PortfolioPerformance extends HTMLElement {
             'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
         }
         let class_list = `col`
-        let column_set = ![0,1].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
+        let column_set = ![0].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
 
@@ -1136,11 +1203,11 @@ export default class PortfolioPerformance extends HTMLElement {
                         </div>
                     </div>
                     ${
-                        ![0,1].includes(active_view)
+                        ![0].includes(active_view)
                             ? `
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div style="overflow-y:auto;" class="h--500 mobile--h--600 card card-body">
-                                    ${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}
+                                    <!--${title(`Our recommendation: &nbsp;<span class="action">${action ? action : ""}</span>`)}-->
                                     ${ !this.state.null_data
                                         ?
                                             this.comparison_markup()
@@ -1301,17 +1368,17 @@ export default class PortfolioPerformance extends HTMLElement {
                     <div id="view_selector" class="h--300 row row_cancel">
                         <div class="${btn_length}">
                             <button value="0" class="btn ${active_view == 0 ? active_classlist : inactive_classlist}">
-                            portfolio
-                            </button>
-                        </div>
-                        <div class="${btn_length}">
-                            <button value="1" class="btn ${active_view == 1 ? active_classlist : inactive_classlist}">
                             platforms
                             </button>
                         </div>
                         <div class="${btn_length}">
-                            <button value="2" class="btn ${active_view == 2 ? active_classlist : inactive_classlist}">
+                            <button value="1" class="btn ${active_view == 1 ? active_classlist : inactive_classlist}">
                             campaigns
+                            </button>
+                        </div>
+                        <div class="${btn_length}">
+                            <button value="2" class="btn ${active_view == 2 ? active_classlist : inactive_classlist}">
+                            ad groups
                             </button>
                         </div>
                         <div class="${btn_length}">
@@ -1394,7 +1461,6 @@ export default class PortfolioPerformance extends HTMLElement {
             })
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 if (res.index) {
                     this.state.null_data = false
                     this.state.data = res.index
