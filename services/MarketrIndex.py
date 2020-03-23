@@ -538,9 +538,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         
         struct['ad_groups']['search'] = export(sets['search']['search_t4'].get('agg'))
         struct['ranged_ad_groups']['search'] = export(sets['search']['search_t4'].get('range'))
-        print(export(sets['search']['search_t4'].get('range')))
-        print('\n')
-        print(export(sets['search']['search_t4'].get('agg')))
         struct['campaigns']['search'] = export(sets['search']['search_t3'].get('agg'))
         struct['ranged_campaigns']['search'] = export(sets['search']['search_t3'].get('range'))
         

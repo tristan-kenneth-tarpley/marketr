@@ -12,7 +12,7 @@ import NanocalRanger from 'https://unpkg.com/nanocal-ranger'
 
 const title = (text, small=false) => `<h1 class="widget__title ${small ? `small` : ''}">${text}</h1>`
 const value = (text, small=false) => `<h1 class="${small ? 'small_txt' : '' } widget__value">${text}</h1>`
-const marketr_score = (value, sub=false, huge=false) => {
+export const marketr_score = (value, sub=false, huge=false) => {
     let _class;
     let returned
        
@@ -36,7 +36,14 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-
+        .center__widget {
+            display: flex;
+            align-self:center;
+            flex-direction: column;
+        }
+        .comparison_row h1 {
+            margin-bottom: 0;
+        }
         #info_bar {
             position: absolute;
             right: 1%;
@@ -255,15 +262,6 @@ export default class PortfolioPerformance extends HTMLElement {
             null_data: false
         }
 
-        // this.observer = new MutationObserver(mutations=>{
-        //     mutations.forEach(mutation => {
-        //         if (mutation.type == "attributes") {
-        //             if (mutation.attributeName == 'applied') this.apply(mutation.target)
-        //             else if (mutation.attributeName == 'dismissed') this.dismiss(mutation.target)
-        //         }
-        //     });
-        // });
-
         this.static_copy = {
             score: `<p>An overall health metric of your portfolio. It’s a metric without limit.</p>
             <p>And much like a stock price, ideally increases over time. </p>
@@ -280,6 +278,17 @@ export default class PortfolioPerformance extends HTMLElement {
             <p>This value is calculated and compared at the lowest levels of your marketing tactics and rolled up to the Account Portfolio level.</p>
             `
         }
+
+             
+        this.filter_observer = new MutationObserver(mutations=>{
+            mutations.forEach(mutation => {
+                if (mutation.type == "attributes") {
+                    if (mutation.attributeName == 'active_sub_view') {
+                        this.reset_sub_view(this.shadow.querySelector('filter-by').getAttribute('active_sub_view'))
+                    }
+                }
+            });
+        });
 
         this.css = styles()
     }
@@ -394,11 +403,10 @@ export default class PortfolioPerformance extends HTMLElement {
 
 
     data_controller(){
-        let { active_view, data, active_data } = this.state
+        let { active_view, data } = this.state
         let dates = [],
             pp100 = [],
             cpm = [],
-            buckets = [],
             sub_filters = [],
             campaigns = [],
             adsets = []
@@ -733,6 +741,16 @@ export default class PortfolioPerformance extends HTMLElement {
         })
     }
 
+    reset_sub_view(value){
+        this.sub_edited = true
+        const first = async () => this.state.active_sub_view = value
+        first().then(()=>this.data_controller()).then(() => {
+            setTimeout(()=>{
+                this.render(false)
+            }, 200)
+        })
+    }
+
     view_controller(el, error=false){
         if (!error) {
             el.querySelectorAll('#view_selector button').forEach(el=>{
@@ -742,7 +760,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     target.classList.remove('btn-outline-secondary')
                     target.classList.add('btn-secondary')
 
-                    this.sub_edited = false
+                    this.sub_edited = !this.sub_edited ? false : true
                     const first = async () => {
                         this.state.active_view = parseInt(target.value)
                     } 
@@ -752,17 +770,6 @@ export default class PortfolioPerformance extends HTMLElement {
                         }, 600)
                     })
                 })
-            })
-
-            el.querySelector("#sub_target").addEventListener('change', e=>{
-                this.sub_edited = true
-                const first = async () => this.state.active_sub_view = e.currentTarget.value
-                first().then(()=>this.data_controller()).then(() => {
-                    setTimeout(()=>{
-                        this.render(false)
-                    }, 600)
-                })
-
             })
         }
 
@@ -862,37 +869,6 @@ export default class PortfolioPerformance extends HTMLElement {
                     return meta(_row.marketr_index, _row.perc_change)
                 }).join("")}
                 `
-                // let run_search = this.state.active_sub_view == 'search' ? true : false
-                // let run_social = this.state.active_sub_view == 'social' ? true : false
-      
-                // let social = run_social && data.social ? remove_duplicates(data.social.reverse(), 'campaign_id') : null
-                // let search = run_search && data.search ? remove_duplicates(data.search.reverse(), 'campaignid') : null
-                
-                // let length;
-                // if (run_search) length = search.length
-                // else if (run_social) length = social.length
-
-                // markup = `
-                //     ${social ? social.map(_row=>{
-                //         return row(
-                //             _row.marketr_index,
-                //             _row.campaign_name,
-                //             'campaign name',
-                //             _row.cost
-                //         )
-                //     }).join("") : ''}
-                //     ${search ? search.map(_row=>{
-                //         return row(
-                //             _row.marketr_index,
-                //             _row.campaign_name,
-                //             'campaign name',
-                //             _row.cost
-                //         )
-                //     }).join("") : ''}
-                // `
-                // if (length < 3) {
-                //     markup += this.mas_campaigns_cta()
-                // }
                 
                 break
             case 2:
@@ -990,13 +966,13 @@ export default class PortfolioPerformance extends HTMLElement {
             /*html*/
             return `
             <div class="">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-                        <span>${__title}</span>
+                <div style="height:25%;" class="comparison_row row">
+                    <div class="center__widget col-lg-6 col-md-6 col-sm-6 col-6">
+                        <h1 class="widget__title">${__title}</h1>
                     </div>
-                    <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6">
+                    <div style="text-align:right;" class="center__widget col-lg-6 col-md-6 col-sm-6 col-6">
                         ${display_value}
-                        <p style="font-size: 8pt;">
+                        <p style="margin-bottom: 0;font-size: 8pt;">
                             <span class="${perc_variance(comp, low_is_good)}">${comp > 1 ? "+" : ""}${number_rounded(comp)}%</span>
                             vs. campaign avg.
                         </p>
@@ -1007,7 +983,6 @@ export default class PortfolioPerformance extends HTMLElement {
         }
 
         const el = /*html*/ `
-            ${[2,3].includes(this.state.active_view) ? `<p class="small_txt">Campaign: ${breakdown.campaign_name ? breakdown.campaign_name : ''}</p>` : ''}
             ${comparison_row(
                 {__title: 'health score'},
                 {__value: marketr_index ? marketr_index : 0, _currency: false, score: true},
@@ -1102,7 +1077,7 @@ export default class PortfolioPerformance extends HTMLElement {
         if (this.state.opp_expanded) this.shadow.querySelector("#opps_container").style.margin = "0 0 2em 0"
         /*html*/
         el.innerHTML = `
-            <div class="h--500 mobile--h--700 card card-body" id="topic_opps">
+            <div class="h--700 mobile--h--700 card card-body" id="topic_opps">
                 ${this.opps_title()}
                 <div id="append__to"></div>
             </div>
@@ -1326,10 +1301,16 @@ export default class PortfolioPerformance extends HTMLElement {
     }
 
     Filter(){
+
         const filter = new Filter()
         filter.setAttribute('sub_list', JSON.stringify(this.sub_filters))
         filter.setAttribute('active_sub_view', this.state.active_sub_view)
         filter.setAttribute('active_view', this.state.active_view)
+
+        this.filter_observer.observe(filter, {
+            attributes: true
+        });
+
         return filter
     }
 
@@ -1445,7 +1426,6 @@ export default class PortfolioPerformance extends HTMLElement {
             `
             el = document.createElement('div')
             el.innerHTML = markup
-
             if (this.state.active_view > 0 && !this.sub_edited) this.state.active_sub_view = this.sub_filters[0].key
             if (!this.state.null_data) this.data_controller()
 

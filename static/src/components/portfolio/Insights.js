@@ -61,9 +61,9 @@ export default class Insights extends HTMLElement {
         ${this.css}
         <div class="shadow_insights">
                 ${this.state.data.map((ins, index)=>{
-                    let title = `From ${ins.admin} on ${ins.time}`
+                    let title = `From ${ins.admin.replace(/\\/g, '')} on ${ins.time}`
                     let uid = `${ins.time}_${index}`
-                    let body = urlify(ins.body.replace('/\/g', "-"))
+                    let body = urlify(ins.body.replace(/\\/g, ''))
 
                     /*html*/
                     return `
