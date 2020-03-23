@@ -398,7 +398,7 @@ export default class PortfolioPerformance extends HTMLElement {
     reset_charts(el){
         setTimeout(()=>{
             this.profit_chart(el.querySelector("#profit_chart"))
-        }, 800)
+        }, 200)
     }
 
 
@@ -456,14 +456,13 @@ export default class PortfolioPerformance extends HTMLElement {
                 let ranged_campaigns = []
                 const group_ranged_campaigns = camp => {
                     ranged_campaigns = [...ranged_campaigns, campaign_struct(camp)]
-
+                }
+                const group_campaigns = camp => {
+                    campaigns = [...campaigns, campaign_struct(camp)]
                     if (!sub_filters.includes(camp.campaign_name)) sub_filters.push(sub_filter_struct({
                         key: camp.campaign_name,
                         marketr_index: camp.marketr_index
                     }))
-                }
-                const group_campaigns = camp => {
-                    campaigns = [...campaigns, campaign_struct(camp)]
                 }
 
                 if (data.ranged_campaigns.search) {
@@ -482,6 +481,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 this.sub_filters = sub_filters
                 let _ranged_campaigns = ranged_campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
                 let _campaigns = campaigns.filter(x=>x.campaign_name == this.state.active_sub_view)
+    
                 this.state.breakdown = remove_duplicates(_campaigns, 'campaign_name')
 
                 this.state.active_data.profitability = {
@@ -532,14 +532,14 @@ export default class PortfolioPerformance extends HTMLElement {
                 let ranged_adsets = []
                 const group_ranged_adsets = group => {
                     ranged_adsets = [...ranged_adsets, group_struct(group)]
+                }
+                const group_adsets = group => {
+                    adsets = [...adsets, group_struct(group)]
                     if (!sub_filters.includes(group.adset_name)) sub_filters.push(sub_filter_struct({
                         key: group.adset_name,
                         campaign_name: group.campaign_name,
                         marketr_index: group.marketr_index
                     }))
-                }
-                const group_adsets = group => {
-                    adsets = [...adsets, group_struct(group)]
                 }
 
                 if (data.ranged_ad_groups.search) {
@@ -619,12 +619,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     }
 
                     ranged_ads = [...ranged_ads, ads_struct(i, id, name, creative)]
-                    if (!sub_filters.includes(name)) sub_filters.push(sub_filter_struct({
-                        key: name,
-                        campaign_name: i.campaign_name,
-                        adset_name: i.adset_name,
-                        marketr_index: i.marketr_index
-                    }))
+
                 }
                 
 
@@ -664,7 +659,12 @@ export default class PortfolioPerformance extends HTMLElement {
                     }
 
                     ads = [...ads, ads_struct(i, id, name, creative)]
-
+                    if (!sub_filters.includes(name)) sub_filters.push(sub_filter_struct({
+                        key: name,
+                        campaign_name: i.campaign_name,
+                        adset_name: i.adset_name,
+                        marketr_index: i.marketr_index
+                    }))
                 }
 
                 if (data.ads.search) {
@@ -747,7 +747,7 @@ export default class PortfolioPerformance extends HTMLElement {
         first().then(()=>this.data_controller()).then(() => {
             setTimeout(()=>{
                 this.render(false)
-            }, 200)
+            }, 100)
         })
     }
 
@@ -760,14 +760,14 @@ export default class PortfolioPerformance extends HTMLElement {
                     target.classList.remove('btn-outline-secondary')
                     target.classList.add('btn-secondary')
 
-                    this.sub_edited = !this.sub_edited ? false : true
+                    this.sub_edited = false
                     const first = async () => {
                         this.state.active_view = parseInt(target.value)
                     } 
                     first().then(()=>this.data_controller()).then(()=>{
                         setTimeout(()=>{
                             this.render(false)
-                        }, 600)
+                        }, 100)
                     })
                 })
             })
@@ -885,7 +885,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 if (data) {
                     is_search = data.creative.headline == undefined ? false : true;
-                    is_social = data.creative.headline == undefined ? true : false;
+                    is_social = data.creative.headline == undefined ? true : false; 
                 }
                 markup = meta(data.marketr_index, data.perc_change, true) + `<div class='separator'></div>`
 

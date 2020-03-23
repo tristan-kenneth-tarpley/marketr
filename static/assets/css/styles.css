@@ -12146,9 +12146,12 @@ html.modal-active, body.modal-active {
       border-radius: 3px;
       font-weight: 300;
       width: 80%;
-      top: -60px;
+      top: 5%;
+      bottom: 10%;
+      right: 10%;
+      left: 10%;
       max-height: 80%;
-      position: relative;
+      position: absolute;
       overflow-y: auto;
     }
     #modal-container .modal._right {
