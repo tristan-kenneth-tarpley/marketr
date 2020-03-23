@@ -314,6 +314,14 @@ class UserService:
 		query = "UPDATE customer_basic SET stripe_id = ? WHERE email = ?"
 		db.execute(query, False, (stripe_id, email), commit=True)
 
+	def CreateSecondaryUser(first_name, last_name, email, password, customer_id):
+		password = encrypt_password(password)
+		query = f"""INSERT INTO secondary_users (first_name, last_name, email, password, customer_id)
+					VALUES (?, ?, ?, ?, ?)
+				"""
+
+		db.execute(query, False, (first_name, last_name, email, password, customer_id), commit=True)
+
 	def CreateCustomer(email, password, form=None, app=None):
 		password = encrypt_password(password)
 		ts = time.time()
@@ -385,11 +393,30 @@ class UserService:
 		init_query = "EXEC init_profile_after_purchase @date = ?, @customer_id = ?"
 		db.execute(init_query, False, (time, user), commit=True)
 
+	def get_all_account_users(customer_id):
+		query = """select first_name, last_name, email from customer_basic
+					where id = ?
+					union
+					select first_name, last_name, email from secondary_users
+					where customer_id = ?"""
+
+		data, cursor = db.execute(query, True, (customer_id, customer_id))
+		data = cursor.fetchall()
+		returned = [{
+			'first_name': user[0],
+			'last_name': user[1],
+			'email': user[2]
+		} for user in data]
+
+		return returned
 
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
-			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in, stripe_id, company_name FROM dbo.customer_basic WHERE email = ?"
+			query = """
+				select * from all_co_users(?)
+				order by id desc
+			"""
 			data, cursor = db.execute(query, True, tup)
 			data = cursor.fetchall()
 			cursor.close()

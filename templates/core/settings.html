@@ -2,7 +2,7 @@
 {% from "macros/_macros.html" import render_field %}
 {% from "macros/home_macros.html" import tab_bar, section, multi_val_iterator, product_val_iterator %}
 {% from "macros/dashboard_macros.html" import todo, messages, goals, score, back_button %}
-{% from "macros/settings_macros.html" import active_plan_root, change_password, welcome, top_row, invoices, plan_overview %}
+{% from "macros/settings_macros.html" import active_plan_root, account_actions, welcome, top_row, invoices, plan_overview %}
 {% from "macros/_branding_macros.html" import pricing %}
 
 {% block title %}
@@ -33,11 +33,10 @@
                                             {{ welcome(page) }}
                                         </div>  
                                         <div style="text-align:right;" class="col">
-                                            {{ change_password() }} 
+                                            {{ account_actions(email) }} 
                                         </div>
                        
                                     </div>
-                                    <div class="separator"></div>
                                     {% if page.customer['current_plan'] == True %}
                                         {{ active_plan_root(page) }}   
                                     {% else %}

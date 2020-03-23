@@ -5796,7 +5796,7 @@ ul#product {
 }
 
 .x_small_txt {
-  font-size: 70%;
+  font-size: 70% !important;
 }
 .ad_container .box {
   padding: 10%;

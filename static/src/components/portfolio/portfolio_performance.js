@@ -1082,19 +1082,21 @@ export default class PortfolioPerformance extends HTMLElement {
                 <div id="append__to"></div>
             </div>
         `
+        if (this.state.data){
+            let opp = this.Opportunities()
+            opp.setAttribute('json', JSON.stringify(this.state.data.topics))
+            el.querySelector('#append__to').appendChild(opp)
+    
+            el.querySelector("#opp_expand").addEventListener('click', e=>{
+                this.state.opp_expanded = this.state.opp_expanded ? false : true
+                let target = this.shadow.querySelector("#opps_container")
+                target.classList.remove(...target.classList)
+                target.classList.add(...this.opps_classList().split(" "))
+                this.shadow.querySelector('#opps_container').innerHTML = ""
+                this.shadow.querySelector('#opps_container').appendChild(this.opps_container())
+            })
 
-        let opp = this.Opportunities()
-        opp.setAttribute('json', JSON.stringify(this.state.data.topics))
-        el.querySelector('#append__to').appendChild(opp)
-
-        el.querySelector("#opp_expand").addEventListener('click', e=>{
-            this.state.opp_expanded = this.state.opp_expanded ? false : true
-            let target = this.shadow.querySelector("#opps_container")
-            target.classList.remove(...target.classList)
-            target.classList.add(...this.opps_classList().split(" "))
-            this.shadow.querySelector('#opps_container').innerHTML = ""
-            this.shadow.querySelector('#opps_container').appendChild(this.opps_container())
-        })
+        }
 
         return el
     }

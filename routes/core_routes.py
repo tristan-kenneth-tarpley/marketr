@@ -35,6 +35,34 @@ import datetime
 def sitemap():
     return render_template('sitemap.xml')
 
+@app.route('/users/add_secondary', methods=['POST'])
+@login_required
+def add_secondary_user():
+    req = request.get_json()
+    UserService.CreateSecondaryUser(
+        req.get('first_name'),
+        req.get('last_name'),
+        req.get('email'),
+        req.get('password'),
+        session['user']
+    )
+
+    email = EmailService()
+    email.send_email_reset(req.get('email'), reset=False)
+
+    return 'hi'
+
+@app.route('/users/remove_secondary', methods=['POST'])
+@login_required
+def remove_secondary_user():
+    req = request.get_json()
+    query = "DELETE FROM secondary_users WHERE email = ?"
+    db.execute(query, False, (req.get('email'),), commit=True)
+
+    return 'hi'
+
+
+
 @app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
     form = forms.ForgotPassword()
@@ -49,7 +77,6 @@ def forgot():
         session['logged_in'] = False
 
     return render_template('forgot.html', form=form, send=True)
-
 
 
 @app.route('/forgot_password/<token>', methods=['GET', 'POST'])
@@ -329,7 +356,8 @@ def settings():
     page = SettingsViewModel(session['email'], customer_id=session['user'], stripe_id=session['stripe_id'])
     return render_template(
         'core/settings.html', page=page,
-        root=True
+        root=True,
+        email=session['email']
     )
 
 @app.route('/home/settings/change_password', methods=['GET', 'POST'])

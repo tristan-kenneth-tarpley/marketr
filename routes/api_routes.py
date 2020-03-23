@@ -44,6 +44,11 @@ from selenium.webdriver.firefox.options import Options
 from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
 from services.OpportunitiesService import compile_topics
 
+@app.route('/api/get_all_account_users', methods=['GET'])
+def get_all_account_users():
+    returned = UserService.get_all_account_users(session['user'])
+    return json.dumps(returned)
+
 @app.route('/api/products', methods=['GET'])
 def get_personas():
     customer_id = request.args.get('customer_id')
