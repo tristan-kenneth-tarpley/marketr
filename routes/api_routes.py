@@ -467,28 +467,30 @@ def last_7_spend():
 def compile_master_index():
     req = request.get_json()
     demo = True if req.get('customer_id') == '181' else False
-    start_date_1 = req.get('start_date_1')
-    end_date_1 = req.get('end_date_1')
+    start_date = req.get('start_date')
+    end_date = req.get('end_date')
     ltv = float(req.get('ltv').replace(",", ""))
     company_name = req.get('company_name')
     run_social = req.get('facebook')
     run_search = req.get('google')
+    get_opps = req.get('get_opps')
 
+    print('called')
     try:
         dfs = compile_data_view(
             run_social=run_social,
             run_search=run_search,
             company_name=company_name,
-            start_date=start_date_1,
-            end_date=end_date_1,
+            start_date=start_date,
+            end_date=end_date,
             demo=demo,
-            ltv=ltv
+            ltv=ltv,
+            get_opps=get_opps
         )
 
         search_df = dfs.get('search_df')
         social_df = dfs.get('social_df')
         opps = dfs.get('topic_opps')
-
         compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
         index = MarketrIndex(ltv)
         lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))

@@ -73,6 +73,7 @@ const styles = () => {
             border-left: 3px solid transparent !important;
             border-right: 3px solid transparent !important;
             border-top: 3px solid transparent !important; 
+            width: 100%;
         }
         #select_date_range:hover {
             box-shadow: none;
@@ -129,8 +130,9 @@ const styles = () => {
             font-weight: 300;
             font-size: 95%;
         }
-        #select_container .widget__title {
-            margin-bottom: 3%;
+        #select_container .widget__title,
+        #filters_container .widget__title {
+            margin-bottom: 2%;
         }
         #view_selector {
             padding: 0 4%;
@@ -599,7 +601,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 }
 
                 const group_ranged_ads = i => {
-                    let id = i.id == undefined ? i['adid'] : i['id']
+                    let id = i['ad_id']
                     
                     let name = i.ad_name == undefined || 0 ? id : i.ad_name
                     let creative;
@@ -638,7 +640,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
 
                 const group_ads = i => {
-                    let id = i.id == undefined ? i['adid'] : i['id']
+                    let id = i['ad_id']
                         
                     let name = i.ad_name == undefined || 0 ? id : i.ad_name
                     let creative;
@@ -720,25 +722,55 @@ export default class PortfolioPerformance extends HTMLElement {
         back.onclick = e => {
             if (e.target.id == 'date_popup_back') e.currentTarget.style.display = 'none'
         }
-        
-        const ranger = new NanocalRanger({ target: document.getElementById('ranger') })
-        ranger.on('selectedRange', ([start, end]) => {
+
+        const ranger_handler = ([start, end], compare=false) => {
             const close = () => back.style.display = 'none'
             const apply = document.querySelector('#apply_date')
             const cancel = document.querySelector('#cancel_date')
+            const date_schema = (year, month, day) => `${year}-${month}-${day} 00:00:00 UTC`
 
-            apply.style.display = 'flex'
-            cancel.style.display = 'flex'
+            const start_date = date_schema(start.year, start.month, start.day)
+            const end_date = date_schema(end.year, end.month, end.day)
 
-            apply.addEventListener('click', e=>{
-                this.start_date_1 = `${start.year}-${start.month}-${start.day} 00:00:00 UTC`
-                this.end_date_1 = `${end.year}-${end.month}-${end.day} 00:00:00 UTC`
-                
-                this.render()
-                close()
+            if (!compare) {
+                apply.style.display = 'flex'
+                cancel.style.display = 'flex'
+                apply.addEventListener('click', e=>{
+                    this.start_date_1 = start_date
+                    this.end_date_1 = end_date
+                    this.data_controller()
+                    this.render()
+                    close()
+                })
+                cancel.addEventListener('click', e=> close() )
+            } else {
+                this.start_date_2 = start_date
+                this.end_date_2 = end_date
+            }
+        }
+
+        const first_date_range = document.getElementById('first_date_range')
+        const compare_date_range = document.getElementById('compare_date_range')
+
+        if (first_date_range.innerHTML == ''){
+            const first_ranger = new NanocalRanger({ target: first_date_range })
+            first_ranger.on('selectedRange', ([start, end])=>ranger_handler([start, end]))
+
+            document.querySelectorAll('.switch__input').forEach(_el=>{
+                _el.addEventListener('change', e=>{
+                    if (e.currentTarget.checked) {
+                        const compare_ranger = new NanocalRanger({target: compare_date_range})
+                        compare_ranger.on('selectedRange', ([start, end])=>ranger_handler([start, end], true))
+                        document.querySelector("#date_range_helper").style.display = 'block'
+                    } else {
+                        compare_date_range.innerHTML = ""
+                        document.querySelector("#date_range_helper").style.display = 'none'
+                        this.start_date_2 = undefined
+                        this.end_data_2 = undefined
+                    }
+                })
             })
-            cancel.addEventListener('click', e=> close() )
-        })
+        }
     }
 
     reset_sub_view(value){
@@ -796,6 +828,9 @@ export default class PortfolioPerformance extends HTMLElement {
         let {active_view} = this.state
         
         if (!data) this.data_controller()
+        console.log(this.state.compare_data)
+        const active_comparison_data = this.clean_comparison_data()
+        console.log(active_comparison_data)
 
         const row = (index, description, description_sub, cost) => {
             let third_sub = {
@@ -821,12 +856,6 @@ export default class PortfolioPerformance extends HTMLElement {
         } 
 
         const meta = (index, perc_change, condensed=false) => {
-            let third_sub = {
-                0: `<p style="font-size:8pt;">total spent</p>`,
-                1: `<p style="font-size:8pt;">total spent</p>`,
-                2: `<p style="font-size:8pt;">total spent</p>`,
-                3: ``
-            }
             let up = `<i class="fas direction_icons good_direction fa-arrow-circle-up"></i>`
             let down = `<i class="fas direction_icons bad_direction fa-arrow-circle-down"></i>`
             /*html*/
@@ -853,7 +882,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 /*html*/
                 markup = `
                 ${data.map(_row=>{
-                    return row(_row.index, _row.type, 'campaign type', _row.cost)
+                    return row(_row.index, _row.type, 'channel', _row.cost)
                 }).join('')}
                 
                 `
@@ -888,12 +917,17 @@ export default class PortfolioPerformance extends HTMLElement {
                     is_social = data.creative.headline == undefined ? true : false; 
                 }
                 markup = meta(data.marketr_index, data.perc_change, true) + `<div class='separator'></div>`
-
+                let url;
+                try {
+                    url = JSON.parse(data.creative.url)[0]
+                } catch (error) {
+                    url = data.creative.url
+                }
                 if (is_search) {
                     if (data.creative.headline != '0 | 0') {
                         markup += google(
                             data.creative.headline,
-                            JSON.parse(data.creative.url)[0],
+                            url,
                             data.creative.description
                         )
                     } else {
@@ -922,9 +956,63 @@ export default class PortfolioPerformance extends HTMLElement {
         `
     }
 
+    clean_comparison_data(){
+        let returned;
+        try {
+            const {active_view} = this.state
+            const {buckets, campaigns, ad_groups, ads} = this.state.compare_data
+            let _campaigns = [],
+                _ad_groups = [],
+                _ads = [],
+                grouping = [
+                    {arr: _campaigns, _from_state: campaigns},
+                    {arr: _ad_groups, _from_state: ad_groups},
+                    {arr: _ads, _from_state: ads}
+                ]
+
+            for (let i of grouping) {
+                i.arr.push(i._from_state.social)
+                i.arr.push(i._from_state.search)
+            }
+
+            let _arr;
+            let uid;
+
+            const filter_set = (arr, uid) => {
+                return arr.filter(x=>x[uid] == this.state.active_sub_view)[0]
+            }
+
+            switch(active_view) {
+                case 0:
+                    returned = buckets
+                case 1:
+                    _arr = _campaigns.flat()
+                    uid = 'campaign_name'
+                    returned = filter_set(_arr, uid)
+                    break
+                case 2:
+                    _arr = _ad_groups.flat()
+                    uid = 'adset_name'
+                    returned = filter_set(_arr, uid)
+                    break
+                case 3:
+                    _arr = _ads.flat()
+                    uid = 'ad_id'
+                    returned = filter_set(_arr, uid)
+                    break
+            }
+        }
+        catch(e){}
+        console.log(returned)
+        return returned
+  
+    }
+
     comparison_markup(){
   
         let breakdown;
+        const active_comparison_data = this.clean_comparison_data()
+
         try {
             breakdown = this.state.breakdown[0] == undefined ? this.state.breakdown : this.state.breakdown[0]
         } catch (error) {
@@ -933,6 +1021,11 @@ export default class PortfolioPerformance extends HTMLElement {
         }
         let {cost, cost_comp, pp100, pp100_comp, marketr_index, index_comp, cpl_comp, conversions} = breakdown
         let cpl = conversions > 0 ? cost / conversions : null
+        let __cpl = active_comparison_data
+                    ? active_comparison_data.conversions > 0
+                        ? active_comparison_data.cost / active_comparison_data.conversions
+                        : 0
+                    : null
         
         const perc_variance = (_value, low_is_good=false) => {
             let value = !isNaN(_value) ? parseFloat(_value) : 'n/a'
@@ -952,16 +1045,35 @@ export default class PortfolioPerformance extends HTMLElement {
             return color
         }
 
-        const comparison_row = (_title, _value, perc) => {
+        const comparison_row = (_title, _value, perc, prev_values=null) => {
             let {__title} = _title,
                 {__value, _currency, score} = _value,
                 {comp, low_is_good} = perc
+            let prev_value,
+                prev_value_comp,
+                prev_currency,
+                prev_score;
+            
+            if (prev_values) {
+                prev_value = prev_values.prev_value
+                prev_value_comp = prev_values.prev_value_comp
+                prev_currency = prev_values.currency
+                prev_score = prev_values.score
+            }
 
             let display_value;
             if (_currency) display_value = value(currency(__value))
             else if (score) display_value = marketr_score(__value)
             else display_value = value(number_rounded(__value))
 
+            let up = `<i class="fas fa-arrow-up"></i>`,
+                down = `<i class="fas fa-arrow-down"></i>`,
+                even = `<i class="fas fa-equals"></i>`,
+                icon = prev_value != __value ? prev_value > __value ? down : up : even
+
+            let display_prev;
+            if (prev_currency) display_prev = currency(prev_value)
+            else if (prev_score) display_prev = number(prev_value)
 
             /*html*/
             return `
@@ -976,32 +1088,52 @@ export default class PortfolioPerformance extends HTMLElement {
                             <span class="${perc_variance(comp, low_is_good)}">${comp > 1 ? "+" : ""}${number_rounded(comp)}%</span>
                             vs. campaign avg.
                         </p>
+                        ${prev_values
+                            /*html*/
+                            ?`
+                            <section class="prev_values_container">
+                                <p class="prev_value" style="margin-bottom: 0;font-size: 8pt;">
+                                    ${ icon } Was <span>${display_prev}</span>
+                                </p>
+                            </section>`
+                            
+                            : ``
+                        }
                     </div>
                 </div>
             </div>
             `
         }
-
         const el = /*html*/ `
+            ${this.state.compare_data
+                ? `<p style="margin-bottom:0;position:absolute;top:1%;" class="x_small_txt">
+                        <strong>Comparing: ${this.start_date_1.slice(0, -13)} / ${this.end_date_1.slice(0, -13)}</strong>
+                    </p>`
+                : ``
+            }
             ${comparison_row(
                 {__title: 'health score'},
                 {__value: marketr_index ? marketr_index : 0, _currency: false, score: true},
-                {comp: index_comp ? index_comp : 0, low_is_good: false}
+                {comp: index_comp ? index_comp : 0, low_is_good: false},
+                active_comparison_data ? {prev_value: active_comparison_data.marketr_index, prev_value_comp: null, score:true} : null
             )}
             ${comparison_row(
                 {__title: 'spend over<br>time period'},
                 {__value: cost ? cost : 0, _currency: true, score: false},
-                {comp: cost_comp ? cost_comp : 0, low_is_good: null}
+                {comp: cost_comp ? cost_comp : 0, low_is_good: null},
+                active_comparison_data ? {prev_value: active_comparison_data.cost, prev_value_comp: null, currency:true} : null
             )}
             ${comparison_row(
                 {__title: 'conversion cost'},
                 {__value: cpl ? cpl : 0, _currency: true, score: false},
-                {comp: cpl_comp ? cpl_comp : 0, low_is_good: true}
+                {comp: cpl_comp ? cpl_comp : 0, low_is_good: true},
+                active_comparison_data ? {prev_value: __cpl, prev_value_comp: null, currency:true} : null
             )}
             ${comparison_row(
                 {__title: 'profit potential per $100 spent'},
                 {__value: pp100 ? pp100 : 0, _currency: true, score: false},
-                {comp: pp100_comp ? pp100_comp : 0, low_is_good: false}
+                {comp: pp100_comp ? pp100_comp : 0, low_is_good: false},
+                active_comparison_data ? {prev_value: active_comparison_data.pp100, prev_value_comp: null, currency:true} : null
             )}
             `
 
@@ -1105,7 +1237,6 @@ export default class PortfolioPerformance extends HTMLElement {
         let {action} = this.state.active_data.profitability
         let {active_view} = this.state
 
-
         let breakdown_title = {
             0: 'active platforms',
             1: 'campaign breakdown',
@@ -1113,12 +1244,6 @@ export default class PortfolioPerformance extends HTMLElement {
             3: 'ad breakdown'
         }
 
-        let recommendation_map = {
-            'middle of the pack': 'middle of the pack',
-            'invest more': `You've found a winner! Figure out what's succeeding with this campaign and replicate it. Make use of the intel tab. If you need some inspiration, just reach out to your Market(r) guide in the chat!`,
-            'kill it': `They can't all be winners, unfortunately. We recommend cutting bait on this one, analyzing to see what didn't work, and learning for next time.`
-        }
-        let class_list = `col`
         let column_set = ![0].includes(active_view) ? 'col-lg-6 col-md-6 col-sm-12' : 'col-lg-12 col-md-12 col-sm-12'
         /*html*/
         return `
@@ -1144,7 +1269,7 @@ export default class PortfolioPerformance extends HTMLElement {
         </div>
 
 
-        <div class="row row_cancel">
+        <div id="filters_container" class="row row_cancel">
       
             <div class="col-lg-6 col-md-6 col-12">
                 ${this.view_by()}
@@ -1159,25 +1284,10 @@ export default class PortfolioPerformance extends HTMLElement {
                             <div class="col-lg-6 col-sm-6">
                                 ${title('filter by', true)}
                                 <div id="sub_target"></div>
-          <!--                      <select id="sub_target" class="form-control">
-                                    ${ !this.state.null_data
-                                        ?
-                                            this.sub_filters.map((filter, index)=>{
-                                                /*html*/
-                                                return (
-                                                    `<option value="${filter}" ${filter == this.state.active_sub_view  ? `selected` : '' }>
-                                                        ${filter}
-                                                    </option>
-                                                    `
-                                                )
-                                            }).join('')
-                                        : `<option></option>`
-                                }
-                                </select> -->
                             </div>`
                             : `<select id="sub_target" style="display:none;" class="form-control"></select>`
                         }
-                        <div class="${this.state.active_view != 0 ? "col-lg-6 col-sm-6" : "col-lg-9 col-sm-9"}">
+                        <div class="col-lg-6 col-sm-6">
                             ${title(`Select dates`, true)}
                             ${this.date_range()}
                         </div>
@@ -1438,6 +1548,7 @@ export default class PortfolioPerformance extends HTMLElement {
             this.shadow.innerHTML = ""
             compile()
                 .then(el=>{
+                    console.log(this.state.data)
                     el.querySelector('#home-row').innerHTML += this.template()
                     return el
                 })
@@ -1463,12 +1574,13 @@ export default class PortfolioPerformance extends HTMLElement {
                 }),
                 body:  JSON.stringify({
                     customer_id: this.customer_id,
-                    company_name: this.customer_id == 200 ? "o3" : this.company_name,
+                    company_name: this.company_name,
                     ltv: this.ltv,
-                    start_date_1: this.start_date_1,
-                    end_date_1: this.end_date_1,
+                    start_date: this.start_date_1,
+                    end_date: this.end_date_1,
                     facebook: this.facebook_id,
-                    google: this.google_id
+                    google: this.google_id,
+                    get_opps: true
                 })
             })
             .then(res => res.json())
@@ -1480,8 +1592,35 @@ export default class PortfolioPerformance extends HTMLElement {
                 } else this.state.null_data = true
 
                 opps.setAttribute('json', JSON.stringify(res.topics))
-                run()
-                
+                if (this.start_date_2) {
+                    fetch('/api/index/detailed', {
+                        method: 'POST',
+                        headers : new Headers({
+                            "content-type": "application/json"
+                        }),
+                        body:  JSON.stringify({
+                            customer_id: this.customer_id,
+                            company_name: this.company_name,
+                            ltv: this.ltv,
+                            start_date: this.start_date_2,
+                            end_date: this.end_date_2,
+                            facebook: this.facebook_id,
+                            google: this.google_id,
+                            get_opps: false
+                        })
+                    })
+                    .then(res=>res.json())
+                    .then(res=> {
+                        if (res.index) {
+                            this.state.null_compare_data = false                            
+                            this.state.compare_data = res.index
+                        } else this.state.null_compare_data = true
+
+                    })
+                    .then(()=>run())
+                    .catch(e=>{})
+                }
+                else run()
             })
             .catch(e=>{
                 console.log(e)

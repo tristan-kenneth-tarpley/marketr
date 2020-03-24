@@ -1,14 +1,27 @@
 import pandas as pd
 import numpy as np
 import json
+import linecache
+import sys
+
+def PrintException():
+    exc_type, exc_obj, tb = sys.exc_info()
+    f = tb.tb_frame
+    lineno = tb.tb_lineno
+    filename = f.f_code.co_filename
+    linecache.checkcache(filename)
+    line = linecache.getline(filename, lineno, f.f_globals)
+    print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(filename, lineno, line.strip(), exc_obj))
+
+
 
 ######################### SUPER CLASS #########################
 
 class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
-        self.social_columns = ['id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
-        self.search_columns = ['adid', 'adset_id', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
+        self.social_columns = ['ad_id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
+        self.search_columns = ['ad_id', 'adset_id', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cpc': 'mean', 'ctr' : 'mean', 'lcr': 'mean', '_cost': 'mean',
             'cost': 'sum', 'conversions': 'sum', 'clicks':'sum', 'impressions': 'sum'
@@ -131,6 +144,12 @@ class MarketrIndex(object):
         if 'campaignid' in df.columns:
             group_columns.append('campaignid')
 
+        if 'adset_id' in df.columns:
+            group_columns.append('adset_id')
+
+        if 'ad_id' in df.columns:
+            group_columns.append('ad_id')
+
         group_columns = [item for sublist in group_columns for item in sublist]
         
         try:
@@ -216,9 +235,9 @@ class AdIndex(MarketrIndex):
 
 
         if search and not social:
-            column_selector = ['adid']
+            column_selector = ['ad_id']
         if social and not search:
-            column_selector = ['id']
+            column_selector = ['ad_id']
 
         agg_df = self.Assign(df, column_selector[0], search=search, social=social)
         agg_df['marketr_index'] = df.apply(self.reorder_m_index, axis=1)
@@ -411,8 +430,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
 
     def _compile(ltv=ltv, search_df=search_df, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         
-        search_columns = ['campaign_name', 'adset_name', 'imageadurl', 'adid', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']
-        social_columns = ['campaign_name', 'adset_name', 'ad_name', 'id', 'thumbnail_url', 'body', 'daily_budget']
+        search_columns = ['campaign_name', 'adset_name', 'imageadurl', 'ad_id', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']
+        social_columns = ['campaign_name', 'adset_name', 'ad_name', 'ad_id', 'thumbnail_url', 'body', 'daily_budget']
         
         def trickle(active_df, active_columns, subset, id_key, search=False, social=False):
             try:
@@ -447,17 +466,18 @@ def compile_master(ltv=None, search_df=None, social_df=None):
                 
             except Exception as e:
                 print(f'error: {e}')
+                PrintException()
                 index_agg=index=t2=t3=t4 = None
             
             return index_agg, index, t2, t3, t4
         
         
         social_index_agg, social_index, social_t2, social_t3, social_t4 = trickle(
-            social_df, social_columns, 'id', 'campaign_id', search=False, social=True 
+            social_df, social_columns, 'ad_id', 'campaign_id', search=False, social=True 
         )
         
         search_index_agg, search_index, search_t2, search_t3, search_t4 = trickle(
-            search_df, search_columns, 'adid', 'campaignid', search=True, social=False 
+            search_df, search_columns, 'ad_id', 'campaignid', search=True, social=False 
         )
         
         returned = {

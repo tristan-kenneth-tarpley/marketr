@@ -69,16 +69,46 @@
 
 <div style="display:none;" id="date_popup_back">
   <div id="date_popup">
-    <h1 style="padding:0;" class="widget__title center_it">Select date range</h1>
-    <div id="ranger"></div>
+    <section id="date-header">
+      <h1 style="margin:0;padding-top:0;" class="widget__title center_it">Select date range</h1>
+      <div id="compare__container">
+        <p class="small_txt">Compare date ranges?</p>
+        <section class="switches" data-theme="blue">
+          <div class="switch switch--5">
+            <label class="switch__label">
+              <input type="checkbox" class="switch__input">
+              <span class="switch__design"></span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </section>
+  
+    <div class="ranger_wrappers" id="first_date_range"></div>
+    <p id="date_range_helper" style="display:none;" class="center_it small_txt">Select the date range you want to compare</p>
+    <div class="ranger_wrappers" id="compare_date_range"></div>
     <button style="display:none;" id="apply_date" class="btn btn-secondary">ok</button>
     <button style="display:none;" id="cancel_date" class="btn btn-neutral">cancel</button>
 
     <style>
-      .day.in-range { background-color: #62cde0 !important; }
-      #date_popup {
-        display:block;
+      div#compare__container {
+        width: 100%;
+        margin: 0 auto;
+        justify-content: center;
+        display: flex;
       }
+      div#compare__container p {
+        margin-bottom: 0;
+        margin-right: 2em;
+      }
+      section#date-header {
+        display: inline-flex;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+      }
+      .day.in-range { background-color: #62cde0 !important; }
+      #date_popup { display:block; }
       #date_popup .btn {
         display: flex;
         position: absolute;
@@ -86,6 +116,13 @@
       }
       #date_popup .btn-secondary { right: 5%; }
       #date_popup .btn-neutral { right: 15%; }
+      .ranger_wrappers .wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        height: 50%;
+        margin: 0 auto;
+      }
     </style>
   </div>
 </div>
