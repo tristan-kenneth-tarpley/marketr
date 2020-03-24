@@ -4,7 +4,7 @@ import cta from './campaign_cta.js';
 import {Achievements, Store, Rewards} from './gamify.js'
 import {IntakeProgressMeter, CoreViewModels, AuditRequest, PriceViewModel, AuditViewModel, WalletViewModel} from './ViewModels.js'
 import {PaymentsService} from './services.js'
-import {isNumber} from './convenience/helpers.js'
+import {isNumber, validateEmail} from './convenience/helpers.js'
 import InitFuncs from './future_refactor/InitFuncs.js'
 import {select_controller} from '/static/src/components/UI_elements.js'
 
