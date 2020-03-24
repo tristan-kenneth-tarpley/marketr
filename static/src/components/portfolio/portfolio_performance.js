@@ -828,31 +828,24 @@ export default class PortfolioPerformance extends HTMLElement {
         let {active_view} = this.state
         
         if (!data) this.data_controller()
-        console.log(this.state.compare_data)
-        const active_comparison_data = this.clean_comparison_data()
-        console.log(active_comparison_data)
+        const active_ = this.clean_comparison_data()
 
         const row = (index, description, description_sub, cost) => {
-            let third_sub = {
-                0: `<p style="font-size:8pt;">total spent</p>`,
-                1: `<p style="font-size:8pt;">total spent</p>`,
-                2: `<p style="font-size:8pt;">cost per<br>conversion</p>`,
-                3: ``
-            }
+            let active_comp = null//active_ ? active_.filter(x=>x.type == description)[0] : null
             /*html*/
-            return`
+            return (`
                 <li class="stat-wrapper">
                     <div class="stat">
-                        ${marketr_score(index, true)}
+                        ${marketr_score(index, true)} ${ active_comp ? `<span style="font-size:70%;">(${marketr_score(active_comp.index)})</span>` : '' }
                         <br>
                         <span>${description}<br> <p style="font-size: 8pt;">${description_sub}</p></span>
                         <h3 style="text-align:right;">
-                            ${currency(cost)}
-                            ${third_sub[active_view]}
+                            ${currency(cost)} ${ active_comp ? `(${currency(active_comp.cost)})` : ''}
+                            <p style="font-size:8pt;">total spent</p>
                         </h3>
                     </div>
                 </li>
-            `
+            `)
         } 
 
         const meta = (index, perc_change, condensed=false) => {
@@ -860,6 +853,7 @@ export default class PortfolioPerformance extends HTMLElement {
             let down = `<i class="fas direction_icons bad_direction fa-arrow-circle-down"></i>`
             /*html*/
             return`
+            
                 <div class="center_vertically ${condensed ? 'condensed' : '' }">
                     <div class="center_it">
                         ${title('health score', true)}
@@ -881,6 +875,13 @@ export default class PortfolioPerformance extends HTMLElement {
             case 0:
                 /*html*/
                 markup = `
+                ${this.state.compare_data
+                    ? `<p style="margin-bottom:0;position:absolute;top:21px;right:49px;" class="x_small_txt">
+                            <strong>Comparing: ${this.start_date_1.slice(0, -13)} / ${this.end_date_1.slice(0, -13)}</strong>
+                        </p>`
+                    : ``
+                }
+
                 ${data.map(_row=>{
                     return row(_row.index, _row.type, 'channel', _row.cost)
                 }).join('')}
@@ -960,7 +961,8 @@ export default class PortfolioPerformance extends HTMLElement {
         let returned;
         try {
             const {active_view} = this.state
-            const {buckets, campaigns, ad_groups, ads} = this.state.compare_data
+            const {breakdown} = this.state
+            const {campaigns, ad_groups, ads} = this.state.compare_data
             let _campaigns = [],
                 _ad_groups = [],
                 _ads = [],
@@ -984,7 +986,8 @@ export default class PortfolioPerformance extends HTMLElement {
 
             switch(active_view) {
                 case 0:
-                    returned = buckets
+                    returned = breakdown
+                    break
                 case 1:
                     _arr = _campaigns.flat()
                     uid = 'campaign_name'
@@ -1002,8 +1005,9 @@ export default class PortfolioPerformance extends HTMLElement {
                     break
             }
         }
-        catch(e){}
-        console.log(returned)
+        catch(e){
+            console.log(e)
+        }
         return returned
   
     }
@@ -1548,7 +1552,6 @@ export default class PortfolioPerformance extends HTMLElement {
             this.shadow.innerHTML = ""
             compile()
                 .then(el=>{
-                    console.log(this.state.data)
                     el.querySelector('#home-row').innerHTML += this.template()
                     return el
                 })
@@ -1615,7 +1618,6 @@ export default class PortfolioPerformance extends HTMLElement {
                             this.state.null_compare_data = false                            
                             this.state.compare_data = res.index
                         } else this.state.null_compare_data = true
-
                     })
                     .then(()=>run())
                     .catch(e=>{})
