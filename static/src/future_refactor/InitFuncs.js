@@ -1,6 +1,6 @@
 import {perc_container} from '/static/src/components/UI_elements.js'
 
-const get_account_availability = email => {
+export const get_account_availability = email => {
 	const get_account_availability_handler = (data) => {
 		let target = $("#new_email")
 		if (data == 'False') {
