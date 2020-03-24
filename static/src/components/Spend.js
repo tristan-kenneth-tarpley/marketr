@@ -370,7 +370,7 @@ export default class AdSpend extends HTMLElement {
             </div>
             
 
-            <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} hidden btn btn-outline btn-outline-primary">Recalculate</button>
+            <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
             
 
             <div class="row">
