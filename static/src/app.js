@@ -118,7 +118,7 @@ const Controller = class {
 					case 'begin':
 					case 'competitors':
 					case 'company':
-						init.TypeFormStyle()
+						if (!this.params.get('home')) init.TypeFormStyle()
 						break
 					case 'audience':
 						init.container('audience')
