@@ -877,7 +877,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 markup = `
                 ${this.state.compare_data
                     ? `<p style="margin-bottom:0;position:absolute;top:21px;right:49px;" class="x_small_txt">
-                            <strong>Comparing: ${this.start_date_1.slice(0, -13)} / ${this.end_date_1.slice(0, -13)}</strong>
+                            <strong>Comparing: (${this.start_date_2.slice(0, -13)} - ${this.end_date_2.slice(0, -13)}) vs. (${this.start_date_1.slice(0, -13)} - ${this.end_date_1.slice(0, -13)})</strong>
                         </p>`
                     : ``
                 }
@@ -1111,7 +1111,7 @@ export default class PortfolioPerformance extends HTMLElement {
         const el = /*html*/ `
             ${this.state.compare_data
                 ? `<p style="margin-bottom:0;position:absolute;top:1%;" class="x_small_txt">
-                        <strong>Comparing: ${this.start_date_1.slice(0, -13)} / ${this.end_date_1.slice(0, -13)}</strong>
+                <strong>Comparing: (${this.start_date_2.slice(0, -13)} - ${this.end_date_2.slice(0, -13)}) vs. (${this.start_date_1.slice(0, -13)} - ${this.end_date_1.slice(0, -13)})</strong>
                     </p>`
                 : ``
             }
