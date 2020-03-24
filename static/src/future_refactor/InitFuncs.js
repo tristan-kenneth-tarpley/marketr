@@ -30,7 +30,7 @@ export const get_account_availability = email => {
 	})
 } 
 
-const platform_row = (name, index) => {	
+export const platform_row = (name, index) => {	
 	const tile = (title) => {
 		return `
 		<div class="table-responsive hover_box col-lg-5 col-md-">
@@ -74,7 +74,7 @@ const platform_row = (name, index) => {
 }
 
 
-const get_container = title => {
+export const get_container = title => {
 	const container_item = (name, id, page) => {
 		let base_url = "/competitors/company/"
 		let link;
@@ -125,7 +125,7 @@ const get_container = title => {
 	})
 }
 
-const get_account_reps = id => {
+export const get_account_reps = id => {
 	const account_reps_handler = (data) => {
 		data = JSON.parse(data)
 	}
@@ -135,7 +135,7 @@ const get_account_reps = id => {
 	})
 } 	
 
-const InputMethods = class {
+export const InputMethods = class {
 	populate_inputs (data, key) {
 		$(`select[name=${key}]`).val(data[0][key]).digits()
 		$(`input[name=${key}]`).val(data[0][key]).digits()
@@ -213,7 +213,7 @@ const InputMethods = class {
 	} //end load_sales_cycle
 }
 
-const handle_past_inputs = class {
+export const handle_past_inputs = class {
 
 	constructor(data, url_path, debug) {
 		function isJson(str) {
@@ -277,7 +277,7 @@ const handle_past_inputs = class {
 }
 
 
-const stage_interactions = () => {
+export const stage_interactions = () => {
 
 	const handle_last_in_left = () => {
 		alert('last of left')
@@ -361,7 +361,7 @@ const stage_interactions = () => {
 
 }
 
-export default class InitFuncs {
+export class InitFuncs {
 
 	container(title){
 		get_container(title)
