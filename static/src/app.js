@@ -84,6 +84,7 @@ const Controller = class {
 			"/admin": "admin",
 			"/personnel": "personnel",
 			"/new": "new",
+			"/new/early_access": "new",
 			"/create": "create",
 			"/payments": "payments",
 			"/pricing": "pricing",
@@ -114,6 +115,11 @@ const Controller = class {
 				const init = new InitFuncs()
 				const progress = new IntakeProgressMeter()
 				switch (this.PageMap(this.url_path)) {
+					case 'begin':
+					case 'competitors':
+					case 'company':
+						init.TypeFormStyle()
+						break
 					case 'audience':
 						init.container('audience')
 						break
@@ -172,9 +178,9 @@ const Controller = class {
 				case '/home':
 				case '/home/achievements':
 				case '/home/settings':
-					game.lets_play()
-					game.poll()
-					store.init()
+					// game.lets_play()
+					// game.poll()
+					// store.init()
 					break
 			}
 						

@@ -154,7 +154,6 @@
 {% endif %}
 
 
-{% macro spend_allocation(page) %}
 {% set base = page.data['core']['core'][0] %}
 <ad-spend
     customer_id="{{page.data['core']['core'][0]['id']}}"
@@ -170,13 +169,3 @@
     demo="{{demo}}"
     spend_rate="{{ base.get('spend_rate') }}">
 </ad-spend>
-{% endmacro %}
-
-{{ section(
-    link=None,
-    title="Ad Spend",
-    body=spend_allocation(page),
-    hash="Allocation",
-    admin=page.admin,
-    demo=demo
-) }}

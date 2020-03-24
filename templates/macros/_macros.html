@@ -516,7 +516,7 @@
 			</p>
 		{% endif %}	
 	{% else %}
-		<p style="display: none;">Lorem ipsum</p>
+		
 	{% endif %}
 {% endmacro %}
 
@@ -533,13 +533,13 @@
 {% endmacro %}
 
 
-{% macro build_question(type=None, placeholder=None, format=None, route=None,required=None, file_path=None, sub_name=None, form=None, label=None, p_label=None, name=None, why=None, what=None, copy=None, target=None, h6=None, p=None, nested=False) %}
+{% macro build_question(count=0, type=None, placeholder=None, format=None, route=None,required=None, file_path=None, sub_name=None, form=None, label=None, p_label=None, name=None, why=None, what=None, copy=None, target=None, h6=None, p=None, nested=False) %}
 	{% if nested == True %}
-		<div class="col-lg-6 col-md-6 col-sm-12 col-12">
+		<div data-count="{{count}}" class="intake_q col-lg-6 col-md-6 col-sm-12 col-12">
 	{% else %}
-		<div class="col">
+		<div data-count="{{count}}" class="intake_q col">
 	{% endif %}
-	
+
 	{% if not type | tiles %}
 		{{ create_label_p(label, 'l', name=name, why=why, what=what, copy=copy, target=target) }}
 		{{ create_label_p(p_label, 'p', p_label=p_label, why=why, what=what, copy=copy, target=target) }}
@@ -610,16 +610,15 @@
 				{% if current == 0 or not questions[last_string]['a_format'] | layout %}
 					{{ open_row(debug=False) }}
 				{% endif %}
-
-					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
+				{{ build_question(count=loop.index - 1, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
 			
-				{% if not questions[next_string]['a_format'] | layout %}
+				{% if not questions.get(next_string)['a_format'] | layout %}
 					{{ close_row(debug=False) }}
 				{% endif %}
 
 			{% else %}
 				{{ open_row() }}
-					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=False) }}
+					{{ build_question(count=loop.index - 1, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=False) }}
 				{{ close_row() }}
 			{% endif %}
 		{% endfor %}

@@ -184,7 +184,6 @@ class SpendAllocation:
                     'Product / service',
                     'Your brand(s)',
                     'Landing page a/b testing campaign'
-                    'Landing page a/b testing campaign'
             ]}, {
                 'bucket': 'social',
                 'biz_type': ['b2b'],

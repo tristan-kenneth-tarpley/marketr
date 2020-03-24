@@ -367,8 +367,48 @@ export class InitFuncs {
 		get_container(title)
 	}
 
+	TypeFormStyle() {
+		const button = document.querySelector('input[name=submit_button]')
+		button.style.visibility = 'hidden'
+
+		let node_list = document.querySelectorAll('.intake_q')
+		node_list.forEach(q => {
+			let count = parseInt(q.dataset.count)
+			let next = document.querySelector(`.intake_q[data-count="${count + 1}"]`)
+			let next_next = document.querySelector(`.intake_q[data-count="${count + 2}"]`)
+			
+			if (count > 0) {
+				q.classList.add('_hide')
+				q.style.visibility = 'hidden'
+			}
+			const run_next = () => {
+				setTimeout(()=>{
+					next.style.visibility = 'visible'
+					next.classList.add('_show');
+					next.classList.remove('_hide');
+					
+					if (!next.querySelector('input')) {
+						setTimeout(()=>{
+							next_next.style.visibility = 'visible'
+							next_next.classList.add('_show');
+							next_next.classList.remove('_hide');
+						}, 1000)
+					}
+				}, 1000)
+			}
+
+			const show_btn = () => button.style.visibility = 'visible'
+			count < node_list.length - 1
+				? q.querySelector('.tiles-row')
+					? q.addEventListener('click', e=>run_next())
+					: q.addEventListener('keyup', e=>run_next())
+				: q.addEventListener('click', e=>show_btn())
+			
+			
+		})
+	}
+
 	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
-		
 
 		const hover_box = () => {
 			$(".in_box").click(function(event){
@@ -572,6 +612,38 @@ export class InitFuncs {
 	}
 
 	create_account() {
+		document.querySelectorAll('input').forEach(inp=>{
+			inp.style.border = '2px solid #e5e5e5'
+			inp.style.borderRadius = '6px'
+			inp.addEventListener('focus', e=>{
+				e.currentTarget.style.border = '2px solid #62cde0'
+			})
+		})
+		document.querySelector('#content-ready').style.width = '50%'
+		document.querySelector('.mCont').style.width = '100%'
+		document.querySelectorAll('.signup_order').forEach(ds=>{
+			let count = parseInt(ds.dataset.show)
+			if (count > 0) ds.style.visibility = 'hidden'
+
+			let next = document.querySelector(`.signup_order[data-show="${count + 1}"]`)
+			ds.addEventListener('keyup', e=>{
+				setTimeout(()=>{
+					next.style.visibility = 'visible'
+					next.classList.add('_show')
+					next.classList.remove('_hide')
+				}, 600)
+			})
+		})
+
+		setTimeout(()=>{
+			let target = document.querySelector('.signup_order[data-show="1"]')
+			target.style.visibility = 'visible'
+			target.classList.add('_show');
+			target.classList.remove('_hide');
+		}, 1000)
+
+
+
 		$('.create_button').prop('disabled', true);
 		function delay(callback, ms) {
 			var timer = 0;

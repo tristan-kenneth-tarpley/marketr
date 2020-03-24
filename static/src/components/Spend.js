@@ -19,6 +19,49 @@ const styles = () => {
             color: var(--darker-blue);
             font-weight: bold;
         }
+        .next_steps {
+            background: var(--nav-color);
+            position: -webkit-sticky;
+            position: sticky;
+            bottom: 20px;
+            z-index: 10;
+            margin: 30px 30px 0;
+            border-radius: 4px;
+        }
+        .next_steps .inner {
+            padding: 8px 20px 8px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .next_steps h1 {
+            font-size: 1em;
+            margin-bottom: 0;
+            color: white;
+        }
+        .next_steps .btn {
+            color: #292940;
+            background-color: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            padding: 0 15px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .next_steps h1 span {
+            font-size: 14px;
+            color: #B8B8D9;
+        }
+        .instructions ol {
+            text-align:left;
+            width: 70%;
+            margin: 0 auto;
+        }
     </style>
     `.trim()
 }
@@ -53,6 +96,21 @@ export default class AdSpend extends HTMLElement {
 
     considerations(){
 
+        const modal_markup = `<p>We provide a recommended budget based on the following factors:</p>
+        <ul class='no-dec'>
+            <li>Stage of your company</li>
+            <li>Annual Revenues</li>
+            <li>Business model</li>
+        </ul>
+        
+        <p>Additional factors that you may want to adjust your spend targets (either up or down) include:</p>
+        <ul class='no-dec'>
+            <li>Competitiveness of your product/service niche.</li>
+            <li>Industry-specific adjustments i.e. financial or real-estate services may require a higher spend rate for effective results.</li>
+            <li>Location.</li>
+            <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
+        </ul>`
+        const uid = "how_calculated"
         const considerations_meta = {
             "brand<br>strength": {
                 id: "brand_strength",
@@ -78,41 +136,86 @@ export default class AdSpend extends HTMLElement {
                 <p>High |  Competition is intense.  Established players and/or many new entrants.</p>`
 
             }
-    }
+        }
 
         const shell = (value, title) => {
             return (
             /*html*/
                 `
-                <div class='col-lg-3 col-md-3 col-sm-6 col-6 center_it'>   
-                    <div id="six" data-uid="${title}" class="left-modal modal-controller button"><p>${title}</p></div>
-                    ${modal(title, considerations_meta[title].hover, title)}
-                    <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
-                        <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
-                        <option value="medium" ${value == 'medium' ? "selected" : ""}>medium</option>
-                        <option value="low" ${value == 'low' ? "selected" : ""}>low</option>
-                    </select>
+                <div class='col-lg-12'>   
+                    <div class="row row_cancel">
+                        <div class="col-lg-2 col-sm-12"></div>
+                        <div class="col-lg-4">
+                            <div id="six" data-uid="${title}" class="left-modal modal-controller button"><p>${title}</p></div>
+                            ${modal(title, considerations_meta[title].hover, title)}
+                        </div>
+                        <div class="col-lg-4">
+                            <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
+                                <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
+                                <option value="medium" ${value == 'medium' ? "selected" : ""}>medium</option>
+                                <option value="low" ${value == 'low' ? "selected" : ""}>low</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-sm-12"></div>
+                    </div>
+                    
                 </div>
                 `.trim()
             )
         }
-        /*html*/
-        return (
-            `<div class="row row-cancel">
-            <div class="col-md-3">
-                <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
-            </div>
 
-            ${shell(this.brand_strength, "brand<br>strength")}
-            ${shell(this.growth_needs, "growth<br>needs")}
-            ${shell(this.competitiveness, "competition")}
-            <div class="col"></div>
-            <div class="col center_it">
-                <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+        /*html*/
+        return (`
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="center_it"><strong>
+                        ${this.state.real
+                            ? `Ad spend budget:`
+                            : `Recommended budget:`}
+                    </strong></p>
+                    <div class="center_it">
+                        <h5>
+                            <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
+                            ${this.state.real && this.active_plan && this.demo != 'True' ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
+                        </h5>
+                        ${this.actual_budget == null ?
+                        /*html*/
+                        `<div id="six" data-uid="${uid}" class="modal-controller button"><p>How is this calculated?</p></div>
+                        ${modal("How is this calculated", modal_markup, uid)}
+                        `
+                        : 
+                        /*html*/
+                        `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
+                    </div>
+                </div>
+                <div class="${this.active_plan ? '' : 'hidden'} center_it col">
+                    <button class="budget_type actual_budget_view allocation_toggle btn ${
+                        this.state.real == true
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">real budget</button>
+                    <button class="budget_type rec_budget_view allocation_toggle btn ${
+                        this.state.real == false
+                        ? 'btn btn-secondary'
+                        : 'allocation_toggle-inactive'}">recommended</button>
+                </div>
             </div>
-            <div class="col"></div>
-        </div>`
-        )
+            <div class="row row-cancel">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
+                </div>
+                <div class="col-lg-2"></div>
+
+                ${shell(this.brand_strength, "brand<br>strength")}
+                ${shell(this.growth_needs, "growth<br>needs")}
+                ${shell(this.competitiveness, "competition")}
+                <div class="col-lg-12"></div>
+                <div class="col-lg-12 center_it">
+                    <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+                </div>
+                <div class="col-lg-12"></div>
+            </div>
+        `)
     }
 
     update_cta(total, el){
@@ -231,97 +334,44 @@ export default class AdSpend extends HTMLElement {
     }
 
     next_steps() {
-        return `<div class="col-lg-5 col-md-5 col-sm-12">        
-        <div class="next_steps">
-            <h6>Next steps</h6>
-            <div class="top">
-                <h5>Do it yourself</h5>
-                <p>Go forth and conquer.  Keep us posted on your successes!</p>
-
-                <h5 class="center_it">or</h5>
-
-                <h5>We can help</h5>
-                <p>Market(r) will create, manage, and optimize your campaign(s) overtime for a flat-monthly fee.</p>
-
-            </div>
-            <div class="bottom">
-                <div class="center_it">
-                    <a class="btn btn-secondary" href="/pricing">view plans</a><br>
-                    <a href="/schedule">want to chat first?</a>
+        console.log(this.num_campaigns)
+        /*html*/
+        return (`
+            <div class="next_steps">        
+                <div class="inner">
+                    <h1>You're 95% there.
+                        <span>Just 2 more clicks and you'll be running powerful digital campaigns.</span>
+                    </h1>
+                    <a href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">Run this marketing plan for me</a>
                 </div>
+                
             </div>
-        </div>
-    </div>`
+        `)
     }
 
     shell(){
-        const modal_markup = `<p>We provide a recommended budget based on the following factors:</p>
-        <ul class='no-dec'>
-            <li>Stage of your company</li>
-            <li>Annual Revenues</li>
-            <li>Business model</li>
-        </ul>
-        
-        <p>Additional factors that you may want to adjust your spend targets (either up or down) include:</p>
-        <ul class='no-dec'>
-            <li>Competitiveness of your product/service niche.</li>
-            <li>Industry-specific adjustments i.e. financial or real-estate services may require a higher spend rate for effective results.</li>
-            <li>Location.</li>
-            <li>Average Customer Life Time Value.  A higher CLTV means more competitors fighting and driving up the cost to reach and acquire new customers.</li>
-        </ul>`
-        const uid = "how_calculated"
         /*html*/
         return (
             
-            `<div class="row ${this.active_plan ? '' : 'hidden'}">
-                <div class="${this.state.real && this.active_plan ? 'col-md-6 col-12' : 'col-md-6 col-12'}">
-                    <p class="center_it"><strong>
-                        ${this.state.real
-                            ? `Ad spend budget:`
-                            : `Recommended budget:`}
-                    </strong></p>
-                    <div class="center_it">
-                        <h5>
-                            <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month
-                            ${this.state.real && this.active_plan && this.demo != 'True' ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
-                        </h5>
-                        ${this.actual_budget == null ?
-                        /*html*/
-                        `<div id="six" data-uid="${uid}" class="modal-controller button"><p>How is this calculated?</p></div>
-                        ${modal("How is this calculated", modal_markup, uid)}
-                        `
-                        : 
-                        /*html*/
-                        `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
-                    </div>
-                </div>
-                <div class="center_it col">
-                    <button class="budget_type actual_budget_view allocation_toggle btn ${
-                        this.state.real == true
-                        ? 'btn btn-secondary'
-                        : 'allocation_toggle-inactive'}">real budget</button>
-                    <button class="budget_type rec_budget_view allocation_toggle btn ${
-                        this.state.real == false
-                        ? 'btn btn-secondary'
-                        : 'allocation_toggle-inactive'}">recommended</button>
-                </div>
-            </div>
+            `
             <div class="row row_cancel">
                 <div class="col-md-2 col-12"></div>
-                <div class="col-md-10 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
+                <div class="col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
                     <p class="small_txt">View recommendations with new budget:</p>
                     <div class="form-group">
-                        <input type="number" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
+                        <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
                         <div class="form-control-border"></div>
                     </div>
                     <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
                 </div>
 
-                <div class="col-md-2 col-12 ${this.state.real && this.active_plan ? 'hidden' : ''}">
-                    <button id="recalc" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
+                <div class="col-md-2 col-12">
                 </div>
-           
             </div>
+            
+
+            <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} hidden btn btn-outline btn-outline-primary">Recalculate</button>
+            
 
             <div class="row">
                 <div class="col-lg-7 col-md-7 col-sm-12">
@@ -339,12 +389,6 @@ export default class AdSpend extends HTMLElement {
                     <div id="stage_breakdown" class="inset">
                     </div>
                 </div>
-       
-                ${!this.active_plan || this.demo
-                    ? this.next_steps()
-                    : ``
-                }
-                    
             </div>
             
             `
@@ -367,11 +411,51 @@ export default class AdSpend extends HTMLElement {
             this.shadow.innerHTML = ""
     
             const _el = document.createElement('div')
+            /*html*/
             _el.innerHTML = `
                 ${this.css}
-                ${this.considerations()}
-                <div class="separator"></div>
-                ${this.shell()}
+                ${!this.active_plan || this.demo
+                    /*html*/
+                    ? `
+                    <div class="instructions row row-cancel">
+                        <div class="col-lg-2 col-12"></div>
+                        <div class="col-lg-8 col-12">  
+                            <div class="card center_it card-body">
+                                <h1 class="widget__title">
+                                    We made something for you!
+                                </h1>
+                                <p>We went into our playbook and pulled out the plays we think you should run. Want to customize it a bit more?</p>
+                                    <ol>
+                                        <li>Tweak the settings on the left</li>
+                                        <li>Adjust your budget as you need</li>
+                                        <li>Read through the campaign descriptions by clicking on the titles.</li>
+                                    </ol>  
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-12"></div>
+                    </div>`
+                    : ''
+                }
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card card-body">
+                            ${this.considerations()}
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div class="card card-body">
+                            ${this.shell()}
+                        </div>
+                    </div>
+                </div>
+                
+
+                ${!this.active_plan || this.demo
+                    ? this.next_steps()
+                    : ``
+                }
             `
             return _el
         }
@@ -497,6 +581,7 @@ export default class AdSpend extends HTMLElement {
         })
             .then((res) => res.json())
             .then((data) => this.data = data )
+            .then(()=>this.num_campaigns = this.data.allocation.map(item => item.num_campaigns).reduce((prev, next) => prev + next))
             .then(()=> this.compile() )
             .catch((err)=>console.log(err))
     }

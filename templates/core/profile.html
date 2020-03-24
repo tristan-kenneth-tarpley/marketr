@@ -19,7 +19,7 @@
 						</a>
 					{% endif %}
 				</h2>
-				<p style="margin-bottom: 0;" class="small_txt">{{core['industry']|safe}} | {{ core['city'] | capitalize }}, {{ core['state'] | capitalize }} | Business stage: {{ core['stage'] }}</p>
+				<p style="margin-bottom: 0;" class="small_txt">{{core['industry']|safe}} Company | {{ core['city'] | capitalize }}, {{ core['state'] | capitalize }} | Business stage: {{ core['stage'] }}</p>
 				<p style="margin-bottom: 0;" class="small_txt">{{ core['employees'] | safe }} employees/contractors with approx. ${{ core['revenue'] }} in annual revenues.</p>
 				{% if core['website'] %} 
 					<a style="margin-bottom: 0;" target="__blank" href="https://{{core['website']}}" class="small_txt">{{ core['website'] | safe }}</a>
@@ -527,7 +527,32 @@
 {% endif %}
 {% endmacro %}
 
-
+{% set perc = page.data['core']['core'][0]['perc_complete'] %}
+{% if perc < 100 %}
+	<style>
+		#completion_title {
+			margin: 0;
+			text-align:left;
+		}
+		.profile_completion#outer {
+			width: 100%;
+			border-radius: 100px;
+			margin-bottom: 1.5em;
+			background-color: white;
+			border: 1px solid rgba(0,0,0,.1);
+		}
+		.profile_completion #inner {
+			background-color: var(--primary);
+			height: 15px;
+			content: "";
+			border-radius: 10px;
+		}
+	</style>
+	<h3 id="completion_title" class="small widget__title">Profile is {{perc}}% complete.</h3>
+	<div id="outer" class="profile_completion">
+		<div id="inner" style="width: {{perc}}%"></div>
+	</div>
+{% endif %}
 
 <div class="row">
 	<div class="col-lg-7 col-sm-12">
