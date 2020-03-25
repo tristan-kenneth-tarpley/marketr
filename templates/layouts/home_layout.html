@@ -10,6 +10,10 @@
 
 {% block content %}
 
+{% if request.args.get('intro') == 'True' %}
+	{% include '/core/anticipation.html' %}
+{% endif %}
+
 <div class="main-panel">
 	{% if not page.admin %}
 		{% with plan="active", customer = page.data['core']['core'][0]['current_plan'], demo=demo %}
@@ -37,6 +41,7 @@
 						<div class="load-circle"><span class="one"></span></div>
 					</div><br><br>
 					<div id="content-ready" style="visibility:hidden;">
+						
 						{% if page.admin %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
 

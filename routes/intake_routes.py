@@ -195,8 +195,11 @@ def audience():
                 google = GoogleChatService()
                 google.onboarding_complete(email=session['email'])
                 session['onboarding_complete'] = True
+                intro = True
+            else:
+                intro = False
                 
-            return redirect(url_for('home', view='campaigns'))
+            return redirect(url_for('home', view='campaigns', intro=intro))
 
 
     return ViewFuncs.view_page(user=session['user'],

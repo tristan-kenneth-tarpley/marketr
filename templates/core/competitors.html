@@ -2,21 +2,7 @@
 {% from 'macros/home_macros.html' import section %}
 
 
-
-
-{% macro competitors(page) %}
 <competitive-intelligence customer_id="{{page.data['core']['core'][0]['id']}}"></competitive-intelligence>
-{% endmacro %}
-
-
-
-{{ section(
-	link="competitors",
-	title="Competitive Intelligence",
-	body=competitors(page),
-	hash="competitors",
-	demo=demo
-) }}
 
 
 
