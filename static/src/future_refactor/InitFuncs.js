@@ -372,26 +372,47 @@ export class InitFuncs {
 		button.style.visibility = 'hidden'
 
 		let node_list = document.querySelectorAll('.intake_q')
+		let scroll_ind = document.createElement('div')
+		scroll_ind.classList.add('scroll_ind_parent')
+
+		document.body.appendChild(scroll_ind)
+		for (let i = 0; i<node_list.length;i++) {
+			let dot = document.createElement('div')
+			dot.classList.add('scroll_ind_inner')
+			scroll_ind.appendChild(dot)
+			
+		}
+
 		node_list.forEach(q => {
+
 			let count = parseInt(q.dataset.count)
 			let next = document.querySelector(`.intake_q[data-count="${count + 1}"]`)
 			let next_next = document.querySelector(`.intake_q[data-count="${count + 2}"]`)
 			
+			
+			let indicator = document.querySelectorAll('.scroll_ind_parent div')
+			indicator[0].classList.add('scroll__big')
 			if (count > 0) {
 				q.classList.add('_hide')
 				q.style.visibility = 'hidden'
 			}
+
 			const run_next = () => {
 				setTimeout(()=>{
+					indicator[count].classList.remove('scroll__big')
+					indicator[count + 1].classList.add('scroll__big')
+
 					next.style.visibility = 'visible'
 					next.classList.add('_show');
 					next.classList.remove('_hide');
 					
-					if (!next.querySelector('input')) {
+					if (!next.querySelector('input') && next_next) {
 						setTimeout(()=>{
 							next_next.style.visibility = 'visible'
 							next_next.classList.add('_show');
 							next_next.classList.remove('_hide');
+							indicator[count + 1].classList.remove('scroll__big')
+							indicator[count + 2].classList.add('scroll__big')
 						}, 1000)
 					}
 				}, 1000)
@@ -409,10 +430,10 @@ export class InitFuncs {
 	}
 
 	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
-
+		let input_clicked;
 		const hover_box = () => {
 			$(".in_box").click(function(event){
-				event.stopPropagation()
+				//event.stopPropagation()
 				if (!$(this).parent().parent().parent().parent().parent().parent().hasClass('hover_box_selected')) {
 					$(this).parent().parent().parent().parent().parent().parent().addClass('hover_box_selected')
 				}
@@ -437,7 +458,7 @@ export class InitFuncs {
 			})
 
 			$('.hover_box').click(function(){
-				var input_clicked = false
+				input_clicked = false
 				var in_box = $(this).find("input")
 
 				//toggle selected

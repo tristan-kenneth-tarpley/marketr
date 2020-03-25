@@ -188,6 +188,25 @@ export default class AdSpend extends HTMLElement {
                         `<p class="small_txt">Recommend: ${currency_rounded(this.data.recommended_budget)}/month</p>`}
                     </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-12"></div>
+                <div class="col-lg-8 col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
+                    <p class="small_txt">View recommendations with new budget:</p>
+                    <div class="form-group">
+                        <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
+                        <div class="form-control-border"></div>
+                    </div>
+                    <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
+                    <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-12">
+                </div>
+            </div>
+            
+                
+            <div class="row">
                 <div class="${this.active_plan ? '' : 'hidden'} center_it col">
                     <button class="budget_type actual_budget_view allocation_toggle btn ${
                         this.state.real == true
@@ -199,7 +218,7 @@ export default class AdSpend extends HTMLElement {
                         : 'allocation_toggle-inactive'}">recommended</button>
                 </div>
             </div>
-            <div class="row row-cancel">
+            <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
                     <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
@@ -354,27 +373,8 @@ export default class AdSpend extends HTMLElement {
         return (
             
             `
-            <div class="row row_cancel">
-                <div class="col-md-2 col-12"></div>
-                <div class="col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
-                    <p class="small_txt">View recommendations with new budget:</p>
-                    <div class="form-group">
-                        <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
-                        <div class="form-control-border"></div>
-                    </div>
-                    <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
-                </div>
-
-                <div class="col-md-2 col-12">
-                </div>
-            </div>
-            
-
-            <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
-            
-
             <div class="row">
-                <div class="col-lg-7 col-md-7 col-sm-12">
+                <div class="col-lg-12 col-md-12 col-sm-12">
                     <br>
                     <div style="margin:0 auto;text-align:center;">
                         <button class="spend_num_type view_perc allocation_toggle btn ${
