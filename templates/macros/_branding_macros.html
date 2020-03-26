@@ -69,7 +69,9 @@
                             <script>
                                 document.querySelector('#quantity').addEventListener('keyup', e=>{
                                     let val = e.currentTarget.value
-                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${val < 3 ? 3 : val}`
+                                    let quantity = val < 3 ? 3 : val
+                                    document.querySelector('#quantity').value = quantity
+                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quantity}`
                                 })
                             </script>
                         </div>
@@ -138,7 +140,7 @@
 <section class="full_height section">
     <div class="campaign_summary">
         <div class="feature-box box-shadow transition section-title text-center section-title text-center">
-            <h1 class="white-color">What is a campaign?</h1><br><br><br><br><br>
+            <h1 class="white-color">What is a campaign?</h1><br><br><br>
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="icon">
@@ -155,6 +157,7 @@
                     <p>We'll design top-quality graphics for your ads and write engaging copy that will make your customers stop scrolling and pay attention.</p>
                 </div>  
             </div>
+            <br>
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="icon">
