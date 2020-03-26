@@ -58,17 +58,18 @@
                         <br><br><br><br>
                         
                         <p><strong>Our models recommend you start with {{quantity}} campaigns</strong></p>
-                        <p>Click here to to start with your {{quantity}} recommended campaigns from your last page</p>
 
                         <div class="input-group">
-                            <input type="checkbox" class="form-control" id="quantity">
-                            <div class="input-group-append">
-                                <span class="input-group-text">campaigns</span>
-                            </div>
-
+                            <label>
+                                Click here to to start with your {{quantity}} recommended campaigns from your last page
+                                <input type="checkbox" class="form-control" id="quantity">
+                            </label>
+                       
                             <script>
                                 document.querySelector('#quantity').addEventListener('change', e=>{
-                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity={{quantity}}`
+                                    let _this = e.currentTarget
+                                    let quant = _this.checked ? "{{quantity}}" : 3
+                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quant}`
                                 })
                             </script>
                         </div>
