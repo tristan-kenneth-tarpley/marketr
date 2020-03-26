@@ -55,9 +55,7 @@
                     <div class="pt-footer">
                         <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign', quantity=3) if logged_in else url_for('new') }}">Get started</a>
                         {% if logged_in %}
-                        <br><br><br><br>
                         
-                        <div class="input-group">
                             <label>
                                 <input type="checkbox" class="form-control" id="quantity"> Click here to to start with the {{quantity}} campaigns our models recommend to you
                             </label>
@@ -69,7 +67,7 @@
                                     document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quant}`
                                 })
                             </script>
-                        </div>
+
                         {% endif %}
                     </div>
                 </div>
