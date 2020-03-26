@@ -44,11 +44,11 @@
                         <h5>Grow with Market(r) <i style="color:#62cde0;" class="fad fa-flask"></i></h5>
                     </div>
                     <div class="pt-body">
-                        <h4>Starting at $255 (plus your ad spend)</h4>
+                        <h4>Starting at $255 (+ ad spend)</h4>
                         <ul class="list-type-02">
                             <li><i class="fas fa-check"></i> 14 day free trial</li>
                             <li><i class="fas fa-check"></i> Cancel anytime in-app with one click, without talking to anybody.</li>
-                            <li><i class="fas fa-check"></i> Start with 3 campaigns. $85/month per campaign after.</li>
+                            <li><i class="fas fa-check"></i> Includes 3 campaigns. $85/month per campaign after.</li>
                         </ul>
                     </div>
                     
@@ -57,25 +57,23 @@
                         {% if logged_in %}
                         <br><br><br><br>
                         
-                        <p><strong>Want to start with more or less campaigns?</strong></p>
-                        <p>We recommend everybody starts with at least 3 campaigns. This is the only way for our machines to truly optimize and iterate quickly on learnings. If you want to start with your {{quantity}} recommended campaigns from your last page, just enter the number (highly recommended)!</p>
+                        <p><strong>Want to start with more or fewer campaigns?</strong></p>
+                        <p>If you want to start with your {{quantity}} recommended campaigns from your last page, just enter the number (highly recommended)!</p>
 
                         <div class="input-group">
-                                <input value="0" min="0" pattern="[0-9]" type="number" class="form-control" id="quantity">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">campaigns</span>
-                                </div>
-                     
+                            <input value="3" min="3" pattern="[0-9]" type="number" class="form-control" id="quantity">
+                            <div class="input-group-append">
+                                <span class="input-group-text">campaigns</span>
+                            </div>
 
-                                <script>
-                                    document.querySelector('#quantity').addEventListener('keyup', e=>{
-                                        let val = e.currentTarget.value
-                                        document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${val > 0 ? 1 : val}`
-                                    })
-                                </script>
-                            {% endif %}
-
+                            <script>
+                                document.querySelector('#quantity').addEventListener('keyup', e=>{
+                                    let val = e.currentTarget.value
+                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${val < 3 ? 3 : val}`
+                                })
+                            </script>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -140,7 +138,7 @@
 <section class="full_height section">
     <div class="campaign_summary">
         <div class="feature-box box-shadow transition section-title text-center section-title text-center">
-            <h1 class="white-color">What is a campaign?</h1><br><br><br>
+            <h1 class="white-color">What is a campaign?</h1><br><br><br><br><br>
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="icon">
@@ -156,6 +154,8 @@
                     </div>
                     <p>We'll design top-quality graphics for your ads and write engaging copy that will make your customers stop scrolling and pay attention.</p>
                 </div>  
+            </div>
+            <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="icon">
                         <i class="fad fa-phone-laptop"></i>
@@ -171,8 +171,6 @@
                     <p>Real-time view of Profit Potential per $100 spent (translation: If you put $100 in, what will you get out) for every individual platform, campaign, ad group, and ad.</p>
                 </div>   
             </div>
-            
-            
         </div>
     </div>
 </section>
