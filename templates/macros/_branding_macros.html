@@ -57,21 +57,18 @@
                         {% if logged_in %}
                         <br><br><br><br>
                         
-                        <p><strong>Want to start with more or fewer campaigns?</strong></p>
-                        <p>If you want to start with your {{quantity}} recommended campaigns from your last page, just enter the number (highly recommended)!</p>
+                        <p><strong>Our models recommend you start with {{quantity}} campaigns</strong></p>
+                        <p>Click here to to start with your {{quantity}} recommended campaigns from your last page</p>
 
                         <div class="input-group">
-                            <input value="3" min="3" pattern="[0-9]" type="number" class="form-control" id="quantity">
+                            <input type="checkbox" class="form-control" id="quantity">
                             <div class="input-group-append">
                                 <span class="input-group-text">campaigns</span>
                             </div>
 
                             <script>
-                                document.querySelector('#quantity').addEventListener('keyup', e=>{
-                                    let val = e.currentTarget.value
-                                    let quantity = val < 3 ? 3 : val
-                                    document.querySelector('#quantity').value = quantity
-                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quantity}`
+                                document.querySelector('#quantity').addEventListener('change', e=>{
+                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity={{quantity}}`
                                 })
                             </script>
                         </div>
