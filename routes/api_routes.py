@@ -497,7 +497,6 @@ def compile_master_index():
     run_search = req.get('google')
     get_opps = req.get('get_opps')
 
-    print('called')
     try:
         dfs = compile_data_view(
             run_social=run_social,
@@ -516,6 +515,8 @@ def compile_master_index():
         compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
         index = MarketrIndex(ltv)
         lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
+
+        print(index)
 
         if opps is not None:
             topics = compile_topics(opps, index, lcr, ltv)

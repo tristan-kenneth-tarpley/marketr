@@ -21,7 +21,7 @@ class MarketrIndex(object):
     def __init__(self, ltv):
         self.ltv = ltv
         self.social_columns = ['ad_id', 'adset_id', 'campaign_id',  pd.Grouper(key='date_start', freq='W-MON')]
-        self.search_columns = ['ad_id', 'adset_id', 'campaignid', pd.Grouper(key='date_start', freq='W-MON')]
+        self.search_columns = ['ad_id', 'adset_id', 'campaign_id', pd.Grouper(key='date_start', freq='W-MON')]
         self.agg_set = {
             'cpm': 'mean', 'cpc': 'mean', 'ctr' : 'mean', 'lcr': 'mean', '_cost': 'mean',
             'cost': 'sum', 'conversions': 'sum', 'clicks':'sum', 'impressions': 'sum'
@@ -44,9 +44,8 @@ class MarketrIndex(object):
         else:
             return 0
     
-    def pp100(self, ctr, lcr, cpc, impressions):        
-        # translation: profit potential per 100 spent: PP100 = ( [LTV] * [LCR] * (100 / cpc)  - 100 )
-        try:
+    def pp100(self, ctr, lcr, cpc, impressions):
+        try:      
             formula = (self.ltv * lcr * (100 / cpc) - 100)
         except:
             formula = 0
@@ -64,7 +63,7 @@ class MarketrIndex(object):
             return formula
 
         returned = pp100.apply(formula)
-        
+        print(returned)
         return returned
     
     def Comparisons(self, df):
@@ -139,26 +138,30 @@ class MarketrIndex(object):
         
         group_columns = [column_selector]
 
-        if 'campaign_id' in df.columns:
+        if 'campaign_id' in df.columns and 'campaign_id' not in group_columns:
             group_columns.append('campaign_id')
-        if 'campaignid' in df.columns:
-            group_columns.append('campaignid')
 
-        if 'adset_id' in df.columns:
+        if 'adset_id' in df.columns and 'adset_id' not in group_columns:
             group_columns.append('adset_id')
 
-        if 'ad_id' in df.columns:
+        if 'ad_id' in df.columns and 'ad_id' not in group_columns:
             group_columns.append('ad_id')
-
-        group_columns = [item for sublist in group_columns for item in sublist]
-        
+            
+        group_columns_ = list()
+        for col in group_columns:
+            if isinstance(col, list):
+                for sublist in col:
+                    group_columns_.append(sublist)
+            else:
+                group_columns_.append(col)
+                
         try:
             df = df.groupby(group_columns).agg(self.agg_set).reset_index()
         except:
             df = df.groupby(column_selector).agg(self.agg_set).reset_index()
-        
+            
         df['pp100'] = self.pp100(df.ctr, df.lcr, df.cpc, df.impressions)
-        df['marketr_index'] = self.IndexFormula(df.pp100)
+        df['marketr_index'] = self.IndexFormula(df.pp100)        
 
         mi_sum = df.marketr_index.sum()
         mi_mean = df.marketr_index.mean()
@@ -169,7 +172,7 @@ class MarketrIndex(object):
         )
         
         df = self.Comparisons(df)
-
+        
         return df
     
     def reorder_m_index(self, x):
@@ -278,15 +281,16 @@ class AdGroupIndex(MarketrIndex):
         
         column_selector.append('adset_name')
         range_df = self.Assign(df, column_selector, search=search, social=social)
+        
         range_df['marketr_index'] = range_df.apply(self.reorder_m_index, axis=1)
   
         agg = self.agg_set
         agg['marketr_index'] = 'mean'
-
         agg_df = self.Assign(df, [column_selector[0], 'adset_name'], search=search, social=social)
+        
         agg_df['marketr_index'] = df.apply(self.reorder_m_index, axis=1)
         agg_df['perc_change'] = agg_df[column_selector[0]].apply(lambda x: self.get_perc_change(x, df, column_selector, google=search))
-        
+
         return {
             'range': range_df,
             'agg': agg_df
@@ -430,8 +434,8 @@ def compile_master(ltv=None, search_df=None, social_df=None):
 
     def _compile(ltv=ltv, search_df=search_df, social_df=social_df, ad_index_obj=ad_index_obj, group_index_obj=group_index_obj, campaign_index=campaign_index, bucket_index=bucket_index, index=index):
         
-        search_columns = ['campaign_name', 'adset_name', 'imageadurl', 'ad_id', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']
-        social_columns = ['campaign_name', 'adset_name', 'ad_name', 'ad_id', 'thumbnail_url', 'body', 'daily_budget']
+        search_columns = ['campaign_name', 'adset_name', 'imageadurl', 'ad_id', 'adset_id', 'headline1', 'headline2', 'finalurl', 'description', 'daily_budget']
+        social_columns = ['campaign_name', 'adset_name', 'ad_name', 'ad_id', 'adset_id', 'thumbnail_url', 'body', 'daily_budget']
         
         def trickle(active_df, active_columns, subset, id_key, search=False, social=False):
             try:
@@ -439,10 +443,11 @@ def compile_master(ltv=None, search_df=None, social_df=None):
                 new_index = active_df[active_columns].drop_duplicates(subset = subset)
 
                 # export to view performance metrics by creative
-                index_agg = pd.merge(new_index, index['agg'], left_on=subset, right_on=subset)
-                index = pd.merge(new_index, index['range'], left_on=subset, right_on=subset)
+                index_agg = pd.merge(new_index, index['agg'], left_on=[subset, 'adset_id'], right_on=[subset, 'adset_id'])
+                index = pd.merge(new_index, index['range'], left_on=[subset, 'adset_id'], right_on=[subset, 'adset_id'])
 
                 t4 = group_index_obj.PrepIndex(index, search=search, social=social)
+
                 t3 = campaign_index.PrepIndex(index, search=search, social=social)
                 t2 = bucket_index.PrepIndex(t3['range'], t3['agg'])
 
@@ -465,7 +470,6 @@ def compile_master(ltv=None, search_df=None, social_df=None):
                 t4['range']['campaign_name'] = t4['range']['adset_id'].apply(lambda x: _id_map[x])
                 
             except Exception as e:
-                print(f'error: {e}')
                 PrintException()
                 index_agg=index=t2=t3=t4 = None
             
@@ -477,7 +481,7 @@ def compile_master(ltv=None, search_df=None, social_df=None):
         )
         
         search_index_agg, search_index, search_t2, search_t3, search_t4 = trickle(
-            search_df, search_columns, 'ad_id', 'campaignid', search=True, social=False 
+            search_df, search_columns, 'ad_id', 'campaign_id', search=True, social=False 
         )
         
         returned = {

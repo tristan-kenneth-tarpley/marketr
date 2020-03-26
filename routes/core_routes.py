@@ -309,12 +309,12 @@ def demo():
     # campaign.google_meta()
 
     view_model = CustomerDataViewModel(customer_id=181, init=True)
-    chat = ChatService('User', 'tristan@marketr.life', 181)
-    chat.run()
+    # chat = ChatService('User', 'tristan@marketr.life', 181)
+    # chat.run()
     return render_template(
         'layouts/home_layout.html',
         page=view_model,
-        chat=chat,
+        chat=None,
         demo=True
     )
 

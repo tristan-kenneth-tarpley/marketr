@@ -40,9 +40,13 @@ def compile_data_view(run_social: bool=False, run_search: bool=True, company_nam
         ltv = 5000
         new_start = start_date.replace(" UTC", ".000")
         new_end = end_date.replace(" UTC", ".000")
-        search_df = db.sql_to_df(f"SELECT * FROM demo_data_search where date_start between '{new_start}' and '{new_end}'")
-        social_df = db.sql_to_df(f"SELECT * FROM demo_data_social where date_start between '{new_start}' and '{new_end}'")
+
+        search_query = f"SELECT * FROM demo_data_search where date_start between '{new_start}' and '{new_end}'"
+        social_query = f"SELECT * FROM demo_data_social where date_start between '{new_start}' and '{new_end}'"
+        search_df = db.sql_to_df(search_query)
+        social_df = db.sql_to_df(social_query)
         opps = orm.keywords()
+
 
     return {
         'search_df': search_df,

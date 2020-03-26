@@ -215,8 +215,8 @@ export default class AdSpend extends HTMLElement {
                     </strong></p>
                     <div class="center_it">
                         <h5>
-                            <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month ${this.change_budget_button()}
-                            ${this.state.real && this.active_plan && this.demo != 'True' ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
+                            <strong>${currency_rounded(parseFloat(this.viewed_budget))}</strong> /month ${!this.state.real ? `${this.change_budget_button()}` : ``}
+                            ${this.state.real && this.active_plan && !this.demo ? `<a href="/home/settings" class="small_txt">[edit]</a>`:''}
                         </h5>
                         ${this.actual_budget == null ?
                         /*html*/

@@ -1620,7 +1620,6 @@ export default class PortfolioPerformance extends HTMLElement {
                         } else this.state.null_compare_data = true
                     })
                     .then(()=>run())
-                    .catch(e=>{})
                 }
                 else run()
             })

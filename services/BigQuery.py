@@ -49,7 +49,7 @@ class GoogleORM(BigQuery):
                 _query[word[0]] = f"`{self.project_id}`.`{dataset}`.{table}"
 
         new_query = " ".join(_query)
-
+        print(new_query)
         return new_query
 
 
@@ -215,7 +215,7 @@ class GoogleORM(BigQuery):
             select 
             distinct 
         """
-        front_half = "rep.avgcpc / 1000000 as cpc, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid, rep.adgroupid as adset_id, rep.adgroup as adset_name, rep.adid as ad_id, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget"
+        front_half = "rep.avgcpc / 1000000 as cpc, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid as campaign_id, rep.adgroupid as adset_id, rep.adgroup as adset_name, rep.adid as ad_id, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget"
         _try = "rep.imageadurl"
         _catch = "null as imageadurl"
         total_cost = f"""

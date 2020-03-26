@@ -75,7 +75,7 @@
 {% endmacro %}
 
 
-{% macro tab_bar(page) %}
+{% macro tab_bar(page, demo=False) %}
 
     <ul style="width: 70%;" class="tabs__custom nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
@@ -96,14 +96,16 @@
                 <span class="mobile-show"><i class="now-ui-icons business_badge"></i></span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">
-                <span class="mobile-hide">Chat</span>
-                <span class="mobile-show"><i class="now-ui-icons ui-2_chat-round"></i></span>
-                <span style="display:none;" class="notification_count message_task_insight_count">
-                </span>
-            </a>
-        </li>
+        {% if not demo %}
+            <li class="nav-item">
+                <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">
+                    <span class="mobile-hide">Chat</span>
+                    <span class="mobile-show"><i class="now-ui-icons ui-2_chat-round"></i></span>
+                    <span style="display:none;" class="notification_count message_task_insight_count">
+                    </span>
+                </a>
+            </li>
+        {% endif %}
     </ul>
 
 {% endmacro %}
