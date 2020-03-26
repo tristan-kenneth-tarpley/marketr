@@ -48,23 +48,25 @@
                         <ul class="list-type-02">
                             <li><i class="fas fa-check"></i> 14 day free trial</li>
                             <li><i class="fas fa-check"></i> Cancel anytime in-app with one click, without talking to anybody.</li>
-                            <li><i class="fas fa-check"></i> Includes 3 campaigns. $85/month per campaign thereafter.</li>
+                            <li><i class="fas fa-check"></i> Includes 3 campaigns (the minimum necessary for our engines to get sufficient data). $85/month per campaign thereafter.</li>
                         </ul>
                     </div>
                     
                     <div class="pt-footer">
                         <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign', quantity=3) if logged_in else url_for('new') }}">Get started</a>
                         {% if logged_in %}
-                        
+                            <br>
                             <label>
-                                <input type="checkbox" class="form-control" id="quantity"> Click here to to start with the {{quantity}} campaigns our models recommend to you
+                                <input type="checkbox" id="quantity"> &nbsp;Click here to upgrade to the {{quantity}} campaigns our models recommend to you 
                             </label>
+                            <p id="new_price" style="display:none;">New price: ${{quantity * 85}}</p>
                        
                             <script>
                                 document.querySelector('#quantity').addEventListener('change', e=>{
                                     let _this = e.currentTarget
                                     let quant = _this.checked ? "{{quantity}}" : 3
                                     document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quant}`
+                                    document.querySelector('#new_price').style.display = 'block'
                                 })
                             </script>
 
