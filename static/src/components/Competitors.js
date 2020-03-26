@@ -13,7 +13,7 @@ const styles = () => {
             flex-direction: column;
             display:flex;
             justify-content:center;
-            margin-top: 3em;
+            margin-top: 2em;
         }
         .comp_name {
             background-color: var(--panel-bg);
