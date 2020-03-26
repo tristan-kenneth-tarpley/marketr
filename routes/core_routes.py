@@ -182,7 +182,8 @@ def pricing():
 		logged_in = True if session.get('logged_in') == True else False,
 		home=True,
         quantity = request.args.get('quantity') if request.args.get('quantity') else 1,
-        user=session.get('user')
+        user=session.get('user'),
+        company_name=session.get('company_name')
 	)
 
 @app.route('/inspect')

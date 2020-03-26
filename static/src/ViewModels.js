@@ -355,21 +355,24 @@ export class AuditRequest {
         this.init = true
     }
     ready(){
-        document.querySelector("#audit_submit").addEventListener('click', e=>{
-            const website = document.querySelector("#audit_url").value
-            const email = document.querySelector("#audit_email").value
-            const data = {
-                'url': website,
-                'email': email
-            }
-            if (website != '' && email != ""){
-                $.post('/audit_request', data, ()=>{
-                    document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
-                    document.querySelector('#audit_gif').style.display = 'none'
-                    window.location.replace("https://marketr.life/thanks/audit")
-                })
-            }
-        })
+        let sub_btn = document.querySelector("#audit_submit")
+        if (sub_btn) {
+            sub_btn.addEventListener('click', e=>{
+                const website = document.querySelector("#audit_url").value
+                const email = document.querySelector("#audit_email").value
+                const data = {
+                    'url': website,
+                    'email': email
+                }
+                if (website != '' && email != ""){
+                    $.post('/audit_request', data, ()=>{
+                        document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
+                        document.querySelector('#audit_gif').style.display = 'none'
+                        window.location.replace("https://marketr.life/thanks/audit")
+                    })
+                }
+            })
+        }
     }
 }
 
