@@ -10,7 +10,36 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-   
+        .campaign_list {
+            column-count: 3;
+        }
+        .campaign_header {
+            position: relative;
+            color: var(--darker-blue);
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .campaign_type {
+        color: var(--primary);
+        cursor: pointer;
+        }
+        ._campaign {
+            list-style: none;
+            width:100%;
+            height: 7em;
+            flex-direction: column;
+            justify-content:center;
+            border: 1px solid rgba(0,0,0,.1);
+            padding: 1em;
+            border-radius: 6px;
+            background-color: var(--panel-bg);
+            display:inline-flex;
+            margin: .5em 0;
+        }
+        ._campaign p {
+            padding: 11px 2px;
+        }
         #allocation_canvas {
             width: 100%;
             height: 100%;
@@ -18,6 +47,7 @@ const styles = () => {
         .allocation_display {
             color: var(--darker-blue);
             font-weight: bold;
+            font-size: 2em;
         }
         .next_steps {
             background: var(--nav-color);
@@ -171,7 +201,7 @@ export default class AdSpend extends HTMLElement {
                     <p class="center_it"><strong>
                         ${this.state.real
                             ? `Ad spend budget:`
-                            : `Recommended budget:`}
+                            : `How much you should spend:`}
                     </strong></p>
                     <div class="center_it">
                         <h5>
@@ -192,12 +222,12 @@ export default class AdSpend extends HTMLElement {
             <div class="row">
                 <div class="col-lg-2 col-md-2 col-12"></div>
                 <div class="col-lg-8 col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
-                    <p class="small_txt">View recommendations with new budget:</p>
+                    <p class="small_txt">Change your budget:</p>
                     <div class="form-group">
                         <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
                         <div class="form-control-border"></div>
                     </div>
-                    <p class="small_txt"><em>Changing this will affect the marketing spend mix below</em></p>
+                    <p class="small_txt"><em>Changing this will affect the campaigns recommended to the right</em></p>
                     <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
 
@@ -252,27 +282,34 @@ export default class AdSpend extends HTMLElement {
         const data = this.data
 
         let counter = 0
+
+        const commentary = {
+            'search': "on paid search advertising (e.g. Google, Bing).",
+            "social": "for paid social media ads (e.g. Facebook, Instagram, YouTube, Pinterest).",
+            "seo": "on Search Engine Optimization.",
+            "outbound email": "Direct email to your existing customers and leads.",
+            "display networks": "on display ads where your customers visit! (e.g. banners, news sites, and blogs)."
+        }
         
         /*html*/
         const el = `
-            <p>Here are the campaigns that we recommend:</p>
             ${this.data.allocation.map((set, index)=>{
                 const display_num = this.perc_or_usd == 'perc' ?
-                                        percent(set.spend_percent * 100) :
+                                        `${number_rounded(set.spend_percent * 100)}%` :
                                         currency_rounded(set.spend)
                 /*html */
                 return `
-                    <p><span class="allocation_display">${display_num}</span>
+                    <p><span class="allocation_display">${display_num} </span>
                        
-                            | ${set.bucket}
+                            ${commentary[set.bucket]}
 
                             ${ set.bucket == 'seo'
-                                ? `<a target="__blank" href="https://marketr.life/blog/the-total-guide-to-investing-in-search-engine-optimization">learn more</a>`
+                                ? `<a target="__blank" href="https://marketr.life/blog/the-total-guide-to-investing-in-search-engine-optimization">What is this?</a>`
                                 : ''
                             }
             
                     </p>
-                    <div class="row inset">
+                    <div class="row">
                         <div class="col small_txt allocation_tactics awareness_tactics">
                             
                             <ul class="campaign_list">
@@ -281,12 +318,12 @@ export default class AdSpend extends HTMLElement {
                                     /*html*/
                                     return `${inline_article(i)
                                                 ? `
-                                                <li class="campaign_type">
-                                                    ${modal_trigger(i, `campaign #${counter}: ${i} <span style="color:#62cde0;"><i class="fas fa-caret-right"></i></span>`)}
+                                                <li class="_campaign campaign_type">
+                                                    ${modal_trigger(i, `${i} <span style="color:#62cde0;"><i class="fas fa-caret-right"></i></span>`)}
                                                     ${right_modal('', inline_article(i), i)}
                                                 </li>
                                                 `
-                                                : `<li>campaign #${counter}: ${i}</li>`
+                                                : `<li class="_campaign">${i}</li>`
                                             }`
                                 }).join("")}
                             </ul>
@@ -353,15 +390,14 @@ export default class AdSpend extends HTMLElement {
     }
 
     next_steps() {
-        console.log(this.num_campaigns)
         /*html*/
         return (`
             <div class="next_steps">        
                 <div class="inner">
                     <h1>You're 95% there.
-                        <span>Just 2 more clicks and you'll be running powerful digital campaigns.</span>
+                        <span>Just 2 more clicks to get your superpowers.</span>
                     </h1>
-                    <a href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">Run this marketing plan for me</a>
+                    <a href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">I want to see what's next</a>
                 </div>
                 
             </div>
@@ -375,6 +411,8 @@ export default class AdSpend extends HTMLElement {
             `
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
+                    <p class="center_it"><strong>How to spend that ${currency_rounded(this.viewed_budget)}</strong></p>
+                    <p style="width:70%;margin: 0 auto;">We put together an advertising plan for you. Each of these are plays from our playbook that we thought would be especially useful for you.</p>
                     <br>
                     <div style="margin:0 auto;text-align:center;">
                         <button class="spend_num_type view_perc allocation_toggle btn ${
@@ -398,14 +436,17 @@ export default class AdSpend extends HTMLElement {
     compile(){
 
         this.budget_variance = (this.spend_rate - this.data.recommended_budget) / this.spend_rate * 100
+        let viewed_budget;
         if (this.active_plan) {
-            if (this.state.real) this.viewed_budget = this.spend_rate
-            else if (this.custom_budget) this.viewed_budget = this.custom_budget
-            else this.viewed_budget = this.data.recommended_budget
+            if (this.state.real) viewed_budget = this.spend_rate
+            else if (this.custom_budget) viewed_budget = this.custom_budget
+            else viewed_budget = this.data.recommended_budget
         } else {
-            if (this.custom_budget) this.viewed_budget = this.custom_budget 
-            else this.viewed_budget = this.data.recommended_budget
+            if (this.custom_budget) viewed_budget = this.custom_budget 
+            else viewed_budget = this.data.recommended_budget
         }
+
+        this.viewed_budget = ((viewed_budget/100).toFixed()*100)
         
         const first = async () => {
             this.shadow.innerHTML = ""
@@ -414,7 +455,7 @@ export default class AdSpend extends HTMLElement {
             /*html*/
             _el.innerHTML = `
                 ${this.css}
-                ${!this.active_plan || this.demo
+                <!--${!this.active_plan || this.demo
                     /*html*/
                     ? `
                     <div class="instructions row row-cancel">
@@ -436,15 +477,15 @@ export default class AdSpend extends HTMLElement {
                         <div class="col-lg-2 col-12"></div>
                     </div>`
                     : ''
-                }
+                }-->
 
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-12">
                         <div class="card card-body">
                             ${this.considerations()}
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                    <div class="col-lg-8 col-md-8 col-sm-12 col-12">
                         <div class="card card-body">
                             ${this.shell()}
                         </div>

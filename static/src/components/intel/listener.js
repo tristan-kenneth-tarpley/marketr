@@ -54,7 +54,14 @@ const styles = () => {
         /*html*/
         return `
         <h1 class="widget__title">Web listener</h1>
-
+        <p>Our engines took the competitors you gave us, found 20 more companies like them, figured out the common topics, and then found 100 relevant conversations around the web.</p>
+        <p>How to use this info?</p>
+        <ul class="inset">
+            <li>Read what people are saying about your competitors</li>
+            <li>Find users at the point that they're looking to buy something in your field</li>
+            <li>Chime in when people are asking for recommendations</li>
+            <li>Let potential customers cry on your shoulder when your competitor hurts them!</li>
+        </ul>
         <table class="table table-borderless table-striped" id="listening">
             <thead>
                 <tr>

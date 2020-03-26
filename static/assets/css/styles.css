@@ -11962,11 +11962,6 @@ left: -6px;
   margin-left: 3%;
   text-decoration: underline;
 }
-.campaign_type {
-  color: var(--primary);
-  cursor: pointer;
-  text-decoration: underline;
-}
 .allocation_tactics p {
   margin-bottom: 0;
 }

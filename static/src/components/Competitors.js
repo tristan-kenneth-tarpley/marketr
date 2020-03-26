@@ -14,6 +14,13 @@ const styles = () => {
             display:flex;
             justify-content:center;
         }
+        .comp_name {
+            background-color: var(--panel-bg);
+            padding: 8%;
+            border-radius: 6px;
+            box-shadow: var(--card-box-shadow);
+            margin-top:2em;
+        }
         
         th p {
             font-size: .5em;
@@ -101,8 +108,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
             return /*html*/ `
 
                 <div class="col-lg-6 col-md-6 col-sm-12">
-                    <p style="margin: 0;"><a class="small_txt" target="__blank" href="https://${site}">${name}</a></p>
-                    <span style="font-size: .7em;" class="comp-badge ${type}">${type}</span>
+                    <p class="comp_name" style="margin: 0;"><a target="__blank" href="https://${site}">${name}</a><br>(${type} competitor)</p>
                 </div>
 
             `.trim()
@@ -144,13 +150,13 @@ export default class CompetitiveIntelligence extends HTMLElement {
                 labels.push(i.comp_name) 
                 content.push (
                     `<div class="row row_cancel">
-                    ${i.google_ads.map(ad=>{
+                    ${i.google_ads ? i.google_ads.map(ad=>{
                         return `
                             <div class="col-md-6 col-sm-12">
                                 ${google(ad.title, ad.url, ad.body)}
                             </div>
                         `.trim()
-                    }).join("")}
+                    }).join("") : `<p>Looks like ${i.comp_name} isn't running any Google ads!</p>`}
                     </div>
                     `
                 )

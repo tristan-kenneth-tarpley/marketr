@@ -1,5 +1,41 @@
 {% extends "layouts/branding_layout.html" %}
-{% from "macros/_branding_macros.html" import pricing %}
+{% from "macros/_branding_macros.html" import pricing, campaign_summary %}
+
 {% block content %}
-    {{ pricing(logged_in, quantity=quantity) }}
+
+    {% if user %}
+    <style>
+        body {
+            background-color: var(--nav-color);
+        }
+        .price_content {
+            width: 100%;
+            margin-top:5em;
+            padding: 5em;
+            position: relative;
+            background-color: var(--panel-bg);
+        }
+        .section.full_height {
+            height: 100%;
+            padding: 100px 0 0 0 !important;
+        }
+        
+
+    
+    </style>
+    <div class="price_content">
+        <h1 class="center_it">If you didn't notice, we got some information on your competitors.</h1>
+        <br>
+        <competitive-intelligence customer_id="{{user}}"></competitive-intelligence>
+    </div>
+    {% endif %}
+    <div id="next_steps" class="row">
+        <div style="padding: 0;" class="h-100 col-lg-6">
+            {{ campaign_summary(logged_in) }}
+        </div>
+        <div style="padding: 0;" class="h-100 col-lg-6">
+            {{ pricing(logged_in, quantity=quantity) }}    
+        </div>
+    </div>
+    
 {% endblock%}
