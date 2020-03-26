@@ -610,7 +610,8 @@ export default class AdSpend extends HTMLElement {
             competitiveness: (this.competitiveness != null) ? this.competitiveness : 'medium',
             selling_to: this.selling_to,
             biz_model: this.biz_model,
-            viewed_budget: budget
+            viewed_budget: budget,
+            online_perc: this.online_perc
         })
      
         fetch('/api/spend_allocation', {
@@ -637,6 +638,7 @@ export default class AdSpend extends HTMLElement {
         this.competitiveness = this.getAttribute('competitiveness')
         this.selling_to = this.getAttribute('selling_to')
         this.biz_model = this.getAttribute('biz_model')
+        this.online_perc = this.getAttribute('online_perc')
         this.demo = this.getAttribute('demo') == 'False' || !this.getAttribute('demo') ? false : true
         this.active_plan = this.getAttribute('active_plan') == 'None'
                             ? false

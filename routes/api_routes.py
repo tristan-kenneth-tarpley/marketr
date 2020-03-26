@@ -237,8 +237,40 @@ def rewards():
 @app.route('/api/spend_allocation', methods=['POST'])
 def spend_allocation():
     req = request.get_json()
+    print(req)
+    """
+    biz_model types:
+        Professional Services
+        Manual Services
+        Media Provider
+        Commission / Rev Share
+        Tangible Products
+        Digital Products
+        SaaS
+    """
+
+    try:
+        online_perc = int(req.get('online_perc'))
+    except:
+        online_perc = 0
+
+    def get_sales_model(biz_model, online_perc, selling_to):
+        if biz_model == 'SaaS':
+            returned = 'saas'
+        elif biz_model == 'Digital Products':
+            returned = 'ecommerce'
+        elif biz_model == 'Tangible Products' and online_perc >= 60 and (selling_to == 'b2c' or selling_to == 'c2c'):
+            returned = 'ecommerce'
+        else:
+            returned = 'other'
+
+        return returned
+
+    
+    sales_model = get_sales_model(req.get('biz_model'), online_perc, req.get('selling_to').lower())
+
     revenue = req.get('revenue') if req.get('revenue') and req.get('revenue') > 100000 else 100000
-    rec = GetRec(revenue, req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
+    rec = GetRec(revenue, req.get('stage'), req.get('type'), sales_model, req.get('growth_needs'))
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
@@ -256,7 +288,7 @@ def spend_allocation():
     )
 
     allocation = json.loads(spend.campaign_allocation())
-    print(allocation)
+
     returned = {
         'budget': input_budget,
         'allocation': allocation,
@@ -264,16 +296,6 @@ def spend_allocation():
     }
     return json.dumps(returned)
 
-# @app.route('/api/portfolio_metrics', methods=['POST'])
-# def portfolio_metrics():
-#     req = request.get_json()
-#     orm = GoogleORM(req.get('company_name'))
-#     df = orm.agg()
-
-#     portfolio = Portfolio(agg=df)
-#     returned = portfolio.group()
-
-#     return returned
 
 @app.route('/api/portfolio/trend_line', methods=['POST'])
 def portfolio_trends():
