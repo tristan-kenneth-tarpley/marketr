@@ -31,10 +31,10 @@
     {% endif %}
     <div id="next_steps" class="row">
         <div style="padding: 0;" class="h-100 col-lg-6">
-            {{ campaign_summary(logged_in) }}
+            {{ pricing(logged_in, quantity=quantity) }}    
         </div>
         <div style="padding: 0;" class="h-100 col-lg-6">
-            {{ pricing(logged_in, quantity=quantity) }}    
+            {{ campaign_summary(logged_in) }}
         </div>
     </div>
     

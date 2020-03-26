@@ -61,6 +61,7 @@ const styles = () => {
             <li>Find users at the point that they're looking to buy something in your field</li>
             <li>Chime in when people are asking for recommendations</li>
             <li>Let potential customers cry on your shoulder when your competitor hurts them!</li>
+            <li>Not seeing enough relevant posts? Try <a href="/competitors?splash=False">changing your competitors</a>.</li>
         </ul>
         <table class="table table-borderless table-striped" id="listening">
             <thead>

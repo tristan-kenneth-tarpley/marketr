@@ -13,6 +13,7 @@ const styles = () => {
             flex-direction: column;
             display:flex;
             justify-content:center;
+            margin-top: 5em;
         }
         .comp_name {
             background-color: var(--panel-bg);
@@ -150,20 +151,21 @@ export default class CompetitiveIntelligence extends HTMLElement {
                 labels.push(i.comp_name) 
                 content.push (
                     `<div class="row row_cancel">
-                    ${i.google_ads ? i.google_ads.map(ad=>{
+                    ${i.google_ads.length > 0 ? i.google_ads.map(ad=>{
+                        
                         return `
                             <div class="col-md-6 col-sm-12">
                                 ${google(ad.title, ad.url, ad.body)}
                             </div>
                         `.trim()
-                    }).join("") : `<p>Looks like ${i.comp_name} isn't running any Google ads!</p>`}
+                    }).join("") : `<p>Looks like ${i.comp_name} either isn't running any Google ads, or we haven't found them yet.</p>`}
                     </div>
                     `
                 )
             } 
             /*html*/
             return `
-            <h1 class="widget__title">Top performing ads</h1>
+            <h1 class="widget__title">Top performing search ads</h1>
             <div class="row">
                 <div class="col">
                 ${tabs(labels, content, 'google')}
@@ -206,7 +208,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
         /*html*/
         return `
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12 col-12">
+                <div class="col-lg-4 col-md-5 col-sm-12 col-12">
                     <div style="margin-bottom:0;" class="h-100 card card-body">
                         <div id="comp_meta_container">
                             <h1 class="widget__title">Competitive intelligence &nbsp;<a class="small_txt" href="/competitors?home=True">edit</a></h1>
@@ -223,7 +225,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                                         return (`
                                         <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                                             <h1 class="widget__value">
-                                            ${currency_rounded(comp.core.ppc_budget)}/month
+                                            ${currency_rounded(comp.core.ppc_budget)}<span style="font-size:.5em;">/month</span>
                                             </h1>
                                         </div>
                                         `)
@@ -238,7 +240,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                                         return (`
                                         <div class="col-lg-6 col-md-6 col-sm-6 col-6">
                                             <h1 class="widget__value">
-                                            ${number_rounded(comp.core.total_traffic)} visits
+                                            ${number_rounded(comp.core.total_traffic)}<span style="font-size:.5em;">visits</span>
                                             </h1>
                                         </div>
                                         `)
@@ -254,10 +256,11 @@ export default class CompetitiveIntelligence extends HTMLElement {
                                         let {ppc_clicks, seo_clicks} = comp.core
                                         let perc_paid = number_rounded(ppc_clicks / (seo_clicks + ppc_clicks) * 100)
                                         let perc_organic = number_rounded(seo_clicks / (seo_clicks + ppc_clicks) * 100)
+                                        
                                         return (`
                                         <div data-paid="${ppc_clicks}" data-organic="${seo_clicks}" class="col-lg-6 col-md-6 col-sm-6 col-6">
-                                            <p style="margin-bottom: 0;" class="small_txt">paid: ${perc_paid}%</p> <div class="traffic_meters paid_meter"></div>
-                                            <p style="margin-bottom: 0;" class="small_txt">organic: ${perc_organic}%</p> <div class="traffic_meters organic_meter"></div>
+                                            <p style="margin-bottom: 0;" class="small_txt">paid: ${!isNaN(perc_paid) ? perc_paid : 0}%</p> <div class="traffic_meters paid_meter"></div>
+                                            <p style="margin-bottom: 0;" class="small_txt">organic: ${!isNaN(perc_organic) ? perc_organic : 0}%</p> <div class="traffic_meters organic_meter"></div>
                                         </div>
                                         `)
                                     }).join("")}
@@ -267,7 +270,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-8 col-sm-12">
+                <div class="col-lg-8 col-md-7 col-sm-12">
                     <div style="margin-bottom: 0;" id="listener" class="h-100 card card-body row">
                     </div>
                 </div>

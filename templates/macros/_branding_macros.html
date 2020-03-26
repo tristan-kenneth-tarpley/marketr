@@ -49,6 +49,7 @@
                             <li><i class="fas fa-check"></i> 14 day free trial</li>
                             <li><i class="fas fa-check"></i> 30 day money back guarantee...only pay for your ad spend</li>
                             <li><i class="fas fa-check"></i> Start with 3 campaigns. $85/month per campaign after.</li>
+                            <li><i class="fas fa-check"></i> Cancel anytime in-app with one click, without talking to anybody.</li>
                         </ul>
                     </div>
                     
@@ -56,7 +57,7 @@
                         <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign', quantity=3) if logged_in else url_for('new') }}">Get started</a>
                         {% if logged_in %}
                         <br><br><br><br>
-                        <br><br>
+                        
                         <p><strong>Want to start with more or less campaigns?</strong></p>
                         <p>We recommend everybody starts with at least 3 campaigns. This is the only way for our machines to truly optimize and iterate quickly on learnings. If you want to start with your {{quantity}} recommended campaigns from your last page, just enter the number (highly recommended)!</p>
 
@@ -314,7 +315,7 @@
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
                 <div class="col-lg-8 col-md-10">
                     <div class="section-title text-center">
-                        <h2>Flat-Rate Pricing</h2>
+                        <h2>Let's take the next step.</h2>
                         {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
                     </div>
                 </div>
