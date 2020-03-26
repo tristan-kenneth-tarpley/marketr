@@ -124,10 +124,6 @@ def logout():
 
 @app.route('/new', methods=['POST', 'GET'])
 def new():
-    return redirect(url_for('schedule'))
-
-@app.route('/new/early_access', methods=['GET', 'POST'])
-def new_temp():
     form = forms.CreateCustomer()
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         result = UserService.CreateCustomer(form.email.data, form.password.data, form=form, app=app)
@@ -142,6 +138,11 @@ def new_temp():
     elif request.method == 'GET':
         session['logged_in'] = False
     return render_template('new.html', form=form)
+
+
+@app.route('/new/early_access', methods=['GET', 'POST'])
+def new_temp():
+    return redirect(url_for('new'))
 
 
 

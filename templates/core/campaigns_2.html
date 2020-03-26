@@ -156,6 +156,7 @@
 
 {% set base = page.data['core']['core'][0] %}
 <ad-spend
+    company_name="{{page.data['core']['core'][0]['company_name']}}"
     customer_id="{{page.data['core']['core'][0]['id']}}"
     type="{{page.data['spend_rec']['spend_rec'][0]['model']}}"
     stage="{{base.get('stage')}}"
