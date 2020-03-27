@@ -223,6 +223,23 @@
     <!-- End -->
     <!-- custom js -->
     <script src="/static/branding/js/custom.js"></script>
+
+    <script type="text/javascript">
+        (function(w,d){
+        w.HelpCrunch=function(){w.HelpCrunch.q.push(arguments)};w.HelpCrunch.q=[];
+        function r(){var s=document.createElement('script');s.async=1;s.type='text/javascript';s.src='https://widget.helpcrunch.com/';(d.body||d.head).appendChild(s);}
+        if(w.attachEvent){w.attachEvent('onload',r)}else{w.addEventListener('load',r,false)}
+        })(window, document)
+    </script>
+
+    <script type="text/javascript">
+        HelpCrunch('init', 'marketr', {
+            applicationId: 1,
+            applicationSecret: '1CgVHY7J/W07nWEnaLK1wQ21UZZpW2pQwWt5EBIAm2wpE8E+VAGtRCwZ4pMAbqf6dXCYdjSKb2TDYOP0mv2sXQ=='
+        });
+
+        HelpCrunch('showChatWidget');
+    </script>
     
     {% include "layouts/imports/imports.html" %}
 </body>
