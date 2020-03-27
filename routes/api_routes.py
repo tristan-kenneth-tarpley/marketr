@@ -516,7 +516,6 @@ def compile_master_index():
         index = MarketrIndex(ltv)
         lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-        print(index)
 
         if opps is not None:
             topics = compile_topics(opps, index, lcr, ltv)

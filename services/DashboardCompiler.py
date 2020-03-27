@@ -37,7 +37,7 @@ def compile_data_view(run_social: bool=False, run_search: bool=True, company_nam
         search_df, social_df, opps = loop.run_until_complete(dataframes(run_social, run_search))
 
     else:
-        ltv = 5000
+        ltv = 1000
         new_start = start_date.replace(" UTC", ".000")
         new_end = end_date.replace(" UTC", ".000")
 
