@@ -491,7 +491,7 @@ def compile_master_index():
     demo = True if req.get('customer_id') == '181' else False
     start_date = req.get('start_date')
     end_date = req.get('end_date')
-    ltv = float(req.get('ltv').replace(",", ""))
+    ltv = float(req.get('ltv').replace(",", "")) if not demo else 200.00
     company_name = req.get('company_name')
     run_social = req.get('facebook')
     run_search = req.get('google')
