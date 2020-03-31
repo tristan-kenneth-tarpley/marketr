@@ -305,7 +305,7 @@ export default class AdSpend extends HTMLElement {
         const el = `
             ${this.data.allocation.map((set, index)=>{
                 const display_num = this.perc_or_usd == 'perc' ?
-                                        `<span class="allocation_display">${number_rounded(set.spend_percent * 100)}%</span> (${currency_rounded(set.spend)}$)` :
+                                        `<span class="allocation_display">${number_rounded(set.spend_percent * 100)}%</span> (${currency_rounded(set.spend)})` :
                                         `<span class="allocation_display">${currency_rounded(set.spend)}</span> (${number_rounded(set.spend_percent * 100)}%)`
 
                 

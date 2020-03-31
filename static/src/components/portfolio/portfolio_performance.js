@@ -400,7 +400,7 @@ export default class PortfolioPerformance extends HTMLElement {
     reset_charts(el){
         setTimeout(()=>{
             this.profit_chart(el.querySelector("#profit_chart"))
-        }, 200)
+        }, 600)
     }
 
 
@@ -1006,7 +1006,6 @@ export default class PortfolioPerformance extends HTMLElement {
             }
         }
         catch(e){
-            console.log(e)
         }
         return returned
   
@@ -1147,7 +1146,7 @@ export default class PortfolioPerformance extends HTMLElement {
     profit_spread() {
         return `
             <div id="profit_chart_container">
-                <canvas style="width: 100%; height: 100%;" id="profit_chart"></canvas>
+                <canvas id="profit_chart"></canvas>
             </div>
         `
     }
@@ -1647,6 +1646,10 @@ export default class PortfolioPerformance extends HTMLElement {
         }
     }
 
+    DateFormat(year, month, date) {
+        return `${year}-${month}-${date} 00:00:00 UTC`
+    }
+
     connectedCallback() {
         this.customer_id = this.getAttribute('customer-id')
         this.facebook_id = this.getAttribute('facebook_id') ? true : false
@@ -1661,14 +1664,16 @@ export default class PortfolioPerformance extends HTMLElement {
         this.analytics = this.getAttribute('analytics') ? true : false
 
         const today = new Date()
+        const _30_days_prior = new Date()
+        _30_days_prior.setDate(today.getDate() - 30)
+        
         this.start_date_1 = this.getAttribute('start_date_1')
                                 ? this.getAttribute('start_date_1')
-                                : `${today.getFullYear()}-${today.getMonth()}-${today.getDate()} 00:00:00 UTC`
+                                : this.DateFormat(_30_days_prior.getFullYear(), _30_days_prior.getMonth() + 1, _30_days_prior.getDate())
 
         this.end_date_1 = this.getAttribute('end_date_1')
                             ? this.getAttribute('end_date_1')
-                            : `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00 UTC`
-
+                            : this.DateFormat(today.getFullYear(), today.getMonth() + 1, today.getDate())
         this.render()
 
     }

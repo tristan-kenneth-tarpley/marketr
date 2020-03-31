@@ -127,16 +127,9 @@ class GoogleORM(BigQuery):
         return self.get(query)
 
     def social_index(self, start, end):
-        base = f"""
-            DECLARE _start TIMESTAMP;
-            DECLARE _end TIMESTAMP;
-            DECLARE project STRING;
-            SET (_start, _end, project) = ('{start}', '{end}', '`marketr-app`.`placeholder`');
-        """
-
         front_half = f"""
             select distinct
-            (select sum(distinct spend) from `marketr-app`.`placeholder`.`ads_insights` where date_start between _start and _end) as _cost,
+            (select sum(distinct spend) from `marketr-app`.`placeholder`.`ads_insights` where date_start between '{start}' and '{end}') as _cost,
 
             (select _1d_click + _7d_click + _28d_click from unnest(ai.actions) where action_type = 'omni_purchase') as conversions,
 
@@ -165,13 +158,12 @@ class GoogleORM(BigQuery):
 
 
             where campaign_name is not null
-            and date_start between _start and _end
+            and date_start between '{start}' and '{end}'
 
             order by date_start
         """
 
         facebook = f"""
-            {base}
             {front_half},
             {_try},
             {back_half}
@@ -179,7 +171,6 @@ class GoogleORM(BigQuery):
         """
 
         second_facebook = f"""
-            {base}
             {front_half},
             {_catch},
             {back_half}
@@ -207,14 +198,6 @@ class GoogleORM(BigQuery):
     def search_index(self, start, end):
         retry_count = 0
 
-        base = f"""
-            DECLARE _start TIMESTAMP;
-            DECLARE _end TIMESTAMP;
-            DECLARE project STRING;
-            SET (_start, _end, project) = ('{start}', '{end}', '`marketr-app`.`placeholder`');
-            select 
-            distinct 
-        """
         front_half = "rep.avgcpc / 1000000 as cpc, rep.campaign as campaign_name, rep.day as date_start, rep.campaignid as campaign_id, rep.adgroupid as adset_id, rep.adgroup as adset_name, rep.adid as ad_id, rep.keywordid, rep.finalurl, rep.headline1, rep.headline2, rep.description, rep.ctr as ctr, rep.clicks, rep.conversions, rep.cost / 1000000 as cost, rep.impressions, campaign.budget / 1000000 as daily_budget"
         _try = "rep.imageadurl"
         _catch = "null as imageadurl"
@@ -222,7 +205,7 @@ class GoogleORM(BigQuery):
             (
             select sum(cost) from (
                 select distinct cost / 1000000 as cost from `{self.project_id}`.`{self.company_name}_google`.`ACCOUNT_PERFORMANCE_REPORT`
-                where day between _start and _end
+                where day between '{start}' and '{end}'
             )) as _cost
         """
         back_half = f"""
@@ -233,12 +216,12 @@ class GoogleORM(BigQuery):
         """
         end = f"""
             where rep.campaign is not null
-            and rep.day between _start and _end
+            and rep.day between '{start}' and '{end}'
             and rep.campaignstate <> 'paused' 
         """
 
         google = f"""
-            {base}
+            SELECT DISTINCT
             {_try},
             {front_half},
             {total_cost}
@@ -247,7 +230,7 @@ class GoogleORM(BigQuery):
         """
 
         second_google = f"""
-            {base}
+            SELECT DISTINCT
             {_catch},
             {front_half},
             {total_cost}
@@ -266,7 +249,6 @@ class GoogleORM(BigQuery):
             _second_google = self.clean_query(second_google, client_set)
             returned = self.get(_second_google)
             retry_count += 1
-            print(_second_google)
             if returned is not None:
                 return returned
             else:
