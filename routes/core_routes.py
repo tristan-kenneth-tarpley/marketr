@@ -490,3 +490,7 @@ def thanks_audit():
 def thanks_booking():
     return render_template('layouts/thank_you_layout.html', booking=True)
 
+@app.route('/thanks/webinar', methods=['GET'])
+def thanks_webinar():
+    return render_template('layouts/thank_you_layout.html', webinar=True)
+
