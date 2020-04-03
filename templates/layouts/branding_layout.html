@@ -77,18 +77,16 @@
                     <!-- menu -->
                     <div class="collapse navbar-collapse justify-content-end" id="navbar">
                         <ul class="navbar-nav ml-auto align-items-lg-center">
-                            {% if home %}
-                                <li class="m-dropdown m-dropdown-multilevel">
-                                    <a class="nav-link" href="#home">Home</a>
-                                </li>
-                                <li><a class="nav-link" href="#about">About</a></li>
-                                <li><a class="nav-link" href="#feature">Features</a></li>
-                                <li><a class="nav-link" href="#price">Price</a></li>
-                                <li><a class="nav-link" href="#contact">Contact Us</a></li>
-                                <li><a class="nav-link" href="/blog">Blog</a></li>
-                            {% else %} 
-                                <li><a class="nav-link" href="/">Home</a></li>
-                            {% endif %}
+                            {% set base = "/" if not home else "" %}
+                            <li class="m-dropdown m-dropdown-multilevel">
+                                <a class="nav-link" href="{{base}}#home">Home</a>
+                            </li>
+                            <li><a class="nav-link" href="{{base}}#about">About</a></li>
+                            <li><a class="nav-link" href="{{base}}#feature">Features</a></li>
+                            <li><a class="nav-link" href="{{base}}#price">Price</a></li>
+                            <li><a class="nav-link" href="{{base}}#contact">Contact Us</a></li>
+                            <li><a class="nav-link" href="/blog">Blog</a></li>
+       
                             {% if not logged_in %}
                                 <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/new">Join beta</a></li>
                                 <li><a style="background-color: white;border-color: #ca7d66;color: #ca7d66;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/login">Login</a></li>

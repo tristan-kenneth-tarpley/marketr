@@ -41,6 +41,84 @@ Table of contents
 @import url(../../assets/css/style_guide.css);
 @import url("https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Pacifico");
+
+#resources_right {
+  width: 100%;
+  z-index: 2;
+  background:#fff;
+  box-shadow: var(--card-box-shadow);
+  border-radius: 6px;
+  padding: 2em;
+}
+#resources_right .btn-primary {
+  background-color: var(--primary) !important;
+}
+#resources_right .btn-neutral {
+  color: var(--secondary) !important;
+  border: 2px solid transparent;
+}
+#resources_right .btn-neutral:hover {
+  border: 2px solid var(--secondary);
+}
+#features_list {
+  background: #fff;
+  padding:2em;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.1);
+  box-shadow: var(--card-box-shadow);
+}
+#features_list li {
+  margin-top: 1em;
+  list-style-type: none;
+  color: var(--nav-color) !important;
+}
+#features_list i {
+  color: var(--secondary);
+}
+
+
+.aniWrap {
+  margin: 40px auto;
+  display: block;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+}
+.aniWrap a {
+  color: var(--nav-color) !important;
+}
+.aniWrap p {
+  position:relative;
+  left: -4em;
+}
+
+.mouse {
+  width: 28px;
+  height: 50px;
+  border: 2px solid var(--nav-color);
+  border-radius: 14px;
+}
+
+.scroller {
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--nav-color);
+  position: relative;
+  top: 10px;
+  left: 12px;
+  -webkit-animation: scrolls 1.3s ease-out infinite ; /* Chrome, Safari, Opera */
+}
+
+
+@-webkit-keyframes scrolls {
+    0%   {top: 18px; opacity: 1; height: 4px}
+    95% {top: 5px; opacity: 0; height: 8px}
+  	100% {top: 18px; opacity: 1; height: 4px}
+}
+
 .overlay-link {
   position: absolute;
   top: 0;
@@ -1104,6 +1182,9 @@ h6 {
   .header-nav.header-white-bg {
     background: #ffffff;
   }
+  .header-light {
+    background: var(--nav-color);
+  }
   .header-nav.header-light:not(.fixed-header) .navbar-nav > li > a {
     color: #ffffff;
   }
@@ -1362,7 +1443,7 @@ h6 {
   }
 }
 .footer-one {
-  background: #000000;
+  background: var(--nav-color);
 }
 .footer-one .footer-top {
   padding: 50px 0;

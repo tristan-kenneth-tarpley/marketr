@@ -1,12 +1,8 @@
 {% extends "layouts/branding_layout.html" %}
 {% from "macros/_branding_macros.html" import pricing, campaign_summary %}
 
-{% block content %}
-
+{% macro pricing_page(logged_in, quantity, company_name) %}
 <style>
-    body {
-        background-color: var(--nav-color);
-    }
     .price_content {
         width: 100%;
         margin-top:5em;
@@ -14,25 +10,33 @@
         position: relative;
         background-color: var(--panel-bg);
     }
-    .section.full_height {
+    .full_height {
         height: 100%;
-        padding: 100px 0 0 0 !important;
+    }
+    .right_column {
+        background-color: var(--nav-color);
     }
 </style>
-    {% if user %}
-    <div class="price_content">
-        <h1 class="center_it">If you didn't notice, we got some information on your competitors.</h1>
-        <br>
-        <competitive-intelligence customer_id="{{user}}"></competitive-intelligence>
+{% if logged_in %}
+<div class="price_content">
+    <h1 class="center_it">If you didn't notice, we got some information on your competitors.</h1>
+    <br>
+    <competitive-intelligence customer_id="{{user}}"></competitive-intelligence>
+</div>
+{% endif %}
+<div id="next_steps" class="{{'full_height' if not logged_in else '' }} row">
+    <div style="padding: 0;" class=" col-lg-8">
+        {{ pricing(logged_in, quantity=quantity, company_name=company_name) }}    
     </div>
-    {% endif %}
-    <div id="next_steps" class="row">
-        <div style="padding: 0;" class="h-100 col-lg-8">
-            {{ pricing(logged_in, quantity=quantity, company_name=company_name) }}    
-        </div>
-        <div style="padding: 0;" class="h-100 col-lg-4">
-            {{ campaign_summary(logged_in) }}
-        </div>
+    <div style="padding: 0;" class="right_column h-100 col-lg-4">
+        {{ campaign_summary(logged_in) }}
     </div>
+</div>
+{% endmacro %}
+
+
+{% block content %}
+
+    {{ pricing_page(logged_in, quantity, company_name )}}
     
 {% endblock%}

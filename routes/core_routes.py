@@ -181,7 +181,7 @@ def pricing():
     return render_template(
 		'branding/pricing.html',
 		logged_in = True if session.get('logged_in') == True else False,
-		home=True,
+		home=False,
         quantity = request.args.get('quantity') if request.args.get('quantity') else 1,
         user=session.get('user'),
         company_name=session.get('company_name')

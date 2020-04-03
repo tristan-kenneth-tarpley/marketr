@@ -5,26 +5,27 @@
         <div class="row justify-content-center sm-m-25px-b m-45px-b">
             <div class="col-lg-8 col-md-10">
                 <div class="section-title text-center">
-                    <h2>Run campaigns with Market(r)</h2>
-                    
+                    <h2>Get superpowers with Market(r)</h2>
+                    <p style="color:#06112f;">We're inspired to see so many businesses helping one another out.  We want to help too - to that end, we're offering our Analytics package <strong>FREE</strong> for 6 months.</p>
                     {#{% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>#}
                 </div>
             </div>
         </div>
         <!-- end section title -->
         <div class="row align-items-center">
-            {% if quantity == 1 %}
+
             <div class="col-md-4 col-lg-4 m-15px-tb">    
                 <div class="price-table">
                     <div class="pt-head">
-                        <h5>Analytics</h5>
+                        <h5>Optimize with Market(r) <i style="color:#62cde0;" class="fad fa-chart-bar"></i></h5>
                     </div>
                     <div class="pt-body">
-                        <h4><span>$</span>40/month</h4>
+                        <h4 style="text-decoration: line-through;"><span>$</span>40/month</h4>
+                        <h4>Free for 6 months (cancel anytime)</h4>
                         <ul class="list-type-02">
-                            <li><i class="fas fa-check"></i> Data integrations with 80+ platforms</li>
-                            <li><i class="fas fa-check"></i> Cross-platform analytics</li>
-                            <li><i class="fas fa-check"></i> Real-time recommendations on ad spend optimization.</li>
+                            <li> <i class="fas fa-check"></i> Weekly 1-click recommendations on how to not only survive right now, but continue to grow your business.</li>
+                            <li> <i class="fas fa-check"></i> Profit Potential Per $100 Spent: See how much you're getting out of every ad, ad group, campaign, and channel at a glance</li>
+                            <li> <i class="fas fa-check"></i> Use our listener tool to see what the market is saying about your competition, industry, and your brand.</li>
                             <li><i class="fas fa-check"></i> Market(r) learns exactly how much you should spend and where to spend it.</li>
                         </ul>
                     </div>
@@ -33,10 +34,8 @@
                     </div>
                 </div>
             </div>
-            {% else %}
-                <div class="col-md-2 col-lg-2 m-15px-tb"></div>
-            {% endif %}
-            {% set classList = "col-md-4 col-lg-4" if quantity == 1 else "col-md-8 col-lg-8" %}
+
+            {% set classList = "col-md-4 col-lg-4" %}
             <div class="{{classList}} m-15px-tb">    
                 <div class="price-table">
                     <div class="pt-head">
@@ -46,6 +45,7 @@
                     <div class="pt-body">
                         <h4><span id="list__price">$255/mo</span> (+ ad spend)</h4>
                         <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Everything in "Optimize with Market(r)" plus campaign management</li>
                             <li><i class="fas fa-check"></i> 14 day free trial</li>
                             <li><i class="fas fa-check"></i> Cancel anytime in-app with one click, without talking to anybody.</li>
                             <li><i class="fas fa-check"></i> Includes 3 campaigns (the minimum necessary for our engines to get sufficient data). $85/month per campaign thereafter.</li>
@@ -80,19 +80,19 @@
                     </div>
                 </div>
             </div>
-            {% if quantity == 1 %}
+
             <!-- price table -->
             <div class="col-md-4 col-lg-4 m-15px-tb">
                 <div class="price-table">
                     <div class="pt-head">
-                        <h5>Enterprise</h5>
+                        <h5>Enterprise <i style="color:#62cde0;" class="fad fa-starship"></i></h5>
                     </div>
                     <div class="pt-body">
                         <h4>Custom pricing</h4>
                         <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Everything in "Grow with Market(r)"</li>
                             <li><i class="fas fa-check"></i> Custom-tailored machine learning model, trained on your business's data.</li>
-                            <li><i class="fas fa-check"></i> Multiple conversion values</li>
-                            <li><i class="fas fa-check"></i> Multiple customer lifetime value tracking</li>
+                            <li><i class="fas fa-check"></i> Dynamic churn and lifetime value tracking by cohort</li>
                         </ul>
                     </div>
                     <div class="pt-footer">
@@ -100,9 +100,7 @@
                     </div>
                 </div>
             </div>
-            {% else %}
-                <div class="col-md-2 col-lg-2 m-15px-tb"></div>
-            {% endif %}
+
             <!-- end price table -->
             <div class="col-md-3 col-lg-2 m-15px-tb">                    
             </div>
@@ -116,9 +114,6 @@
     .campaign_summary h1,
     .campaign_summary i {
         text-align: center;
-    }
-    #next_steps .feature-box {
-        padding: 0 10%;
     }
     #next_steps .campaign_summary i {
         color: var(--nav-color);
