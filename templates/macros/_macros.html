@@ -393,12 +393,12 @@
 			<table class="table {{ 'file_path' if file_path }} table-borderless">
 			    <thead>
 			    	<tr>
-				      <th style="font-size: 100%;">
+				      <th style="{{ 'text-align:center;' if not p }} font-size: 100%;">
 				      	{% if file_path != [None] %}
 
 				      		<img src="{{ file_path }}">
 				      		<h6 class="hidden">{{h6}}</h6>
-
+							{% if not p %}<br>{% endif %}
 				      	{% else %} 
 
 				      		<h6>{{h6}}</h6>

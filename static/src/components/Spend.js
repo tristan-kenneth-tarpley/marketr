@@ -30,7 +30,7 @@ const styles = () => {
             height: 7em;
             flex-direction: column;
             justify-content:center;
-            border: 1px solid rgba(0,0,0,.1);
+            box-shadow: var(--sharper-neu);
             padding: 1em;
             border-radius: 6px;
             background-color: var(--panel-bg);
@@ -189,7 +189,7 @@ export default class AdSpend extends HTMLElement {
                             ${modal(title, considerations_meta[title].hover, title)}
                         </div>
                         <div class="col-lg-6">
-                            <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
+                            <select style="position:relative;top:15%;" class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
                                 <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
                                 <option value="medium" ${value == 'medium' ? "selected" : ""}>medium</option>
                                 <option value="low" ${value == 'low' ? "selected" : ""}>low</option>
@@ -232,10 +232,8 @@ export default class AdSpend extends HTMLElement {
                     <p class="small_txt">Change your budget:</p>
                     <div class="form-group">
                         <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
-                        <div class="form-control-border"></div>
+                        <button style="display:flex;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
                     </div>
-                    <p class="small_txt"><em>Changing this will affect the campaigns recommended to the right</em></p>
-                    <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
 
             </div>
@@ -402,7 +400,7 @@ export default class AdSpend extends HTMLElement {
                     <h1>You're 95% there.
                         <span>Just 2 more clicks to get your superpowers.</span>
                     </h1>
-                    <a href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">I want to see what's next</a>
+                    <a style="box-shadow:none !important;" href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">I want to see what's next</a>
                 </div>
                 
             </div>

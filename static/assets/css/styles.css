@@ -169,6 +169,9 @@ p {
   background: white !important;
   padding: 0 6em;
 }
+#intake.content.splash {
+  height: 100%;
+}
 #intake.content .btn-neutral {
   padding:0;
 }

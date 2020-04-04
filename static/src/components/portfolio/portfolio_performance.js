@@ -1696,7 +1696,7 @@ export default class PortfolioPerformance extends HTMLElement {
                     ${!this.first_sync
                         ? /*html*/` 
                             <p style="margin: auto;">There's no data for this time period.</p>
-                            <p class="small_txt" style="margin: auto;">Either your data hasn't finished syncing yet or your looking at a timeframe where you didn't have any data.</p>
+                            <p class="small_txt" style="margin: auto;">Either your data hasn't finished syncing yet or you're looking at a timeframe where you didn't have any data.</p>
                             ${this.date_range()}
                         `
                         : /*html*/`
