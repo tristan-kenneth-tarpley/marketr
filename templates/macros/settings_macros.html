@@ -160,6 +160,7 @@
     <p class="small_txt">Note: 100% of this money goes straight to the ad platforms and is only for your ad spend. We don't pocket any of this.</p>
     <div class="fine_print_container">
         <div class="card negative_card">
+            {% if not page.customer.get('analytics') %}
             <div class="row">
                 <div class="col-lg-4 col-sm-12">
                     <p>
@@ -194,6 +195,7 @@
                     </div>   
                 </div>
             </div>
+            {% endif %}
             <div class="row">
                 <div class="col-lg-4 col-md-12">
                     <p>
@@ -203,8 +205,8 @@
                 </div>
                 <div class="col-lg-8 col-md-12">
                     <form method="POST" action="{{ url_for('spend_rate') }}">
-                        <p><Strong>Need to change the spend rate?</Strong></p>
-                        <p class="small_txt">This is the amount that we will spend for you every month for advertising.</p>
+                        <p><Strong>Set your monthly ad spend budget</Strong></p>
+                        <p class="small_txt">These are the dollars that you give to advertising platforms every month.</p>
                         <div class="row">
                             <div class="col">
                                 <div class="input-group">

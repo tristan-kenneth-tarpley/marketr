@@ -57,7 +57,6 @@
             {% elif completed == 1 %}
                 {% set status = True %}
             {% endif %}
-
             {{ tr(title=title, completed=status, admin=admin, tactic_id=tactic) }}
 
         {% endfor %}
@@ -72,7 +71,7 @@
                         {% else %}
                             {% set checked = ''%}
                         {% endif %}
-                        <input class="form-check-input task_complete" type="checkbox"
+                        <input data-task="{{title}}" class="form-check-input task_complete" type="checkbox"
                         {{ checked }}>
                         <span class="form-check-sign"></span>
                     </label>
@@ -127,11 +126,11 @@
         </div>
         <div class="card-body" style="padding-top: 0;">
             <div class="task_table table-full-width table-responsive">
-                <table class="table">
+                <table data-id="{{ page.data['core']['core'][0]['id'] if not admin else ''}}" class="__tasks table">
                     <tbody id="task_body">
                         {% if page.data['tasks']['tasks'] %}
                             {{view_tasks(page, admin=admin)}}
-                            <div id="show_confetti" class="hidden">{% include "macros/confetti.html" %}</div>
+                            <div id="show_confetti" style="display:none;">{% include "macros/confetti.html" %}</div>
                         {% else %}
                             <h4>No tasks yet! Your Marketer will assign you tasks here to help you with your Market(r) score.</h4>
                         {% endif %}

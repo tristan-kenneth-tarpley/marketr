@@ -21,6 +21,13 @@ class GoogleChatService:
 			body=json.dumps(msg),
 		)
 
+	def account_access_added(self, customer_id=None, company_name=None):
+		url = 'https://chat.googleapis.com/v1/spaces/AAAA5mBl4wA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=y0YGuIl2myoBTFJx_MkEvst-4By__O2V9fdx8nuIlAc%3D'
+		msg = {
+			'text': f"{company_name} (customer id: {customer_id}) has granted access to their ad accounts. They are ready to be synced in Stitch."
+		}
+		self.send(url, msg)
+
 	def rec_accepted(self, rec_id=None, user=None, email=None, company=None):
 		url = 'https://chat.googleapis.com/v1/spaces/AAAApItvQ6A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Wg61u0WhI6AY40Z9F4RwUVfmGP6nxtXTbhFECcvFVlE%3D'
 		msg = {

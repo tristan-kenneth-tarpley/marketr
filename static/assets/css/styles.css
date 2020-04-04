@@ -12601,8 +12601,9 @@ html.modal-active, body.modal-active {
 }
 .widget__title {
   color: var(--nav-color);
-  font-size: 18px;
+  font-size: 18px !important;
   margin-bottom: 5%;
+  padding-top: 0 !important;
   font-weight: 300;
   text-transform: capitalize;
   white-space: normal;

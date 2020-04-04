@@ -304,9 +304,25 @@ export class CoreViewModels {
 
             if($this.prop('checked')) {
                 
-                let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
-                val = val.slice(19,(val.length-4))
-                console.log(val)
+                let val = event.currentTarget.dataset.task //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
+                if (val == 'Give this email "admin access" to all relevant advertising and analytics platforms: analytics@marketr.life') {
+                    fetch('/api/account_access_added', {
+                        method: 'POST',
+                        headers : new Headers({
+                            "content-type": "application/json"
+                        }),
+                        body: JSON.stringify({
+                            customer_id: tasks.customer_id
+                        })
+                    })
+                    .then(()=>{
+                        setTimeout(()=>{
+                            window.history.pushState('', '', '?first_sync=True');
+                            window.location.reload()
+                        }, 600)
+                        
+                    })
+                }
                 tasks.complete(val)
                 complete_task_view($this)
 

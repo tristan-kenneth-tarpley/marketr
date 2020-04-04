@@ -9,7 +9,6 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
         .comp__inner {
-            height: 25%;
             flex-direction: column;
             display:flex;
             justify-content:center;

@@ -29,7 +29,7 @@ export default class Budget extends HTMLElement {
     }
 
     ViewController(el){
-
+        return el
     }
 
     render(init=true){

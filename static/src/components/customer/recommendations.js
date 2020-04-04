@@ -65,7 +65,14 @@ export default class Recommendations extends HTMLElement {
             .then(this.render(true))
     }
 
+    broadcast(){
+        if (document.querySelector('rec-history')){
+            document.querySelector('rec-history').setAttribute('re_render', 'true')
+        }
+    }
+
     apply(target){
+        this.broadcast()
         this.remove_from_view(target)
         fetch('/api/recommendation/approve', {
             method: 'POST',
@@ -74,7 +81,8 @@ export default class Recommendations extends HTMLElement {
             }),
             body:  JSON.stringify({
                 customer_id: this.customer_id,
-                rec_id: target.getAttribute('rec_id')
+                rec_id: target.getAttribute('rec_id'),
+                analytics: this.analytics
             })
         })
             .then(res=>res.json())
@@ -83,6 +91,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     dismiss(target){
+        this.broadcast()
         this.remove_from_view(target)
         fetch('/api/recommendation/dismiss', {
             method: 'POST',
@@ -91,7 +100,8 @@ export default class Recommendations extends HTMLElement {
             }),
             body:  JSON.stringify({
                 customer_id: this.customer_id,
-                rec_id: target.getAttribute('rec_id')
+                rec_id: target.getAttribute('rec_id'),
+                analytics: this.analytics
             })
         })
             .then(res=>res.json())
@@ -159,6 +169,8 @@ export default class Recommendations extends HTMLElement {
         this.customer_id = this.getAttribute('customer-id')
         this.recs_json = eval(this.getAttribute('recs_json'))
         this.fetch = eval(this.getAttribute('fetch'))
+        this.analytics = eval(this.getAttribute('analytics')) == 1 ? true : false
+        
         this.render()
     }
 }

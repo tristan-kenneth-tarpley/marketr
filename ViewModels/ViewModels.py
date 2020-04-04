@@ -544,7 +544,8 @@ class SettingsViewModel:
 			'ad_mid': False if not data[3] else True,
 			'ad_premium': False if not data[4] else True,
 			'funds_remaining': data[5],
-			'spend_rate': data[6]
+			'spend_rate': data[6],
+			'analytics': data[7]
 		}
 
 	def subscription(self):

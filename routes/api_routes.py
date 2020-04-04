@@ -44,6 +44,14 @@ from selenium.webdriver.firefox.options import Options
 from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
 from services.OpportunitiesService import compile_topics
 
+@app.route('/api/account_access_added', methods=['POST'])
+def account_access_added():
+    req = request.get_json()
+    db.execute("UPDATE customer_basic SET data_synced = 1 WHERE id = ?", False, (req.get('customer_id'),), commit=True)
+    google = GoogleChatService()
+    google.account_access_added(customer_id=req.get('customer_id'), company_name=session['company_name'])
+    return 'hi'
+
 @app.route('/api/get_all_account_users', methods=['GET'])
 def get_all_account_users():
     returned = UserService.get_all_account_users(session['user'])
@@ -131,6 +139,7 @@ def complete_task():
         user = 'customer' if session['customer'] == True else 'admin'
     )
 
+    
     tasks.complete_task(
         request.form.get('task')
     )
@@ -237,7 +246,6 @@ def rewards():
 @app.route('/api/spend_allocation', methods=['POST'])
 def spend_allocation():
     req = request.get_json()
-    print(req)
     """
     biz_model types:
         Professional Services
@@ -274,10 +282,11 @@ def spend_allocation():
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
-    if viewed_budget and viewed_budget != 'None':
+    if viewed_budget is not None and viewed_budget != 'None':
         input_budget = float(str(viewed_budget).replace(",", ""))
     else:
         input_budget = budget
+
 
     user = req.get('customer_id')
     
@@ -325,13 +334,20 @@ def new_recommendation():
     body = req.get('body')
 
     if title is not None and body is not None:
-        service.new(title=title, body=body)
+        service.new(title=title, body=body, notification_obj=EmailService(to=session['email']))
 
     if req.get('outstanding') and req.get('outstanding') == True:
         return service.get_all_outstanding()
     else:
         return service.get_all()
 
+
+@app.route('/api/historical_recs', methods=['POST'])
+def historical_recs():
+    req = request.get_json()
+    service = RecommendationService(customer_id=req.get('customer_id'))
+
+    return service.get_historical()
     
 @app.route('/api/outstanding_recs', methods=['POST'])
 def outstanding_recs():
@@ -356,9 +372,10 @@ def approve_rec():
         rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
         rec.accept()
         result = 'success'
-
+        
         google = GoogleChatService()
         google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'])
+        
     except Exception as e:
         print(e)
         result = 'failure'

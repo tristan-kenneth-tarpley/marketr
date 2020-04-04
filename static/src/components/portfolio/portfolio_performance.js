@@ -36,6 +36,249 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        @-webkit-keyframes clockwise {
+        0% {
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+        }
+        @-moz-keyframes clockwise {
+        0% {
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -moz-transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+        }
+        @-webkit-keyframes counter-clockwise {
+        0% {
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -moz-transform: rotate(-360deg);
+            -ms-transform: rotate(-360deg);
+            -webkit-transform: rotate(-360deg);
+            transform: rotate(-360deg);
+        }
+        }
+        @-moz-keyframes counter-clockwise {
+        0% {
+            -moz-transform: rotate(0deg);
+            -ms-transform: rotate(0deg);
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -moz-transform: rotate(-360deg);
+            -ms-transform: rotate(-360deg);
+            -webkit-transform: rotate(-360deg);
+            transform: rotate(-360deg);
+        }
+        }
+        .gears__container {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        margin-left: -100px;
+        height: 150px;
+        width: 200px;
+        margin-top: 1em;
+        }
+
+        .gearbox {
+        height: 150px;
+        width: 200px;
+        position: relative;
+        border: none;
+        overflow: hidden;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        }
+        .gearbox .overlay {
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        border-radius: 6px;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        -moz-transition: background 0.2s;
+        -o-transition: background 0.2s;
+        -webkit-transition: background 0.2s;
+        transition: background 0.2s;
+        }
+        .gearbox.turn .overlay {
+        background: transparent;
+        }
+
+        .gear {
+        position: absolute;
+        height: 60px;
+        width: 60px;
+        -moz-box-shadow: 0px -1px 0px 0px #888888, 0px 1px 0px 0px black;
+        -webkit-box-shadow: 0px -1px 0px 0px #888888, 0px 1px 0px 0px black;
+        box-shadow: 0px -1px 0px 0px #888888, 0px 1px 0px 0px black;
+        -moz-border-radius: 30px;
+        -webkit-border-radius: 30px;
+        border-radius: 30px;
+        }
+        .gear.large {
+        height: 120px;
+        width: 120px;
+        -moz-border-radius: 60px;
+        -webkit-border-radius: 60px;
+        border-radius: 60px;
+        }
+        .gear.large:after {
+        height: 96px;
+        width: 96px;
+        -moz-border-radius: 48px;
+        -webkit-border-radius: 48px;
+        border-radius: 48px;
+        margin-left: -48px;
+        margin-top: -48px;
+        }
+        .gear.one {
+        top: 12px;
+        left: 10px;
+        }
+        .gear.two {
+        top: 61px;
+        left: 60px;
+        }
+        .gear.three {
+        top: 110px;
+        left: 10px;
+        }
+        .gear.four {
+        top: 13px;
+        left: 128px;
+        }
+        .gear:after {
+        content: "";
+        position: absolute;
+        height: 36px;
+        width: 36px;
+        -moz-border-radius: 36px;
+        -webkit-border-radius: 36px;
+        border-radius: 36px;
+        background: #111;
+        top: 50%;
+        left: 50%;
+        margin-left: -18px;
+        margin-top: -18px;
+        z-index: 3;
+        -moz-box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0, 0, 0, 0.1), inset 0px 2px 0px 0px #090909, inset 0px -1px 0px 0px #888888;
+        -webkit-box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0, 0, 0, 0.1), inset 0px 2px 0px 0px #090909, inset 0px -1px 0px 0px #888888;
+        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0, 0, 0, 0.1), inset 0px 2px 0px 0px #090909, inset 0px -1px 0px 0px #888888;
+        }
+
+        .gear-inner {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background: #555;
+        -webkit-animation-iteration-count: infinite;
+        -moz-animation-iteration-count: infinite;
+        -moz-border-radius: 30px;
+        -webkit-border-radius: 30px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .large .gear-inner {
+        -moz-border-radius: 60px;
+        -webkit-border-radius: 60px;
+        border-radius: 60px;
+        }
+        .gear.one .gear-inner {
+        -webkit-animation: counter-clockwise 3s infinite linear;
+        -moz-animation: counter-clockwise 3s infinite linear;
+        }
+        .gear.two .gear-inner {
+        -webkit-animation: clockwise 3s infinite linear;
+        -moz-animation: clockwise 3s infinite linear;
+        }
+        .gear.three .gear-inner {
+        -webkit-animation: counter-clockwise 3s infinite linear;
+        -moz-animation: counter-clockwise 3s infinite linear;
+        }
+        .gear.four .gear-inner {
+        -webkit-animation: counter-clockwise 6s infinite linear;
+        -moz-animation: counter-clockwise 6s infinite linear;
+        }
+        .gear-inner .bar {
+        background: #555;
+        height: 16px;
+        width: 76px;
+        position: absolute;
+        left: 50%;
+        margin-left: -38px;
+        top: 50%;
+        margin-top: -8px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .large .gear-inner .bar {
+        margin-left: -68px;
+        width: 136px;
+        }
+        .gear-inner .bar:nth-child(2) {
+        -moz-transform: rotate(60deg);
+        -ms-transform: rotate(60deg);
+        -webkit-transform: rotate(60deg);
+        transform: rotate(60deg);
+        }
+        .gear-inner .bar:nth-child(3) {
+        -moz-transform: rotate(120deg);
+        -ms-transform: rotate(120deg);
+        -webkit-transform: rotate(120deg);
+        transform: rotate(120deg);
+        }
+        .gear-inner .bar:nth-child(4) {
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+        }
+        .gear-inner .bar:nth-child(5) {
+        -moz-transform: rotate(30deg);
+        -ms-transform: rotate(30deg);
+        -webkit-transform: rotate(30deg);
+        transform: rotate(30deg);
+        }
+        .gear-inner .bar:nth-child(6) {
+        -moz-transform: rotate(150deg);
+        -ms-transform: rotate(150deg);
+        -webkit-transform: rotate(150deg);
+        transform: rotate(150deg);
+        }
+
+
+
         .center__widget {
             display: flex;
             align-self:center;
@@ -1182,7 +1425,7 @@ export default class PortfolioPerformance extends HTMLElement {
     opps_classList(){
         let opps_classList;
 
-        if (this.analytics) opps_classList = `col-lg-4 col-md-4 col-sm-12`
+        
         if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
         else opps_classList = `col-lg-4 col-md-4 col-sm-12`
 
@@ -1255,20 +1498,20 @@ export default class PortfolioPerformance extends HTMLElement {
             <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container">
             </div>
 
-            ${this.analytics ? `` : /*html*/ `
-                <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
-                    <div class="h--500 card card-body">
-                        <h1 class="widget__title">Recommendations</h1>
-                    </div>
+
+            <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
+                <div class="h--500 card card-body">
+                    <h1 class="widget__title">Recommendations <a class="x_small_txt" href="/home/recommendations">history</a></h1> 
                 </div>
-                
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                   <!-- <div class="d-none d-md-block d-lg-none divider"></div>-->
-                    <div id="insights" class="card card-responsive card-body">
-                        ${title('insights')}    
-                    </div>
-                </div>`
-            }
+            </div>
+            
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <!-- <div class="d-none d-md-block d-lg-none divider"></div>-->
+                <div id="insights" class="card card-responsive card-body">
+                    ${title('insights')}    
+                </div>
+            </div>
+ 
         </div>
 
 
@@ -1345,11 +1588,6 @@ export default class PortfolioPerformance extends HTMLElement {
 
                 </div>
             </div>
-            ${this.analytics ? `
-
-            <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container"></div>
-            
-            ` : ''}
 
         </div>
         `
@@ -1360,40 +1598,39 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
                 <div id="info_bar" class="row row_cancel">
-                    ${this.analytics ? ''
-                    : /*html*/`
-
-                        <div class="row row_cancel">
-                            <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6"> 
-                                <div class="row row_cancel">
-                                    <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-                                        ${marketr_score(
-                                            this.state.data ? this.state.data.aggregate.index : 0
-                                        )}
-                                    </div>
-                                    <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-                                        <p style="white-space:nowrap;">${this.company_name}'s<br>Health score</p>
-                                    </div>
+    
+                    <div class="row row_cancel">
+                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6"> 
+                            <div class="row row_cancel">
+                                <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                                    ${marketr_score(
+                                        this.state.data ? this.state.data.aggregate.index : 0
+                                    )}
                                 </div>
-                            </div>
-                            <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-                                <div class="row row_cancel">
-                                    <div class="align-self-center col-lg-3 col-md-3 col-sm-3 col-3">
-                                        <i class="fas fa-dollar-sign"></i>
-                                    </div>
-                                    <div class="align-self-center col-lg-9 col-md-9 col-sm-9 col-9">
-                                        <p style="margin-bottom: 0;">
-                                            <strong>${currency_rounded(this.funds_remaining ? this.funds_remaining : 0)}</strong>&nbsp;
-                                            remaining
-                                        </p>
-                                        <p><strong>${currency_rounded(this.spend_rate ? this.spend_rate : 0)}</strong>/mo budget</p>
-                                    </div>
+                                <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <p style="white-space:nowrap;">${this.company_name}'s<br>Health score</p>
                                 </div>
                             </div>
                         </div>
+                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
 
-                    `
-                    }
+                            ${this.analytics ? `` : /*html*/ `
+                            <div class="row row_cancel">
+                                <div class="align-self-center col-lg-3 col-md-3 col-sm-3 col-3">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="align-self-center col-lg-9 col-md-9 col-sm-9 col-9">
+                                    <p style="margin-bottom: 0;">
+                                        <strong>${currency_rounded(this.funds_remaining ? this.funds_remaining : 0)}</strong>&nbsp;
+                                        remaining
+                                    </p>
+                                    <p><strong>${currency_rounded(this.spend_rate ? this.spend_rate : 0)}</strong>/mo budget</p>
+                                </div>
+                            </div>
+                            `}
+                        </div>
+                    </div>
+
                     
                 </div>
                 
@@ -1411,6 +1648,7 @@ export default class PortfolioPerformance extends HTMLElement {
         recs_.setAttribute('customer-id', this.customer_id)
         recs_.setAttribute('demo', this.demo)
         recs_.setAttribute('recs_json', this.recs_json)
+        recs_.setAttribute('analytics', this.analytics)
         recs_.setAttribute('fetch', false)
         return recs_
     }
@@ -1455,16 +1693,61 @@ export default class PortfolioPerformance extends HTMLElement {
         <div class="row row_cancel">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="center_it card card-body">
-                    <p style="margin: auto;">There's no data for this time period.</p>
-                    <p class="small_txt" style="margin: auto;">Either your data hasn't finished syncing yet or your looking at a timeframe where you didn't have any data.</p>
-                    ${this.date_range()}
+                    ${!this.first_sync
+                        ? /*html*/` 
+                            <p style="margin: auto;">There's no data for this time period.</p>
+                            <p class="small_txt" style="margin: auto;">Either your data hasn't finished syncing yet or your looking at a timeframe where you didn't have any data.</p>
+                            ${this.date_range()}
+                        `
+                        : /*html*/`
+                            <p style="margin: auto;">Your data has started syncing! It should be all ready for analysis within 24-48 hours.</p>
+                            <p class="small_txt" style="margin:auto;">In the meantime, our recommendation engines have already started running. We'll notify you when they start coming through.</p>
+                            <div class="gears__container">
+                            <div class="gearbox">
+                                <div class="overlay"></div>
+                                    <div class="gear one">
+                                    <div class="gear-inner">
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                    </div>
+                                    </div>
+                                    <div class="gear two">
+                                    <div class="gear-inner">
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                    </div>
+                                    </div>
+                                    <div class="gear three">
+                                    <div class="gear-inner">
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                    </div>
+                                    </div>
+                                    <div class="gear four large">
+                                    <div class="gear-inner">
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        `
+                    }
                 </div>
             </div>
         </div>
         <div class="row row_cancel">
             <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
                 <div class="h--500 card card-body">
-                    ${title('Recommendations')}  
+                    <h1 class="widget__title">Recommendations <a class="x_small_txt" href="/home/recommendations">history</a></h1> 
                 </div>
             </div>
 
@@ -1525,11 +1808,10 @@ export default class PortfolioPerformance extends HTMLElement {
         const opps = this.Opportunities()
 
         const append_other = el => {
-            if (!this.analytics) {
-                el.querySelector("#recommendations div").appendChild(recs)
-                el.querySelector('#insights').appendChild(insights)
-            }
-            
+           
+            el.querySelector("#recommendations div").appendChild(recs)
+            el.querySelector('#insights').appendChild(insights)
+      
             if (this.state.active_view > 0) el.querySelector('#sub_target').appendChild(this.Filter())
         }
 
@@ -1652,6 +1934,8 @@ export default class PortfolioPerformance extends HTMLElement {
 
     connectedCallback() {
         this.customer_id = this.getAttribute('customer-id')
+        this.first_sync = this.getAttribute('first_sync') == "True" ? true : false
+        console.log(this.first_sync)
         this.facebook_id = this.getAttribute('facebook_id') ? true : false
         this.google_id = this.getAttribute('google_id') ? true : false
         this.company_name = this.getAttribute('company-name')

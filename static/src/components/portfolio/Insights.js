@@ -85,8 +85,8 @@ export default class Insights extends HTMLElement {
 
                 ${this.state.data.length == 0
                     ? `
-                    <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
-                    <p>Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
+                    <p class="small_txt">Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
+                    <p class="small_txt">Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
                     :  `    
                     <p class="signature x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
                     <p class="signature x_small_txt">Thanks! ~ Tristan | Founder </p>`

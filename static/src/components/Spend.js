@@ -184,19 +184,17 @@ export default class AdSpend extends HTMLElement {
                 `
                 <div class='col-lg-12'>   
                     <div class="row row_cancel">
-                        <div class="col-lg-2 col-sm-12"></div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <div id="six" data-uid="${title}" class="left-modal modal-controller button"><p>${title}</p></div>
                             ${modal(title, considerations_meta[title].hover, title)}
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-6">
                             <select class="form-control considerations" id="${considerations_meta[title].id}" class="considerations_select form-control">
                                 <option value="high" ${value == 'high' ? "selected" : ""}>high</option>
                                 <option value="medium" ${value == 'medium' ? "selected" : ""}>medium</option>
                                 <option value="low" ${value == 'low' ? "selected" : ""}>low</option>
                             </select>
                         </div>
-                        <div class="col-lg-2 col-sm-12"></div>
                     </div>
                     
                 </div>
@@ -230,8 +228,7 @@ export default class AdSpend extends HTMLElement {
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2 col-md-2 col-12"></div>
-                <div class="col-lg-8 col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
+                <div class="col-lg-12 col-md-8 col-12 ${this.state.real && this.active_plan ? ' hidden' : ''}">
                     <p class="small_txt">Change your budget:</p>
                     <div class="form-group">
                         <input type="number" placeholder="enter a number here" value="${number(parseFloat(this.viewed_budget))}" id="typical" class="form-control">
@@ -241,8 +238,6 @@ export default class AdSpend extends HTMLElement {
                     <button style="display:flex;margin: 0 auto;" id="recalc" class="center_it ${this.state.real && this.active_plan ? 'hidden' : ''} btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
 
-                <div class="col-lg-2 col-md-2 col-12">
-                </div>
             </div>
             
                 
@@ -259,11 +254,9 @@ export default class AdSpend extends HTMLElement {
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-2"></div>
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <p class="small_txt">Describe your company market state by selecting Low, Medium, or High for the following:</p>
                 </div>
-                <div class="col-lg-2"></div>
 
                 ${shell(this.brand_strength, "brand<br>strength")}
                 ${shell(this.growth_needs, "growth<br>needs")}
@@ -272,7 +265,6 @@ export default class AdSpend extends HTMLElement {
                 <div class="col-lg-12 center_it">
                     <button id="recalc_considerations" class="hidden btn btn-outline btn-outline-primary">Recalculate</button>
                 </div>
-                <div class="col-lg-12"></div>
             </div>
         `)
     }
@@ -301,6 +293,7 @@ export default class AdSpend extends HTMLElement {
             "display networks": "on display ads where your customers visit! (e.g. banners, news sites, and blogs)."
         }
         
+        console.log(this.data)
         /*html*/
         const el = `
             ${this.data.allocation.map((set, index)=>{
@@ -530,8 +523,9 @@ export default class AdSpend extends HTMLElement {
             if (this.custom_budget) viewed_budget = this.custom_budget 
             else viewed_budget = this.data.recommended_budget
         }
-
+        
         this.viewed_budget = ((viewed_budget/100).toFixed()*100)
+        console.log(this.viewed_budget)
         
         const first = async () => {
             this.shadow.innerHTML = ""
@@ -584,6 +578,8 @@ export default class AdSpend extends HTMLElement {
         const status = eval(params().get('real'))
         
         if (this.active_plan) {
+            if (this.spend_rate == 0) return false
+
             if (status == null || status == true ) return true
             else if (status == false) return false
 
@@ -603,6 +599,7 @@ export default class AdSpend extends HTMLElement {
             if (this.custom_budget) budget = this.custom_budget 
             else budget = null
         }
+
 
         const body = JSON.stringify({
             customer_id: this.customer_id,

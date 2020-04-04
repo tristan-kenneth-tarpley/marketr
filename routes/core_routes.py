@@ -329,18 +329,21 @@ def home():
         'layouts/home_layout.html',
         page=view_model,
         chat=chat,
-        demo=False
+        demo=False,
+        first_sync=eval(request.args.get('first_sync')) if request.args.get('first_sync') else False
     )
 
-# @app.route('/home_test', methods=['GET', 'POST'])
-# @login_required
-# @onboarding_required
-# def home_test():
-#     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
-#     return render_template(
-#         'layouts/home_layout_2.html',
-#         page=view_model
-#     )
+@app.route('/home/recommendations', methods=['GET', 'POST'])
+@login_required
+@onboarding_required
+def recommendations_archive():
+    view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
+
+    return render_template(
+        'core/recommendations_archive.html',
+        page=view_model
+    )
+
 
 @app.route('/home/achievements', methods=['GET', 'POST'])
 @login_required

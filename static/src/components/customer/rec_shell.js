@@ -69,7 +69,7 @@ export default class Rec_shell extends HTMLElement {
 
 
     RecEvents(){
-        const x = this.shadow.querySelectorAll(".x")
+        const x = this.shadow.querySelectorAll(".dismiss")
         if (this.demo != 'True') {
             x.forEach(el=>{
                 el.addEventListener('click', e=>{

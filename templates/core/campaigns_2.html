@@ -3,30 +3,6 @@
 {% from "macros/home_macros.html" import locked %}
 
 
-{% macro animation() %}
-<a class="dl-button" href="">
-        <div>
-          <div class="label">
-            <div class="show default">Do it<br>for me</div>
-            <div class="state">
-              <div class="counter">
-                <ul>
-                  <li></li>
-                  <li>1</li>
-                </ul>
-                <ul>
-                  <li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li>
-                </ul>
-                <ul>
-                  <li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>0</li>
-                </ul><span>%</span>
-              </div><span>Done</span>
-            </div>
-          </div>
-          <div class="progress"></div>
-        </div></a>
-{% endmacro %}
-
 
 {% set current_plan = page.data['core']['core'][0]['current_plan'] %}
 {% set ab_plan = page.data['core']['core'][0]['ab_binary'] %}
@@ -36,36 +12,6 @@
 {% set company_name = page.data['core']['company_name'] %}
 
 
-
-
-{% macro performance(page) %}
-<portfolio-performance
-    google_id="{{page.data['core']['core'][0]['google_id']}}"
-    facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
-    company-name="{{page.data['core']['core'][0]['company_name']}}"
-    customer-id="{{page.data['core']['core'][0]['id']}}"
-    spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
-    funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
-    ltv="{{page.data['core']['core'][0]['ltv']}}"
-    demo="{{demo}}"
-    insights="{{page.data['insights']['insights']}}"
-    recommendations="{{page.data['recommendations']['recommendations']}}"
-    analytics="{{ page.data['core']['core'][0]['analytics'] }}">
-</portfolio-performance>
-
-{#<portfolio-budget
-    customer_id="{{ page.data['core']['core'][0]['id'] }}"
-    spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
-    funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
-    company_name="{{page.data['core']['core'][0]['company_name']}}"
-></portfolio-budget>#}
-{% endmacro %}
-
-{% macro recommendations(page) %}
-<customer-recommendations
-    customer-id="{{page.data['core']['core'][0]['id']}}">
-</customer-recommendations>
-{% endmacro %}
 
 <div style="display:none;" id="date_popup_back">
   <div id="date_popup">
@@ -132,13 +78,7 @@
 {% if page.data['core']['core'][0]['current_plan'] %}
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
-        <div id="performance_loader"></div>
-        <script type="module">
-            import {loading_shell} from '/static/src/components/UI_elements.js'
-            document.querySelector("#performance_loader").innerHTML = loading_shell()
-        </script>
-        {{ performance(page) }}
-       
+        
         {% if not page.data['core']['core'][0]['data_synced'] %}
             {{ section(
                 link=None,
@@ -147,7 +87,29 @@
                 hash=None,
                 admin=page.admin
             ) }}
+        {% else %}
+
+          <div id="performance_loader"></div>
+          <script type="module">
+              import {loading_shell} from '/static/src/components/UI_elements.js'
+              document.querySelector("#performance_loader").innerHTML = loading_shell()
+          </script>
+          <portfolio-performance
+            first_sync="{{first_sync}}"
+            google_id="{{page.data['core']['core'][0]['google_id']}}"
+            facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
+            company-name="{{page.data['core']['core'][0]['company_name']}}"
+            customer-id="{{page.data['core']['core'][0]['id']}}"
+            spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
+            funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+            ltv="{{page.data['core']['core'][0]['ltv']}}"
+            demo="{{demo}}"
+            insights="{{page.data['insights']['insights']}}"
+            recommendations="{{page.data['recommendations']['recommendations']}}"
+            analytics="{{ page.data['core']['core'][0]['analytics'] }}">
+          </portfolio-performance>
         {% endif %}
+
 
     </div>
 </div>
@@ -155,6 +117,7 @@
 
 
 {% set base = page.data['core']['core'][0] %}
+
 <ad-spend
     company_name="{{page.data['core']['core'][0]['company_name']}}"
     customer_id="{{page.data['core']['core'][0]['id']}}"
