@@ -57,7 +57,8 @@
   --inset-box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
   --sm-box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
   --md-box-shadow: 0 4px 6px 0 hsla(0,0%,0%,0.2);
-  --card-box-shadow: 0 2px 5px 0 rgba(51,51,79,.07);
+  --card-box-shadow: 6px 6px 12px #dedee3, 
+                    -6px -6px 12px #ffffff;;
   --silicon-raised: 0 -3px 8px rgba(255,255,255,1),
                     0 4px 8px rgba(0,0,0,.2),
                     inset 0 2px 4px rgba(255,255,255,1),
@@ -68,5 +69,7 @@
                       inset 0 2px 4px rgba(0,0,0,.2),
                       inset 0 -2px 4px rgba(255,255,255,1);
 
-      
+  --sharper-neu: 3px 3px 5px #d9d9d9, -3px -3px 5px #ffffff;
+  --sharper-neu-pressed: inset 2px 2px 4px #d9d9d9, 
+                         inset -2px -2px 4px #ffffff;
 }

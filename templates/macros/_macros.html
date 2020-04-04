@@ -388,6 +388,7 @@
 			{% endif %}
 			hover_box
 			{{ large_md_sm_col }}
+			{{ 'perc' if tile_type == 'perc'}}
 			col-5">
 			<table class="table {{ 'file_path' if file_path }} table-borderless">
 			    <thead>
@@ -421,7 +422,7 @@
 
 						{% if tile_type == 'perc' %}
 				    	<tr>
-				    		<td>
+				    		<td class="td__perc">
 
 							<div class="input-group">
 								<input style="text-align:center;" type="text" id="percent" class="percent in_box form-control form-control" placeholder="" name="{{sub_name}}">
@@ -610,7 +611,9 @@
 				{% if current == 0 or not questions[last_string]['a_format'] | layout %}
 					{{ open_row(debug=False) }}
 				{% endif %}
-				{{ build_question(count=loop.index - 1, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
+				
+				{% set nested = True if name != 'ltv' else False %}
+				{{ build_question(count=loop.index - 1, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=nested) }}
 			
 				{% if not questions.get(next_string)['a_format'] | layout %}
 					{{ close_row(debug=False) }}

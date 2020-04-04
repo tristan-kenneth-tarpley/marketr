@@ -596,6 +596,18 @@ html {
     position: relative;
     top: 1px; }
 
+
+.btn:not(.btn-neutral) {
+  border: 1px solid var(--panel-bg);
+  box-shadow: var(--sharper-neu) !important;
+}
+.btn:not(.btn-neutral):hover {
+  box-shadow: -2px -2px 6px rgba(255, 255, 255, .6),
+              -2px -2px 4px rgba(255, 255, 255, .4),
+              2px 2px 2px rgba(255, 255, 255, .05),
+              2px 2px 4px rgba(0, 0, 0, .1) !important;
+}
+
 .btn-primary {
   background-color: var(--btn-primary);
   color: #FFFFFF; }
@@ -4017,26 +4029,67 @@ Created using IcoMoon - icomoon.io
 }
 .hover_box > table {
   padding: 20% !important;
-  border-radius: 50px;
+  border-radius: 25px;
+  height: 100%;
   margin: auto auto;
-  text-align: center;
+  text-align: left;
   background: var(--panel-bg);
   text-shadow: 0 2px 0 rgba(255,255,255,1);
-  box-shadow: var(--silicon-raised);
+  box-shadow: var(--sharper-neu);
   transition: all .5s ease;
+}
+.hover_box th,
+.hover_box td {
+  padding: 0 1em !important;
+}
+.hover_box th {
+  padding: 1.5em 1em 0 1em !important;
+}
+.hover_box td:not(.td__perc) {
+  vertical-align:top !important;
+}
+.hover_box th {
+  vertical-align:bottom !important;
 }
 .hover_box h6 {
   vertical-align: bottom;
+}
+.hover_box p {
+  font-size: 90%;
 }
 .hover_box_selected > table {
   transition: all .5s ease;
   background: #e5e5e5;
   color: #555;
-  box-shadow: var(--silicon-depressed);         
+  box-shadow: var(--sharper-neu-pressed);         
 }
 .hover_box:not(.hover_box_selected):hover h6,
 .hover_box:not(.hover_box_selected):hover p {
   color: #999 !important;
+}
+.hover_box.perc p {
+  margin-bottom: 0;
+}
+.hover_box.perc:hover h6,
+.hover_box.perc:hover p {
+  color: var(--nav-color);
+}
+.hover_box.perc > table {
+  text-shadow: 0 2px 0 rgba(255,255,255,1);
+  box-shadow: none;
+}
+
+.hover_box.perc .input-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  /* align-items: flex-end; */
+  margin-bottom: 0;
+  position: relative;
+  top: 100%;
+}
+.td__perc {
+  vertical-align:bottom !important;
 }
 /* .hover_box_selected {
   border: 4px solid var(--secondary);
@@ -5278,7 +5331,7 @@ ul#product {
   border-right: none !important;
   border-top: none !important;
   border-bottom: none !important;
-  box-shadow: var(--silicon-raised);
+  box-shadow: var(--sharper-neu);
   font-weight: 500;
   color: rgba(0,0,0,.2) !important;
   font-size: 90%;
@@ -5287,7 +5340,7 @@ ul#product {
 .tab-link.active {
   color: var(--primary) !important;
   font-weight: 700 !important;
-  box-shadow: var(--silicon-depressed);
+  box-shadow: var(--sharper-neu-pressed);
 }
 .card .tab-content {
   margin-top: 4%;
