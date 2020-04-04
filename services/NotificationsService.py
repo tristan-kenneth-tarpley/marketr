@@ -28,10 +28,14 @@ class GoogleChatService:
 		}
 		self.send(url, msg)
 
-	def rec_accepted(self, rec_id=None, user=None, email=None, company=None):
+	def rec_accepted(self, rec_id=None, user=None, email=None, company=None, price=None):
 		url = 'https://chat.googleapis.com/v1/spaces/AAAApItvQ6A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Wg61u0WhI6AY40Z9F4RwUVfmGP6nxtXTbhFECcvFVlE%3D'
+		text = f"Recommendation {rec_id} accepted\nCompany: {company}\nEmail: {email}\nUser id: {user}"
+		if price:
+			text += f"\nPrice: ${price}"
+
 		msg = {
-			'text': f'Recommendation {rec_id} accepted\nCompany: {company}\nEmail: {email}\nUser id: {user}'
+			'text': text
 		}
 		self.send(url, msg)
 

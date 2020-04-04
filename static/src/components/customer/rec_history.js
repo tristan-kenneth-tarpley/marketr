@@ -14,6 +14,10 @@ const styles = () => {
             padding: 4%;
             border-bottom: 1px solid #f2f2ff;
         }
+        .rec_list {
+            max-height: 450px;
+            overflow-y: auto;   
+        }
     </style>
   `.trim()
 }
@@ -62,6 +66,7 @@ export default class RecHistory extends HTMLElement {
                     ${this.css}
                     ${this.dropdown()}
                     <div class="divider"></div>
+                    <div class="rec_list">
                     ${data[view].length > 0
                         ?
                             data[view].map((rec, index)=>{
@@ -76,6 +81,7 @@ export default class RecHistory extends HTMLElement {
                         :
                             `<p>You haven't ${view} any recommendations yet</p>`
                     }
+                    </div>
                 `
                 return el
             }

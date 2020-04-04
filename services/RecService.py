@@ -15,7 +15,8 @@ class RecommendationService(object):
             'body': row[4],
             'accepted': row[5],
             'dismissed': row[6],
-            'label': row[7]
+            'label': row[7],
+            'price': row[8]
         }
         return returned
     
@@ -26,7 +27,6 @@ class RecommendationService(object):
         return returned
 
     def get_historical(self):
-        print(self.customer_id)
         recs, cursor = db.execute("select * from historical_recommendations(?)", True, (self.customer_id,))
         recs = cursor.fetchall()
         rec_list = {
@@ -74,12 +74,12 @@ class RecommendationService(object):
 
         return json.dumps(rec_list)
 
-    def new(self, title=None, body=None, label=None, notification_obj=None):
+    def new(self, title=None, body=None, label=None, notification_obj=None, amount=None):
         notification_obj.send(subject="Market(r) just sent you a recommendation", message="Login to your dashboard to see it: https://marketr.life/home")
         db.execute(
-            "exec new_rec @customer_id=?, @admin_assigned=?, @title=?, @body=?, @label=?",
+            "exec new_rec @customer_id=?, @admin_assigned=?, @title=?, @body=?, @label=?, @price_tag=?",
             False,
-            (self.customer_id, self.admin_id, title, body, label),
+            (self.customer_id, self.admin_id, title, body, label, amount),
             commit=True
         )
 

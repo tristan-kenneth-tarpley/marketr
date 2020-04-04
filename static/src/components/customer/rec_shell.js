@@ -80,13 +80,22 @@ export default class Rec_shell extends HTMLElement {
 
             const apply = this.shadow.querySelectorAll('.rec-apply')
             
+            const action__apply = e =>{
+                e.currentTarget.textContent = 'Done!'
+                setTimeout(()=>{
+                    this.style.display = 'none'
+                    this.setAttribute('applied', 'true')
+                }, 1000)
+            }
             apply.forEach(el=>{
                 el.addEventListener('click', e=>{
-                    e.currentTarget.textContent = 'Done!'
-                    setTimeout(()=>{
-                        this.style.display = 'none'
-                        this.setAttribute('applied', 'true')
-                    }, 1000)
+                    if (this.price) {
+                        let confirmation = prompt(`Confirmation required. You will be charged $${this.price}. Type "confirm" to accept.`)
+                        confirmation.toLowerCase() == 'confirm'
+                        ? action__apply(e)
+                        : alert(`Acceptance cancelled`)
+                    }
+                    else action__apply(e)
                 })
             })
         }
@@ -95,7 +104,7 @@ export default class Rec_shell extends HTMLElement {
 
     render(){
         this.shadow.innerHTML = ''
-        const colors = ['#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00']
+        let apply_copy = this.price != null ? `do it for $${this.price}` : `do it`
         /*html*/
         const shell = async () => {
             return `
@@ -104,12 +113,12 @@ export default class Rec_shell extends HTMLElement {
             <div class="rec-container">
                 <div class="rec">
                     <div class="row">
-                        <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="col-lg-7 col-md-7 col-sm-12">
                             <p class="squashed rec-title small_txt">${this.title}</p>
                             <div data-uid="${this.title}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
                         </div>
-                        <div style="text-align:right;margin: auto;" class="col-lg-4 col-md-4 col-sm-12">
-                            <button class="small_txt rec-apply btn btn-secondary">do it</button>
+                        <div style="text-align:right;margin: auto;" class="col-lg-5 col-md-5 col-sm-12">
+                            <button class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>
                             <br>
                             <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button>
                         </div>
@@ -137,6 +146,8 @@ export default class Rec_shell extends HTMLElement {
 
     connectedCallback(){
         this.rec_id = parseInt(this.getAttribute('rec-id'))
+        this.price = eval(this.getAttribute('price'))
+
         this.customer_id = this.getAttribute('customer-id')
         this.title = this.getAttribute('title').replace(/\\/g, '')
         this.body = this.getAttribute('body').replace(/\\/g, '')

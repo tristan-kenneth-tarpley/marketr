@@ -332,9 +332,10 @@ def new_recommendation():
 
     title = req.get('title')
     body = req.get('body')
+    price = req.get('price')
 
     if title is not None and body is not None:
-        service.new(title=title, body=body, notification_obj=EmailService(to=session['email']))
+        service.new(title=title, body=body, notification_obj=EmailService(to=session['email']), amount=price)
 
     if req.get('outstanding') and req.get('outstanding') == True:
         return service.get_all_outstanding()
@@ -369,12 +370,17 @@ def delete_rec():
 def approve_rec():
     try: 
         req = request.get_json()
+
         rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
         rec.accept()
         result = 'success'
+
+        # if req.get('price'):
+        #     payments = PaymentsService(session['email'], session['stripe_id'])
+        #     payments.add_balance(req.get('price'), wallet=False)
         
         google = GoogleChatService()
-        google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'])
+        google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'], price=req.get('price'))
         
     except Exception as e:
         print(e)

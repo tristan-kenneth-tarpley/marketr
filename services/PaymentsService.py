@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, session, url_for, redirect
 import stripe
 import time
+import json
 import data.db as db
 
 class PaymentsService:
@@ -22,6 +23,29 @@ class PaymentsService:
             self.customer_id,
             name=company_name
         )
+
+    def charge(self, amount, description):
+        stripe.api_key = self.sk
+        amount = int(amount) * 100
+        intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency="usd",
+            payment_method_types=["card"],
+        )
+
+        _charge = stripe.Charge.create(
+            amount=amount,
+            customer=self.customer_id,
+            payment_intent=intent['id'],
+            currency="usd",
+            description=f"Market(r) Recommendation: {description}",
+        )
+
+        if _charge['paid'] == True:
+            print('hi')
+            return True
+
+        # print(_charge['paid'], _charge['id'], _charge['failure_code'], _charge['failure_message'])
 
     def delete_subscriptions(self, sub_id=None, customer_id=None):
         stripe.api_key = self.sk
@@ -212,12 +236,13 @@ class PaymentsService:
         )
         self.id = session['id']
 
-    def add_balance(self, amount):
+    def add_balance(self, amount, wallet=True):
         stripe.api_key = self.sk
         amount = int(amount) * 100
+        desc = f'Added ${amount/100} to Market(r) wallet' if wallet else f"Accepted recommendation for ${amount/100}"
         stripe.Customer.create_balance_transaction(
             self.customer_id,
             amount=amount,
             currency='usd',
-            description=f'Added ${amount} to Market(r) wallet'
+            description=desc
         )

@@ -81,8 +81,10 @@ export default class Recommendations extends HTMLElement {
             }),
             body:  JSON.stringify({
                 customer_id: this.customer_id,
+                title: target.getAttribute('title').replace(/\\/g, ''),
                 rec_id: target.getAttribute('rec_id'),
-                analytics: this.analytics
+                analytics: this.analytics,
+                price: eval(target.getAttribute('price'))
             })
         })
             .then(res=>res.json())
@@ -110,6 +112,8 @@ export default class Recommendations extends HTMLElement {
 
     recommendation(rec, index){
         const el = new Rec_shell
+        
+        el.setAttribute('price', rec.price_tag)
         el.setAttribute('rec_id', rec.rec_id)
         el.setAttribute('index', index)
         el.setAttribute('customer_id', this.customer_id)
