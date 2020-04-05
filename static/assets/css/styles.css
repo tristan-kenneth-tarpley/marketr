@@ -4026,7 +4026,6 @@ Created using IcoMoon - icomoon.io
   color: rgba(0,0,0,.7);
   cursor: pointer;
   display: flex;
-  margin: 1% auto;
   padding: 2% .5%;
   transition-duration: .3s;
 }
@@ -4041,21 +4040,17 @@ Created using IcoMoon - icomoon.io
   box-shadow: var(--sharper-neu);
   transition: all .5s ease;
 }
-.hover_box th,
 .hover_box td {
   padding: 0 1em !important;
 }
 .hover_box th {
-  padding: 1.5em 1em 0 1em !important;
+  padding: 1.5em 1em !important;
+  vertical-align:bottom !important;
 }
 .hover_box td:not(.td__perc) {
   vertical-align:top !important;
 }
 .hover_box th {
-  vertical-align:bottom !important;
-}
-.hover_box h6 {
-  vertical-align: bottom;
 }
 .hover_box p {
   font-size: 90%;
@@ -5284,7 +5279,7 @@ ul#product {
 }
 #task_title {
   padding: 4% 0 1.5%;
-  color: rgba(0,0,0,.7);
+  color: var(--nav-color);
 }
 .task_title {
   transition-duration: .3s;

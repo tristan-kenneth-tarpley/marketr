@@ -405,17 +405,6 @@ def dismiss_rec():
     return json.dumps({'result': result})
 
 
-# intel
-@app.route('/api/intel/listener', methods=['POST'])
-def web_listen():
-    req = request.get_json()
-    listener = Listener(req.get('customer_id'), req.get('keywords'))
-
-    due, result = listener.is_due()
-    res = listener.listen() if due else result
-
-    return res
-
 
 
 #views
@@ -431,12 +420,30 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
+# intel
+@app.route('/api/intel/listener', methods=['POST'])
+def web_listen():
+    req = request.get_json()
+    listener = Listener(req.get('customer_id'), req.get('keywords'))
+
+    due, result = listener.is_due()
+    res = listener.listen() if due else result
+
+    return res
+
 @app.route('/api/competitive_intel', methods=['POST'])
 def get_competitors():
     req = request.get_json()
     comp = CompetitorService(req.get("customer_id"))
 
-    return json.dumps(comp.competitor_card())
+    due, result = comp.is_due()
+    if due:
+        result = json.dumps(comp.competitor_card())
+        comp.save(result)
+    else:
+        result = result
+
+    return result
 
 @app.route('/api/insights', methods=['POST'])
 def insights():

@@ -381,7 +381,7 @@
 	{% set large_md_sm_col = 'col-lg-3 col-md-4 col-sm-5' %}
 
 	{% macro core(h6, p, tile_type, file_path, sub_name) %}
-
+		{% set solo = True if not p %}
 		<div class="table-responsive
 			{% if tile_type == 'multi' or tile_type == 'perc' %}
 			hb_many
@@ -389,11 +389,12 @@
 			hover_box
 			{{ large_md_sm_col }}
 			{{ 'perc' if tile_type == 'perc'}}
+			{{'solo' if solo }}
 			col-5">
 			<table class="table {{ 'file_path' if file_path }} table-borderless">
 			    <thead>
 			    	<tr>
-				      <th style="{{ 'text-align:center;' if not p }} font-size: 100%;">
+				      <th style="{{ 'text-align:center;' if solo }} font-size: 100%;">
 				      	{% if file_path != [None] %}
 
 				      		<img src="{{ file_path }}">
@@ -401,7 +402,7 @@
 							{% if not p %}<br>{% endif %}
 				      	{% else %} 
 
-				      		<h6>{{h6}}</h6>
+				      		<h6>{{h6 | safe | clean_chars}}</h6>
 
 				      	{% endif %}
 				      	{% if tile_type == 'multi'%}
@@ -416,7 +417,7 @@
 				    <tbody>
 				    	<tr style="padding: 0% 4%;">
 						    <td>
-						      	<p>{{p}}</p>
+						      	<p>{{p | safe | clean_chars}}</p>
 						    </td>
 				    	</tr>
 

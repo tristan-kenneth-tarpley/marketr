@@ -305,7 +305,7 @@ export class CoreViewModels {
             if($this.prop('checked')) {
                 
                 let val = event.currentTarget.dataset.task //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
-                if (val == 'Give this email "admin access" to all relevant advertising and analytics platforms: analytics@marketr.life') {
+                if (val == 'To get your Market(r) opportunities and weekly recommendations, please give admin access to analytics@marketr.life for your various advertising channels.  e.g. Google Analytics, Facebook, Amazon, etc.') {
                     fetch('/api/account_access_added', {
                         method: 'POST',
                         headers : new Headers({

@@ -43,7 +43,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro todo(page, admin=True) %}
+{% macro todo(page, admin=True, headline=True) %}
     {% macro view_tasks(page, admin=True) %}
         {% for task in range(page.data['tasks']['tasks'] | length) %}
 
