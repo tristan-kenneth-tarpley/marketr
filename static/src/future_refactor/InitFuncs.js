@@ -369,26 +369,29 @@ export class InitFuncs {
 
 	TypeFormStyle() {
 		const button = document.querySelector('input[name=submit_button]')
-		button.style.visibility = 'hidden'
+		button.disabled = true
+
+
 
 		let node_list = document.querySelectorAll('.intake_q')
+		let group_len = parseInt(node_list[node_list.length-1].dataset.count)
 		let scroll_ind = document.createElement('div')
 		scroll_ind.classList.add('scroll_ind_parent')
 
+
+
 		document.body.appendChild(scroll_ind)
-		for (let i = 0; i<node_list.length;i++) {
+		for (let i = 0; i<group_len + 1;i++) {
 			let dot = document.createElement('div')
 			dot.classList.add('scroll_ind_inner')
 			scroll_ind.appendChild(dot)
-			
 		}
 
 		node_list.forEach(q => {
 
 			let count = parseInt(q.dataset.count)
-			let next = document.querySelector(`.intake_q[data-count="${count + 1}"]`)
-			let next_next = document.querySelector(`.intake_q[data-count="${count + 2}"]`)
-			
+			let next = document.querySelectorAll(`.intake_q[data-count="${count + 1}"]`)
+			let next_next = document.querySelectorAll(`.intake_q[data-count="${count + 2}"]`)
 			
 			let indicator = document.querySelectorAll('.scroll_ind_parent div')
 			indicator[0].classList.add('scroll__big')
@@ -396,36 +399,63 @@ export class InitFuncs {
 				q.classList.add('_hide')
 				q.style.visibility = 'hidden'
 			}
-
-			const run_next = () => {
-				setTimeout(()=>{
-					indicator[count].classList.remove('scroll__big')
-					indicator[count + 1].classList.add('scroll__big')
-
-					next.style.visibility = 'visible'
-					next.classList.add('_show');
-					next.classList.remove('_hide');
-					
-					if (!next.querySelector('input') && next_next) {
-						setTimeout(()=>{
-							next_next.style.visibility = 'visible'
-							next_next.classList.add('_show');
-							next_next.classList.remove('_hide');
-							indicator[count + 1].classList.remove('scroll__big')
-							indicator[count + 2].classList.add('scroll__big')
-						}, 1000)
-					}
-				}, 1000)
+			
+			if (q == document.querySelectorAll(`.intake_q[data-count="${count}"]`).item(0)) {
+				const group_counter = document.createElement('div')
+				group_counter.innerHTML = `<p class="intake_q_count">${count + 1} of ${group_len + 1}</p>`
+				q.prepend(group_counter);
+			} else {
+				const group_counter = document.createElement('div')
+				group_counter.innerHTML = `<br>`
+				q.prepend(group_counter);
 			}
 
-			const show_btn = () => button.style.visibility = 'visible'
-			count < node_list.length - 1
-				? q.querySelector('.tiles-row')
-					? q.addEventListener('click', e=>run_next())
-					: q.addEventListener('keyup', e=>run_next())
-				: q.addEventListener('click', e=>show_btn())
-			
-			
+
+
+			const timeout_dur = 500
+			let timeout;
+			const run_next = (scroll=false) => {
+				clearTimeout(timeout)
+				timeout = setTimeout(()=>{
+					try {
+						indicator[count].classList.remove('scroll__big')
+						indicator[count + 1].classList.add('scroll__big')
+					} catch(e){}
+
+					const update = (el, scroll=true) => {
+						el.style.visibility = 'visible'
+						el.classList.add('_show');
+						el.classList.remove('_hide');
+						if (scroll) document.querySelector(`#group-${el.dataset.count}`).scrollIntoView();//location.hash = `#group-${el.dataset.count}`
+					}
+					next.forEach(el=> update(el, scroll))
+					
+					if (!next[0].querySelector('input') && next_next.length > 0) {
+						setTimeout(()=>{
+							next_next.forEach(el=>update(el, false))
+							try {
+								indicator[count + 1].classList.remove('scroll__big')
+								indicator[count + 2].classList.add('scroll__big')
+							} catch(e) {}
+						}, timeout_dur)
+					}
+				}, timeout_dur)
+			}
+
+
+
+
+			const show_btn = () => button.disabled = false
+			const parent = q.parentNode.querySelectorAll(`.intake_q[data-count="${count}"]`)
+			if (count < group_len) {
+				if(q == parent[parent.length-1]) {
+					let scroll = q.querySelector('.tiles-row') ? true : false
+					scroll ? q.addEventListener('click', e=>run_next(scroll)) : q.addEventListener('keyup', e=>run_next(scroll))
+				}
+			} else {
+				q.addEventListener('click', e=>show_btn())
+				q.addEventListener('keyup', e=>show_btn())
+			}
 		})
 	}
 

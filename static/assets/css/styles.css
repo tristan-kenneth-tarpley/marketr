@@ -28,7 +28,9 @@ Copyright (c) 2015 Daniel Eden
 @import url("https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Pacifico");
 
-
+html {
+  scroll-behavior: smooth !important;
+}
 .scroll_ind_parent {
   height: 100%;
   position: fixed;
@@ -1483,10 +1485,10 @@ p.description {
   box-shadow: none;
 
 }
-
+/* 
 .file_path {
   background-color: white !important;
-}
+} */
 .file_path img {
   border-radius: 5px;
 }
@@ -4020,24 +4022,31 @@ Created using IcoMoon - icomoon.io
   padding: 5%;
   border-radius: 15px;
 } */
+/* .align_bottom {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+} */
+.intake_q_count {
+  margin-bottom: 0;
+  color: var(--darker-blue);
+  font-weight:bold;
+}
 .hover_box {
   overflow: hidden !important;
   border: 4px solid transparent;
   color: rgba(0,0,0,.7);
   cursor: pointer;
   display: flex;
-  padding: 2% .5%;
   transition-duration: .3s;
-}
-.hover_box > table {
-  padding: 20% !important;
-  border-radius: 25px;
-  height: 100%;
-  margin: auto auto;
-  text-align: left;
-  background: var(--panel-bg);
   text-shadow: 0 2px 0 rgba(255,255,255,1);
   box-shadow: var(--sharper-neu);
+  border-radius: 25px;
+  margin: .5em;
+}
+.hover_box > table {
+  margin: auto auto;
+  text-align: left;
   transition: all .5s ease;
 }
 .hover_box td {
@@ -4050,15 +4059,12 @@ Created using IcoMoon - icomoon.io
 .hover_box td:not(.td__perc) {
   vertical-align:top !important;
 }
-.hover_box th {
-}
 .hover_box p {
   font-size: 90%;
 }
-.hover_box_selected > table {
+.hover_box_selected:not(.perc) {
   transition: all .5s ease;
-  background: #e5e5e5;
-  color: #555;
+  border-color: var(--nav-color);
   box-shadow: var(--sharper-neu-pressed);         
 }
 .hover_box:not(.hover_box_selected):hover h6,
@@ -4072,7 +4078,7 @@ Created using IcoMoon - icomoon.io
 .hover_box.perc:hover p {
   color: var(--nav-color);
 }
-.hover_box.perc > table {
+.hover_box.perc {
   text-shadow: 0 2px 0 rgba(255,255,255,1);
   box-shadow: none;
 }
@@ -4161,10 +4167,23 @@ Created using IcoMoon - icomoon.io
   opacity: .5;
 }
 .onward {
-  margin-top: 2%;
-  width: 100%;
-  text-align: center;
-  margin-bottom: 5%;
+  text-align: right;
+  background: var(--panel-bg);
+  position: fixed;
+  bottom: 1em;
+  width: 80%;
+  z-index: 2 !important;
+  left: 10%;
+  right: 10%;
+  border-radius: 6px;
+  padding: 0 2em;
+  box-shadow: var(--sharper-neu);
+}
+.onward .btn {
+  box-shadow: none !important;
+}
+.onward .btn:disabled {
+  opacity: .2;
 }
 .continue {
   cursor: pointer;
@@ -5301,10 +5320,32 @@ ul#product {
   margin-top: 10%;
 }
 
+.nav-item_wistia {
+  padding: 0 !important;
+  margin-bottom: 1em;
+  text-align:right;
+}
+.nav-item_wistia span {
+  margin-top: 10%;
+  background: var(--nav-color);
+  padding: 1em 2em;
+  border-radius: 6px;
+  top: .5em;
+  box-shadow: var(--sharper-neu);
+  font-weight: 500;
+  font-size:100%;
+}
+.nav-item_wistia a {
+  color: white;
+  text-decoration: none;
+}
 
 .nav-tabs {
   width: 100%;
   border-bottom: none;
+}
+.nav-tabs .nav-item {
+  
 }
 .nav-tabs .nav-link {
   transition-duration: .3s;
@@ -10234,7 +10275,9 @@ ul#product {
     }
 }
 
-
+.mobile-show {
+  display: none;
+}
 /*mobile typography*/
 @media only screen 
   and (min-width: 200px) 

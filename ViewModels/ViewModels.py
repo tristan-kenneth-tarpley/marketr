@@ -104,7 +104,7 @@ class IntakeViewModel:
 			cursor.close()
 			return data
 
-		columns = ['q_id', 'page_id', 'page_title', 'page_h1', 'page_p', 'label', 'why_asking_binary', 'why_label', 'what_binary', 'what_label', 'required_binary', 'label_p', 'horizontal_separator_binary', 'container_binary', 'answer_type', 'placeholder', 'a_format', 'html_name', 'route', 'tiles_name_h6', 'tiles_name_p', 'icon_file_path', 'sub_name', 'relevant_tags', 'order_on_page']
+		columns = ['q_id', 'page_id', 'page_title', 'page_h1', 'page_p', 'label', 'why_asking_binary', 'why_label', 'what_binary', 'what_label', 'required_binary', 'label_p', 'horizontal_separator_binary', 'container_binary', 'answer_type', 'placeholder', 'a_format', 'html_name', 'route', 'tiles_name_h6', 'tiles_name_p', 'icon_file_path', 'sub_name', 'relevant_tags', 'order_on_page', 'q_group']
 		if self.title not in custom:
 			self.questions = UserService.parseCursor(get_copy(self), columns)
 		else:
