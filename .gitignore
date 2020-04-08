@@ -12,3 +12,4 @@ analysis/integrations
 *.cfg
 *.pyc
 *.py[cod]
+*.icloud
