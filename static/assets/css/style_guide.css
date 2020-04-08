@@ -57,8 +57,7 @@
   --inset-box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
   --sm-box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17);
   --md-box-shadow: 0 4px 6px 0 hsla(0,0%,0%,0.2);
-  --card-box-shadow: 6px 6px 12px #dedee3, 
-                    -6px -6px 12px #ffffff;;
+  --card-box-shadow: inset 0 0 15px rgba(55, 84, 170, 0), inset 0 0 20px rgba(255, 255, 255, 0), 7px 7px 15px rgba(55, 84, 170, 0.15), -7px -7px 20px white, inset 0px 0px 4px rgba(255, 255, 255, 0.2);
   --silicon-raised: 0 -3px 8px rgba(255,255,255,1),
                     0 4px 8px rgba(0,0,0,.2),
                     inset 0 2px 4px rgba(255,255,255,1),
@@ -69,7 +68,7 @@
                       inset 0 2px 4px rgba(0,0,0,.2),
                       inset 0 -2px 4px rgba(255,255,255,1);
 
-  --sharper-neu: 3px 3px 5px #d9d9d9, -3px -3px 5px #ffffff;
+  --sharper-neu: inset 0 0 15px rgba(55, 84, 170, 0), inset 0 0 20px rgba(255, 255, 255, 0), 7px 7px 15px rgba(55, 84, 170, 0.15), -7px -7px 20px white, inset 0px 0px 4px rgba(255, 255, 255, 0.2);
   --sharper-neu-pressed: inset 2px 2px 4px #d9d9d9, 
                          inset -2px -2px 4px #ffffff;
 }

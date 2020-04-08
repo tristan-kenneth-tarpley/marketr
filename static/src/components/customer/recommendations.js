@@ -9,9 +9,13 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
-        #rec-container {
-            max-height: 420px;
-            overflow-y: auto;
+        .rec-container {
+            padding: .75em 1.5em;
+            border-bottom: 1px solid #f2f2ff;
+            background:#fff;
+            border-radius: 6px;
+            box-shadow: var(--sharper-neu);  
+            margin: 1em;          
         }
         .rec {
             border-left: 4px solid gray;
@@ -133,12 +137,21 @@ export default class Recommendations extends HTMLElement {
         let el = document.createElement('div')
 
         const append = res => {
-            el.innerHTML = `${this.css}`
+            el.innerHTML = `
+                ${this.css}
+                <div class="home_row row">
+                </div>    
+            `
             if (this.state.data.length == 0) {
                 el.innerHTML += `
                 <p class="small_txt">Every week, you will receive tailored, actionable recommendations from our internal engines and stellar team.</p>
                 <p class="small_txt">You can implement these recommendations with only 1 click. Until then, explore your dashboard and we'll email you when you receive your recommendations.</p>`
-            } else for (let i in res) el.appendChild(this.recommendation(res[i], i))
+            } else for (let i in res) {
+                let col = document.createElement('div')
+                col.classList = ["rec-container col-lg-5 col-md-12 col-sm-12 col-12"]
+                col.appendChild(this.recommendation(res[i], i))
+                el.querySelector(".home_row").appendChild(col)
+            }
         }
 
         const append_to_shadow = el => this.shadow.querySelector("#rec-container").appendChild(el)

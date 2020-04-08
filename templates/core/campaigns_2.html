@@ -88,26 +88,54 @@
                 admin=page.admin
             ) }}
         {% else %}
+        <div class="row row_cancel">
+          <div class="col-lg-4 col-md-12 col-sm-12 col-12">
+              <div class="">
+                  
+                  <customer-recommendations
+                  demo="false"
+                  customer_id="{{page.data['core']['core'][0]['id']}}'"
+                  recs_json="{{page.data['recommendations']['recommendations']}}"
+                  fetch="false"
+                  analytics="{{page.data['core']['core'][0]['analytics']}}"
+                  >
+                </customer-recommendations>
+              </div>
+              <!-- <div>
+                <h1 style="text-align:left;margin:0;" class="widget__title">Insights</h1>
+                <div class="card card-body">
+                  <portfolio-insights
+                    customer_id="{{page.data['core']['core'][0]['id']}}"
+                    insights_json="{{page.data['insights']['insights']}}"
+                    fetch="false"
+                  >
+                  </portfolio-insights>
+                </div>
+              </div> -->
+          </div>
+          <div class="col-lg-8 col-md-12 col-sm-12 col-12">  
+                <div id="performance_loader"></div>
+                <script type="module">
+                    import {loading_shell} from '/static/src/components/UI_elements.js'
+                    document.querySelector("#performance_loader").innerHTML = loading_shell()
+                </script>
+                <portfolio-performance
+                  first_sync="{{first_sync}}"
+                  google_id="{{page.data['core']['core'][0]['google_id']}}"
+                  facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
+                  company-name="{{page.data['core']['core'][0]['company_name']}}"
+                  customer-id="{{page.data['core']['core'][0]['id']}}"
+                  spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
+                  funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
+                  ltv="{{page.data['core']['core'][0]['ltv']}}"
+                  demo="{{demo}}"
+                  insights="{{page.data['insights']['insights']}}"
+                  recommendations="{{page.data['recommendations']['recommendations']}}"
+                  analytics="{{ page.data['core']['core'][0]['analytics'] }}">
+                </portfolio-performance>
+          </div>
+        </div>
 
-          <div id="performance_loader"></div>
-          <script type="module">
-              import {loading_shell} from '/static/src/components/UI_elements.js'
-              document.querySelector("#performance_loader").innerHTML = loading_shell()
-          </script>
-          <portfolio-performance
-            first_sync="{{first_sync}}"
-            google_id="{{page.data['core']['core'][0]['google_id']}}"
-            facebook_id="{{page.data['core']['core'][0]['facebook_id']}}"
-            company-name="{{page.data['core']['core'][0]['company_name']}}"
-            customer-id="{{page.data['core']['core'][0]['id']}}"
-            spend_rate="{{page.data['core']['core'][0]['spend_rate']}}"
-            funds_remaining="{{page.data['core']['core'][0]['funds_remaining']}}"
-            ltv="{{page.data['core']['core'][0]['ltv']}}"
-            demo="{{demo}}"
-            insights="{{page.data['insights']['insights']}}"
-            recommendations="{{page.data['recommendations']['recommendations']}}"
-            analytics="{{ page.data['core']['core'][0]['analytics'] }}">
-          </portfolio-performance>
         {% endif %}
 
 
@@ -117,7 +145,7 @@
 
 
 {% set base = page.data['core']['core'][0] %}
-
+{% if not "{{base.get('current_plan')}}" %}
 <ad-spend
     company_name="{{page.data['core']['core'][0]['company_name']}}"
     customer_id="{{page.data['core']['core'][0]['id']}}"
@@ -134,3 +162,4 @@
     online_perc="{{base.get('online_perc')}}"
     spend_rate="{{ base.get('spend_rate') }}">
 </ad-spend>
+{% endif %}

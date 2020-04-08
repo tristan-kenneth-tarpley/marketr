@@ -290,8 +290,9 @@ const styles = () => {
         #info_bar {
             position: absolute;
             right: 1%;
-            top: -75px;
-            width: 35%;
+            top: -60px;
+            width: 50%;
+            z-index:-1;
         }
         #info_bar p {
             display: flex;
@@ -317,6 +318,7 @@ const styles = () => {
             border-right: 3px solid transparent !important;
             border-top: 3px solid transparent !important; 
             width: 100%;
+            box-shadow: none !important;
         }
         #select_date_range:hover {
             box-shadow: none;
@@ -384,6 +386,7 @@ const styles = () => {
             font-size: .7em;
             margin: 0;
             width: 100%;
+            box-shadow: none !important;
         }
         #view_selector div:nth-child(1) button {
             border-left: 2px solid var(--primary) !important;
@@ -1131,7 +1134,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 
                 `
 
-                if (data.length < 3) markup += this.mas_campaigns_cta()
+                
 
                 break
             case 1:
@@ -1427,7 +1430,7 @@ export default class PortfolioPerformance extends HTMLElement {
 
         
         if (this.state.opp_expanded) opps_classList = `h--750 col-lg-12 col-md-12 col-sm-12`
-        else opps_classList = `col-lg-4 col-md-4 col-sm-12`
+        else opps_classList = `col-lg-12 col-md-12 col-sm-12`
 
         return opps_classList
     }
@@ -1446,6 +1449,14 @@ export default class PortfolioPerformance extends HTMLElement {
                 ${expanded ? open : closed}
             </button>
         </h1>
+        <p class="small_txt">The beautiful thing about search marketing is that your customers tell you exactly what they want.</p>
+        <p style="margin-bottom:0;" class="small_txt">Below you will see topics that are being searched. We have scored each of these in terms of your biggest chances to capitalize. The higher the score, the more room for opportunity. A lower score means a lower priority level. What should you do with this?</p>
+        <ul class="small_txt inset">
+            <li>Create articles that focus on these keywords</li>
+            <li>Incorporate these headlines into your messaging</li>
+            <li>Figure out what it means about the mental state of your buyers</li>
+        </ul>
+        <p style="margin-bottom:0;" class="small_txt">Don't worry. We'll send you recommendations on what to do with these.</p>
     `
     }
 
@@ -1494,25 +1505,6 @@ export default class PortfolioPerformance extends HTMLElement {
         /*html*/
         return `
 
-        <div class="row row_cancel">
-            <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container">
-            </div>
-
-
-            <div id="recommendations" class="col-lg-4 col-md-4 col-sm-12">
-                <div class="h--500 card card-body">
-                    <h1 class="widget__title">Recommendations <a class="x_small_txt" href="/home/recommendations">history</a></h1> 
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-4 col-sm-12">
-                <!-- <div class="d-none d-md-block d-lg-none divider"></div>-->
-                <div id="insights" class="card card-responsive card-body">
-                    ${title('insights')}    
-                </div>
-            </div>
- 
-        </div>
 
 
         <div id="filters_container" class="row row_cancel">
@@ -1575,7 +1567,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
 
-            <div class="h--500 col-lg-4 col-md-6 col-sm-12">
+            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
                 <div class="h--500 card card-body">
                     ${title('profit potential per $100 spent')}
                     <br>
@@ -1589,6 +1581,11 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
 
+        </div>
+
+        <div class="row row_cancel">
+            <div style="${this.state.opp_expanded ? 'margin-bottom: 2em;' : ""}" class="${this.opps_classList()}" id="opps_container">
+            </div>
         </div>
         `
     }
@@ -1744,19 +1741,6 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
         </div>
-        <div class="row row_cancel">
-            <div id="recommendations" class="col-lg-6 col-md-6 col-sm-12">
-                <div class="h--500 card card-body">
-                    <h1 class="widget__title">Recommendations <a class="x_small_txt" href="/home/recommendations">history</a></h1> 
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div id="insights" class="card card-responsive card-body">
-                    ${title('insights')}    
-                </div>
-            </div>
-        </div>
         `
         return div
     }
@@ -1802,16 +1786,9 @@ export default class PortfolioPerformance extends HTMLElement {
 
     render(init=true){
         this.shadow.innerHTML = ""
-
-        const recs = this.recs()
-        const insights = this.insights()
         const opps = this.Opportunities()
 
         const append_other = el => {
-           
-            el.querySelector("#recommendations div").appendChild(recs)
-            el.querySelector('#insights').appendChild(insights)
-      
             if (this.state.active_view > 0) el.querySelector('#sub_target').appendChild(this.Filter())
         }
 

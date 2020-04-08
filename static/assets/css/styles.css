@@ -5319,37 +5319,44 @@ ul#product {
   color: rgba(0,0,0,.7);
   margin-top: 10%;
 }
-
+.navbar {
+  display:none;
+}
 .nav-item_wistia {
   padding: 0 !important;
   margin-bottom: 1em;
   text-align:right;
 }
 .nav-item_wistia span {
-  margin-top: 10%;
-  background: var(--nav-color);
-  padding: 1em 2em;
-  border-radius: 6px;
-  top: .5em;
-  box-shadow: var(--sharper-neu);
-  font-weight: 500;
-  font-size:100%;
+ 
 }
 .nav-item_wistia a {
   color: white;
   text-decoration: none;
+  position: fixed !important;
+  top: 0;
+  right: 0;
+  left: 70%;
+  width: 30%;
+  padding: 1em 2em;
+  border-radius: 0 0 0 6px;
+  box-shadow: var(--sharper-neu);
+  background:var(--nav-color);
+  z-index:1;
 }
 
 .nav-tabs {
   width: 100%;
   border-bottom: none;
 }
-.nav-tabs .nav-item {
-  
-}
 .nav-tabs .nav-link {
   transition-duration: .3s;
   cursor: pointer;
+  height: 5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 .nav-tabs .nav-link:hover {
   opacity: .7;
@@ -12712,7 +12719,7 @@ html.modal-active, body.modal-active {
 .widget__title.small {
   color: #b8b8d9;
   display: flex;
-  font-size: 14px;
+  font-size: 14px !important;
   font-weight: 500;
 }
 .widget__value {

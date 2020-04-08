@@ -8,15 +8,27 @@ const styles = () => {
         @import url('/static/assets/css/styles.css');
         @import url('/static/assets/icons/all.min.css');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        
-        .rec-container {
-            padding: 4%;
-            border-bottom: 1px solid #f2f2ff;
+        .rec__body {
+            margin-bottom:2em;
         }
-        .rec {
-            margin-bottom: 2%;
-            padding: 5% 0 0;
-            overflow-x: hidden;
+        .toolbar {
+            position: absolute;
+            height: 2em;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+        .toolbar .btn {
+            width: 50%;
+            position:absolute;
+            height:100%;
+        }
+        .rec-apply {
+            font-size: 75%;
+            padding: 5px 10px;
+            font-weight: 300;
+            left:50%;
+            margin: 0;
         }
         .dismiss {
             position: relative;
@@ -24,7 +36,12 @@ const styles = () => {
             margin: 0px 1px 15px !important;
             font-weight: 400;
             text-transform: lowercase;
-            font-weight: 
+            left:0;
+        }
+        .rec {
+            margin-bottom: 2%;
+            padding: 5% 0 0;
+            overflow-x: hidden;
         }
         .rec-title {
             position: relative;
@@ -32,12 +49,11 @@ const styles = () => {
             left: 0;
             margin-bottom: 0;
             padding-bottom: 0;
+            font-weight:bold;
         }
-        .rec-apply {
-            font-size: 75%;
-            padding: 5px 10px;
-            /*float: right;*/
-            font-weight: 300;
+        .rec-body__summary {
+            white-space: pre-wrap;
+            margin: 0;
         }
         .read-more {
             margin: auto;
@@ -110,21 +126,20 @@ export default class Rec_shell extends HTMLElement {
             return `
             ${this.css}
             ${modal(this.title, this.body, this.title)}
-            <div class="rec-container">
-                <div class="rec">
-                    <div class="row">
-                        <div class="col-lg-7 col-md-7 col-sm-12">
+                <div class="rec-container">
+                    <div class="rec">
+                        <div class="rec__body">
                             <p class="squashed rec-title small_txt">${this.title}</p>
+                            <p class="small_txt rec-body__summary trunc">${this.body.trunc(50)}</p>
                             <div data-uid="${this.title}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
                         </div>
-                        <div style="text-align:right;margin: auto;" class="col-lg-5 col-md-5 col-sm-12">
-                            <button class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>
-                            <br>
+
+                        <div class="toolbar">      
                             <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button>
+                            <button class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>  
                         </div>
                     </div>
                 </div>
-            </div>
             `.trim()
         }
 
