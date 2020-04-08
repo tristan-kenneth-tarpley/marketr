@@ -15,7 +15,7 @@ const styles = () => {
             background:#fff;
             border-radius: 6px;
             box-shadow: var(--sharper-neu);  
-            margin: 1em;          
+            margin: .6em;          
         }
         .rec {
             border-left: 4px solid gray;
@@ -148,7 +148,7 @@ export default class Recommendations extends HTMLElement {
                 <p class="small_txt">You can implement these recommendations with only 1 click. Until then, explore your dashboard and we'll email you when you receive your recommendations.</p>`
             } else for (let i in res) {
                 let col = document.createElement('div')
-                col.classList = ["rec-container col-lg-5 col-md-12 col-sm-12 col-12"]
+                col.classList = ["rec-container col-lg-5 col-md-5 col-sm-12 col-12"]
                 col.appendChild(this.recommendation(res[i], i))
                 el.querySelector(".home_row").appendChild(col)
             }

@@ -184,7 +184,8 @@ def pricing():
 		home=False,
         quantity = request.args.get('quantity') if request.args.get('quantity') else 1,
         user=session.get('user'),
-        company_name=session.get('company_name')
+        company_name=session.get('company_name'),
+        dedicated_page=True
 	)
 
 @app.route('/inspect')

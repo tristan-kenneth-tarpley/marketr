@@ -12867,6 +12867,10 @@ html.modal-active, body.modal-active {
   height: 100px;
 }
 
+.h--350 {
+  height:350px;
+}
+
 .h--500 {
   height: 500px;
 }
@@ -13176,6 +13180,7 @@ li {
   right: 5%;
   height: 90%;
   border-radius: 6px;
+  overflow-y: auto;
 }
 
 

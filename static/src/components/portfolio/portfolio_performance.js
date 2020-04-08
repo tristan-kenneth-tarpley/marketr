@@ -21,10 +21,10 @@ export const marketr_score = (value, sub=false, huge=false) => {
         else if (value > 1 && value <= 2) _class = '_yellow'
         else if (value > 2) _class = '_green'
 
-        return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${number(value)} ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+        return `<h1 class="${_class} ${huge ? 'oversized_text' : ''} widget__value">${number(value)} ${sub ? `<p style="margin-bottom:0;font-size:40%;">health score</p>` : ''}</h1>`
         
     } catch (error) {
-        return `<h1 class="${huge ? 'oversized_text' : ''} widget__value">n/a ${sub ? `<p style="font-size:40%;">health score</p>` : ''}</h1>`
+        return `<h1 class="${huge ? 'oversized_text' : ''} widget__value">n/a ${sub ? `<p style="margin-bottom:0;font-size:40%;">health score</p>` : ''}</h1>`
     }
 }
 
@@ -287,13 +287,6 @@ const styles = () => {
         .comparison_row h1 {
             margin-bottom: 0;
         }
-        #info_bar {
-            position: absolute;
-            right: 1%;
-            top: -60px;
-            width: 50%;
-            z-index:-1;
-        }
         #info_bar p {
             display: flex;
             justify-content: flex-end;
@@ -360,9 +353,6 @@ const styles = () => {
         }
 
 
-        #profit_chart {
-            width: 100% !important;
-        }
         #insights {
             max-height: 500px;
         }
@@ -370,6 +360,9 @@ const styles = () => {
         .metric_labels {
             font-weight: 300;
             font-size: 95%;
+        }
+        #select_container {
+            margin-bottom: 1em;
         }
         #select_container .widget__title,
         #filters_container .widget__title {
@@ -443,7 +436,6 @@ const styles = () => {
             display: flex;
             align-items: center;
             padding: 13px 0 11px;
-            border-bottom: 1px solid #f2f2ff;
         }
         .stat-wrapper {
             padding: 0 30px;
@@ -476,6 +468,11 @@ const styles = () => {
             margin-left: auto;
             margin-bottom: 0;
         }
+
+        /*#profit_chart_container {
+            display: flex;
+            justify-content: center;
+        }*/
 
 
     </style>
@@ -1080,10 +1077,10 @@ export default class PortfolioPerformance extends HTMLElement {
                     <div class="stat">
                         ${marketr_score(index, true)} ${ active_comp ? `<span style="font-size:70%;">(${marketr_score(active_comp.index)})</span>` : '' }
                         <br>
-                        <span>${description}<br> <p style="font-size: 8pt;">${description_sub}</p></span>
+                        <span>${description}<br> <p style="margin-bottom:0;font-size: 8pt;">${description_sub}</p></span>
                         <h3 style="text-align:right;">
                             ${currency(cost)} ${ active_comp ? `(${currency(active_comp.cost)})` : ''}
-                            <p style="font-size:8pt;">total spent</p>
+                            <p style="margin-bottom: 0;font-size:8pt;">total spent</p>
                         </h3>
                     </div>
                 </li>
@@ -1502,36 +1499,50 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
 
 
-        <div class="row row_cancel">
-            <div class="align-items-center col-lg-6 col-md-6 col-sm-12 col-12">
-                <div id="filters_container" class="row row_cancel">
-                    <div class="col-lg-12 col-md-12 col-12">
-                        ${this.view_by()}
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-12">
-                        <div class="card card-body mobile--h--225 h--300">
-                            <div class="row row_cancel">
-                                ${
-                                    this.state.active_view != 0
-                                    /*html*/
-                                    ? `
-                                    <div class="col-lg-6 col-sm-6">
-                                        ${title('filter by', true)}
-                                        <div id="sub_target"></div>
-                                    </div>`
-                                    : `<select id="sub_target" style="display:none;" class="form-control"></select>`
-                                }
-                                <div class="col-lg-6 col-sm-6">
-                                    ${title(`Select dates`, true)}
-                                    ${this.date_range()}
-                                </div>
-                            </div>
+        <div class="row">
+            <div id="filters_container" class="align-items-center col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="card card-body">
+                    <div style="margin-bottom:2em;" class="row">
+                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6"> 
+                            ${marketr_score(
+                                this.state.data ? this.state.data.aggregate.index : 0,
+                                true
+                            )}
                         </div>
+                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
+                            
+                                ${this.analytics ? `` : /*html*/ `
+                                    <p style="margin-bottom: 0;">
+                                        <strong>${currency_rounded(this.funds_remaining ? this.funds_remaining : 0)}</strong>&nbsp;
+                                        remaining
+                                    </p>
+                                    <p style="margin-bottom:0;"><strong>${currency_rounded(this.spend_rate ? this.spend_rate : 0)}</strong>/mo budget</p>
+                                `}
+                        </div>
+                    </div>
+                    <div class="row">
+                        ${this.view_by()}
+                        ${
+                            this.state.active_view != 0
+                            /*html*/
+                            ? `
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                ${title('filter by', true)}
+                                <div id="sub_target"></div>
+                            </div>`
+                            : `<select id="sub_target" style="display:none;" class="form-control"></select>`
+                        }
+
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                            ${title(`Select dates`, true)}
+                            ${this.date_range()}
+                        </div>
+                        
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                <div class="card card-body">
+                <div class=" card card-body">
                     ${title('profit potential per $100 spent')}
                     <br>
                     ${ !this.state.null_data
@@ -1550,7 +1561,7 @@ export default class PortfolioPerformance extends HTMLElement {
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
-                        <div style="overflow-y:auto;" class="h--500 mobile--h--cancel card card-body">
+                        <div style="overflow-y:auto;" class="${[0].includes(this.state.active_view) ? '' : `h--500 mobile--h--cancel`} card card-body">
                             ${title(breakdown_title[active_view])}
                             ${ !this.state.null_data
                                 ?
@@ -1593,47 +1604,6 @@ export default class PortfolioPerformance extends HTMLElement {
     shell(){
         /*html*/
         return `
-            <div style="padding-left: 0; padding-right: 0;" class="container-fluid">
-                <div id="info_bar" class="row row_cancel">
-    
-                    <div class="row row_cancel">
-                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6"> 
-                            <div class="row row_cancel">
-                                <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-                                    ${marketr_score(
-                                        this.state.data ? this.state.data.aggregate.index : 0
-                                    )}
-                                </div>
-                                <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-                                    <p style="white-space:nowrap;">${this.company_name}'s<br>Health score</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="align-self-center col-lg-6 col-md-6 col-sm-6 col-6">
-
-                            ${this.analytics ? `` : /*html*/ `
-                            <div class="row row_cancel">
-                                <div class="align-self-center col-lg-3 col-md-3 col-sm-3 col-3">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </div>
-                                <div class="align-self-center col-lg-9 col-md-9 col-sm-9 col-9">
-                                    <p style="margin-bottom: 0;">
-                                        <strong>${currency_rounded(this.funds_remaining ? this.funds_remaining : 0)}</strong>&nbsp;
-                                        remaining
-                                    </p>
-                                    <p><strong>${currency_rounded(this.spend_rate ? this.spend_rate : 0)}</strong>/mo budget</p>
-                                </div>
-                            </div>
-                            `}
-                        </div>
-                    </div>
-
-                    
-                </div>
-                
-                </div>
-            </div>
-
             <div style="padding-left: 0; padding-right: 0;" class="container-fluid" id="home-row">
             </div>
            
@@ -1752,11 +1722,11 @@ export default class PortfolioPerformance extends HTMLElement {
         let inactive_classlist = `btn-outline btn-outline-secondary`
         /*html*/
         return `
-        <div class="h--300 mobile--h--225 card card-body">
-            <div class="row row_cancel">
-                <div id="select_container" class="col-lg-12">
+        
+            
+                <div id="select_container" class="col-lg-12 col-md-12 col-sm-12 col-12">
                     ${title('view by', true)}
-                    <div id="view_selector" class="h--300 row row_cancel">
+                    <div id="view_selector" class="row row_cancel">
                         <div class="${btn_length}">
                             <button value="0" class="btn ${active_view == 0 ? active_classlist : inactive_classlist}">
                             platforms
@@ -1779,8 +1749,8 @@ export default class PortfolioPerformance extends HTMLElement {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            
+        
         `
     }
 

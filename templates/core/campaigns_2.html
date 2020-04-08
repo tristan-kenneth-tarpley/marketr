@@ -91,7 +91,7 @@
         <div class="row row_cancel">
           <div class="col-lg-4 col-md-12 col-sm-12 col-12">
               <div class="">
-                  <h1 class="widget__title" style="margin-bottom:0;text-align:left;">Recommendations</h1>
+                  <h1 class="widget__title" style="margin-bottom:0;text-align:left;padding-bottom:0;text-decoration:underline;">Recommendations</h1>
                   <customer-recommendations
                   demo="false"
                   customer_id="{{page.data['core']['core'][0]['id']}}'"
@@ -119,6 +119,8 @@
                     import {loading_shell} from '/static/src/components/UI_elements.js'
                     document.querySelector("#performance_loader").innerHTML = loading_shell()
                 </script>
+                <h1 class="widget__title" style="margin-bottom:0;text-align:left;padding-bottom:0;text-decoration:underline;">Marketing mix</h1>
+                <br>
                 <portfolio-performance
                   first_sync="{{first_sync}}"
                   google_id="{{page.data['core']['core'][0]['google_id']}}"
