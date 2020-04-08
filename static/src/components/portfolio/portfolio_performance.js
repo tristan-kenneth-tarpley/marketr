@@ -359,10 +359,6 @@ const styles = () => {
             font-size: 120%;
         }
 
-        #profit_chart_container {
-            width: 100% !important;
-            max-height: 380px !important; 
-        }
 
         #profit_chart {
             width: 100% !important;
@@ -597,7 +593,7 @@ export default class PortfolioPerformance extends HTMLElement {
         };
         let font_color = `#b8b8d9`
         const options = {
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             legend: {
                 display: false,
                 labels: {
@@ -1506,36 +1502,52 @@ export default class PortfolioPerformance extends HTMLElement {
         return `
 
 
-
-        <div id="filters_container" class="row row_cancel">
-      
-            <div class="col-lg-6 col-md-6 col-12">
-                ${this.view_by()}
-            </div>
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="card card-body mobile--h--225 h--300">
-                    <div class="row row_cancel">
-                        ${
-                            this.state.active_view != 0
-                            /*html*/
-                            ? `
-                            <div class="col-lg-6 col-sm-6">
-                                ${title('filter by', true)}
-                                <div id="sub_target"></div>
-                            </div>`
-                            : `<select id="sub_target" style="display:none;" class="form-control"></select>`
-                        }
-                        <div class="col-lg-6 col-sm-6">
-                            ${title(`Select dates`, true)}
-                            ${this.date_range()}
+        <div class="row row_cancel">
+            <div class="align-items-center col-lg-6 col-md-6 col-sm-12 col-12">
+                <div id="filters_container" class="row row_cancel">
+                    <div class="col-lg-12 col-md-12 col-12">
+                        ${this.view_by()}
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-12">
+                        <div class="card card-body mobile--h--225 h--300">
+                            <div class="row row_cancel">
+                                ${
+                                    this.state.active_view != 0
+                                    /*html*/
+                                    ? `
+                                    <div class="col-lg-6 col-sm-6">
+                                        ${title('filter by', true)}
+                                        <div id="sub_target"></div>
+                                    </div>`
+                                    : `<select id="sub_target" style="display:none;" class="form-control"></select>`
+                                }
+                                <div class="col-lg-6 col-sm-6">
+                                    ${title(`Select dates`, true)}
+                                    ${this.date_range()}
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="card card-body">
+                    ${title('profit potential per $100 spent')}
+                    <br>
+                    ${ !this.state.null_data
+                        ?
+                            this.profit_spread()
+                        :
+                            `${this.null_state()}`
+                    }
+
                 </div>
             </div>
         </div>
 
         <div class="row row_cancel">
-            <div class="col-lg-8 col-md-8 col-sm-12">
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="row">
                     <div class="${column_set}">
                         <div style="overflow-y:auto;" class="h--500 mobile--h--cancel card card-body">
@@ -1567,19 +1579,7 @@ export default class PortfolioPerformance extends HTMLElement {
                 </div>
             </div>
 
-            <div class="h--500 col-lg-4 col-md-4 col-sm-12">
-                <div class="h--500 card card-body">
-                    ${title('profit potential per $100 spent')}
-                    <br>
-                    ${ !this.state.null_data
-                        ?
-                            this.profit_spread()
-                        :
-                            `${this.null_state()}`
-                    }
 
-                </div>
-            </div>
 
         </div>
 

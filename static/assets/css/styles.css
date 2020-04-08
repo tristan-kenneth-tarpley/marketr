@@ -5380,7 +5380,7 @@ ul#product {
   box-shadow: var(--sharper-neu);
   font-weight: 500;
   color: rgba(0,0,0,.2) !important;
-  font-size: 90%;
+  font-size: 80%;
   margin-right: 7%;
 }
 .tab-link.active {
