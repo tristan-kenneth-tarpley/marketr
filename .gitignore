@@ -13,3 +13,4 @@ analysis/integrations
 *.pyc
 *.py[cod]
 *.icloud
+node_modules/
