@@ -53,7 +53,8 @@ const styles = () => {
         }
         .rec-body__summary {
             white-space: pre-wrap;
-            margin: 0;
+            line-height:1.4em;
+            margin: 1em 0 0 0;
         }
         .read-more {
             margin: auto;

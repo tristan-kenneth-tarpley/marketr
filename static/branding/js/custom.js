@@ -178,8 +178,8 @@
                     navText:["<i class='ti-arrow-left'></i>","<i class='ti-arrow-right'></i>"],
                     autoplay: $autoplay,
 					slideTransition: 'linear',
-					autoplaySpeed: 6000,
-					smartSpeed: 6000,
+					autoplaySpeed: 2000,
+					smartSpeed: 2000,
                     autoplayHoverPause: false   
 				}); 
 				
