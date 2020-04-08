@@ -40,6 +40,14 @@
 
       gtag('config', 'UA-139164161-3');
     </script>
+    <script type='text/javascript'>
+        window.smartlook||(function(d) {
+          var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+          var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+          c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
+          })(document);
+          smartlook('init', '38e5e0a783f18e6eeef61077414dd8f1bbd1c94c');
+      </script>
 </head>
 <body data-spy="scroll" data-target="#navbar" data-offset="98">
 
@@ -69,20 +77,18 @@
                     <!-- menu -->
                     <div class="collapse navbar-collapse justify-content-end" id="navbar">
                         <ul class="navbar-nav ml-auto align-items-lg-center">
-                            {% if home %}
-                                <li class="m-dropdown m-dropdown-multilevel">
-                                    <a class="nav-link" href="#home">Home</a>
-                                </li>
-                                <li><a class="nav-link" href="#about">About</a></li>
-                                <li><a class="nav-link" href="#feature">Features</a></li>
-                                <li><a class="nav-link" href="#price">Price</a></li>
-                                <li><a class="nav-link" href="#contact">Contact Us</a></li>
-                                <li><a class="nav-link" href="/blog">Blog</a></li>
-                            {% else %} 
-                                <li><a class="nav-link" href="/">Home</a></li>
-                            {% endif %}
+                            {% set base = "/" if not home else "" %}
+                            <li class="m-dropdown m-dropdown-multilevel">
+                                <a class="nav-link" href="{{base}}#home">Home</a>
+                            </li>
+                            <li><a class="nav-link" href="{{base}}#about">About</a></li>
+                            <li><a class="nav-link" href="{{base}}#feature">Features</a></li>
+                            <li><a class="nav-link" href="{{base}}#price">Price</a></li>
+                            <li><a class="nav-link" href="{{base}}#contact">Contact Us</a></li>
+                            <li><a class="nav-link" href="/blog">Blog</a></li>
+       
                             {% if not logged_in %}
-                                <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/new">Get early access</a></li>
+                                <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/new">Join beta</a></li>
                                 <li><a style="background-color: white;border-color: #ca7d66;color: #ca7d66;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/login">Login</a></li>
                             {% else %}
                                 <li><a class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" style="color:white;" href="/home">Dashboard</a></li>
@@ -223,6 +229,27 @@
     <!-- End -->
     <!-- custom js -->
     <script src="/static/branding/js/custom.js"></script>
+
+    <script type="text/javascript">
+        (function(w,d){
+        w.HelpCrunch=function(){w.HelpCrunch.q.push(arguments)};w.HelpCrunch.q=[];
+        function r(){var s=document.createElement('script');s.async=1;s.type='text/javascript';s.src='https://widget.helpcrunch.com/';(d.body||d.head).appendChild(s);}
+        if(w.attachEvent){w.attachEvent('onload',r)}else{w.addEventListener('load',r,false)}
+        })(window, document)
+    </script>
+
+    <script type="text/javascript">
+        HelpCrunch('init', 'marketr', {
+            applicationId: 1,
+            applicationSecret: '1CgVHY7J/W07nWEnaLK1wQ21UZZpW2pQwWt5EBIAm2wpE8E+VAGtRCwZ4pMAbqf6dXCYdjSKb2TDYOP0mv2sXQ=='
+        });
+
+        HelpCrunch('showChatWidget');
+    </script>
+    
+    <!-- This site is converting visitors into subscribers and customers with OptinMonster - https://optinmonster.com -->
+    <script type="text/javascript" src="https://a.omappapi.com/app/js/api.min.js" data-account="82692" data-user="73548" async></script>
+    <!-- / https://optinmonster.com -->
     {% include "layouts/imports/imports.html" %}
 </body>
 </html>

@@ -7,9 +7,13 @@ const styles = () => {
     <style>
         @import url('/static/assets/css/app.css');
 
-        #rec-container {
-            max-height: 420px;
-            overflow-y: auto;
+        .rec-container {
+            padding: .75em 1.5em;
+            border-bottom: 1px solid #f2f2ff;
+            background:#fff;
+            border-radius: 6px;
+            box-shadow: var(--sharper-neu);  
+            margin: .6em;          
         }
         .rec {
             border-left: 4px solid gray;
@@ -63,7 +67,14 @@ export default class Recommendations extends HTMLElement {
             .then(this.render(true))
     }
 
+    broadcast(){
+        if (document.querySelector('rec-history')){
+            document.querySelector('rec-history').setAttribute('re_render', 'true')
+        }
+    }
+
     apply(target){
+        this.broadcast()
         this.remove_from_view(target)
         fetch('/api/recommendation/approve', {
             method: 'POST',
@@ -72,7 +83,10 @@ export default class Recommendations extends HTMLElement {
             }),
             body:  JSON.stringify({
                 customer_id: this.customer_id,
-                rec_id: target.getAttribute('rec_id')
+                title: target.getAttribute('title').replace(/\\/g, ''),
+                rec_id: target.getAttribute('rec_id'),
+                analytics: this.analytics,
+                price: eval(target.getAttribute('price'))
             })
         })
             .then(res=>res.json())
@@ -81,6 +95,7 @@ export default class Recommendations extends HTMLElement {
     }
 
     dismiss(target){
+        this.broadcast()
         this.remove_from_view(target)
         fetch('/api/recommendation/dismiss', {
             method: 'POST',
@@ -89,7 +104,8 @@ export default class Recommendations extends HTMLElement {
             }),
             body:  JSON.stringify({
                 customer_id: this.customer_id,
-                rec_id: target.getAttribute('rec_id')
+                rec_id: target.getAttribute('rec_id'),
+                analytics: this.analytics
             })
         })
             .then(res=>res.json())
@@ -98,6 +114,8 @@ export default class Recommendations extends HTMLElement {
 
     recommendation(rec, index){
         const el = new Rec_shell
+        
+        el.setAttribute('price', rec.price_tag)
         el.setAttribute('rec_id', rec.rec_id)
         el.setAttribute('index', index)
         el.setAttribute('customer_id', this.customer_id)
@@ -117,12 +135,21 @@ export default class Recommendations extends HTMLElement {
         let el = document.createElement('div')
 
         const append = res => {
-            el.innerHTML = `${this.css}`
+            el.innerHTML = `
+                ${this.css}
+                <div class="home_row row">
+                </div>    
+            `
             if (this.state.data.length == 0) {
                 el.innerHTML += `
                 <p class="small_txt">Every week, you will receive tailored, actionable recommendations from our internal engines and stellar team.</p>
                 <p class="small_txt">You can implement these recommendations with only 1 click. Until then, explore your dashboard and we'll email you when you receive your recommendations.</p>`
-            } else for (let i in res) el.appendChild(this.recommendation(res[i], i))
+            } else for (let i in res) {
+                let col = document.createElement('div')
+                col.classList = ["rec-container col-lg-5 col-md-5 col-sm-12 col-12"]
+                col.appendChild(this.recommendation(res[i], i))
+                el.querySelector(".home_row").appendChild(col)
+            }
         }
 
         const append_to_shadow = el => this.shadow.querySelector("#rec-container").appendChild(el)
@@ -157,6 +184,8 @@ export default class Recommendations extends HTMLElement {
         this.customer_id = this.getAttribute('customer-id')
         this.recs_json = eval(this.getAttribute('recs_json'))
         this.fetch = eval(this.getAttribute('fetch'))
+        this.analytics = eval(this.getAttribute('analytics')) == 1 ? true : false
+        
         this.render()
     }
 }

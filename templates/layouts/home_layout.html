@@ -10,12 +10,16 @@
 
 {% block content %}
 
+{% if request.args.get('intro') == 'True' %}
+	{% include '/core/anticipation.html' %}
+{% endif %}
+
 <div class="main-panel">
 	{% if not page.admin %}
 		{% with plan="active", customer = page.data['core']['core'][0]['current_plan'], demo=demo %}
 			{% include "/core/navbar/sidebar.html" %}
+			{% include "/core/navbar/topbar.html" %}
 		{% endwith %}
-		{% include "/core/navbar/topbar.html" %}
 	{% else %}
 		{{ admin_sidebar('test', owner, admin, manager) }}
 		{% include "/topbar/topbar-admin.html" %}
@@ -35,15 +39,16 @@
 				<div class="root-card">
 					<div id="loading">
 						<div class="load-circle"><span class="one"></span></div>
-					</div><br><br>
+					</div><br>
 					<div id="content-ready" style="visibility:hidden;">
+						
 						{% if page.admin %}
 							{{ admin_breadcrumb(page, view="customer profile", profile_view=True) }}
 
 							<h5>{{ page.data['core']['core'][0]['company_name'] }}</h5>
 							<p class="small_txt">ID: {{ page.data['core']['core'][0]['id'] }}</p>
 						{% endif %}
-						{{ tab_bar(page) }}
+						{{ tab_bar(page, demo=demo) }}
 						<br>
 						<div class="tab-content">
 							<div class="render_tactics tab-pane active" id="campaigns" role="tabpanel" aria-labelledby="campaigns-tab">
@@ -61,11 +66,14 @@
 									{% include "core/profile.html" %}
 								{% endwith %}
 							</div>
+
+							{% if not demo %}
 							<div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
 								{% with page=page %}
 									{% include "core/messages.html" %}
 								{% endwith %}
 							</div>
+							{% endif %}
 						</div>
 
 					</div>

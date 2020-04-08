@@ -5,7 +5,27 @@ const styles = () => {
     /*html*/
     return `
     <style>
+<<<<<<< HEAD
         @import url('/static/assets/css/app.css');
+=======
+        @import url('/static/assets/css/bootstrap.min.css');
+        @import url('/static/assets/css/styles.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        .comp__inner {
+            flex-direction: column;
+            display:flex;
+            justify-content:center;
+            margin-top: 2em;
+        }
+        .comp_name {
+            background-color: var(--panel-bg);
+            padding: 8%;
+            border-radius: 6px;
+            box-shadow: var(--card-box-shadow);
+            margin-top:2em;
+        }
+        
+>>>>>>> master
         th p {
             font-size: .5em;
         }
@@ -19,11 +39,9 @@ const styles = () => {
             }
         }
 
-        .nav-tabs li {
-            width: 100%;
-        }
         .nav-tabs {
             padding: 0;
+            margin-bottom: 0 !important;
         }
         tr {
             width: 25%;
@@ -49,7 +67,8 @@ const styles = () => {
         }
 
         .traffic_meters {
-            height: 10px;
+            height: 15px;
+            border-radius: 5px;
         }
         .traffic_meters div {
             display: inline;
@@ -90,21 +109,12 @@ export default class CompetitiveIntelligence extends HTMLElement {
     shell(){
 
         const overview = (name, site, type) => {
-            
             return /*html*/ `
-            <div class="row">
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-md-2 col-sm-12"></div>
-                        <div class="col-lg-6">
-                            <p>${name}</p>
-                            <a class="small_txt" target="__blank" href="https://${site}">website</a>
-                            <p class="small_txt comp-badge ${type}">${type}</p>
-                        </div>
-                        <div class='col-lg-4'></div>
-                    </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                    <p class="comp_name" style="margin: 0;"><a target="__blank" href="https://${site}">${name}</a><br>(${type} competitor)</p>
                 </div>
-            </div>
+
             `.trim()
 
         }
@@ -123,6 +133,9 @@ export default class CompetitiveIntelligence extends HTMLElement {
             </tr>
             `.trim()
         }
+        // comp.comp_name, currency_rounded(comp.core.ppc_budget), 
+        // number_no_commas(comp.core.total_traffic), number_no_commas(comp.core.seo_clicks), 
+        // number_no_commas(comp.core.ppc_clicks)
 
         const google_ads = comps => {
             const google = (headline, website, description) => {
@@ -140,23 +153,26 @@ export default class CompetitiveIntelligence extends HTMLElement {
             for (let i of comps) {
                 labels.push(i.comp_name) 
                 content.push (
-                    `<div class="row">
-                    ${i.google_ads.map(ad=>{
+                    `<div class="row row_cancel">
+                    ${i.google_ads.length > 0 ? i.google_ads.map(ad=>{
+                        
                         return `
                             <div class="col-md-6 col-sm-12">
                                 ${google(ad.title, ad.url, ad.body)}
                             </div>
                         `.trim()
-                    }).join("")}
+                    }).join("") : `<p>Looks like ${i.comp_name} either isn't running any Google ads, or we haven't found them yet.</p>`}
                     </div>
                     `
                 )
             } 
             /*html*/
             return `
-            <p>Google Ads</p>
+            <h1 class="widget__title">Top performing search ads</h1>
             <div class="row">
+                <div class="col">
                 ${tabs(labels, content, 'google')}
+                </div>
             </div>
             `
         }
@@ -195,49 +211,83 @@ export default class CompetitiveIntelligence extends HTMLElement {
         /*html*/
         return `
             <div class="row">
-                <div class="col-lg-3 col-sm-12">
-                    ${base.map(comp=>{
-                        return overview(comp.comp_name, comp.site, comp.type)
-                    }).join("")}
+                <div class="col-lg-4 col-md-5 col-sm-12 col-12">
+                    <div style="margin-bottom:0;" class="h-100 card card-body">
+                        <div id="comp_meta_container">
+                            <h1 class="widget__title">Competitive intelligence &nbsp;<a class="small_txt" href="/competitors?home=True">edit</a></h1>
+                            
+                            <div class="row">
+                            ${base.map(comp=>{
+                                return overview(comp.comp_name, comp.site, comp.type)
+                            }).join("")}
+                            </div>
+
+                            <div class="comp__inner">
+                                <div class="row">
+                                    ${base.map(comp=>{
+                                        return (`
+                                        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                            <h1 class="widget__value">
+                                            ${currency_rounded(comp.core.ppc_budget)}<span style="font-size:.5em;">/month</span>
+                                            </h1>
+                                        </div>
+                                        `)
+                                    }).join("")}
+                                </div>
+                                <h1 class="widget__title small center_it">Monthly Search ads budget</h1>
+                            </div>
+
+                            <div class="comp__inner">
+                                <div class="row">
+                                    ${base.map(comp=>{
+                                        return (`
+                                        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                            <h1 class="widget__value">
+                                            ${number_rounded(comp.core.total_traffic)}<span style="font-size:.5em;">visits</span>
+                                            </h1>
+                                        </div>
+                                        `)
+                                    }).join("")}
+                                </div>
+                                <h1 class="widget__title small">Web traffic</h1>
+                            </div>
+
+
+                            <div class="comp__inner">
+                                <div class="row">
+                                    ${base.map(comp=>{
+                                        let {ppc_clicks, seo_clicks} = comp.core
+                                        let perc_paid = number_rounded(ppc_clicks / (seo_clicks + ppc_clicks) * 100)
+                                        let perc_organic = number_rounded(seo_clicks / (seo_clicks + ppc_clicks) * 100)
+                                        
+                                        return (`
+                                        <div data-paid="${ppc_clicks}" data-organic="${seo_clicks}" class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                            <p style="margin-bottom: 0;" class="small_txt">paid: ${!isNaN(perc_paid) ? perc_paid : 0}%</p> <div class="traffic_meters paid_meter"></div>
+                                            <p style="margin-bottom: 0;" class="small_txt">organic: ${!isNaN(perc_organic) ? perc_organic : 0}%</p> <div class="traffic_meters organic_meter"></div>
+                                        </div>
+                                        `)
+                                    }).join("")}
+                                </div>
+                                <h1 class="widget__title small">Paid vs. organic search traffic</h1>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-9 col-sm-12">
-                    <div id="listener" class="row">
+                <div class="col-lg-8 col-md-7 col-sm-12">
+                    <div style="margin-bottom: 0;" id="listener" class="h-100 card card-body row">
                     </div>
                 </div>
             </div>
-            <div class="separator"></div>
 
-            <div class="row">
-                <div class="col-md-1"></div>
+            <div class="row"> 
                 <div class="col">
-                    <table style="width: 100%;overflow: auto;" class="table table-responsive table-borderless">
-                        <thead>
-                            <th></th>
-                            <th><p>Est. Google Ad Spend per month</p></th>
-                            <th><p>Web traffic</p></th>
-                            <th><p>Paid vs. Organic search</p></th>
-                        </thead>
-                        <tbody>
-                            ${base.map(comp=>{
-                                return traffic(
-                                    comp.comp_name, currency_rounded(comp.core.ppc_budget), 
-                                    number_no_commas(comp.core.total_traffic), number_no_commas(comp.core.seo_clicks), 
-                                    number_no_commas(comp.core.ppc_clicks)
-                                )
-                            }).join("")}
-                        </tbody>
-                    </table>
+                    <div class="card card-body">
+                        ${google_ads(base)}
+                    </div>
                 </div>
-                <div class="col-md-1 ad_container"></div>
             </div>
-
-            <div class="separator"></div>
-
-            ${google_ads(base)}
-
-            <!--<div class="separator"></div>
-
-            ${display_ads(base)}-->
+ 
+            <!-- ${display_ads(base)} -->
             
         `.trim()
     }
@@ -330,6 +380,7 @@ export default class CompetitiveIntelligence extends HTMLElement {
                     .then(res=>res.json())
                     .then(res=>{
                         this.state.data = res
+                        console.log(res)
                         this.render(true)
                     })
                     .then(()=>{

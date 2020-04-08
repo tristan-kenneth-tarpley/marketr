@@ -381,26 +381,28 @@
 	{% set large_md_sm_col = 'col-lg-3 col-md-4 col-sm-5' %}
 
 	{% macro core(h6, p, tile_type, file_path, sub_name) %}
-
+		{% set solo = True if not p %}
 		<div class="table-responsive
 			{% if tile_type == 'multi' or tile_type == 'perc' %}
 			hb_many
 			{% endif %}
 			hover_box
 			{{ large_md_sm_col }}
+			{{ 'perc' if tile_type == 'perc'}}
+			{{'solo' if solo }}
 			col-5">
 			<table class="table {{ 'file_path' if file_path }} table-borderless">
 			    <thead>
 			    	<tr>
-				      <th style="font-size: 100%;">
+				      <th style="{{ 'text-align:center;' if solo }} font-size: 100%;">
 				      	{% if file_path != [None] %}
 
 				      		<img src="{{ file_path }}">
 				      		<h6 class="hidden">{{h6}}</h6>
-
+							{% if not p %}<br>{% endif %}
 				      	{% else %} 
 
-				      		<h6>{{h6}}</h6>
+				      		<h6>{{h6 | safe | clean_chars}}</h6>
 
 				      	{% endif %}
 				      	{% if tile_type == 'multi'%}
@@ -415,13 +417,13 @@
 				    <tbody>
 				    	<tr style="padding: 0% 4%;">
 						    <td>
-						      	<p>{{p}}</p>
+						      	<p>{{p | safe | clean_chars}}</p>
 						    </td>
 				    	</tr>
 
 						{% if tile_type == 'perc' %}
 				    	<tr>
-				    		<td>
+				    		<td class="td__perc">
 
 							<div class="input-group">
 								<input style="text-align:center;" type="text" id="percent" class="percent in_box form-control form-control" placeholder="" name="{{sub_name}}">
@@ -516,7 +518,7 @@
 			</p>
 		{% endif %}	
 	{% else %}
-		<p style="display: none;">Lorem ipsum</p>
+		
 	{% endif %}
 {% endmacro %}
 
@@ -533,18 +535,18 @@
 {% endmacro %}
 
 
-{% macro build_question(type=None, placeholder=None, format=None, route=None,required=None, file_path=None, sub_name=None, form=None, label=None, p_label=None, name=None, why=None, what=None, copy=None, target=None, h6=None, p=None, nested=False) %}
+{% macro build_question(count=0, type=None, placeholder=None, format=None, route=None,required=None, file_path=None, sub_name=None, form=None, label=None, p_label=None, name=None, why=None, what=None, copy=None, target=None, h6=None, p=None, nested=False) %}
 	{% if nested == True %}
-		<div class="col-lg-6 col-md-6 col-sm-12 col-12">
+		<div id="group-{{count}}" data-count="{{count}}" class="intake_q col-lg-6 col-md-6 col-sm-12 col-12">
 	{% else %}
-		<div class="col">
+		<div id="group-{{count}}" data-count="{{count}}" class="intake_q col">
 	{% endif %}
-	
+
 	{% if not type | tiles %}
 		{{ create_label_p(label, 'l', name=name, why=why, what=what, copy=copy, target=target) }}
 		{{ create_label_p(p_label, 'p', p_label=p_label, why=why, what=what, copy=copy, target=target) }}
 
-		<div class="row">
+		<div class="row align_bottom">
 			<div class="col">
 				{{ create_element(why, what, copy, target, 'l', label, type, placeholder, format, name, route, required, file_path, sub_name, form, p_label, h6=h6, p=p) }}
 			</div>
@@ -593,6 +595,7 @@
 			{% set divider = questions[question]['horizontal_separator_binary'] %}
 			{% set file_path = questions[question]['icon_file_path'] | tiles_to_array %}
 			{% set sub_name = questions[question]['sub_name'] | tiles_to_array %}
+			{% set q_group = questions[question]['q_group'] | int - 1 %}
 
 			{% set current = loop.index - 1 %}
 			{% set current_string = current | string %}
@@ -610,16 +613,17 @@
 				{% if current == 0 or not questions[last_string]['a_format'] | layout %}
 					{{ open_row(debug=False) }}
 				{% endif %}
-
-					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=True) }}
+				
+				{% set nested = True if name != 'ltv' else False %}
+				{{ build_question(count=q_group, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=nested) }}
 			
-				{% if not questions[next_string]['a_format'] | layout %}
+				{% if not questions.get(next_string)['a_format'] | layout %}
 					{{ close_row(debug=False) }}
 				{% endif %}
 
 			{% else %}
 				{{ open_row() }}
-					{{ build_question(type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=False) }}
+					{{ build_question(count=q_group, type=type, placeholder=placeholder, format=format, route=route, required=required, file_path=file_path, sub_name=sub_name, form=form, label=label, p_label=p_label, name=name, why=why, what=what, copy=copy, target=target, h6=tile_h6, p=tile_p, nested=False) }}
 				{{ close_row() }}
 			{% endif %}
 		{% endfor %}

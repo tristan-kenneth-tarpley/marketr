@@ -4,8 +4,8 @@ import cta from './campaign_cta.js';
 import {Achievements, Store, Rewards} from './gamify.js'
 import {IntakeProgressMeter, CoreViewModels, AuditRequest, PriceViewModel, AuditViewModel, WalletViewModel} from './ViewModels.js'
 import {PaymentsService} from './services.js'
-import {isNumber} from './convenience/helpers.js'
-import InitFuncs from './future_refactor/InitFuncs.js'
+import {isNumber, validateEmail} from './convenience/helpers.js'
+import {InitFuncs, get_account_availability} from './future_refactor/InitFuncs.js'
 import {select_controller} from '/static/src/components/UI_elements.js'
 
 
@@ -84,6 +84,7 @@ const Controller = class {
 			"/admin": "admin",
 			"/personnel": "personnel",
 			"/new": "new",
+			"/new/early_access": "new",
 			"/create": "create",
 			"/payments": "payments",
 			"/pricing": "pricing",
@@ -114,6 +115,11 @@ const Controller = class {
 				const init = new InitFuncs()
 				const progress = new IntakeProgressMeter()
 				switch (this.PageMap(this.url_path)) {
+					case 'begin':
+					case 'competitors':
+					case 'company':
+						if (!this.params.get('home')) init.TypeFormStyle()
+						break
 					case 'audience':
 						init.container('audience')
 						break
@@ -172,9 +178,9 @@ const Controller = class {
 				case '/home':
 				case '/home/achievements':
 				case '/home/settings':
-					game.lets_play()
-					game.poll()
-					store.init()
+					// game.lets_play()
+					// game.poll()
+					// store.init()
 					break
 			}
 						
@@ -256,6 +262,13 @@ const callback = function(){
 	VC.run()
 };
   
+
+String.prototype.trunc = String.prototype.trunc ||
+      function(n){
+          return (this.length > n) ? this.substr(0, n-1) + '&hellip;' : this;
+      };
+
+
 
 
 if (

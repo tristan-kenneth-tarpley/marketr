@@ -39,7 +39,7 @@ class GetRec:
         base = .05
         sales_multiplier = 2 if self.sales_model != 'other' else 1
         avg = (stage_table.get(self.stage) + (sales_table.get(self.sales_model) * sales_multiplier) + tag_table.get(self.model)) / 3 + (growth_needs_table.get(self.growth_needs) - 1)
-        formula = self.revenue * base * avg / 12
+        formula = self.revenue * base * avg / 12 * .7
         return formula
 
 
@@ -183,7 +183,6 @@ class SpendAllocation:
                     'Activity-based',
                     'Product / service',
                     'Your brand(s)',
-                    'Landing page a/b testing campaign'
                     'Landing page a/b testing campaign'
             ]}, {
                 'bucket': 'social',

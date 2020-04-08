@@ -1,5 +1,6 @@
 {% extends "layouts/branding_layout.html" %}
 {% from "macros/_branding_macros.html" import pricing, carousel %}
+{% from "branding/pricing.html" import pricing_page%}
 {% block content %}
 <!-- Main -->
 <main>
@@ -12,31 +13,45 @@
         <!-- container -->
         <div class="container container-large">
             <!-- row --><br>
-            <div class="row full-screen align-items-center justify-content-center">
+            <div style="margin-top:10%;" class="row full-screen justify-content-center"> <!-- align-items-center -->
                 <div class="col-lg-1 col-md-1"></div>
                 <div class="col-12 col-lg-4 col-xl-4">
                     <div class="hb-text">
-                        <h3 class="white-color">5-10x Your Advertising Dollars</h3>
+                        <!-- <h3 class="white-color">Super powers for marketers</h3> -->
+                        <covid-quiz></covid-quiz>
+                        <br>
+
+                        <script src="https://fast.wistia.com/embed/medias/wh1sohdmai.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><span class="wistia_embed wistia_async_wh1sohdmai popover=true popoverContent=link" style="display:inline;position:relative"><a class="btn btn-primary" style="background-color: #06112f;border-color:#06112f;" href="#">
+                            50 seconds on marketing during COVID-19 &nbsp;<i class="fad fa-video-plus"></i></a></span>
                         <!-- <h5 class="white-color">Market(r)</h5> -->
-                        <p class="white-color-light">Market(r) is an app that learns how much you should spend and where to spend it, and gives you 1-click implementation for your online advertising.</p>
+                        <!-- <p class="white-color-light">Market(r) is an app that continuously learns your business and industry and gives you personalized insights on opportunities for profitable growth with 1-click recommendations.</p>
                         <div class="hb-form">
                             <form>
                                 <div class="input-group">
-                                    <a style="border: 3px solid transparent;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/new">Join our early access program</a>
+                                    <a style="border: 3px solid transparent;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/new">join now</a>
                                     <br>
-                                    <a class="m-btn m-btn-theme m-btn-round" href="/demo">Live demo</a>
+                                    <a class="m-btn m-btn-theme m-btn-round" href="/demo">Live demo</a> 
                                 </div>
                                 <span class="help-text">Free to start&mdash; no credit card required.</span>
                             </form>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
-                <div class="col-lg-7 col-xl-7">
+                <div id="replace_right" class="col-lg-7 col-xl-7">
                     <!-- <img class="max-width-auto" src="static/branding/img/home-3-b1.svg" title="" alt=""> -->
                     <img class="max-width-auto" src="static/branding/img/ad_experience.svg" title="" alt="">
                 </div>
             </div>
             <!-- end row -->
+        </div>
+        <div class="d-lg-block d-md-block d-sm-none aniWrap">
+            <a href="#about">
+                <div class="mouse">
+                    <div class="scroller">
+                    </div>
+                </div>
+                <p>More about Market(r)</p>
+            </a>
         </div>
         <!-- end container -->
     </section>
@@ -48,8 +63,9 @@
             <div class="row justify-content-center m-45px-b sm-m-25px-b">
                 <div class="col-lg-8">
                     <div class="section-title text-center">
-                        <h2 class="dark-color">What if it was this easy?</h2>
-                        <p>(hint) It is.</p>
+                        <h2 class="dark-color">Cut through the noise.</h2>
+                        <p>Market(r) is an app that continuously learns your business and industry and gives you personalized insights on opportunities for profitable growth with 1-click recommendations.</p>
+                        <!-- <p>There are a lot of things that have to go right for your online ads to be effective. Market(r) cuts through the noise with sophisticated models and AI.</p> -->
                     </div>
                 </div>
             </div>
@@ -64,7 +80,7 @@
                         </div>
                         <div class="feature-content">
                             <h5>TurboTax-style onboarding</h5>
-                            <p>10 minutes of your time is all that we need to get you your best (marketing)return possible.</p>
+                            <p>10 minutes of your time is all that we need to get you your best marketing return possible.</p>
                             <!-- <h5>Be empowered.</h5>
                             <p>Know <strong>exactly</strong> how much to spend and where to spend it.</p> -->
                         </div>
@@ -79,7 +95,7 @@
                             <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
                         </div>
                         <div class="feature-content">
-                            <h5>Know <strong>exactly</strong> how much to spend and where to spend it.</h5>
+                            <h5>Market(r) learns <strong>exactly</strong> how much to spend and where to spend it.</h5>
                             <p>We take your answers, connect it with more data, shake it up in our machine learning engines, pour some love in it, and spit out pure confidence.</p>
                             <!-- <h5>3 months of free creative</h5>
                             <p>We put our money where our mouth is. Get free ad design for your first 3 months.</p> -->
@@ -95,8 +111,8 @@
                             <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
                         </div>
                         <div class="feature-content">
-                            <h5>Sleep well at night</h5>
-                            <p>Trust that you are getting the <strong>best</strong> possible ROI, and that no opportunity is left unexamined.</p>
+                            <h5>Know the value of your spend</h5>
+                            <p>Introducing: Profit Potential per $100 spent. Market(r)'s proprietary formula predicts how much return you will get from every ad, ad groups, campaign, and channel.</p>
                         </div>
                     </div>
                 </div>
@@ -114,18 +130,42 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <!-- <div class="col-lg-4">
                     
                 </div>
                 <div class="col-lg-4" style="border-bottom:3px solid rgba(0,0,0,.2);margin: 2% auto;width: 30%;"></div>
                 <div class="col-lg-4">
                     
-                </div>
+                </div> -->
                 
                 <!-- features box end -->
                 <div class="col-md-3 col-sm-12"></div>
                 <div class="col-md-6 col-sm-12">
-                    <img class="lazy" data-src="/static/branding/img/profile.png">
+                    <img class="lazy" data-src="/static/branding/img/dashboard.png">
+                    <style>
+                        .sec_hb-form {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: center;
+                            margin-top: 2em;
+                        }
+                        .sec_hb-form span.help-text {
+                            opacity:.3;
+                        }
+                        .sec_hb-form .m-btn {
+                            margin: 0 auto;
+                        }
+                    </style>
+                    <div class="sec_hb-form hb-form">
+                        <form>
+                            <div class="input-group">
+                                <a style="border: 3px solid transparent;" class="m-btn m-btn-md m-btn-theme2nd m-btn-round m-btn-shadow" href="/new">join now</a>
+                                <!-- <br>
+                                <a class="m-btn m-btn-theme m-btn-round" href="/demo">Live demo</a> -->
+                            </div>
+                            <span class="help-text">To help during this time, we're giving away our core analytics for free for 6 months.</span>
+                        </form>
+                    </div>
                 </div>
                 <div class="col-md-3 col-sm-12"></div>
             </div>
@@ -141,40 +181,22 @@
                     <div class="section-title ">
                         <h1 class="text-center ">Online advertising for<br>SaaS and E-Commerce companies.</h1>
                         <h4 class="text-center large dark-color">Use artificial intelligence to get more customers with <span style="color:#62cde0;" class="border-effect">Paid Ads</span></h4>
-                        <div style="margin-top:20%;" class="row">
+                        <div style="margin-top:10%;" class="row">
                             <div class="col-lg-12">
                                 {{ carousel() }}
                             </div>
-                            <div class="col-md-6 m-15px-tb">
-                                <div class="feature-box-04 d-flex flex-row align-items-start">
-                                    <div class="feature-content">
-                                        <h5 class="theme-color">Satisfaction guaranteed for your first $1,000 spent</h5>
-                                        <p>You read that right. What's the risk?</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- col -->
-                            <div class="col-md-6 m-15px-tb">
-                                <div class="feature-box-04 d-flex flex-row align-items-start">
-                                    <div class="feature-content">
-                                        <h5 class="theme-color">Serious accountability</h5>
-                                        <p>No more consultants telling you every month how you "just need more time." We give you hard numbers for which we are held accountable.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- col -->
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="padding-top:2%;" class="row">
+            <div style="padding-top:0%;" class="row">
                 <div class="col-lg-3"></div>
-                <div class="col-lg-6"><img class="lazy" data-src="/static/branding/img/campaigns.png"></div>
+                <div class="col-lg-6"><img class="lazy" data-src="/static/branding/img/ads.png"></div>
                 <div class="col-lg-3"></div>
             </div>
             <!-- row -->
             <div class="text-center btn-bar"><br><br>
-                <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">Join our early access program</a>
+                <a class="m-btn m-btn-radius m-btn-theme2nd" href="/new">join now</a>
             </div>
         </div>
     </section>
@@ -250,7 +272,7 @@
                 <!-- end features box -->
             </div><br>
             <div style="text-align: center;">
-                <a class="m-btn m-btn-lg m-btn-theme2nd m-btn-shadow" style="border-radius:5px;" href="/new">Join our early access program</a>
+                <a class="m-btn m-btn-lg m-btn-theme2nd m-btn-shadow" style="border-radius:5px;" href="/new">join now</a>
             </div>
         </div>
     </section>
@@ -486,8 +508,8 @@
     </section>
     <!-- end testimonials -->
     <!--  pricing -->
-    {{ pricing(logged_in) }}
-    <section class="section">
+    {{ pricing_page(logged_in, quantity, company_name, dedicated_page=False)}}
+  {#<section class="section">
         <div class="container">
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
                 <div class="col-lg-8 col-md-10">
@@ -522,7 +544,7 @@
                 </div>
             </div> <!-- row -->
         </div>
-    </section>
+    </section>#}
 
     <!-- end pricing -->
     <!--  blog -->
@@ -632,7 +654,9 @@
 </main>
 <!-- main end -->
 
-<script>
+<script type="module">
+    import Quiz from "/static/src/components/branding_components/covid_quiz.js?version={{ 'date' | get_date }}"
+
     document.addEventListener("DOMContentLoaded", function() {
         var lazyloadImages;    
         

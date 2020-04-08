@@ -38,7 +38,7 @@ class CompetitorService(object):
         return requests.get(url).json()
    
     def SpyfuCore(self, url):
-        url = f"https://www.spyfu.com/apis/leads_api/get_contact_card?domain={url}&api_key={self.spyfu}"
+        url = f"https://www.spyfu.com/apis/core_api/get_domain_metrics_us?domain={url}&api_key={self.spyfu}"
         try:
             return requests.get(url).json()
         except:
@@ -67,15 +67,32 @@ class CompetitorService(object):
             
         return ads
 
+    def is_due(self):
+        result, cursor = db.execute("SELECT * FROM get_comps(?)", True, (self.customer_id,))
+        result = cursor.fetchall()
+        if len(result) > 0:
+            result = result[0][1]
+            return False, result
+        else:
+            return True, None
+
+    def save(self, values):
+        query = """
+            INSERT INTO competitor_cache (cached_at, json, customer_id)
+            values (GETDATE(), ?, ?)
+        """
+        db.execute(query, False, (values, self.customer_id), commit=True)
+
     def competitor_card(self):
         async def compile(competitors):
             def Struct(name, site, Type, res_1, res_2, res_3, res_4):
                 res_3 = res_3[:5] if len(res_3) > 5 else res_3
                 keywords = list()
                 if res_2:
-                    organic = float(res_2.get('seo_clicks')) if res_2.get('seo_clicks') else 0
-                    paid = float(res_2.get('ppc_clicks')) if res_2.get('ppc_clicks') else 0
-                    budget = float(res_2.get('ppc_budget')) if res_2.get('ppc_budget') else 0
+                    print(res_2)
+                    organic = float(res_2.get('organic_clicks_per_month')) if res_2.get('organic_clicks_per_month') else 0
+                    paid = float(res_2.get('paid_clicks_per_month')) if res_2.get('paid_clicks_per_month') else 0
+                    budget = float(res_2.get('monthly_adwords_budget')) if res_2.get('monthly_adwords_budget') else 0
                 else:
                     organic = 0
                     paid = 0

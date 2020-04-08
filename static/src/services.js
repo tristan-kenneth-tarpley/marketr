@@ -255,7 +255,7 @@ export class MessagingService {
 export class TaskService {
     constructor (url_path) {
         this.url_path = url_path
-        this.customer_id = this.url_path.substring(11)
+        this.customer_id = document.querySelector('.__tasks.table').dataset.id
     }
 
     post_task (args) {
@@ -280,7 +280,6 @@ export class TaskService {
             task: task,
             customer_id: this.customer_id
         }
-        console.log(task)
         this.celebrate()
         $.ajax({
             method: 'POST',

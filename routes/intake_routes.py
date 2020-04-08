@@ -148,15 +148,6 @@ def company():
         else:
             service.skip(30)
 
-        if not session['onboarding_complete']:
-            ts = time.time()
-            st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            UserService.init_profile(st, session['user'])
-            google = GoogleChatService()
-            google.onboarding_complete(email=session['email'])
-            session['onboarding_complete'] = True
-            
-
         if session['onboarding_complete'] == True:
             return redirect(url_for('home', view='profile'))
         else:
@@ -197,7 +188,18 @@ def audience():
             next_id = service.get_persona()
             return redirect(url_for('audience', view_id=next_id, splash=False))
         else:
-            return redirect(url_for('home', view='profile'))
+            if not session['onboarding_complete']:
+                ts = time.time()
+                st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                UserService.init_profile(st, session['user'])
+                google = GoogleChatService()
+                google.onboarding_complete(email=session['email'])
+                session['onboarding_complete'] = True
+                intro = True
+            else:
+                intro = False
+                
+            return redirect(url_for('home', view='campaigns', intro=intro))
 
 
     return ViewFuncs.view_page(user=session['user'],

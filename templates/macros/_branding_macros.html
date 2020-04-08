@@ -1,29 +1,33 @@
-{% macro pricing(logged_in, settings_view=False, quantity=1) %}
-<section id="price" class="section gray-bg">
+
+
+{% macro pricing(logged_in, settings_view=False, quantity=1, company_name=None) %}
+<section id="price" class="full_height section gray-bg">
     <div class="container">
         <!-- section title -->
         <div class="row justify-content-center sm-m-25px-b m-45px-b">
             <div class="col-lg-8 col-md-10">
                 <div class="section-title text-center">
-                    <h2>Flat-Rate Pricing</h2>
-                    <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
-                    {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
+                    <h2>Get superpowers with Market(r)</h2>
+                    <p style="color:#06112f;">We're inspired to see so many businesses helping one another out.  We want to help too - to that end, we're offering our Analytics package <strong>FREE</strong> for 6 months.</p>
+                    {#{% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>#}
                 </div>
             </div>
         </div>
         <!-- end section title -->
-        <div class="row align-items-center">
+        <div class="row">
+
             <div class="col-md-4 col-lg-4 m-15px-tb">    
                 <div class="price-table">
                     <div class="pt-head">
-                        <h5>Analytics</h5>
+                        <h5>Optimize with Market(r) <i style="color:#62cde0;" class="fad fa-chart-bar"></i></h5>
                     </div>
                     <div class="pt-body">
-                        <h4><span>$</span>40/month</h4>
+                        <h4 style="text-decoration: line-through;"><span>$</span>40/month</h4>
+                        <h4>Free for 6 months (cancel anytime)</h4>
                         <ul class="list-type-02">
-                            <li><i class="fas fa-check"></i> Data integrations with 80+ platforms</li>
-                            <li><i class="fas fa-check"></i> Cross-platform analytics</li>
-                            <li><i class="fas fa-check"></i> Real-time recommendations on ad spend optimization.</li>
+                            <li> <i class="fas fa-check"></i> Weekly 1-click recommendations on how to dominate your market</li>
+                            <li> <i class="fas fa-check"></i> Profit Potential Per $100 Spent: See how much you're getting out of every ad, ad group, campaign, and channel at a glance</li>
+                            <li> <i class="fas fa-check"></i> Use our listener tool to see what the market is saying about your competition, industry, and your brand.</li>
                             <li><i class="fas fa-check"></i> Market(r) learns exactly how much you should spend and where to spend it.</li>
                         </ul>
                     </div>
@@ -32,54 +36,65 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4 m-15px-tb">    
+
+            {% set classList = "col-md-4 col-lg-4" %}
+            <div class="{{classList}} m-15px-tb">    
                 <div class="price-table">
                     <div class="pt-head">
-                        <label class="msg">popular choice</label>
-                        <h5>Analytics + Implementation</h5>
+                        {% if quantity == 1 %}<label class="msg">popular choice</label>{% endif %}
+                        <h5>Grow with Market(r) <i style="color:#62cde0;" class="fad fa-flask"></i></h5>
                     </div>
                     <div class="pt-body">
-                        <h4><span>$</span>85/month per campaign</h4>
+                        <h4><span id="list__price">$255/mo</span> (+ ad spend)</h4>
                         <ul class="list-type-02">
-                            <li><i class="fas fa-check"></i> Full campaign management including research, copywriting, and implementation.</li>
-                            <li><i class="fas fa-check"></i> Weekly recommendations with 1-click implementation.</li>
-                            <li><i class="fas fa-check"></i> Real-time strategic insights</li>
-                            <li><i class="fas fa-check"></i> Url-based conversion tracking</li>
+                            <li><i class="fas fa-check"></i> Everything in "Optimize with Market(r)" plus campaign management</li>
+                            <li><i class="fas fa-check"></i> 14 day free trial</li>
+                            <li><i class="fas fa-check"></i> Cancel anytime in-app with one click, without talking to anybody.</li>
+                            <li><i class="fas fa-check"></i> Includes 3 campaigns (the minimum necessary for our engines to get sufficient data). $85/month per campaign thereafter.</li>
                         </ul>
                     </div>
                     
                     <div class="pt-footer">
-                        <div class="input-group">
-                            {% if logged_in %}
-                                <input value="1" min="1" pattern="[0-9]" type="number" class="form-control" id="quantity">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">campaigns</span>
-                                </div>
-                     
-
-                                <script>
-                                    document.querySelector('#quantity').addEventListener('keyup', e=>{
-                                        document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${e.currentTarget.value}`
-                                    })
-                                </script>
+                        <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign', quantity=3) if logged_in else url_for('new') }}">Get started</a>
+                        {% if logged_in %}
+                            {% if quantity and quantity | int > 1 %}
+                            <br><br><br>
+                            <label>
+                                <input type="checkbox" id="quantity"> &nbsp; <strong>Highly recommended: Based on extensive data, learnings, and competitor analysis, {{company_name if company_name else 'you'}} would get the most value from {{quantity}} campaigns. Click here to upgrade.</strong>
+                            </label>
                             {% endif %}
-                        </div>
-                        <a style="margin-top:10px;" id="campaign_link" class="m-btn m-btn-theme2nd m-btn-radius" href="{{ url_for('single_campaign') if logged_in else url_for('new') }}">Get started</a>
+                            <script>
+                                document.querySelector('#quantity').addEventListener('change', e=>{
+                                    let _this = e.currentTarget
+                                    let quant = _this.checked ? parseInt("{{quantity}}") : 3
+                                    let price = document.querySelector('#list__price')
+                                    document.querySelector("#campaign_link").href = `/checkout/single_campaign?quantity=${quant}`
+
+                                    if (price){
+                                        price.style.display = 'inline-block'
+                                        let _price_amt = _this.checked ? quant * 85 : 255
+                                        price.textContent = `$${_price_amt}/mo`
+                                    }
+                                })
+                            </script>
+
+                        {% endif %}
                     </div>
                 </div>
             </div>
+
             <!-- price table -->
             <div class="col-md-4 col-lg-4 m-15px-tb">
                 <div class="price-table">
                     <div class="pt-head">
-                        <h5>Enterprise</h5>
+                        <h5>Enterprise <i style="color:#62cde0;" class="fad fa-starship"></i></h5>
                     </div>
                     <div class="pt-body">
                         <h4>Custom pricing</h4>
                         <ul class="list-type-02">
+                            <li><i class="fas fa-check"></i> Everything in "Grow with Market(r)"</li>
                             <li><i class="fas fa-check"></i> Custom-tailored machine learning model, trained on your business's data.</li>
-                            <li><i class="fas fa-check"></i> Multiple conversion values</li>
-                            <li><i class="fas fa-check"></i> Multiple customer lifetime value tracking</li>
+                            <li><i class="fas fa-check"></i> Dynamic churn and lifetime value tracking by cohort</li>
                         </ul>
                     </div>
                     <div class="pt-footer">
@@ -87,8 +102,75 @@
                     </div>
                 </div>
             </div>
+
             <!-- end price table -->
             <div class="col-md-3 col-lg-2 m-15px-tb">                    
+            </div>
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+{% macro campaign_summary(logged_in) %}
+<style>
+    .campaign_summary h1,
+    .campaign_summary i {
+        text-align: center;
+    }
+    #next_steps .campaign_summary i {
+        color: var(--nav-color);
+    }
+    .section-title .icon {
+        background: white;
+    }
+    .feature-box:hover {
+        background-color: var(--nav-color);
+    }
+    #next_steps .section-title p {
+        color: white;
+    }
+    .section.full_height {
+        height: 100%;
+        padding: 100px 0 0 0 !important;
+    }
+</style>
+
+<section class="full_height section">
+    <div class="campaign_summary">
+        <div class="feature-box box-shadow transition section-title text-center section-title text-center">
+            <h1 class="white-color">What is a campaign?</h1><br><br><br>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="icon">
+                        <i class="fad fa-wand-magic"></i>
+                        <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
+                    </div>
+                    <p>Ads are running on the places your customers are going...auto-magically</p>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="icon">
+                        <i class="fad fa-paint-brush"></i>
+                        <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
+                    </div>
+                    <p>We'll design top-quality graphics for your ads and write engaging copy that will make your customers stop scrolling and pay attention.</p>
+                </div>  
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="icon">
+                        <i class="fad fa-phone-laptop"></i>
+                        <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
+                    </div>
+                    <p>Every week, our AI models (with a little love from humans) will send you recommendations on improving. Click one button to have them implemented.</p>
+                </div>   
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="icon">
+                        <i class="fal fa-analytics"></i>
+                        <span class="dots"><i class="dot dot1"></i><i class="dot dot2"></i><i class="dot dot3"></i></span>
+                    </div>
+                    <p>Real-time view of Profit Potential per $100 spent (translation: If you put $100 in, what will you get out) for every individual platform, campaign, ad group, and ad.</p>
+                </div>   
             </div>
         </div>
     </div>
@@ -191,7 +273,6 @@
         {% if ads %}<a id="ad_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
         {% if testing %}<a id="testing_checkout_link" class="m-btn m-btn-theme m-btn-round" href="/checkout/almost_free">Get started</a>{% endif %}
     {% else %}  
-        <a id="checkout_link" class="m-btn m-btn-theme m-btn-round" href="/new">I want to join the early access program</a>
     {% endif %}
         <br>
         <hr style="height:5px; box-shadow:none; background-color: rgba(0,0,0,.1); color:rgba(0,0,0,.1);width:50%;">
@@ -231,8 +312,7 @@
             <div class="row justify-content-center sm-m-25px-b m-45px-b">
                 <div class="col-lg-8 col-md-10">
                     <div class="section-title text-center">
-                        <h2>Flat-Rate Pricing</h2>
-                        <p>Use Market(r) free <strong>forever</strong> to see exactly how much to spend on your marketing and where to spend it.
+                        <h2>Let's take the next step.</h2>
                         {% if not logged_in %}<a href="/new">I want to join the early access program</a>{%endif%}</p>
                     </div>
                 </div>

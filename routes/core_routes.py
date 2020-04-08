@@ -35,6 +35,34 @@ import datetime
 def sitemap():
     return render_template('sitemap.xml')
 
+@app.route('/users/add_secondary', methods=['POST'])
+@login_required
+def add_secondary_user():
+    req = request.get_json()
+    UserService.CreateSecondaryUser(
+        req.get('first_name'),
+        req.get('last_name'),
+        req.get('email'),
+        req.get('password'),
+        session['user']
+    )
+
+    email = EmailService()
+    email.send_email_reset(req.get('email'), reset=False)
+
+    return 'hi'
+
+@app.route('/users/remove_secondary', methods=['POST'])
+@login_required
+def remove_secondary_user():
+    req = request.get_json()
+    query = "DELETE FROM secondary_users WHERE email = ?"
+    db.execute(query, False, (req.get('email'),), commit=True)
+
+    return 'hi'
+
+
+
 @app.route('/forgot', methods=['GET', 'POST'])
 def forgot():
     form = forms.ForgotPassword()
@@ -49,7 +77,6 @@ def forgot():
         session['logged_in'] = False
 
     return render_template('forgot.html', form=form, send=True)
-
 
 
 @app.route('/forgot_password/<token>', methods=['GET', 'POST'])
@@ -97,10 +124,6 @@ def logout():
 
 @app.route('/new', methods=['POST', 'GET'])
 def new():
-    return redirect(url_for('schedule'))
-
-@app.route('/new/early_access', methods=['GET', 'POST'])
-def new_temp():
     form = forms.CreateCustomer()
     if ViewFuncs.ValidSubmission(form=form, method=request.method):
         result = UserService.CreateCustomer(form.email.data, form.password.data, form=form, app=app)
@@ -115,6 +138,11 @@ def new_temp():
     elif request.method == 'GET':
         session['logged_in'] = False
     return render_template('new.html', form=form)
+
+
+@app.route('/new/early_access', methods=['GET', 'POST'])
+def new_temp():
+    return redirect(url_for('new'))
 
 
 
@@ -153,8 +181,11 @@ def pricing():
     return render_template(
 		'branding/pricing.html',
 		logged_in = True if session.get('logged_in') == True else False,
-		home=True,
-        quantity = request.args.get('quantity') if request.args.get('quantity') else 1
+		home=False,
+        quantity = request.args.get('quantity') if request.args.get('quantity') else 1,
+        user=session.get('user'),
+        company_name=session.get('company_name'),
+        dedicated_page=True
 	)
 
 @app.route('/inspect')
@@ -279,12 +310,12 @@ def demo():
     # campaign.google_meta()
 
     view_model = CustomerDataViewModel(customer_id=181, init=True)
-    chat = ChatService('User', 'tristan@marketr.life', 181)
-    chat.run()
+    # chat = ChatService('User', 'tristan@marketr.life', 181)
+    # chat.run()
     return render_template(
         'layouts/home_layout.html',
         page=view_model,
-        chat=chat,
+        chat=None,
         demo=True
     )
 
@@ -299,18 +330,21 @@ def home():
         'layouts/home_layout.html',
         page=view_model,
         chat=chat,
-        demo=False
+        demo=False,
+        first_sync=eval(request.args.get('first_sync')) if request.args.get('first_sync') else False
     )
 
-# @app.route('/home_test', methods=['GET', 'POST'])
-# @login_required
-# @onboarding_required
-# def home_test():
-#     view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
-#     return render_template(
-#         'layouts/home_layout_2.html',
-#         page=view_model
-#     )
+@app.route('/home/recommendations', methods=['GET', 'POST'])
+@login_required
+@onboarding_required
+def recommendations_archive():
+    view_model = CustomerDataViewModel(customer_id=session['user'], init=True)
+
+    return render_template(
+        'core/recommendations_archive.html',
+        page=view_model
+    )
+
 
 @app.route('/home/achievements', methods=['GET', 'POST'])
 @login_required
@@ -329,7 +363,8 @@ def settings():
     page = SettingsViewModel(session['email'], customer_id=session['user'], stripe_id=session['stripe_id'])
     return render_template(
         'core/settings.html', page=page,
-        root=True
+        root=True,
+        email=session['email']
     )
 
 @app.route('/home/settings/change_password', methods=['GET', 'POST'])
@@ -458,4 +493,8 @@ def thanks_audit():
 @app.route('/thanks/booking', methods=['GET'])
 def thanks_booking():
     return render_template('layouts/thank_you_layout.html', booking=True)
+
+@app.route('/thanks/webinar', methods=['GET'])
+def thanks_webinar():
+    return render_template('layouts/thank_you_layout.html', webinar=True)
 

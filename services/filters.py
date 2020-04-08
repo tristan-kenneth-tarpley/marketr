@@ -109,6 +109,10 @@ def add_commas(num):
 def capitalize(string):
 	return string.capitalize()
 
+def get_date(placeholder):
+	date = str(datetime.datetime.utcnow()).replace(" ", "_")
+	return date
+
 app.jinja_env.filters['capitalize'] = capitalize
 app.jinja_env.filters['to_date'] = to_date
 app.jinja_env.filters['remove_first_char'] = remove_first_char
@@ -127,7 +131,7 @@ app.jinja_env.filters['not_none'] = not_none
 app.jinja_env.filters['get_first_five'] = get_first_five
 app.jinja_env.filters['currency'] = currency
 app.jinja_env.filters['add_commas'] = add_commas
-
+app.jinja_env.filters['get_date'] = get_date
 
 
 

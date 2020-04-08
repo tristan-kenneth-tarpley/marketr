@@ -1,9 +1,14 @@
 {% from "macros/dashboard_macros.html" import back_button %}
 {% from "macros/_macros.html" import render_field %}
-{% macro change_password() %}
+{% macro account_actions(email) %}
 
-    <div class="col">
-        <p>To change your password, <a style="color: #ca7d66;" class="" href="{{ url_for('change_password') }}">click here</a>.</p>
+    <div class="row">
+        <div class="col">
+            <a style="color: #ca7d66;" class="" href="{{ url_for('change_password') }}">Change password</a>
+        </div>
+        <div class="col">
+            <add-user email="{{email}}"></add-user>
+        </div>
     </div>
      
 {% endmacro %}
@@ -155,17 +160,15 @@
     <p class="small_txt">Note: 100% of this money goes straight to the ad platforms and is only for your ad spend. We don't pocket any of this.</p>
     <div class="fine_print_container">
         <div class="card negative_card">
+            {% if not page.customer.get('analytics') %}
             <div class="row">
                 <div class="col-lg-4 col-sm-12">
                     <p>
                         <strong>Funds Remaining</strong>
                     </p>
-                    <h4><strong>${{ funds_remaining | currency }}</strong></h4>
+                    <h1 style="text-align:left;" class="widget__title">${{ funds_remaining | currency }}</h1>
                     <p class="small_txt">Added too much? <a href="/home?view=messages">Message us</a> to reduce</p>
-                    {% if spend_rate > funds_remaining %}
-                        <h5 class="text-danger">More funds needed</h5>
-                        <p class="small_txt">You don't have enough in your Market(r) wallet.  We can only spend what you fund. If funds are not available, your ad spend will drop below the rate you specified below.</p>
-                    {% endif %}
+
                 </div>
                 <div class="col-lg-8 col-sm-12">
                     <p><strong>Add funds to your Market(r) wallet. 100% of this goes towards your ad spend.</strong></p>
@@ -192,17 +195,18 @@
                     </div>   
                 </div>
             </div>
+            {% endif %}
             <div class="row">
                 <div class="col-lg-4 col-md-12">
                     <p>
                         <strong>Current Advertising Spend Rate</strong>
                     </p>
-                    <h4><strong>${{ spend_rate | currency }}</strong>/month</h4>
+                    <h1 style="text-align:left;" class="widget__title">${{ spend_rate | currency }}<br>/month</h1>
                 </div>
                 <div class="col-lg-8 col-md-12">
                     <form method="POST" action="{{ url_for('spend_rate') }}">
-                        <p><Strong>Need to change the spend rate?</Strong></p>
-                        <p class="small_txt">This is the amount that we will spend for you every month for advertising.</p>
+                        <p><Strong>Set your monthly ad spend budget</Strong></p>
+                        <p class="small_txt">These are the dollars that you give to advertising platforms every month.</p>
                         <div class="row">
                             <div class="col">
                                 <div class="input-group">

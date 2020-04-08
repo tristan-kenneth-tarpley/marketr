@@ -4,16 +4,39 @@ const styles = () => {
     /*html*/
     return `
     <style>
+<<<<<<< HEAD
         @import url('/static/assets/css/app.css');
         
         .rec-container {
             padding: 4%;
             border-bottom: 1px solid #f2f2ff;
+=======
+        @import url('/static/assets/css/bootstrap.min.css');
+        @import url('/static/assets/css/styles.css');
+        @import url('/static/assets/icons/all.min.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        .rec__body {
+            margin-bottom:2em;
+>>>>>>> master
         }
-        .rec {
-            margin-bottom: 2%;
-            padding: 5% 0 0;
-            overflow-x: hidden;
+        .toolbar {
+            position: absolute;
+            height: 2em;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+        .toolbar .btn {
+            width: 50%;
+            position:absolute;
+            height:100%;
+        }
+        .rec-apply {
+            font-size: 75%;
+            padding: 5px 10px;
+            font-weight: 300;
+            left:50%;
+            margin: 0;
         }
         .dismiss {
             position: relative;
@@ -21,7 +44,12 @@ const styles = () => {
             margin: 0px 1px 15px !important;
             font-weight: 400;
             text-transform: lowercase;
-            font-weight: 
+            left:0;
+        }
+        .rec {
+            margin-bottom: 2%;
+            padding: 5% 0 0;
+            overflow-x: hidden;
         }
         .rec-title {
             position: relative;
@@ -29,12 +57,12 @@ const styles = () => {
             left: 0;
             margin-bottom: 0;
             padding-bottom: 0;
+            font-weight:bold;
         }
-        .rec-apply {
-            font-size: 75%;
-            padding: 5px 10px;
-            /*float: right;*/
-            font-weight: 300;
+        .rec-body__summary {
+            white-space: pre-wrap;
+            line-height:1.4em;
+            margin: 1em 0 0 0;
         }
         .read-more {
             margin: auto;
@@ -66,7 +94,7 @@ export default class Rec_shell extends HTMLElement {
 
 
     RecEvents(){
-        const x = this.shadow.querySelectorAll(".x")
+        const x = this.shadow.querySelectorAll(".dismiss")
         if (this.demo != 'True') {
             x.forEach(el=>{
                 el.addEventListener('click', e=>{
@@ -77,13 +105,22 @@ export default class Rec_shell extends HTMLElement {
 
             const apply = this.shadow.querySelectorAll('.rec-apply')
             
+            const action__apply = e =>{
+                e.currentTarget.textContent = 'Done!'
+                setTimeout(()=>{
+                    this.style.display = 'none'
+                    this.setAttribute('applied', 'true')
+                }, 1000)
+            }
             apply.forEach(el=>{
                 el.addEventListener('click', e=>{
-                    e.currentTarget.textContent = 'Done!'
-                    setTimeout(()=>{
-                        this.style.display = 'none'
-                        this.setAttribute('applied', 'true')
-                    }, 1000)
+                    if (this.price) {
+                        let confirmation = prompt(`Confirmation required. You will be charged $${this.price}. Type "confirm" to accept.`)
+                        confirmation.toLowerCase() == 'confirm'
+                        ? action__apply(e)
+                        : alert(`Acceptance cancelled`)
+                    }
+                    else action__apply(e)
                 })
             })
         }
@@ -92,27 +129,26 @@ export default class Rec_shell extends HTMLElement {
 
     render(){
         this.shadow.innerHTML = ''
-        const colors = ['#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00', '#62cde0','#ca7d66','#01d4b4','#ff9c00']
+        let apply_copy = this.price != null ? `do it for $${this.price}` : `do it`
         /*html*/
         const shell = async () => {
             return `
             ${this.css}
             ${modal(this.title, this.body, this.title)}
-            <div class="rec-container">
-                <div class="rec">
-                    <div class="row">
-                        <div class="col-lg-8 col-md-8 col-sm-12">
+                <div class="rec-container">
+                    <div class="rec">
+                        <div class="rec__body">
                             <p class="squashed rec-title small_txt">${this.title}</p>
+                            <p class="small_txt rec-body__summary trunc">${this.body.trunc(50)}</p>
                             <div data-uid="${this.title}" id="six" class="small_txt button">read more <i class="fas fa-caret-right"></i></div>
                         </div>
-                        <div style="text-align:right;margin: auto;" class="col-lg-4 col-md-4 col-sm-12">
-                            <button class="small_txt rec-apply btn btn-secondary">do it</button>
-                            <br>
+
+                        <div class="toolbar">      
                             <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button>
+                            <button class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>  
                         </div>
                     </div>
                 </div>
-            </div>
             `.trim()
         }
 
@@ -134,9 +170,11 @@ export default class Rec_shell extends HTMLElement {
 
     connectedCallback(){
         this.rec_id = parseInt(this.getAttribute('rec-id'))
+        this.price = eval(this.getAttribute('price'))
+
         this.customer_id = this.getAttribute('customer-id')
-        this.title = this.getAttribute('title')
-        this.body = this.getAttribute('body')
+        this.title = this.getAttribute('title').replace(/\\/g, '')
+        this.body = this.getAttribute('body').replace(/\\/g, '')
         this.index = parseInt(this.getAttribute('index')) % 4
         this.demo = this.getAttribute('demo')
 

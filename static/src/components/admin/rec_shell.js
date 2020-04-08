@@ -714,7 +714,7 @@ export default class Rec_shell extends HTMLElement {
                 <div class="rec">
                     <div id="six" class="button">
                         <h5 class="widget__title rec-title">
-                            ${this.title}
+                            <strong>${this.price != null ? `$${this.price}:`: ``}</strong> ${this.title}
                         </h5>
                     </div>
                     <div id="toolbar"></div>
@@ -749,6 +749,7 @@ export default class Rec_shell extends HTMLElement {
         this.customer_id = this.getAttribute('admin-assigned')
         this.title = this.getAttribute('title')
         this.body = this.getAttribute('body')
+        this.price = eval(this.getAttribute('price'))
 
         const accepted = this.getAttribute('accepted')
         this.accepted = accepted != null && parseInt(accepted) == 1

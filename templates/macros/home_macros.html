@@ -75,8 +75,17 @@
 {% endmacro %}
 
 
-{% macro tab_bar(page) %}
+{% macro tab_bar(page, demo=False) %}
 
+    <script src="https://fast.wistia.com/embed/medias/z3ijjllb9g.jsonp" async></script>
+    <script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+    <div class="nav-item_wistia wistia_responsive_padding" style="">
+        <div class="wistia_responsive_wrapper" style="width:100%;">
+            <span class="wistia_embed wistia_async_z3ijjllb9g popover=true popoverAnimateThumbnail=true popoverContent=link videoFoam=true" style="display:inline;position:relative">
+                <a href="#">Market(r) in 2:45 &nbsp;<i class="fad fa-video-plus"></i></a>
+            </span>
+        </div>
+    </div><br>
     <ul style="width: 70%;" class="tabs__custom nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
             <a class="tab-link nav-link active" id="campaigns-tab" data-toggle="tab" href="#campaigns" role="tab" aria-controls="campaigns" aria-selected="true">
@@ -86,7 +95,7 @@
         </li>
         <li class="nav-item">
             <a class="tab-link nav-link render_competitors" id="competitors-tab" data-toggle="tab" href="#competitors" role="tab" aria-controls="competitors" aria-selected="false">
-                <span class="mobile-hide">Intel</span>
+                <span class="mobile-hide">Competitive Analysis</span>
                 <span class="mobile-show"><i class="fas fa-braille"></i></span>
             </a>
         </li>
@@ -96,15 +105,19 @@
                 <span class="mobile-show"><i class="now-ui-icons business_badge"></i></span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">
-                <span class="mobile-hide">Chat</span>
-                <span class="mobile-show"><i class="now-ui-icons ui-2_chat-round"></i></span>
-                <span style="display:none;" class="notification_count message_task_insight_count">
-                </span>
-            </a>
         </li>
+        {% if not demo %}
+            <li class="nav-item">
+                <a class="tab-link nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">
+                    <span class="mobile-hide">Chat</span>
+                    <span class="mobile-show"><i class="now-ui-icons ui-2_chat-round"></i></span>
+                    <span style="display:none;" class="notification_count message_task_insight_count">
+                    </span>
+                </a>
+            </li>
+        {% endif %}
     </ul>
+
 
 {% endmacro %}
 

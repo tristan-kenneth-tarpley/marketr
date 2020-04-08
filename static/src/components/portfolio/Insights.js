@@ -13,7 +13,7 @@ const styles = () => {
             font-weight: bold;
         }
         .shadow_insights {
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
             overflow-x: hidden;
         }
@@ -58,9 +58,9 @@ export default class Insights extends HTMLElement {
         ${this.css}
         <div class="shadow_insights">
                 ${this.state.data.map((ins, index)=>{
-                    let title = `From ${ins.admin} on ${ins.time}`
+                    let title = `From ${ins.admin.replace(/\\/g, '')} on ${ins.time}`
                     let uid = `${ins.time}_${index}`
-                    let body = urlify(ins.body.replace('/\/g', "-"))
+                    let body = urlify(ins.body.replace(/\\/g, ''))
 
                     /*html*/
                     return `
@@ -82,8 +82,8 @@ export default class Insights extends HTMLElement {
 
                 ${this.state.data.length == 0
                     ? `
-                    <p>Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
-                    <p>Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
+                    <p class="small_txt">Every week your Market(r) guide will send you detailed analysis on your portfolio performance. These insights are archived here!</p>
+                    <p class="small_txt">Head over to the chat tab if you have any questions and you'll get a response within an hour!</p>`
                     :  `    
                     <p class="signature x_small_txt">Are these insights helpful?  Send us a message via Chat to ask any follow-up questions or provide feedback for improvement.</p>
                     <p class="signature x_small_txt">Thanks! ~ Tristan | Founder </p>`

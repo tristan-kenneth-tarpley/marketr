@@ -4,7 +4,38 @@ const styles = () => {
     /*html*/
     return `
     <style>
+<<<<<<< HEAD
     @import url('/static/assets/css/app.css');
+=======
+    @import url('/static/assets/css/bootstrap.min.css');
+    @import url('/static/assets/css/styles.css');
+    @import url('/static/assets/icons/all.min.css');
+    @import url("https://cdn.jsdelivr.net/npm/vanilla-datatables@v1.6.16/dist/vanilla-dataTables.min.css");
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+    :host {
+        display:flex;
+        flex-direction: column;
+        justify-content:center;
+        height: 100%;
+    }
+    #listening i {
+        font-size: 1.3em;
+    }
+    #listening th {
+        font-size: 1em;
+    }
+    #listening tr {
+        height: 2em;
+    }
+    #listening td {
+        height: 3em;
+        vertical-align:middle;
+    }
+    #listening p {
+        line-height: .8rem;
+        margin: 0 !important;
+    }
+>>>>>>> master
     </style>
     `.trim()
   }
@@ -26,28 +57,40 @@ const styles = () => {
     core(){
         /*html*/
         return `
-        <h5 class="small_txt">What people are saying:</h5>
-        <div class="row">
-            <div class="col">
-                <table class="table" id="listening">
-                    <thead>
-                        <th>Title</th>
-                        <th>Link</th>
-                    </thead>
-                    <tbody>
-                        ${this.state.data.map(res=>{
-                            /*html*/
-                            return `
-                            <tr>
-                                <td><p>${res.title}</p></td>
-                                <td><a target="__blank" href="${res.url}">View</a></td>
-                            </tr>
-                            `
-                        }).join("")}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <h1 class="widget__title">Web listener</h1>
+        <p>Our engines took the competitors you gave us, found 20 more companies like them, figured out the common topics, and then found 100 relevant conversations around the web.</p>
+        <p>How to use this info?</p>
+        <ul class="inset">
+            <li>Read what people are saying about your competitors</li>
+            <li>Find users at the point that they're looking to buy something in your field</li>
+            <li>Chime in when people are asking for recommendations</li>
+            <li>Let potential customers cry on your shoulder when your competitor hurts them!</li>
+            <li>Not seeing enough relevant posts? Try <a href="/competitors?splash=False">changing your competitors</a>.</li>
+        </ul>
+        <table class="table table-borderless table-striped" id="listening">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${this.state.data.map(res=>{
+                    let d = new Date(res.created_at * 1000).toLocaleDateString("en-US")
+                    /*html*/
+                    return `
+                    <tr>
+                        <td><p>${res.title}</p></td>
+                        <td><p>${d}</p></td>
+                        <td><a target="__blank" href="${res.url}"><i class="fas fa-sign-out-alt"></i></a></td>
+                    </tr>
+                    `
+                }).join("")}
+            </tbody>
+        </table>
+
+
         `
     }
 

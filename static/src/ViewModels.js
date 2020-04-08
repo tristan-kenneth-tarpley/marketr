@@ -304,9 +304,25 @@ export class CoreViewModels {
 
             if($this.prop('checked')) {
                 
-                let val = $this.parent().parent().parent().next().html().trim() //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
-                val = val.slice(19,(val.length-4))
-                console.log(val)
+                let val = event.currentTarget.dataset.task //.replace(/^\s+/g, '').replace(/\s+$/g, '');;
+                if (val == 'To get your Market(r) opportunities and weekly recommendations, please give admin access to analytics@marketr.life for your various advertising channels.  e.g. Google Analytics, Facebook, Amazon, etc.') {
+                    fetch('/api/account_access_added', {
+                        method: 'POST',
+                        headers : new Headers({
+                            "content-type": "application/json"
+                        }),
+                        body: JSON.stringify({
+                            customer_id: tasks.customer_id
+                        })
+                    })
+                    .then(()=>{
+                        setTimeout(()=>{
+                            window.history.pushState('', '', '?first_sync=True');
+                            window.location.reload()
+                        }, 600)
+                        
+                    })
+                }
                 tasks.complete(val)
                 complete_task_view($this)
 
@@ -355,21 +371,24 @@ export class AuditRequest {
         this.init = true
     }
     ready(){
-        document.querySelector("#audit_submit").addEventListener('click', e=>{
-            const website = document.querySelector("#audit_url").value
-            const email = document.querySelector("#audit_email").value
-            const data = {
-                'url': website,
-                'email': email
-            }
-            if (website != '' && email != ""){
-                $.post('/audit_request', data, ()=>{
-                    document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
-                    document.querySelector('#audit_gif').style.display = 'none'
-                    window.location.replace("https://marketr.life/thanks/audit")
-                })
-            }
-        })
+        let sub_btn = document.querySelector("#audit_submit")
+        if (sub_btn) {
+            sub_btn.addEventListener('click', e=>{
+                const website = document.querySelector("#audit_url").value
+                const email = document.querySelector("#audit_email").value
+                const data = {
+                    'url': website,
+                    'email': email
+                }
+                if (website != '' && email != ""){
+                    $.post('/audit_request', data, ()=>{
+                        document.querySelector('#audit_section').innerHTML = "<div style='width:100%;text-align:center;'><p><strong>Got it!</strong><br>You will have a link to your audit emailed to you within the next 12 hours.</p></div>"
+                        document.querySelector('#audit_gif').style.display = 'none'
+                        window.location.replace("https://marketr.life/thanks/audit")
+                    })
+                }
+            })
+        }
     }
 }
 

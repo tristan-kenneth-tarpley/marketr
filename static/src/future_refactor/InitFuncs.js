@@ -1,6 +1,6 @@
 import {perc_container} from '/static/src/components/UI_elements.js'
 
-const get_account_availability = email => {
+export const get_account_availability = email => {
 	const get_account_availability_handler = (data) => {
 		let target = $("#new_email")
 		if (data == 'False') {
@@ -30,7 +30,7 @@ const get_account_availability = email => {
 	})
 } 
 
-const platform_row = (name, index) => {	
+export const platform_row = (name, index) => {	
 	const tile = (title) => {
 		return `
 		<div class="table-responsive hover_box col-lg-5 col-md-">
@@ -74,7 +74,7 @@ const platform_row = (name, index) => {
 }
 
 
-const get_container = title => {
+export const get_container = title => {
 	const container_item = (name, id, page) => {
 		let base_url = "/competitors/company/"
 		let link;
@@ -125,7 +125,7 @@ const get_container = title => {
 	})
 }
 
-const get_account_reps = id => {
+export const get_account_reps = id => {
 	const account_reps_handler = (data) => {
 		data = JSON.parse(data)
 	}
@@ -135,7 +135,7 @@ const get_account_reps = id => {
 	})
 } 	
 
-const InputMethods = class {
+export const InputMethods = class {
 	populate_inputs (data, key) {
 		$(`select[name=${key}]`).val(data[0][key]).digits()
 		$(`input[name=${key}]`).val(data[0][key]).digits()
@@ -213,7 +213,7 @@ const InputMethods = class {
 	} //end load_sales_cycle
 }
 
-const handle_past_inputs = class {
+export const handle_past_inputs = class {
 
 	constructor(data, url_path, debug) {
 		function isJson(str) {
@@ -277,7 +277,7 @@ const handle_past_inputs = class {
 }
 
 
-const stage_interactions = () => {
+export const stage_interactions = () => {
 
 	const handle_last_in_left = () => {
 		alert('last of left')
@@ -361,18 +361,109 @@ const stage_interactions = () => {
 
 }
 
-export default class InitFuncs {
+export class InitFuncs {
 
 	container(title){
 		get_container(title)
 	}
 
-	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
-		
+	TypeFormStyle() {
+		const button = document.querySelector('input[name=submit_button]')
+		button.disabled = true
 
+
+
+		let node_list = document.querySelectorAll('.intake_q')
+		let group_len = parseInt(node_list[node_list.length-1].dataset.count)
+		let scroll_ind = document.createElement('div')
+		scroll_ind.classList.add('scroll_ind_parent')
+
+
+
+		document.body.appendChild(scroll_ind)
+		for (let i = 0; i<group_len + 1;i++) {
+			let dot = document.createElement('div')
+			dot.classList.add('scroll_ind_inner')
+			scroll_ind.appendChild(dot)
+		}
+
+		node_list.forEach(q => {
+
+			let count = parseInt(q.dataset.count)
+			let next = document.querySelectorAll(`.intake_q[data-count="${count + 1}"]`)
+			let next_next = document.querySelectorAll(`.intake_q[data-count="${count + 2}"]`)
+			
+			let indicator = document.querySelectorAll('.scroll_ind_parent div')
+			indicator[0].classList.add('scroll__big')
+			if (count > 0) {
+				q.classList.add('_hide')
+				q.style.visibility = 'hidden'
+			}
+			
+			if (q == document.querySelectorAll(`.intake_q[data-count="${count}"]`).item(0)) {
+				const group_counter = document.createElement('div')
+				group_counter.innerHTML = `<p class="intake_q_count">${count + 1} of ${group_len + 1}</p>`
+				q.prepend(group_counter);
+			} else {
+				const group_counter = document.createElement('div')
+				group_counter.innerHTML = `<br>`
+				q.prepend(group_counter);
+			}
+
+
+
+			const timeout_dur = 500
+			let timeout;
+			const run_next = (scroll=false) => {
+				clearTimeout(timeout)
+				timeout = setTimeout(()=>{
+					try {
+						indicator[count].classList.remove('scroll__big')
+						indicator[count + 1].classList.add('scroll__big')
+					} catch(e){}
+
+					const update = (el, scroll=true) => {
+						el.style.visibility = 'visible'
+						el.classList.add('_show');
+						el.classList.remove('_hide');
+						if (scroll) document.querySelector(`#group-${el.dataset.count}`).scrollIntoView();//location.hash = `#group-${el.dataset.count}`
+					}
+					next.forEach(el=> update(el, scroll))
+					
+					if (!next[0].querySelector('input') && next_next.length > 0) {
+						setTimeout(()=>{
+							next_next.forEach(el=>update(el, false))
+							try {
+								indicator[count + 1].classList.remove('scroll__big')
+								indicator[count + 2].classList.add('scroll__big')
+							} catch(e) {}
+						}, timeout_dur)
+					}
+				}, timeout_dur)
+			}
+
+
+
+
+			const show_btn = () => button.disabled = false
+			const parent = q.parentNode.querySelectorAll(`.intake_q[data-count="${count}"]`)
+			if (count < group_len) {
+				if(q == parent[parent.length-1]) {
+					let scroll = q.querySelector('.tiles-row') ? true : false
+					scroll ? q.addEventListener('click', e=>run_next(scroll)) : q.addEventListener('keyup', e=>run_next(scroll))
+				}
+			} else {
+				q.addEventListener('click', e=>show_btn())
+				q.addEventListener('keyup', e=>show_btn())
+			}
+		})
+	}
+
+	allIntake(params, url_path, disallowed_urls, debug, helpTimer){
+		let input_clicked;
 		const hover_box = () => {
 			$(".in_box").click(function(event){
-				event.stopPropagation()
+				//event.stopPropagation()
 				if (!$(this).parent().parent().parent().parent().parent().parent().hasClass('hover_box_selected')) {
 					$(this).parent().parent().parent().parent().parent().parent().addClass('hover_box_selected')
 				}
@@ -397,7 +488,7 @@ export default class InitFuncs {
 			})
 
 			$('.hover_box').click(function(){
-				var input_clicked = false
+				input_clicked = false
 				var in_box = $(this).find("input")
 
 				//toggle selected
@@ -572,6 +663,38 @@ export default class InitFuncs {
 	}
 
 	create_account() {
+		document.querySelectorAll('input').forEach(inp=>{
+			inp.style.border = '2px solid #e5e5e5'
+			inp.style.borderRadius = '6px'
+			inp.addEventListener('focus', e=>{
+				e.currentTarget.style.border = '2px solid #62cde0'
+			})
+		})
+		document.querySelector('#content-ready').style.width = '50%'
+		document.querySelector('.mCont').style.width = '100%'
+		document.querySelectorAll('.signup_order').forEach(ds=>{
+			let count = parseInt(ds.dataset.show)
+			if (count > 0) ds.style.visibility = 'hidden'
+
+			let next = document.querySelector(`.signup_order[data-show="${count + 1}"]`)
+			ds.addEventListener('keyup', e=>{
+				setTimeout(()=>{
+					next.style.visibility = 'visible'
+					next.classList.add('_show')
+					next.classList.remove('_hide')
+				}, 600)
+			})
+		})
+
+		setTimeout(()=>{
+			let target = document.querySelector('.signup_order[data-show="1"]')
+			target.style.visibility = 'visible'
+			target.classList.add('_show');
+			target.classList.remove('_hide');
+		}, 1000)
+
+
+
 		$('.create_button').prop('disabled', true);
 		function delay(callback, ms) {
 			var timer = 0;

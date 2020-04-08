@@ -53,6 +53,7 @@ export default class AdminRecs extends HTMLElement {
         this.state = {
             data: null
         }
+        this.has_price_tag = false
 
         this.observer = new MutationObserver(mutations=>{
             mutations.forEach(mutation => {
@@ -70,10 +71,20 @@ export default class AdminRecs extends HTMLElement {
         const el = `
         <form method="POST" id="new_rec">
             <h5 for="rec_title widget__title">Recommendation title</h5>
+            <input name="rec_title" type="text" class="form-control" placeholder="Recommendation title">
+
+            <p style="margin:1em 0 0;" for="price_tag_t_f">
+                Is there a price tag?
+                <input type="checkbox" name="price_tag_t_f">    
+            </p>
+
             <div class="input-group">
-                <input name="rec_title" type="text" class="form-control" placeholder="Recommendation title">
-                <span class="form-control-border"></span>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input disabled name="price_total" type="number" value="0" class="form-control" placeholder="$0">
             </div>
+            
             <h5 for="rec_body widget__title">Recommendation</h5>
             <textarea type="text" id="rec_body" name="rec_body" class="form-control" placeholder="Recommendation body"></textarea>
             
@@ -107,8 +118,14 @@ export default class AdminRecs extends HTMLElement {
     new_rec(form){
         const title = form.get('rec_title')
         const body = form.get('rec_body')
-        if (!title) return false
-        if (!body) return false
+        const price = this.price_tag ? form.get('price_total') : null
+        if (!title || !body) {
+            this.has_price_tag = false
+            this.shadow.querySelector('input[name="price_tag_t_f"]').checked = false
+            this.shadow.querySelector('input[name="price_total"]').disabled = true
+            alert("All fields must be filled out")
+            return false
+        }
 
         fetch('/api/recommendations', {
             method: 'POST',
@@ -120,7 +137,8 @@ export default class AdminRecs extends HTMLElement {
                 customer_id: this.customer_id,
                 title,
                 body,
-                outstanding: true
+                outstanding: true,
+                price 
             })
         })
             .then((res) => res.json())
@@ -129,8 +147,18 @@ export default class AdminRecs extends HTMLElement {
     }
 
     handlers(el){
-        const form = el.querySelector('#new_rec')
+        el.querySelector('input[name="price_tag_t_f"]').addEventListener('change', e=>{
+            let total = el.querySelector('input[name="price_total"]')
+            let disabled = total.disabled == false ? true : false
+            total.disabled = disabled
+            this.has_price_tag = disabled ? false : true
+        })
 
+        el.querySelector('input[name="price_total"]').addEventListener('keyup', e=>{
+            this.price_tag = e.currentTarget.value
+        })
+
+        const form = el.querySelector('#new_rec')
         form.onsubmit = ev => {
             ev.preventDefault()
             this.new_rec(new FormData(form))
@@ -141,6 +169,8 @@ export default class AdminRecs extends HTMLElement {
 
     recommendation(rec){
         const el = new Rec_shell
+
+        el.setAttribute('price', rec.price)
         el.setAttribute('rec_id', rec.rec_id)
         el.setAttribute('admin-assigned', this.admin_id)
         el.setAttribute('customer_id', this.customer_id)

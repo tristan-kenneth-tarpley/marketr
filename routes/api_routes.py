@@ -44,6 +44,19 @@ from selenium.webdriver.firefox.options import Options
 from services.MarketrIndex import MarketrIndex, AdIndex, AdGroupIndex, CampaignIndex, BucketIndex, PortfolioIndex, compile_master
 from services.OpportunitiesService import compile_topics
 
+@app.route('/api/account_access_added', methods=['POST'])
+def account_access_added():
+    req = request.get_json()
+    db.execute("UPDATE customer_basic SET data_synced = 1 WHERE id = ?", False, (req.get('customer_id'),), commit=True)
+    google = GoogleChatService()
+    google.account_access_added(customer_id=req.get('customer_id'), company_name=session['company_name'])
+    return 'hi'
+
+@app.route('/api/get_all_account_users', methods=['GET'])
+def get_all_account_users():
+    returned = UserService.get_all_account_users(session['user'])
+    return json.dumps(returned)
+
 @app.route('/api/products', methods=['GET'])
 def get_personas():
     customer_id = request.args.get('customer_id')
@@ -126,6 +139,7 @@ def complete_task():
         user = 'customer' if session['customer'] == True else 'admin'
     )
 
+    
     tasks.complete_task(
         request.form.get('task')
     )
@@ -232,15 +246,47 @@ def rewards():
 @app.route('/api/spend_allocation', methods=['POST'])
 def spend_allocation():
     req = request.get_json()
+    """
+    biz_model types:
+        Professional Services
+        Manual Services
+        Media Provider
+        Commission / Rev Share
+        Tangible Products
+        Digital Products
+        SaaS
+    """
+
+    try:
+        online_perc = int(req.get('online_perc'))
+    except:
+        online_perc = 0
+
+    def get_sales_model(biz_model, online_perc, selling_to):
+        if biz_model == 'SaaS':
+            returned = 'saas'
+        elif biz_model == 'Digital Products':
+            returned = 'ecommerce'
+        elif biz_model == 'Tangible Products' and online_perc >= 60 and (selling_to == 'b2c' or selling_to == 'c2c'):
+            returned = 'ecommerce'
+        else:
+            returned = 'other'
+
+        return returned
+
+    
+    sales_model = get_sales_model(req.get('biz_model'), online_perc, req.get('selling_to').lower())
+
     revenue = req.get('revenue') if req.get('revenue') and req.get('revenue') > 100000 else 100000
-    rec = GetRec(revenue, req.get('stage'), req.get('type'), 'saas', req.get('growth_needs'))
+    rec = GetRec(revenue, req.get('stage'), req.get('type'), sales_model, req.get('growth_needs'))
     budget = rec.get()
 
     viewed_budget = req.get('viewed_budget')
-    if viewed_budget and viewed_budget != 'None':
+    if viewed_budget is not None and viewed_budget != 'None':
         input_budget = float(str(viewed_budget).replace(",", ""))
     else:
         input_budget = budget
+
 
     user = req.get('customer_id')
     
@@ -251,7 +297,7 @@ def spend_allocation():
     )
 
     allocation = json.loads(spend.campaign_allocation())
-    print(allocation)
+
     returned = {
         'budget': input_budget,
         'allocation': allocation,
@@ -259,16 +305,6 @@ def spend_allocation():
     }
     return json.dumps(returned)
 
-# @app.route('/api/portfolio_metrics', methods=['POST'])
-# def portfolio_metrics():
-#     req = request.get_json()
-#     orm = GoogleORM(req.get('company_name'))
-#     df = orm.agg()
-
-#     portfolio = Portfolio(agg=df)
-#     returned = portfolio.group()
-
-#     return returned
 
 @app.route('/api/portfolio/trend_line', methods=['POST'])
 def portfolio_trends():
@@ -292,20 +328,27 @@ def get_achievements():
 def new_recommendation():
 
     req = request.get_json()
-
     service = RecommendationService(customer_id=req.get('customer_id'), admin_id=req.get('admin_id'))
 
     title = req.get('title')
     body = req.get('body')
+    price = req.get('price')
 
     if title is not None and body is not None:
-        service.new(title=title, body=body)
+        service.new(title=title, body=body, notification_obj=EmailService(to=session['email']), amount=price)
 
     if req.get('outstanding') and req.get('outstanding') == True:
         return service.get_all_outstanding()
     else:
         return service.get_all()
 
+
+@app.route('/api/historical_recs', methods=['POST'])
+def historical_recs():
+    req = request.get_json()
+    service = RecommendationService(customer_id=req.get('customer_id'))
+
+    return service.get_historical()
     
 @app.route('/api/outstanding_recs', methods=['POST'])
 def outstanding_recs():
@@ -327,12 +370,18 @@ def delete_rec():
 def approve_rec():
     try: 
         req = request.get_json()
+
         rec = Recommendation(customer_id=req.get('customer_id'), rec_id=req.get('rec_id'))
         rec.accept()
         result = 'success'
 
+        # if req.get('price'):
+        #     payments = PaymentsService(session['email'], session['stripe_id'])
+        #     payments.add_balance(req.get('price'), wallet=False)
+        
         google = GoogleChatService()
-        google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'])
+        google.rec_accepted(rec_id=req.get('rec_id'), user=req.get('customer_id'), company=session['company_name'], email=session['email'], price=req.get('price'))
+        
     except Exception as e:
         print(e)
         result = 'failure'
@@ -356,17 +405,6 @@ def dismiss_rec():
     return json.dumps({'result': result})
 
 
-# intel
-@app.route('/api/intel/listener', methods=['POST'])
-def web_listen():
-    req = request.get_json()
-    listener = Listener(req.get('customer_id'), req.get('keywords'))
-
-    due, result = listener.is_due()
-    res = listener.listen() if due else result
-
-    return res
-
 
 
 #views
@@ -382,12 +420,30 @@ def tactic_of_day():
     return render_template('macros/components/tactics.html', base=tactic, tasks=tasks)
 
 
+# intel
+@app.route('/api/intel/listener', methods=['POST'])
+def web_listen():
+    req = request.get_json()
+    listener = Listener(req.get('customer_id'), req.get('keywords'))
+
+    due, result = listener.is_due()
+    res = listener.listen() if due else result
+
+    return res
+
 @app.route('/api/competitive_intel', methods=['POST'])
 def get_competitors():
     req = request.get_json()
     comp = CompetitorService(req.get("customer_id"))
 
-    return json.dumps(comp.competitor_card())
+    due, result = comp.is_due()
+    if due:
+        result = json.dumps(comp.competitor_card())
+        comp.save(result)
+    else:
+        result = result
+
+    return result
 
 @app.route('/api/insights', methods=['POST'])
 def insights():
@@ -463,32 +519,42 @@ def last_7_spend():
 def compile_master_index():
     req = request.get_json()
     demo = True if req.get('customer_id') == '181' else False
-    date_range = req.get('date_range')
-    ltv = float(req.get('ltv').replace(",", ""))
+    start_date = req.get('start_date')
+    end_date = req.get('end_date')
+    ltv = float(req.get('ltv').replace(",", "")) if not demo else 200.00
     company_name = req.get('company_name')
     run_social = req.get('facebook')
     run_search = req.get('google')
+    get_opps = req.get('get_opps')
 
-    dfs = compile_data_view(
-        run_social=run_social,
-        run_search=run_search,
-        company_name=company_name,
-        date_range=date_range,
-        demo=demo,
-        ltv=ltv
-    )
+    try:
+        dfs = compile_data_view(
+            run_social=run_social,
+            run_search=run_search,
+            company_name=company_name,
+            start_date=start_date,
+            end_date=end_date,
+            demo=demo,
+            ltv=ltv,
+            get_opps=get_opps
+        )
 
-    search_df = dfs.get('search_df')
-    social_df = dfs.get('social_df')
-    opps = dfs.get('topic_opps')
+        search_df = dfs.get('search_df')
+        social_df = dfs.get('social_df')
+        opps = dfs.get('topic_opps')
+        compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
+        index = MarketrIndex(ltv)
+        lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-    compiled = compile_master(ltv=ltv, search_df=search_df, social_df=social_df)
-    index = MarketrIndex(ltv)
-    lcr = index.lcr(compiled.get('total_conversions'), compiled.get('total_clicks'))
 
-    if opps is not None:
-        topics = compile_topics(opps, index, lcr, ltv)
-    else:
+        if opps is not None:
+            topics = compile_topics(opps, index, lcr, ltv)
+        else:
+            topics = None
+            
+    except IndexError as e:
+        print(e)
+        compiled = None
         topics = None
 
     returned = json.dumps({

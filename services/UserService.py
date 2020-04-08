@@ -304,6 +304,8 @@ class UserService:
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1, almost_free_binary = null WHERE id = ?"
 			#payments = PaymentsService('test@test.com')
 			#payments.delete_subscriptions(sub_id=plan_id, customer_id=customer_id)
+		elif plan_table[plan_id] == 'analytics':
+			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1 WHERE id = ?"
 		elif plan_table[plan_id] == 'ad_binary':
 			query = f"UPDATE customer_basic SET {plan_table[plan_id]} = 1, current_plan = 1, analytics = null WHERE id = ?"
 		else:
@@ -313,6 +315,14 @@ class UserService:
 	def UpdateStripeId(email, stripe_id):
 		query = "UPDATE customer_basic SET stripe_id = ? WHERE email = ?"
 		db.execute(query, False, (stripe_id, email), commit=True)
+
+	def CreateSecondaryUser(first_name, last_name, email, password, customer_id):
+		password = encrypt_password(password)
+		query = f"""INSERT INTO secondary_users (first_name, last_name, email, password, customer_id)
+					VALUES (?, ?, ?, ?, ?)
+				"""
+
+		db.execute(query, False, (first_name, last_name, email, password, customer_id), commit=True)
 
 	def CreateCustomer(email, password, form=None, app=None):
 		password = encrypt_password(password)
@@ -385,11 +395,30 @@ class UserService:
 		init_query = "EXEC init_profile_after_purchase @date = ?, @customer_id = ?"
 		db.execute(init_query, False, (time, user), commit=True)
 
+	def get_all_account_users(customer_id):
+		query = """select first_name, last_name, email from customer_basic
+					where id = ?
+					union
+					select first_name, last_name, email from secondary_users
+					where customer_id = ?"""
+
+		data, cursor = db.execute(query, True, (customer_id, customer_id))
+		data = cursor.fetchall()
+		returned = [{
+			'first_name': user[0],
+			'last_name': user[1],
+			'email': user[2]
+		} for user in data]
+
+		return returned
 
 	def customer_login(email, password):
 		try:   
 			tup = (email,)
-			query = "SELECT email, password, ID, email_confirmed, first_name, last_name, last_logged_in, stripe_id, company_name FROM dbo.customer_basic WHERE email = ?"
+			query = """
+				select * from all_co_users(?)
+				order by id desc
+			"""
 			data, cursor = db.execute(query, True, tup)
 			data = cursor.fetchall()
 			cursor.close()
@@ -496,12 +525,26 @@ class IntakeService:
 		# else: 
 		# 	tup = (self.id, perc, 'awareness')
 		if self.onboarding_complete == False:
-			tup = (perc, self.id)
-			query = """
-					UPDATE customer_basic SET perc_complete = ? where id = ?
-					"""
+			if perc:
+				tup = (perc, self.id)
+				query = """
+						UPDATE customer_basic
+							SET perc_complete = ? where id = ?
+						"""
 
-			db.execute(query, False, tup, commit=True)
+				db.execute(query, False, tup, commit=True)
+		else:
+			if not perc:
+				tup = (self.id, self.id)
+				query = """
+						UPDATE customer_basic
+							SET perc_complete = (
+								select (perc_complete + 10)
+								from customer_basic where id = ?
+							) where id = ?
+						"""
+
+				db.execute(query, False, tup, commit=True)
 	
 	def skip(self, perc):
 		self.perc_complete(perc)
@@ -590,12 +633,10 @@ class IntakeService:
 		query += ' WHERE customer_id = %s' % (self.id)
 		vals = vals + vals
 
-		print(query)
-
 		db.execute(query, False, tuple(vals), commit=True)
 
 	def product(self, data):
-
+		self.perc_complete(None)
 		vals, keys = get_args_from_form(data)
 		product_list = data['product']
 
@@ -620,6 +661,7 @@ class IntakeService:
 			db.execute(p_query, False, tuple(p_val), commit=True)
 
 	def product_2(self, data, view_id):
+		self.perc_complete(None)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='product_list', keys=keys, vals=vals)
@@ -629,6 +671,7 @@ class IntakeService:
 		db.execute(query, False, tuple(vals), commit=True)
 
 	def salescycle(self, data):
+		self.perc_complete(None)
 
 		def Merge(dict1, dict2):
 			del dict1['csrf_token']
@@ -686,6 +729,7 @@ class IntakeService:
 					db.execute(query, False, tuple(stage_tup), commit=True)
 
 	def goals(self, data):
+		self.perc_complete(None)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='goals', keys=keys, vals=vals)
@@ -697,6 +741,7 @@ class IntakeService:
 		db.execute(query, False, vals, commit=True)
 
 	def history(self, data):
+		self.perc_complete(None)
 		
 		vals, keys = get_args_from_form(data)
 
@@ -713,6 +758,7 @@ class IntakeService:
 		db.execute(query, False, (self.id,), commit=True)
 
 	def platforms(self, data):
+		self.perc_complete(None)
 		for i in range(int(data.get("platform_length"))):
 
 			keys = ['platform_name', 'currently_using', 'results']
@@ -728,6 +774,7 @@ class IntakeService:
 			db.execute(query, False, vals, commit=True)
 
 	def past(self, data):
+		self.perc_complete(None)
 		vals, keys = get_args_from_form(data)
 
 		dbactions = DBActions(owner_id=self.id, table='past', keys=keys, vals=vals)

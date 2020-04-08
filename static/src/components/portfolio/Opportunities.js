@@ -10,7 +10,7 @@ const _score_color = (val) => {
   return _class
 }
 const _score = (val) => {
-  let _class = _score_color(val)
+  let _class = ''//_score_color(val)
   return `<h1 class="${_class} widget__value">${number(val)}</h1>`
 }
 
@@ -27,11 +27,13 @@ const styles = (attrs) => {
           overflow-x: hidden;
       }
       .opp_row {
-        border-bottom: 1px solid #eee !important;
-        margin-bottom: 4%;
+        border-bottom: 1px solid rgba(0,0,0,.1) !important;
         display: flex;
         align-items: center;
-        padding: 1% 5%;
+        padding: 1% 5% 1% 0;
+      }
+      .opp_row p {
+        margin-bottom: 0;
       }
       table .widget__title {
         margin-bottom: 0 !important;
@@ -43,6 +45,9 @@ const styles = (attrs) => {
       }
       td span {
         font-size: 8pt;
+      }
+      h1.small {
+        margin-bottom: 0 !important;
       }
   </style>
   `.trim()
@@ -61,22 +66,23 @@ export default class Opportunities extends HTMLElement {
   }
 
   collapsed_view() {
+    // quality score opp score
+    // impression share opp score
+    /*html*/
     return `
-    <div class="row">
+    <div class="row row_cancel">
       <div class="col-lg-6 col-md-6 col-sm-6 col-6">
-        <h1 class="widget__title small">Topic</h1>
+        <h1 class="widget__title small">Keyword</h1>
       </div>
-      <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6 ">
-        <h1 style="justify-content: flex-end;" class="widget__title small">Opportunity score</h1>
+      <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6">
+        <h1 style="justify-content: flex-end;" class="widget__title small">Total Opportunity score (out of 10)</h1>
       </div>
     </div>
 
     <div class="opp_container">
-      ${this.state.data.aggregate.map(top =>{
-        let {opp_score, cleaned_keywords} = top
+      ${this.state.data.raw.map(top =>{
         let returned = ''
-
-        if (opp_score > 0) returned += this.row(cleaned_keywords, opp_score)
+        if (top.opp_score > 0) returned += this.row(top)
         else returned += ''
 
         return returned
@@ -170,15 +176,42 @@ export default class Opportunities extends HTMLElement {
     return options
   }
 
-  row(keyword, score) {
+  row(row) {
+    // const arr = [
+    //   {
+    //     title: "quality score",
+    //     value: row.qs_opp_score
+    //   },
+    //   {
+    //     title: "Impression share",
+    //     value: row.is_opp_score
+    //   },
+    //   {
+    //     title: "Lost impression share",
+    //     value: row.low_is_opp_score
+    //   },
+    //   {
+    //     title: "Top impression share",
+    //     value: row.top_is_opp_score
+    //   },
+    //   {
+    //     title: "Lost top impression share",
+    //     value: row.searchlosttopisrank
+    //   }
+    // // ]
+    
+    // let test = Object.keys( arr ).map(function ( value ) { return arr[value]; });
+    // console.log(Math.max.apply(null, test))
+
+    const {keyword, opp_score} = row
     /*html*/
     return `
       <div class="opp_row row">
-        <div class="col-lg-6 col-md-6 col-sm-6">
-          <span>${keyword}</span>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+          <p class="small_txt">${keyword}</p>
         </div>
-        <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6">
-          ${_score(score)}
+        <div style="text-align:right;" class="col-lg-6 col-md-6 col-sm-6 col-6">
+          ${_score(opp_score)}
         </div>
       </div>
     `
