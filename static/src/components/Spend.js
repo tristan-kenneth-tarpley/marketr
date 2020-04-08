@@ -392,20 +392,6 @@ export default class AdSpend extends HTMLElement {
         new Chart(ctx, {type: 'pie', data: chart_data, options});
     }
 
-    next_steps() {
-        /*html*/
-        return (`
-            <div class="next_steps">        
-                <div class="inner">
-                    <h1>You're 95% there.
-                        <span>Just 2 more clicks to get your superpowers.</span>
-                    </h1>
-                    <a style="box-shadow:none !important;" href="/pricing?quantity=${this.num_campaigns}" class="btn btn-primary">I want to see what's next</a>
-                </div>
-                
-            </div>
-        `)
-    }
 
     shell(){
         /*html*/
@@ -414,7 +400,8 @@ export default class AdSpend extends HTMLElement {
             `
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12">
-                    <p class="center_it"><strong>How to spend that ${currency_rounded(this.viewed_budget)}</strong></p>
+                    <p style="margin-bottom:0;" class="center_it"><strong>How to spend that ${currency_rounded(this.viewed_budget)}</strong></p>
+                    <p class="center_it">Spread out across ${this.num_campaigns} campaigns</p>
                     <p style="width:70%;margin: 0 auto;">We put together an advertising plan for you. Each of these are plays from our playbook that we thought would be especially useful for you.</p>
                     <br>
                     <div style="margin:0 auto;text-align:center;">
@@ -428,14 +415,6 @@ export default class AdSpend extends HTMLElement {
                             : 'allocation_toggle-inactive'}">$</button>
                     </div>
                     <div id="stage_breakdown" class="inset">
-                    </div>
-                    <div class="separator"></div>
-                    <div id="summary">
-                        <div class="center_it row row_cancel">
-                            <div class="col-lg-12"><h1 class="widget__title">${this.company_name}'s AI-created marketing plan:</h1></div>
-                            <div class="col-lg-6"><h1 class='widget__value'>${this.num_campaigns} campaigns</h1></div>
-                            <div class="col-lg-6"><h1 class='widget__value'>${currency_rounded(this.viewed_budget)}/month in advertising spend</h1> ${this.change_budget_button()}</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -546,11 +525,6 @@ export default class AdSpend extends HTMLElement {
                     </div>
                 </div>
                 
-
-                ${!this.active_plan || this.demo
-                    ? this.next_steps()
-                    : ``
-                }
             `
             return _el
         }
@@ -624,6 +598,9 @@ export default class AdSpend extends HTMLElement {
             .then((data) => this.data = data )
             .then(()=>this.num_campaigns = this.data.allocation.map(item => item.num_campaigns).reduce((prev, next) => prev + next))
             .then(()=> this.compile() )
+            .then(()=>{
+                document.querySelector("#destination_url").href = `/pricing?quantity=${this.num_campaigns}`
+            })
             .catch((err)=>console.log(err))
     }
 

@@ -13358,3 +13358,46 @@ li {
 .switch--6 .switch__design:active::before {
   width: calc(var(--thumb-size) + .4rem);
 }
+
+
+
+
+
+.next_steps {
+  background: var(--nav-color);
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 20px;
+  z-index: 10;
+  margin: 30px 30px 0;
+  border-radius: 4px;
+}
+.next_steps .inner {
+  padding: 8px 20px 8px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+}
+.next_steps h1 {
+  font-size: 1em;
+  margin-bottom: 0;
+  color: white;
+}
+.next_steps .btn {
+  color: #292940;
+  background-color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 15px;
+  font-size: 14px;
+  text-decoration: none;
+}
+.next_steps h1 span {
+  font-size: 14px;
+  color: #B8B8D9;
+}
