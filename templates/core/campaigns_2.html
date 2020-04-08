@@ -143,9 +143,9 @@
 </div>
 {% endif %}
 
-
 {% set base = page.data['core']['core'][0] %}
-{% if not "{{base.get('current_plan')}}" %}
+
+{% if not base.get('current_plan') %}
 <ad-spend
     company_name="{{page.data['core']['core'][0]['company_name']}}"
     customer_id="{{page.data['core']['core'][0]['id']}}"
