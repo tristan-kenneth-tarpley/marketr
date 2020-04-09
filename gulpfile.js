@@ -5,15 +5,23 @@ var cssMin = require('gulp-css')
 
 gulp.task('css', function() {
   gulp.src([
-    '/static/assets/css/styles.css',
-    '/static/assets/css/jquery-ui.css',
-    '/static/assets/template-js/autocomplete/easy-autocomplete.min.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+    'static/assets/css/src/imports.css',
+    'static/assets/css/src/bootstrap.min.css',
+    'static/assets/css/src/font-awesome.min.css',
+    'static/assets/css/src/all.min.css',
+    'static/assets/css/src/easy-autocomplete.min.css',
+    'static/assets/css/src/vanilla-dataTables.min.css',
+    'static/assets/css/src/ranger.min.css',
+    'static/assets/css/src/fonts.css',
+    'static/assets/css/src/styles.css',
   ])
-    .pipe(concat('app.css'))
-    .pipe(cssMin())
-    .pipe(gulp.dest('/static/assets/css'))
+    .pipe(concat('styles.min.css'))
+    // .pipe(cssMin())
+    .pipe(gulp.dest('static/assets/css/dist'))
 });
 
 gulp.task('default', ['css'])
+
+
+
 

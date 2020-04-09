@@ -5,9 +5,7 @@ const styles = () => {
     /*html*/
     return `
     <style>
-        @import url('/static/assets/css/bootstrap.min.css');
-        @import url('/static/assets/css/styles.css');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+        @import url('/static/assets/css/dist/styles.min.css');
 
         .rec-container {
             padding: .75em 1.5em;
@@ -170,6 +168,9 @@ export default class Recommendations extends HTMLElement {
                     })
                         .then(res=>res.json())
                         .then(res=> this.state.data = res)
+                        .then(()=>{
+                            console.log(this.customer_id)
+                        })
                 } else this.state.data = this.recs_json ? this.recs_json : []
             }
         }

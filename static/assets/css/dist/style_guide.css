@@ -1,0 +1,72 @@
+:root {
+
+	/* colors */
+  --primary: #62cde0 !important;
+  --secondary: #ca7d66 !important;
+  --plum: #CB2780 !important;
+  --body-copy: rgb(87,102,126) !important;
+  --panel-bg: #F7F7FC !important;
+  --label-color: rgba(87,102,126, .9) !important;
+  --darker-blue: #09A1BC !important;
+
+  /* chat */
+  --client-chat: rgb(206, 214, 223) !important;
+  --admin-chat: var(--primary) !important;
+  --label_margin: -30px !important;
+
+  	/* buttons */
+  --btn-primary: #ca7d66 !important;
+  --btn-secondary: #62cde0 !important;
+  --btn-outline-thickness: 2px !important;
+  --btn-outline-padding: 10px 22px !important;
+  --btn-danger: #FF3636 !important;
+
+	/* fonts */
+  --primary-font: "Montserrat", sans-serif !important;
+  --secondary-font: "Montserrat", "Helvetica Neue", Arial, sans-serif !important;
+  --alt-font: "Pacifico", sans-serif !important;
+  --body-color: #333333 !important;
+
+    /* nav styles */
+  --nav-shadow: -3px 0 5px 0 #555 !important;
+  --sidebar-width: 75px !important;
+  --left-nav: #fff !important;
+  --nav-color: #06112f !important;
+  --top-nav-gradient: linear-gradient(to right, #a2e1ed 0%, var(--primary) 60%, #28b4cd 100%) !important;
+  --webkit-top-nav-gradient: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788)) !important;
+
+		/* breadcrumb */
+	--breacrumb-active: #57667E !important;
+	--breadcrumb-not-active: var(--secondary) !important;
+
+  	/* padding & layout control */
+  --row-padding: 2% !important;
+  --inset-padding: 10% !important;
+
+  	/* input controls */
+  --input-color: rgba(0,0,0,.7) !important;
+  --input-color-focus: #2c2c2c !important;
+  --input-border-color: #e5e5e5 !important;
+  --input-border-color-focus: var(--secondary) !important;
+  --input-border-weight: 1px !important;
+
+
+	/* box shadows */
+  --inset-box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset !important;
+  --sm-box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.17) !important;
+  --md-box-shadow: 0 4px 6px 0 hsla(0,0%,0%,0.2) !important;
+  --card-box-shadow: inset 0 0 15px rgba(55, 84, 170, 0), inset 0 0 20px rgba(255, 255, 255, 0), 7px 7px 15px rgba(55, 84, 170, 0.15), -7px -7px 20px white, inset 0px 0px 4px rgba(255, 255, 255, 0.2) !important;
+  --silicon-raised: 0 -3px 8px rgba(255,255,255,1),
+                    0 4px 8px rgba(0,0,0,.2),
+                    inset 0 2px 4px rgba(255,255,255,1),
+                    inset 0 -2px 4px rgba(0,0,0,.2) !important;
+
+  --silicon-depressed:0 -3px 8px rgba(0,0,0,.2),
+                      0 4px 10px rgba(255,255,255,1),
+                      inset 0 2px 4px rgba(0,0,0,.2),
+                      inset 0 -2px 4px rgba(255,255,255,1) !important;
+
+  --sharper-neu: inset 0 0 15px rgba(55, 84, 170, 0), inset 0 0 20px rgba(255, 255, 255, 0), 7px 7px 15px rgba(55, 84, 170, 0.15), -7px -7px 20px white, inset 0px 0px 4px rgba(255, 255, 255, 0.2) !important;
+  --sharper-neu-pressed: inset 2px 2px 4px #d9d9d9, 
+                         inset -2px -2px 4px #ffffff !important;
+}
