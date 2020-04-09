@@ -8,7 +8,7 @@ gulp.task('css', function() {
     'static/assets/css/src/imports.css',
     'static/assets/css/src/bootstrap.min.css',
     'static/assets/css/src/font-awesome.min.css',
-    'static/assets/css/src/all.min.css',
+    'static/assets/css/src/all.css',
     'static/assets/css/src/easy-autocomplete.min.css',
     'static/assets/css/src/vanilla-dataTables.min.css',
     'static/assets/css/src/ranger.min.css',

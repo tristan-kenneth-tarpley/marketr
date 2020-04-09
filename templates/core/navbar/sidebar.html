@@ -3,7 +3,7 @@
 
 <li class="sidebar_li {{ target }}">
 	<a href="{{ url_for('settings') }}">
-		<i class="now-ui-icons ui-1_settings-gear-63"></i>
+		<i class="fad fa-cogs"></i>
 		<p class="nav_desc">Account</p>
 	</a>
 </li>
@@ -13,7 +13,7 @@
 {% macro campaigns(plan) %}
 <li id="campaigns-nav" class="sidebar_li {{ plan }}">
 	<a href="{{ '/home?view=campaigns' if not demo else '/home?view=campaigns' }} ">
-		<i class="now-ui-icons business_chart-pie-36"></i>
+		<i class="fad fa-chart-pie"></i>
 		<p class="nav_desc">Marketing</p>
 	</a>	
 </li>
@@ -22,7 +22,7 @@
 {% macro profile(plan) %}
 <li id="profile-nav" class="sidebar_li {{ plan }}">
 	<a class="render_tactics" href="{{ url_for('home', view='profile') if not demo else '/demo?view=profile' }}">
-		<i class="now-ui-icons business_badge"></i>
+		<i class="fad fa-id-card-alt"></i>
 		<p class="nav_desc">Profile</p>
 	</a>
 </li>
@@ -39,7 +39,7 @@
 {% macro messages(plan) %}
 <li id="messages-nav" class="sidebar_li {{ plan }}">
 	<a href="{{'/home?view=messages' if not demo else '/demo?view=messages'}}">
-		<i class="now-ui-icons ui-2_chat-round"></i>
+		<i class="fad fa-comments-alt"></i>
 		<p class="nav_desc">Chat</p>
 	</a>	
 </li>
@@ -57,7 +57,7 @@
 {% macro logout() %}
 <li class="sidebar_li">
 	<a href="{{ url_for('logout') if not demo else '#' }}">
-		<i class="now-ui-icons objects_key-25"></i>
+		<i class="fad fa-sign-out"></i>
 		<p class="nav_desc">Logout</p>
 	</a>
 </li>

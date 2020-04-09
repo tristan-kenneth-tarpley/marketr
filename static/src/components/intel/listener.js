@@ -5,11 +5,12 @@ const styles = () => {
     return `
     <style>
     @import url('/static/assets/css/dist/styles.min.css');
+
     :host {
         display:flex;
         flex-direction: column;
         justify-content:center;
-        height: 100%;
+        height: 100%;   
     }
     #listening i {
         font-size: 1.3em;
@@ -75,7 +76,7 @@ const styles = () => {
                     <tr>
                         <td><p>${res.title}</p></td>
                         <td><p>${d}</p></td>
-                        <td><a target="__blank" href="${res.url}"><i class="fas fa-sign-out-alt"></i></a></td>
+                        <td><a target="__blank" href="${res.url}"><i class="fad fa-external-link"></i></a></td>
                     </tr>
                     `
                 }).join("")}
