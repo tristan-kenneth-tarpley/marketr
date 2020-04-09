@@ -1,14 +1,15 @@
 from app import app
-from flask import render_template, session
+from flask import render_template, session, redirect
 from services.Blog import Blog
 
 @app.route('/')
 def index():
-    return render_template(
-		'branding/index.html',
-		logged_in = True if session.get('logged_in') == True else False,
-		home=True
-	)
+	return redirect('https://site.marketr.life')
+    # return render_template(
+	# 	'branding/index.html',
+	# 	logged_in = True if session.get('logged_in') == True else False,
+	# 	home=True
+	# )
 
 
 @app.route('/blog')
