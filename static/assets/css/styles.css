@@ -5025,7 +5025,7 @@ to   { opacity: 1; }
   box-shadow: var(--card-box-shadow);
   background-color: #fff;
   padding: 0 !important;
-  border-radius: 6px;
+  border-radius: 20px;
   margin-bottom: 20px;
 }
 .target .top_card {
