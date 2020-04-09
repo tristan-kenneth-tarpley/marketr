@@ -138,55 +138,56 @@
 
 {% macro left_nav(stage, intake, onboarding_complete) %}
 
-	{% if intake == True %}
-	
-		<div class="sidebar intake-sidebar" data-color="orange">
-			<div class="logo">
-			  <a href="https://marketr.life" class="simple-text logo-normal">
-			    <img src="/static/assets/img/favicon.png">
-			  </a>
-			</div>
-			<div class="sidebar-wrapper">
-			  <ul class="nav">
-			    <li class="sidebar_li {{ 0 | check_active(stage) }}">
-			      <a href="/begin?splash=False">
-			        <i class="now-ui-icons design_app"></i>
-			        <p class="nav_desc">Profile</p>
-			      </a>
-			    </li>
-			    <li class="sidebar_li {{ 1 | check_active(stage) }}">
-			      <a href="/competitors?splash=False">
-			        <i class="now-ui-icons education_atom"></i>
-			        <p class="nav_desc">Info</p>
-			      </a>
-			    </li>
-			    <li class="sidebar_li {{ 2 | check_active(stage) }}">
-			      <a href="/goals?splash=False">
-			        <i class="now-ui-icons location_map-big"></i>
-			        <p class="nav_desc">Goals</p>
-			      </a>
-			    </li>
-			    <li class="sidebar_li {{ 3 | check_active(stage) }}">
-			      <a href="/history?splash=False">
-			        <i class="now-ui-icons ui-1_bell-53"></i>
-			        <p class="nav_desc">History</p>
-			      </a>
-				</li>
-				{% if onboarding_complete == True %}
-			    <li class="sidebar_li {{ 4 | check_active(stage) }}">
-			      <a href="/home">
-			        <i class="now-ui-icons media-1_album"></i>
-			        <p class="nav_desc">Home</p>
-			      </a>
-				</li>
-				{% endif %}
-			  </ul>
-			</div>
-		</div>
+    {% if intake == True %}
+    
+        <div class="sidebar intake-sidebar" data-color="orange">
+            <div class="logo">
+              <a href="https://marketr.life" class="simple-text logo-normal">
+                <img src="/static/assets/img/favicon.png">
+              </a>
+            </div>
+            <div class="sidebar-wrapper">
+              <ul class="nav">
+                <li class="sidebar_li {{ 0 | check_active(stage) }}">
+                  <a href="/begin?splash=False">
+                    <i class="fad fa-id-card-alt"></i>
+                    <p class="nav_desc">Profile</p>
+                  </a>
+                </li>
+                <li class="sidebar_li {{ 1 | check_active(stage) }}">
+                  <a href="/competitors?splash=False">
+                    <i class="fad fa-question"></i>
+                    <p class="nav_desc">Info</p>
+                  </a>
+                </li>
+                <li class="sidebar_li {{ 2 | check_active(stage) }}">
+                  <a href="/goals?splash=False">
+                    <i class="fad fa-bullseye-pointer"></i>
+                    <p class="nav_desc">Goals</p>
+                  </a>
+                </li>
+                <li class="sidebar_li {{ 3 | check_active(stage) }}">
+                  <a href="/history?splash=False">
+                    <i class="fad fa-file-medical-alt"></i>
+                    <p class="nav_desc">History</p>
+                  </a>
+                </li>
+                {% if onboarding_complete == True %}
+                <li class="sidebar_li {{ 4 | check_active(stage) }}">
+                  <a href="/home">
+                    <i class="fad fa-home"></i>
+                    <p class="nav_desc">Home</p>
+                  </a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+        </div>
 
-	{% endif %}
+    {% endif %}
 
 {% endmacro %}
+
 
 
 
