@@ -13,7 +13,7 @@ const styles = () => {
             padding: .75em 1.5em;
             border-bottom: 1px solid #f2f2ff;
             background:#fff;
-            border-radius: 6px;
+            border-radius: 20px;
             box-shadow: var(--sharper-neu);  
             margin: .6em;          
         }
