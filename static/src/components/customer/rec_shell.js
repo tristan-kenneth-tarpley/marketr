@@ -137,7 +137,7 @@ export default class Rec_shell extends HTMLElement {
 
                         <div class="toolbar">      
                             <button style="padding: 0;" class="btn btn-neutral dismiss">dismiss</button>
-                            <button class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>  
+                            <button style="border-radius:20px;" class="small_txt rec-apply btn btn-secondary">${apply_copy}</button>  
                         </div>
                     </div>
                 </div>
