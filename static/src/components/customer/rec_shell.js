@@ -121,7 +121,7 @@ export default class Rec_shell extends HTMLElement {
 
     render(){
         this.shadow.innerHTML = ''
-        let apply_copy = this.price != null ? `do it for $${this.price}` : `do it`
+        let apply_copy = this.price != null ? `$${this.price}` : `do it`
         /*html*/
         const shell = async () => {
             return `
