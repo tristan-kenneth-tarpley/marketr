@@ -97,16 +97,19 @@ def update_password(token):
 
 @app.route('/login', methods=['GET', 'POST'])
 def customer_login():
-    form = forms.CustomerLogin()
+    if 'logged_in' in session and session.get('logged_in') == True:
+        return redirect(url_for("home"))
+    else:
+        form = forms.CustomerLogin()
 
-    if ViewFuncs.ValidSubmission(form=form, method=request.method):
-        loginResult, action = UserService.customer_login(form.email.data, form.password.data)
-        return UserService.routeLogin(loginResult, action, form=form)
+        if ViewFuncs.ValidSubmission(form=form, method=request.method):
+            loginResult, action = UserService.customer_login(form.email.data, form.password.data)
+            return UserService.routeLogin(loginResult, action, form=form)
 
-    elif request.method == 'GET':
-        session['logged_in'] = False
+        elif request.method == 'GET':
+            session['logged_in'] = False
 
-    return render_template('login.html', form=form)
+        return render_template('login.html', form=form)
 
 
 
