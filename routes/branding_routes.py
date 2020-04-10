@@ -14,15 +14,17 @@ def index():
 
 @app.route('/blog')
 def blog():
-	blog = Blog()
-	posts = blog.all_stories()
+	# blog = Blog()
+	# posts = blog.all_stories()
+	return redirect("https://site.marketr.life/blog")
 	# return str(posts)
-	return render_template('branding/blog.html', posts=posts)
+	# return render_template('branding/blog.html', posts=posts)
 
 @app.route('/blog/<slug>')
 def article(slug):
-	blog = Blog()
-	return render_template('branding/post.html', post=blog.single_story(slug))
+	return redirect(f"https://site.marketr.life/blog/{slug}")
+	# blog = Blog()
+	# return render_template('branding/post.html', post=blog.single_story(slug))
 
 
 @app.route('/privacy')
