@@ -34,7 +34,7 @@ def linkedin_callback():
     if state == _state:
         code = request.args.get('code')
         endpoint = '/oauth/v2/accessToken'
-        host = 'www.linkedin.com'
+        host = 'https://www.linkedin.com'
         
         payload = {
             "Content-Type": "application/x-www-form-urlencoded",
