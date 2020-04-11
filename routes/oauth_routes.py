@@ -30,33 +30,31 @@ def linkedin():
   
 @app.route('/auth/linkedin/callback', methods=['GET', 'POST'])
 def linkedin_callback():
-    try:
-        _state = request.args.get('state')
-        if state == _state:
-            code = request.args.get('code')
-            endpoint = '/oauth/v2/accessToken'
-            host = 'www.linkedin.com'
-            
-            payload = {
-                "Content-Type": "application/x-www-form-urlencoded",
-                'grant_type': 'authorization_code',
-                'code': code,
-                'redirect_uri': linkedin_callback_url,
-                'client_id': linkedin_client_id,
-                'client_secret': linkedin_secret
-            }
+    _state = request.args.get('state')
+    if state == _state:
+        code = request.args.get('code')
+        endpoint = '/oauth/v2/accessToken'
+        host = 'www.linkedin.com'
+        
+        payload = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': linkedin_callback_url,
+            'client_id': linkedin_client_id,
+            'client_secret': linkedin_secret
+        }
 
-            r = requests.post(
-                host+endpoint,
-                data=json.dumps(payload),
-                headers={}
-            )
+        r = requests.post(
+            host+endpoint,
+            data=json.dumps(payload),
+            headers={}
+        )
 
-            res = r.json()
-            access_token = res.get('access_token')
-            return access_token
+        res = r.json()
+        access_token = res.get('access_token')
+        return access_token
 
-    except:
-        return f"Error: {request.args.get('error')}\nError description: {request.args.get('error_description')}"
+
 
         
