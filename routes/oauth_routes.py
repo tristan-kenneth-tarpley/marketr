@@ -18,14 +18,14 @@ def linkedin():
     endpoint = 'https://www.linkedin.com/oauth/v2/authorization'
     params = {
         'response_type': 'code',
-        'client_id': state,
+        'client_id': linkedin_client_id,
         'redirect_uri': linkedin_callback_url,
-        'state': 'alkewjflflkja',
-        'scope': quote('r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size')
+        'state': state,
+        'scope': 'r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size'
     }
     url = f"{endpoint}?{urlencode(params)}"
 
-    return url
+    return redirect(url)
 
   
 @app.route('/auth/linkedin/callback', methods=['GET', 'POST'])
