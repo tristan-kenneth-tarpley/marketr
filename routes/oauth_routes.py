@@ -11,13 +11,15 @@ import requests
 linkedin_secret = 'OAozBy1Xy217oHeY'
 linkedin_client_id = '781vh6v82vnuy3'
 state = '781vh6v82vnuy3'
+linkedin_callback_url = "https://marketr.life/auth/linkedin/callback"
+
 @app.route('/auth/linkedin', methods=['GET', 'POST'])
 def linkedin():
     endpoint = 'https://www.linkedin.com/oauth/v2/authorization'
     params = {
         'response_type': 'code',
         'client_id': state,
-        'redirect_uri': url_for('linkedin_callback'),
+        'redirect_uri': linkedin_callback_url,
         'state': 'alkewjflflkja',
         'scope': quote('r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size')
     }
@@ -38,7 +40,7 @@ def linkedin_callback():
             "Content-Type": "application/x-www-form-urlencoded",
             'grant_type': 'authorization_code',
             'code': code,
-            'redirect_url': url_for('linkedin_callback'),
+            'redirect_uri': linkedin_callback_url,
             'client_id': linkedin_client_id,
             'client_secret': linkedin_secret
         }
