@@ -21,7 +21,7 @@ def linkedin():
         'client_id': linkedin_client_id,
         'redirect_uri': linkedin_callback_url,
         'state': state,
-        'scope': 'r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size'
+        'scope': 'r_emailaddress r_ads rw_ads r_ads_reporting'
     }
     url = f"{endpoint}?{urlencode(params)}"
 
@@ -37,7 +37,6 @@ def linkedin_callback():
         host = 'https://www.linkedin.com'
         
         payload = {
-            "Content-Type": "application/x-www-form-urlencoded",
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': linkedin_callback_url,
@@ -48,12 +47,12 @@ def linkedin_callback():
         r = requests.post(
             host+endpoint,
             data=json.dumps(payload),
-            headers={}
+            headers=json.dumps({"Content-Type": "application/x-www-form-urlencoded"})
         )
 
         res = r.json()
         access_token = json.dumps(res)
-        return access_token
+        return json.dumps(payload) + "\n" + access_token
 
     else:
         return "state error"
