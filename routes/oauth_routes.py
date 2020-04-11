@@ -21,7 +21,7 @@ def linkedin():
         'client_id': state,
         'redirect_uri': linkedin_callback_url,
         'state': 'alkewjflflkja',
-        'scope': 'r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size'
+        'scope': quote('r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size')
     }
     url = f"{endpoint}?{urlencode(params)}"
 
