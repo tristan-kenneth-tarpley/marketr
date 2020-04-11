@@ -46,17 +46,16 @@ def linkedin_callback():
 
         r = requests.post(
             host+endpoint,
-            data=json.dumps(payload),
-            headers=json.dumps({"Content-Type": "application/x-www-form-urlencoded"})
+            data=payload,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
         )
-
         res = r.json()
         access_token = json.dumps(res)
         return json.dumps(payload) + "\n" + access_token
 
     else:
         return "state error"
-
-
 
         
