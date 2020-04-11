@@ -24,13 +24,13 @@ def linkedin():
         'scope': quote('r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size')
     }
     url = f"{endpoint}?{urlencode(params)}"
+
     return redirect(url)
 
   
 @app.route('/auth/linkedin/callback', methods=['GET', 'POST'])
 def linkedin_callback():
     _state = request.args.get('state')
-
     if state == _state:
         try:
             code = request.args.get('code')
@@ -58,9 +58,5 @@ def linkedin_callback():
 
         except:
             return f"Error: {request.args.get('error')}\nError description: {request.args.get('error_description')}"
-        
-        return redirect(url_for("home"))
-    else:
-        return redirect(url_for("home"))
 
         
