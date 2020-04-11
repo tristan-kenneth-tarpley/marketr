@@ -21,14 +21,14 @@ def linkedin():
         'state': 'alkewjflflkja',
         'scope': quote('r_emailaddress r_ads w_organization_social rw_ads r_basicprofile r_liteprofile r_ads_reporting r_organization_social rw_organization_admin w_member_social r_1st_connections_size')
     }
-    url = endpoint + urlencode(params)
+    url = f"{endpoint}?{urlencode(params)}"
     return redirect(url)
 
   
 @app.route('/auth/linkedin/callback', methods=['GET', 'POST'])
 def linkedin_callback():
     _state = request.args.get('state')
-    
+
     if state == _state:
         code = request.args.get('code')
         endpoint = '/oauth/v2/accessToken'
