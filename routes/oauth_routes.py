@@ -52,8 +52,11 @@ def linkedin_callback():
         )
 
         res = r.json()
-        access_token = res.get('access_token')
+        access_token = json.dumps(res)
         return access_token
+
+    else:
+        return "state error"
 
 
 
