@@ -1,9 +1,13 @@
 GalaxyCodes/
 /__pycache__/
+.ipybnb_checkpoints/
+.mypy_cache/
+.vscode/
+node_modules/
 main.py
 analysis/integrations
 *.ipynb
 *.cfg
 *.pyc
 *.py[cod]
-
+config.codekit3
