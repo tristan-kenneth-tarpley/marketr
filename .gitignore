@@ -1,6 +1,6 @@
 GalaxyCodes/
 /__pycache__/
-.ipybnb_checkpoints/
+/.ipynb_checkpoints/
 .mypy_cache/
 .vscode/
 node_modules/
