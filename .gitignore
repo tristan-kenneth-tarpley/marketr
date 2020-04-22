@@ -3,7 +3,6 @@ GalaxyCodes/
 /.ipynb_checkpoints/
 .mypy_cache/
 .vscode/
-node_modules/
 main.py
 analysis/integrations
 *.ipynb
