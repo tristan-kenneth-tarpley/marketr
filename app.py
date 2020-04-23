@@ -9,34 +9,29 @@ import os
 import json
 from functools import wraps
 
-app = Flask(__name__, static_folder='static/public')
+app = Flask(__name__)
 
-# Serve React App
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
-
-
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('error.html', first=5, second=0,third=0), 500
 # from helpers.UserService import *
 # from helpers.ViewModels import *
 # from helpers.LoginHandlers import *
 import services.forms as forms
-# from routes.branding_routes import *
-# from routes.intake_routes import *
-# from routes.admin_routes import *
+from routes.branding_routes import *
+from routes.intake_routes import *
+from routes.admin_routes import *
 from routes.oauth_routes import *
-# from routes.core_routes import *
+from routes.core_routes import *
 from routes.api_routes import *
 from services.filters import *
 
-
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', first=4, second=0,third=4), 404
 
 if __name__ == '__main__':
 	app.config.from_pyfile('config.cfg')
-	app.run(use_reloader=True, debug=True)
+	app.run(debug=True)
 
 
