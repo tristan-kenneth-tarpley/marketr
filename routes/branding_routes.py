@@ -4,28 +4,7 @@ from services.Blog import Blog
 
 @app.route('/')
 def index():
-	return redirect('https://site.marketr.life')
-    # return render_template(
-	# 	'branding/index.html',
-	# 	logged_in = True if session.get('logged_in') == True else False,
-	# 	home=True
-	# )
-
-
-@app.route('/blog')
-def blog():
-	# blog = Blog()
-	# posts = blog.all_stories()
-	return redirect("https://site.marketr.life/blog")
-	# return str(posts)
-	# return render_template('branding/blog.html', posts=posts)
-
-@app.route('/blog/<slug>')
-def article(slug):
-	return redirect(f"https://site.marketr.life/blog/{slug}")
-	# blog = Blog()
-	# return render_template('branding/post.html', post=blog.single_story(slug))
-
+	return "api is running"
 
 @app.route('/privacy')
 def privacy():
